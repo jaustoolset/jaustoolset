@@ -1,0 +1,23 @@
+
+December 1, 2011 : Version 2.0 Release Notes
+
+Version 2.0 is a significant update from v1.5.  There are several other significant feature additions.  Please consult the User's Guide for additional details.
+
+- The Code Generator has been updated to generate separate libraries for each service in an inherited chain.  This allows a single component to support multiple services while still inheriting from a common parent as per the JAUS Core Service Set (AS5710, Version 1).  This will also promote better code re-use.
+
+- JTS functionality is now encapsulated in an Eclipse Plug-in.   
+
+- Support for Promela-based protocol validation has been added.
+
+- Fixed issues related to validation of messages and protocol behavior
+
+- Added support for generating Microsoft Visual Studio build files in addition to Scons (C++ only).
+
+
+
+Known issues:
+
+- Generated C# code will not compile if the target directory contains the phrase "src" 
+- Import of JSIDL+ files is not supported (this does not impact published SAE JAUS services)
+- Generated Promela files cannot be modified or deleted until JTS is closed.
+- The Eclipse Plugin does not currently support FramedHTML document generation.
