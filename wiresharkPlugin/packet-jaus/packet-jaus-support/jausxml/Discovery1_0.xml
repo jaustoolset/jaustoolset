@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="Discovery" id="urn:jaus:jss:core:Discovery" version="1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The process of discovery is conducted at both the node level and the subsystem level. This service supports the discovery of both legacy components defined in the JAUS Reference Architecture versions 3.2+, and new components. The Component IDs of legacy components were fixed at specification time (Primitive Driver = 33 for example) and could contain only one service beyond the core service support. New components may use any component ID that is outside the range of IDs that have been allocated to legacy component definitions. New components can also contain two or more services beyond the core service support.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryIdentification" message_id="2B00" is_command="false">
+                <description xml:space="preserve">This message shall request the identification summary of a Subsystem, Node, or Component.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryIdentificationRec" optional="false">
+                        <fixed_field name="QueryType" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="5" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                                <value_enum enum_index="0" enum_const="Reserved"/>
+                                <value_enum enum_index="1" enum_const="System Identification"/>
+                                <value_enum enum_index="2" enum_const="Subsystem Identification"/>
+                                <value_enum enum_index="3" enum_const="Node Identification"/>
+                                <value_enum enum_index="4" enum_const="Component Identification"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryConfiguration" message_id="2B01" is_command="false">
+                <description xml:space="preserve">This message shall request the configuration summary of a subsystem or node. For example, to get the complete configuration of a subsystem, field 1 shall be set to 2.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryConfigurationRec" optional="false">
+                        <fixed_field name="QueryType" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="4" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                                <value_enum enum_index="0" enum_const="Reserved"/>
+                                <value_enum enum_index="1" enum_const="Reserved"/>
+                                <value_enum enum_index="2" enum_const="Subsystem Identification"/>
+                                <value_enum enum_index="3" enum_const="Node Identification"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QuerySubsystemList" message_id="2B02" is_command="false">
+                <description xml:space="preserve">This message shall request the Report Subsystem List message.  There are no data fields associated with this message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryServices" message_id="2B03" is_command="false">
+                <description xml:space="preserve">This message allows a component to request the service information of an entire subsystem or node, or a single component. The corresponding Report Services message will respond with service information only for new component implementations. It will not report service information for legacy component implementations.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="NodeList" optional="false">
+                        <count_field min_count="1" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <sequence name="NodeSeq" optional="false">
+                            <record name="NodeRec" optional="false">
+                                <fixed_field name="NodeID" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="254" upper_limit_type="inclusive"/>
+                                        <value_enum enum_index="0" enum_const="Reserved"/>
+                                        <value_enum enum_index="255" enum_const="All nodes in the subsystem"/>
+                                    </value_set>
+                                </fixed_field>
+                            </record>
+                            <list name="ComponentList" optional="false">
+                                <count_field min_count="1" max_count="255" field_type_unsigned="unsigned byte"/>
+                                <record name="ComponentRec" optional="false">
+                                    <fixed_field name="ComponentID" optional="false" field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="254" upper_limit_type="inclusive"/>
+                                            <value_enum enum_index="0" enum_const="Reserved"/>
+                                            <value_enum enum_index="255" enum_const="All components in the subsystem"/>
+                                        </value_set>
+                                    </fixed_field>
+                                </record>
+                            </list>
+                        </sequence>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="RegisterServices" message_id="0B00" is_command="true">
+                <description xml:space="preserve">This message allows a component to register its capabilities with a Discovery service.  If a component ID is specified in the JAUS Reference Architecture version 3.2+, it may report only one service beyond the core message support, and this service must be equal to the component ID.  If a component ID is not listed in the RA, it may report any number of services.  For example, a component with ID 33 must provide only service 33. The exception to this rule is component ID 1 (the Node Manager) which may provide any number of services in addition to core message support. Note that this restriction may be removed in future versions of this Standard.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="RegisterServicesBody">
+                    <list name="ServiceList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <record name="ServiceRec" optional="false">
+                            <variable_length_string name="URI" optional="false">
+                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            </variable_length_string>
+                            <fixed_field name="MajorVersionNumber" optional="false" field_type="unsigned byte" field_units="one"/>
+                            <fixed_field name="MinorVersionNumber" optional="false" field_type="unsigned byte" field_units="one"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportIdentification" message_id="4B00" is_command="false">
+                <description xml:space="preserve">This message shall provide the requesting component an identification summary of the Subsystem, Node, or Component.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportIdentificationRec" optional="false">
+                        <fixed_field name="QueryType" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="5" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                                <value_enum enum_index="0" enum_const="Reserved"/>
+                                <value_enum enum_index="1" enum_const="System Identification"/>
+                                <value_enum enum_index="2" enum_const="Subsystem Identification"/>
+                                <value_enum enum_index="3" enum_const="Node Identification"/>
+                                <value_enum enum_index="4" enum_const="Component Identification"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Type" optional="false" field_type="unsigned short integer" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="10002" lower_limit_type="inclusive" upper_limit="20000" upper_limit_type="inclusive"/>
+                                <value_range lower_limit="20002" lower_limit_type="inclusive" upper_limit="30000" upper_limit_type="inclusive"/>
+                                <value_range lower_limit="30002" lower_limit_type="inclusive" upper_limit="40000" upper_limit_type="inclusive"/>
+                                <value_range lower_limit="40002" lower_limit_type="inclusive" upper_limit="50000" upper_limit_type="inclusive"/>
+                                <value_range lower_limit="50002" lower_limit_type="inclusive" upper_limit="60000" upper_limit_type="inclusive"/>
+                                <value_range lower_limit="60002" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                <value_enum enum_index="0" enum_const="RESERVED"/>
+                                <value_enum enum_index="10001" enum_const="VEHICLE"/>
+                                <value_enum enum_index="20001" enum_const="OCU"/>
+                                <value_enum enum_index="30001" enum_const="OTHER_SUBSYSTEM"/>
+                                <value_enum enum_index="40001" enum_const="NODE"/>
+                                <value_enum enum_index="50001" enum_const="PAYLOAD"/>
+                                <value_enum enum_index="60001" enum_const="COMPONENT"/>
+                            </value_set>
+                        </fixed_field>
+                        <variable_length_string name="Identification" optional="false">
+                            <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        </variable_length_string>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportConfiguration" message_id="4B01" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver a table of all existing components located on the source's subsystem or node depending on the value of field 1 of the Code 2B01h: Query Configuration message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="NodeList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <sequence name="NodeSeq" optional="false">
+                            <record name="NodeRec" optional="false">
+                                <fixed_field name="NodeID" optional="false" field_type="unsigned byte" field_units="one"/>
+                            </record>
+                            <list name="ComponentList" optional="false">
+                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                <record name="ComponentRec" optional="false">
+                                    <fixed_field name="ComponentID" optional="false" field_type="unsigned byte" field_units="one"/>
+                                    <fixed_field name="InstanceID" optional="false" field_type="unsigned byte" field_units="one"/>
+                                </record>
+                            </list>
+                        </sequence>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportSubsystemList" message_id="4B02" is_command="false">
+                <description xml:space="preserve">This message shall provide the receiving component a table of all subsystems located in the source’s system.  It also provides the ID of the component to send a Query Configuration message within the subsystem.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="SubsystemList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <record name="SubsystemRec" optional="false">
+                            <fixed_field name="SubsystemID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                            <fixed_field name="NodeID" optional="false" field_type="unsigned byte" field_units="one"/>
+                            <fixed_field name="ComponentID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportServices" message_id="4B03" is_command="false">
+                <description xml:space="preserve">This message allows a component to publish its capabilities, according to the Service Dictionary presented below.  If a component ID is specified in the RA, it may report only one service in beyond the core message support, and this service must be equal to the component ID.  If a component ID is not listed in the RA, it may report any number of services.  For example, a component with ID 33 must provide only service 33. The exception to this rule is component ID 1 (the Node Manager) which may provide any number of services in addition to core message support.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="NodeList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <sequence name="NodeSeq" optional="false">
+                            <record name="NodeRec" optional="false">
+                                <fixed_field name="NodeID" optional="false" field_type="unsigned byte" field_units="one"/>
+                            </record>
+                            <list name="ComponentList" optional="false">
+                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                <sequence name="ComponentSeq" optional="false">
+                                    <record name="ComponentRec" optional="false">
+                                        <fixed_field name="ComponentID" optional="false" field_type="unsigned byte" field_units="one"/>
+                                        <fixed_field name="InstanceID" optional="false" field_type="unsigned byte" field_units="one"/>
+                                    </record>
+                                    <list name="ServiceList" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                        <record name="ServiceRec" optional="false">
+                                            <variable_length_string name="URI" optional="false">
+                                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                            </variable_length_string>
+                                            <fixed_field name="MajorVersionNumber" optional="false" field_type="unsigned byte" field_units="one"/>
+                                            <fixed_field name="MinorVersionNumber" optional="false" field_type="unsigned byte" field_units="one"/>
+                                        </record>
+                                    </list>
+                                </sequence>
+                            </list>
+                        </sequence>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="Discovery.Events.Transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <start state_machine_name="Discovery.Events.Transport.SendFSM" state_name="Sending"/>
+        <state_machine name="Discovery.Events.Transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready">
+                    <default_state>
+                        <transition name="transport.Receive">
+                            <parameter type="QueryIdentification" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <ns2:internal/>
+                            <action name="transport.Send" interpretation="Send a Report Identification                 message               to querying client">
+                                <argument value=" 'ReportIdentification' "/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                        <transition name="transport.Receive">
+                            <parameter type="QueryConfiguration" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <ns2:internal/>
+                            <action name="transport.Send" interpretation="Send a Report Configuration                 message               to querying client">
+                                <argument value=" 'ReportConfiguration' "/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                        <transition name="transport.Receive">
+                            <parameter type="QuerySubsystemList" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <ns2:internal/>
+                            <action name="transport.Send" interpretation="Send a Report Subsystem List                 message               to querying client">
+                                <argument value=" 'ReportSubsystemList' "/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                        <transition name="transport.Receive">
+                            <parameter type="QueryServices" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <ns2:internal/>
+                            <action name="transport.Send" interpretation="Send a Report Services message                 to querying client">
+                                <argument value=" 'ReportServices' "/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                        <transition name="transport.Receive">
+                            <parameter type="RegisterServices" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <ns2:internal/>
+                            <action name="PublishServices" interpretation="Add the component that sent the message                 to the list of reported services">
+                                <argument value="msg"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                    </default_state>
+                    <ns3:mxCell id="75" parent="3" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Ready;" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                    </ns3:mxCell>
+                </state>
+                <ns3:mxCell id="3" parent="2" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Receiving;" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="10" parent="2" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="11" parent="2" source="10" target="3" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="2" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = Discovery.Events.Transport.ReceiveFSM; NEWLINE isStateless = false; NEWLINE" vertex="1">
+                <ns3:mxGeometry as="geometry" x="0.0" y="0.0" width="850.0" height="400.0"/>
+            </ns3:mxCell>
+        </state_machine>
+        <state_machine name="Discovery.Events.Transport.SendFSM">
+            <state name="Sending">
+                <ns3:mxCell id="6" parent="5" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Sending;" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="12" parent="5" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="13" parent="5" source="12" target="6" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="5" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = Discovery.Events.Transport.SendFSM; NEWLINE isStateless = false; NEWLINE" vertex="1">
+                <ns3:mxGeometry as="geometry" x="0.0" y="400.0" width="850.0" height="400.0"/>
+            </ns3:mxCell>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

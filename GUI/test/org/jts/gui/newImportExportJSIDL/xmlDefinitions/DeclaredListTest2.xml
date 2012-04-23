@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<list xmlns="urn:jaus:jsidl:1.0" name="ListTest2" optional="false">
+	++++CountFieldTest1.xml++++
+	<declared_list name="ListTest1" declared_type_ref="unitTest.ListTest1"/>
+</list>

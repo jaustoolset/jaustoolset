@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<const_def name="ValidName" const_type="unsigned byte" const_value="-2" 
+		   field_units="one" interpretation="Ratio of a circle's circumference to its diameter" xmlns="urn:jaus:jsidl:1.0"/>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="SMC">
+</Property><Property Name="Solution File" Value="C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\SMC.sln">
+</Property><Property Name="Date" Value="Wednesday, March 02, 2011">
+</Property><Property Name="Time" Value="16:02 PM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="SMC.sln" Description="File successfully backed up as C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\Backup\SMC.sln">
+</Event><Event ErrorLevel="0" Project="SMC" Source="SMC.csproj" Description="Project file successfully backed up as C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\Backup\SMC.csproj">
+</Event><Event ErrorLevel="0" Project="SMC" Source="SMC.csproj.user" Description="Project user file successfully backed up as C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\Backup\SMC.csproj.user">
+</Event><Event ErrorLevel="0" Project="SMC" Source="AssemblyInfo.cs" Description="File successfully backed up as C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\Backup\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="SMC" Source="FSMContext.cs" Description="File successfully backed up as C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\Backup\FSMContext.cs">
+</Event><Event ErrorLevel="0" Project="SMC" Source="State.cs" Description="File successfully backed up as C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\Backup\State.cs">
+</Event><Event ErrorLevel="0" Project="SMC" Source="StateUndefinedException.cs" Description="File successfully backed up as C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\Backup\StateUndefinedException.cs">
+</Event><Event ErrorLevel="0" Project="SMC" Source="TransitionUndefinedException.cs" Description="File successfully backed up as C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\Backup\TransitionUndefinedException.cs">
+</Event><Event ErrorLevel="0" Project="SMC" Source="SMC.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="SMC" Source="SMC.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="SMC.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="SMC.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="SMC" Source="SMC.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

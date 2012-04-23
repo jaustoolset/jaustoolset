@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_set xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SS_MessageSet" id="ImportTest:SS_MessageSet" version="1.0">
+  <description xml:space="preserve"> 
+    This service set is part of the ImportTests.
+    This set includes two services which provide coverage of the multiplicity of 
+    a message_set entity. The first service has no interpretation member and the 
+    second service has the interpretation member.
+  </description>
+
+  <!-- 
+    element message_set 
+    {
+      attribute interpretation { text }?,
+      input_set, output_set
+    }
+   -->
+
+  <service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+    name="SS_MessageSet_1" id="ImportTest:SS_MessageSet_1" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service tests a message_set which lacks the interpretation element.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <!-- No Interpretation -->
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_MessageSet_1" state_name="init"/>
+      <state_machine name="SS_MessageSet_1">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+
+  <service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+    name="SS_MessageSet_2" id="ImportTest:SS_MessageSet_2" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service tests a message_set with an interpretation.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <!-- Interpretation -->
+    <message_set interpretation="This is the interpretation of a message set.">
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_MessageSet_2" state_name="init"/>
+      <state_machine name="SS_MessageSet_2">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>  
+
+</service_set>

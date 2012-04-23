@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<array name="Array2" optional="false" interpretation="A fixed field in an array may not be optional"  xmlns="urn:jaus:jsidl:1.0">
+	<fixed_field name="Field1" field_type="byte" field_units="one" optional="true"/>
+	<dimension name="dimension1" size="9"/>
+	<dimension name="dimension2" size="1"/>
+</array>

@@ -1,0 +1,12 @@
+101a102,112
+>    // JTS --- remove by index instead of object
+>    public void dissociateItem(int index)
+>    {
+>        AbstractListEO list = (AbstractListEO) _field.get(_parent);
+>       list.remove(index);
+>       if (!_parent.isEditableState())
+>       {
+>          _parent.save();
+>       }
+>    }
+>    

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<guard condition="!Test(arg1 ,	arg2) = true" xmlns="urn:jaus:jsidl:1.0">
+</guard>

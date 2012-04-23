@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="StillImageClient" id="urn:jts:StillImageClient" version="1.0" xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:1.1">
+    <description xml:space="preserve">Client Example to request and display Still Images from a StillImage server.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered</assumptions>
+    <references/>
+    <message_set>
+        <input_set>
+            <message_def name="ReportStillImageSensorCapabilities" message_id="4812" is_command="false">
+                <description xml:space="preserve">This message is used to report the sensors capabilities upon reciept of a Query Still Image Sensor Capabilities message. Capabilities include sensor properties, values and ranges which can be modified by the Set Still Image Sensor Configuration message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="StillImageSensorList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="StillImageSensorCapabilitiesRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="SensorID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                            <bit_field name="SupportedFrameSizes" optional="true" field_type_unsigned="unsigned integer">
+                                <sub_field name="qvga_320x240">
+                                    <bit_range from_index="6" to_index="6"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="hsxga_5120x4096">
+                                    <bit_range from_index="14" to_index="14"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="vga_640x480">
+                                    <bit_range from_index="7" to_index="7"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wuxga_1920x1200">
+                                    <bit_range from_index="18" to_index="18"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="svga_800x600">
+                                    <bit_range from_index="8" to_index="8"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wvga_852x480">
+                                    <bit_range from_index="15" to_index="15"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="xga_1024x768">
+                                    <bit_range from_index="9" to_index="9"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wqsxga_3200x2048">
+                                    <bit_range from_index="20" to_index="20"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="uxga_1600x1200">
+                                    <bit_range from_index="10" to_index="10"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wxga_1366x768">
+                                    <bit_range from_index="16" to_index="16"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="sqcif_128x96">
+                                    <bit_range from_index="0" to_index="0"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="qxga_2048x1536">
+                                    <bit_range from_index="11" to_index="11"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="qcif_176x144">
+                                    <bit_range from_index="1" to_index="1"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="woxga_2560x1600">
+                                    <bit_range from_index="19" to_index="19"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="cif_352x288">
+                                    <bit_range from_index="2" to_index="2"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="sxga_1280x1024">
+                                    <bit_range from_index="12" to_index="12"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="cif4_704x576">
+                                    <bit_range from_index="3" to_index="3"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wsxga_1600x1024">
+                                    <bit_range from_index="17" to_index="17"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="cif16_1408x1152">
+                                    <bit_range from_index="4" to_index="4"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="qsxga_2560x2048">
+                                    <bit_range from_index="13" to_index="13"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="qqvga_160x120">
+                                    <bit_range from_index="5" to_index="5"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wquxga_3840x2400">
+                                    <bit_range from_index="21" to_index="21"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="whsxga_6400x4096">
+                                    <bit_range from_index="22" to_index="22"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="whuxga_7680x4800">
+                                    <bit_range from_index="23" to_index="23"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="cga_320x200">
+                                    <bit_range from_index="24" to_index="24"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ega_640x350">
+                                    <bit_range from_index="25" to_index="25"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="hd480_852x480">
+                                    <bit_range from_index="26" to_index="26"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="hd720_1280x720">
+                                    <bit_range from_index="27" to_index="27"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="hd1080_1920x1080">
+                                    <bit_range from_index="28" to_index="28"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                            <bit_field name="SupportedImageFormats" optional="true" field_type_unsigned="unsigned short integer">
+                                <sub_field name="JPEG">
+                                    <bit_range from_index="0" to_index="0"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="GIF">
+                                    <bit_range from_index="1" to_index="1"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="PNG">
+                                    <bit_range from_index="2" to_index="2"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="BMP">
+                                    <bit_range from_index="3" to_index="3"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="TIFF">
+                                    <bit_range from_index="4" to_index="4"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="PPM">
+                                    <bit_range from_index="5" to_index="5"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="PGM">
+                                    <bit_range from_index="6" to_index="6"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="PNM">
+                                    <bit_range from_index="7" to_index="7"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="NEF_Nikon_RAW">
+                                    <bit_range from_index="8" to_index="8"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="CR2_Canon_RAW">
+                                    <bit_range from_index="9" to_index="9"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="DNG_Adobe_RAW">
+                                    <bit_range from_index="10" to_index="10"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportStillImageSensorConfiguration" message_id="4813" is_command="false">
+                <description xml:space="preserve">This message is sent in response to a Query Still Image Sensor Configuration message. It is populated with the current sensor configuration (per sensor ID) as defined in the table below.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="StillImageSensorConfigurationList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="StillImageSensorConfigurationRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="SensorID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                            <fixed_field name="FrameSize" optional="true" field_units="one" field_type="unsigned byte">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="2" enum_const="352x288 (cif)"/>
+                                    <value_enum enum_index="3" enum_const="704x576 (4cif)"/>
+                                    <value_enum enum_index="4" enum_const="1408x1152 (16cif)"/>
+                                    <value_enum enum_index="5" enum_const="160x120 (qqvga)"/>
+                                    <value_enum enum_index="6" enum_const="320x240 (qvga)"/>
+                                    <value_enum enum_index="7" enum_const="640x480 (vga)"/>
+                                    <value_enum enum_index="8" enum_const="800x600 (svga)"/>
+                                    <value_enum enum_index="9" enum_const="1024x768 (xga)"/>
+                                    <value_enum enum_index="10" enum_const="1600x1200 (uxga)"/>
+                                    <value_enum enum_index="11" enum_const="2048x1536 (qxga)"/>
+                                    <value_enum enum_index="12" enum_const="1280x1024 (sxga)"/>
+                                    <value_enum enum_index="13" enum_const="2560x2048 (qsxga)"/>
+                                    <value_enum enum_index="14" enum_const="5120x4096 (hsxga)"/>
+                                    <value_enum enum_index="15" enum_const="852x480 (wvga)"/>
+                                    <value_enum enum_index="16" enum_const="1366x768 (wxga)"/>
+                                    <value_enum enum_index="17" enum_const="1600x1024 (wsxga)"/>
+                                    <value_enum enum_index="18" enum_const="1920x1200 (wuxga)"/>
+                                    <value_enum enum_index="19" enum_const="2560x1600 (woxga)"/>
+                                    <value_enum enum_index="20" enum_const="3200x2048 (wqsxga)"/>
+                                    <value_enum enum_index="0" enum_const="128x96 (sqcif)"/>
+                                    <value_enum enum_index="1" enum_const="176x144 (qcif)"/>
+                                    <value_enum enum_index="21" enum_const="3840x2400 (wquxga)"/>
+                                    <value_enum enum_index="22" enum_const="6400x4096 (whsxga)"/>
+                                    <value_enum enum_index="23" enum_const="7680x4800 (whuxga)"/>
+                                    <value_enum enum_index="24" enum_const="320x200 (cga)"/>
+                                    <value_enum enum_index="25" enum_const="640x350 (ega)"/>
+                                    <value_enum enum_index="26" enum_const="852x480 (hd480)"/>
+                                    <value_enum enum_index="27" enum_const="1280x720 (hd720)"/>
+                                    <value_enum enum_index="28" enum_const="1920x1080 (hd1080)"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="StillImageFormat" optional="true" field_units="one" field_type="unsigned byte">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="1" enum_const="GIF"/>
+                                    <value_enum enum_index="2" enum_const="PNG"/>
+                                    <value_enum enum_index="3" enum_const="BMP"/>
+                                    <value_enum enum_index="4" enum_const="TIFF"/>
+                                    <value_enum enum_index="5" enum_const="PPM"/>
+                                    <value_enum enum_index="6" enum_const="PGM"/>
+                                    <value_enum enum_index="7" enum_const="PNM"/>
+                                    <value_enum enum_index="8" enum_const="NEF"/>
+                                    <value_enum enum_index="9" enum_const="CR2"/>
+                                    <value_enum enum_index="10" enum_const="DNG"/>
+                                    <value_enum enum_index="0" enum_const="JPEG"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportStillImageData" message_id="4814" is_command="false">
+                <description xml:space="preserve">This message is used to report the most recent still image that was taken by the sensor. The timestamp defines the time at which the collected data was valid. The image data is defined with respect to either the sensor coordinate system or a specified coordinate system.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="StillImageDataList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="StillImageDataRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="SensorID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                            <fixed_field name="ReportCoordinateSystem" optional="false" field_units="one" field_type="unsigned byte">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="Native Coordinate System"/>
+                                    <value_enum enum_index="1" enum_const="Vehicle Coordinate System"/>
+                                </value_set>
+                            </fixed_field>
+                            <bit_field name="TimeStamp" optional="true" field_type_unsigned="unsigned integer">
+                                <sub_field name="Milliseconds">
+                                    <bit_range from_index="0" to_index="9"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="999" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Seconds">
+                                    <bit_range from_index="10" to_index="15"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Minutes">
+                                    <bit_range from_index="16" to_index="21"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Hour">
+                                    <bit_range from_index="22" to_index="26"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="23" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Day">
+                                    <bit_range from_index="27" to_index="31"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                            <variable_format_field name="ImageFrame" optional="false">
+                                <format_field>
+                                    <format_enum index="0" field_format="JPEG"/>
+                                    <format_enum index="1" field_format="GIF"/>
+                                    <format_enum index="2" field_format="PNG"/>
+                                    <format_enum index="3" field_format="BMP"/>
+                                    <format_enum index="4" field_format="TIFF"/>
+                                    <format_enum index="5" field_format="PPM"/>
+                                    <format_enum index="6" field_format="PGM"/>
+                                    <format_enum index="7" field_format="PNM"/>
+                                    <format_enum index="8" field_format="NEF"/>
+                                    <format_enum index="9" field_format="CR2"/>
+                                    <format_enum index="10" field_format="DNG"/>
+                                </format_field>
+                                <count_field min_count="0" max_count="2147483647" field_type_unsigned="unsigned integer"/>
+                            </variable_format_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="QueryStillImageSensorCapabilities" message_id="2812" is_command="false">
+                <description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Still Image Sensor Capabilities message. A logical AND shall 
+			be performed on the requested presence vector and that 
+			representing the available fields from the responder.  The 
+			resulting message shall contain the fields indicated by the 
+			result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="QueryStillImageSensorCapabilitiesList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="QueryStillImageSensorCapabilitiesRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                            <fixed_field name="QueryPresenceVector" optional="false" field_units="one" field_type="unsigned byte"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryStillImageSensorConfiguration" message_id="2813" is_command="false">
+                <description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Still Image Sensor Configuration message. A logical AND shall
+			be performed on the requested presence vector and that 
+			representing the available fields from the responder.  The 
+			resulting message shall contain the fields indicated by the 
+			result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="QueryStillImageSensorConfigurationList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="QueryStillImageSensorConfigurationRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                            <fixed_field name="QueryPresenceVector" optional="false" field_units="one" field_type="unsigned byte"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryStillImageData" message_id="2814" is_command="false">
+                <description xml:space="preserve">This message shall cause the 
+			receiving component to reply to the requestor with a Report 
+			Still Image Data message.  A logical AND shall be performed 
+			on the requested presence vector and that representing the 
+			available fields from the responder.  The resulting message 
+			shall contain the fields indicated by the result of this 
+			logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="QueryStillImageDataList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="QueryStillImageDataRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                            <fixed_field name="ReportCoordinateSystem" optional="false" field_units="one" field_type="unsigned byte">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="Native Coordinate System"/>
+                                    <value_enum enum_index="1" enum_const="Vehicle Coordinate System"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="QueryPresenceVector" optional="false" field_units="one" field_type="unsigned byte"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetStillImageSensorConfiguration" message_id="0807" is_command="true">
+                <description xml:space="preserve">This message is used to set the configuration of the still image sensor associated with the service. Configuration is based off of each sensors capabilities as described in the Report Still Image Sensor Capabilities message. This message shall cause the receiving service to reply to the sender with a Confirm Sensor Configuration message. If the configuration specified is invalid for a given sensor ID, the confirm message shall contain an Still Image Error Record for the given Sensor ID however other, valid, configurations specified shall be set (if they exist).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="StillImageSensorConfigurationSequence" optional="false">
+                        <record name="RequestIdRec" optional="false">
+                            <fixed_field name="RequestID" optional="false" field_units="one" field_type="unsigned byte"/>
+                        </record>
+                        <list name="StillImageSensorList" optional="false">
+                            <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                            <record name="StillImageSensorConfigurationRec" optional="false">
+                                <presence_vector field_type_unsigned="unsigned byte"/>
+                                <fixed_field name="SensorID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                                <fixed_field name="FrameSize" optional="true" field_units="one" field_type="unsigned byte">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="2" enum_const="352x288 (cif)"/>
+                                        <value_enum enum_index="3" enum_const="704x576 (4cif)"/>
+                                        <value_enum enum_index="4" enum_const="1408x1152 (16cif)"/>
+                                        <value_enum enum_index="5" enum_const="160x120 (qqvga)"/>
+                                        <value_enum enum_index="6" enum_const="320x240 (qvga)"/>
+                                        <value_enum enum_index="7" enum_const="640x480 (vga)"/>
+                                        <value_enum enum_index="8" enum_const="800x600 (svga)"/>
+                                        <value_enum enum_index="9" enum_const="1024x768 (xga)"/>
+                                        <value_enum enum_index="10" enum_const="1600x1200 (uxga)"/>
+                                        <value_enum enum_index="11" enum_const="2048x1536 (qxga)"/>
+                                        <value_enum enum_index="12" enum_const="1280x1024 (sxga)"/>
+                                        <value_enum enum_index="13" enum_const="2560x2048 (qsxga)"/>
+                                        <value_enum enum_index="14" enum_const="5120x4096 (hsxga)"/>
+                                        <value_enum enum_index="15" enum_const="852x480 (wvga)"/>
+                                        <value_enum enum_index="16" enum_const="1366x768 (wxga)"/>
+                                        <value_enum enum_index="17" enum_const="1600x1024 (wsxga)"/>
+                                        <value_enum enum_index="18" enum_const="1920x1200 (wuxga)"/>
+                                        <value_enum enum_index="19" enum_const="2560x1600 (woxga)"/>
+                                        <value_enum enum_index="20" enum_const="3200x2048 (wqsxga)"/>
+                                        <value_enum enum_index="0" enum_const="128x96 (sqcif)"/>
+                                        <value_enum enum_index="1" enum_const="176x144 (qcif)"/>
+                                        <value_enum enum_index="21" enum_const="3840x2400 (wquxga)"/>
+                                        <value_enum enum_index="22" enum_const="6400x4096 (whsxga)"/>
+                                        <value_enum enum_index="23" enum_const="7680x4800 (whuxga)"/>
+                                        <value_enum enum_index="24" enum_const="320x200 (cga)"/>
+                                        <value_enum enum_index="25" enum_const="640x350 (ega)"/>
+                                        <value_enum enum_index="26" enum_const="852x480 (hd480)"/>
+                                        <value_enum enum_index="27" enum_const="1280x720 (hd720)"/>
+                                        <value_enum enum_index="28" enum_const="1920x1080 (hd1080)"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="StillImageFormat" optional="true" field_units="one" field_type="unsigned byte">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="1" enum_const="GIF"/>
+                                        <value_enum enum_index="2" enum_const="PNG"/>
+                                        <value_enum enum_index="3" enum_const="BMP"/>
+                                        <value_enum enum_index="4" enum_const="TIFF"/>
+                                        <value_enum enum_index="5" enum_const="PPM"/>
+                                        <value_enum enum_index="6" enum_const="PGM"/>
+                                        <value_enum enum_index="7" enum_const="PNM"/>
+                                        <value_enum enum_index="8" enum_const="NEF"/>
+                                        <value_enum enum_index="9" enum_const="CR2"/>
+                                        <value_enum enum_index="10" enum_const="DNG"/>
+                                        <value_enum enum_index="0" enum_const="JPEG"/>
+                                    </value_set>
+                                </fixed_field>
+                            </record>
+                        </list>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="StillImageClientFSM" state_name="Ready"/>
+        <state_machine name="StillImageClientFSM">
+            <state name="Ready">
+                <entry>
+                    <action name="SendQueryStillImageData"/>
+                </entry>
+                <transition name="ReportStillImageData">
+                    <parameter type="ReportStillImageData" value="msg"/>
+                    <simple>
+                        <end_state state="Ready"/>
+                    </simple>
+                    <action name="DisplayStillImage">
+                        <argument value="msg"/>
+                    </action>
+                </transition>
+            </state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

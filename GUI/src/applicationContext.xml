@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd"
+  default-init-method="initialize">
+  
+  <import resource="persistorContext.xml" />
+  
+  <bean id="app-session" class="com.u2d.app.AppSession">
+    <property name="app" ref="application" />
+    <property name="viewMechanism" ref="view-mechanism" />
+    <!-- <property name="autologinas" value="admin" /> -->
+    <property name="autologinas" value="johndoe" />
+  </bean>
+  
+  <bean id="view-mechanism" class="com.u2d.view.swing.SwingViewMechanism"
+    factory-method="getInstance">
+    <property name="appSession" ref="app-session" />
+    <property name="labelEditorLayoutHorizontal" value="false" />
+  </bean>
+  
+  <bean id="context-wrapper" class="com.u2d.app.Context" 
+    factory-method="getInstance" />
+  
+  <bean id="application" class="com.u2d.app.Application">
+    <property name="name" value="JAUS Tool Set" /> <!-- TODO: Customize App Name Here -->
+    <property name="version" value="2.0" />
+    <property name="description" value="A suite of automated tools built against JSIDL (SAE AS5684) for the design and development of unmanned systems software. This user interface has been built using JMatter. " />
+    <property name="helpContentsUrl" value="http://www.jaustoolset.org/" />
+    <property name="pagesize" value="15" />
+    <property name="persistenceMechanism" ref="persistor" />
+  </bean>
+  
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basename" value="model-metadata" />
+  </bean>
+  
+</beans>

@@ -1,0 +1,8 @@
+10a11,12
+> import com.u2d.css4swing.style.ComponentStyle;
+> 
+19a22,25
+> 		
+> 		// JTS
+> 		ComponentStyle.addClass(this, "trees");
+> 		// jts

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="PromelaCodeGenerator" default="default" basedir=".">
+    <description>Builds, tests, and runs the project PromelaCodeGenerator.</description>
+    <property name="project.name" value="PromelaCodeGenerator" />
+	<!-- build directories -->
+
+    <property name="build.dir" location="build" />
+    <property name="build.classes.dir" location="${build.dir}/classes" />
+    <property name="src.dir" location="src" />
+    <property name="current.dir" location="./" />
+    <property name="lib.basedir" location="../GUI/lib" />
+    <property name="lib.dir" location="${lib.basedir}/runtime" />
+    <property name="lib.tools.dir" location="${lib.basedir}/tools" />
+    <property name="lib.jaxb.dir" value="${lib.basedir}/jaxb-ri-20091104/lib" />
+    <property name="lib.jaxb-plugin.dir" value="${lib.basedir}/jaxb-plugins" />
+    <property name="lib.javacc.dir" value="${lib.basedir}/javacc-4.2" />
+    <property name="lib.junit.dir" value="${lib.basedir}/junit" />
+    <property name="lib.jargs.dir" value="${lib.basedir}/jargs-1.0" />
+    <property name="lib.jep.dir" value="${lib.basedir}/jep" />
+    <property name="lib.cobertura.dir" value="${lib.basedir}/cobertura" />
+<!--    <property name="lib.cobertura.lib.dir" value="${lib.cobertura.dir}/lib" /> -->
+    <property name="main.class" value="org.jts.protocolvalidator.Main" />
+
+    <path id="dist.path.copy">
+        <fileset dir="${lib.dir}" includes="**/*.jar" />
+        <fileset dir="${lib.jaxb.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jaxb-plugin.dir}" includes="*.jar"/>
+        <fileset dir="${lib.javacc.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jargs.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jep.dir}" includes="*.jar"/>
+        <pathelement location="${build.classes.dir}" />
+    </path>
+    <path id="class.path">
+        <fileset dir="${lib.dir}" includes="**/*.jar" />
+        <fileset dir="${lib.jaxb.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jaxb-plugin.dir}" includes="*.jar"/>
+        <fileset dir="${lib.junit.dir}" includes="*.jar"/>
+        <fileset dir="${lib.javacc.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jargs.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jep.dir}" includes="*.jar"/>
+        <fileset dir="${lib.cobertura.dir}" includes="*.jar"/>
+ <!--       <fileset dir="${lib.cobertura.lib.dir}" includes="*.jar"/> -->
+ <!--       <fileset dir="" includes="*.java"/> -->
+        <pathelement location="${build.classes.dir}" />
+    </path>
+
+    <taskdef classpathref="class.path" resource="tasks.properties" />
+    <taskdef name="xjc" classname="com.sun.tools.xjc.XJC2Task">
+        <classpath refid="class.path"/>
+    </taskdef>
+
+    <target name="init">
+        <tstamp />
+        <mkdir dir="${build.classes.dir}" />
+        <available property="keystore.exists" file="tempKeystore"/>
+    </target>
+
+    <target name="clean" description="Delete build and test-reports directories">
+        <delete dir="${build.dir}" />
+        <delete dir="${src.dir}/org/jts/jsidl/binding" />
+        <delete file="${build.dir}/${project.name}.jar" />
+    </target>
+
+    <target name="bindJSIDLPlus" description="need to change from jsidl.binding to jsidl_plus.binding " depends="init">
+        <echo message="Creating JSIDL schema derived classes and interfaces..."/>
+        <xjc schema="../GUI/resources/schema/JSIDL_Plus/jsidl_plus.xsd" destDir="${src.dir}" package="org.jts.jsidl.binding" removeOldOutput="yes">
+            <produces dir="${src.dir}/org/jts/jsidl/binding" />
+            <arg line="-Xcommons-lang"/>
+            <classpath refid="class.path"/>
+        </xjc>
+    </target>
+
+    <target name="compile" description="compile code gen" depends="init, bindJSIDLPlus">
+        <javac srcdir="${src.dir}/org/jts/jsidl/binding"
+			destdir="${build.classes.dir}"
+			classpathref="class.path"
+			listfiles="true"
+			target="1.5"
+			debug="on" debuglevel="lines,vars,source" deprecation="on" />
+        <javac srcdir="${src.dir}/org/jts/protocolvalidator"
+			destdir="${build.classes.dir}"
+			classpathref="class.path"
+			listfiles="true"
+			target="1.5"
+			debug="on" debuglevel="lines,vars,source" deprecation="on" />
+
+    </target>
+
+    <target name="jar" depends="init, bindJSIDLPlus, compile">
+        <pathconvert targetos="unix" property="mf.classpath" pathsep=" ">
+            <path refid="dist.path.copy" />
+            <map from="${current.dir}\" to=""/>
+        </pathconvert>
+        <mkdir dir="${lib.dir}"/>
+        <manifest file="build/manifest.mf">
+                <attribute name="Main-Class" value="${main.class}"/>
+        </manifest>
+        <jar destfile="dist/${project.name}.jar" manifest="build/manifest.mf">
+             <fileset dir="${build.classes.dir}" includes="**/*" />
+        </jar>
+    </target>
+    <target name="jar-dist" depends="init, bindJSIDLPlus, compile">
+        <pathconvert targetos="unix" property="mf.classpath" pathsep=" ">
+            <path refid="dist.path.copy" />
+            <map from="${current.dir}\" to=""/>
+        </pathconvert>
+        <manifest file="build/manifest.mf">
+                <attribute name="Main-Class" value="${main.class}"/>
+        </manifest>
+        <jar destfile="${lib.basedir}/runtime/${project.name}.jar" manifest="build/manifest.mf">
+             <fileset dir="${build.classes.dir}" includes="**/*" />
+        </jar>
+    </target>
+    
+    <target name="run" description="run app">
+        <java classname="${main.class}" classpathref="class.path"
+			fork="true" maxmemory="512m">
+			<!-- to test localization, uncomment this..
+			<sysproperty key="user.language" value="fr" />
+			-->
+            <sysproperty key="javax.xml.parsers.DocumentBuilderFactory"
+                               value="org.apache.xerces.jaxp.DocumentBuilderFactoryImpl"/>
+ <!--            <sysproperty key="javax.xml.transform.TransformerFactory"
+                               value="com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl"/>
+            <sysproperty key="javax.xml.parsers.SAXParserFactory"
+                               value="org.apache.xerces.jaxp.SAXParserFactoryImpl"/>
+            <sysproperty key="javax.xml.xpath.XPathFactory"
+                               value="com.sun.org.apache.xpath.internal.jaxp.XPathFactoryImpl"/>  -->
+            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+        </java>
+    </target>
+
+    <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar-with-manifest:    JAR building (if you are using a manifest)
+      -do-jar-without-manifest: JAR building (if you are not using a manifest)
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="PromelaCodeGenerator-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
+
+    -->
+</project>

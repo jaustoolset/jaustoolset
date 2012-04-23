@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_VariableFormatField" id="ImportTest:SD_VariableFormatField" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a variable_format_field entity with all levels of multiplicity and options.
+
+    The 1st message_def contains a variable_format_field with all optional items missing.
+    The 2nd message_def contains a variable_format_field with all optional elements (and sub-elements) and full coverage of the attribute_field_format enumeration.
+
+    Note: This file also provides full coverage of the format_field element.
+  </description>
+
+  <!-- 
+    element variable_format_field 
+    {
+      attribute name { identifier }, 
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?, 
+      format_field, 
+      count_field
+    }
+    
+    element format_field 
+    { 
+      format_enum+ 
+    }    
+  
+    element format_enum 
+    { 
+      attribute index { xsd:unsignedByte },
+      attribute_field_format
+    }
+  
+    attribute field_format 
+    { 
+      "AU" | "BMP" | "JPEG" | "MJPEG" | "MPEG-1" | "MPEG-2"
+      | "MP2" | "MP3" | "MP4" | "RAW" | "WAV" | "JAUS MESSAGE" 
+      | "XML" | "RNC" | "RNG" | "XSD" | text
+    }
+
+    element count_field 
+    { 
+      attribute_field_type_unsigned, 
+      attribute min_count { identifier_ns | xsd:unsignedInt }?,
+      attribute max_count{ identifier_ns | xsd:unsignedInt }?,
+      attribute interpretation { text }?
+    }    
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, variable_format_field -->
+      <message_def name="VariableFormatField1" message_id="0181" is_command="false">
+        <description>
+          The 1st message_def contains a variable_format_field with all optional items missing.
+        </description>
+        <header name="VariableFormatField"/>
+        <body name="VariableFormatField1">
+          <record name="VariableFormatField1Rec" optional="false">
+            <variable_format_field name="MyVariableField1" optional="false">
+              <format_field>
+                <format_enum index="0" field_format="MJPEG"/>
+              </format_field>
+              <count_field field_type_unsigned="unsigned short integer"/>
+            </variable_format_field>            
+          </record>
+          </body>
+          <footer name="VariableFormatField"/>
+      </message_def>
+
+      <!-- All optional elements, variable_format_field -->
+      <message_def name="VariableFormatField2" message_id="0182" is_command="false">
+        <description>
+          The 2nd message_def contains a variable_format_field with all optional elements (and sub-elements) and full coverage of the attribute_field_format enumeration.
+        </description>
+        <header name="VariableFormatField"/>
+        <body name="VariableFormatField2">
+          <record name="VariableFormatField2Rec" optional="false">
+            <variable_format_field name="MyVariableField2" optional="false" interpretation="A variable_format_field interpretation.">
+              <format_field>
+                <format_enum index="0" field_format="AU"/>
+                <format_enum index="1" field_format="BMP"/>
+                <format_enum index="2" field_format="JPEG"/>
+                <format_enum index="3" field_format="MJPEG"/>
+                <format_enum index="4" field_format="MPEG-1"/>
+                <format_enum index="5" field_format="MPEG-2"/>
+                <format_enum index="6" field_format="MP2"/>
+                <format_enum index="7" field_format="MP3"/>
+                <format_enum index="8" field_format="MP2"/>
+                <format_enum index="9" field_format="MP4"/>
+                <format_enum index="10" field_format="RAW"/>
+                <format_enum index="11" field_format="WAV"/>
+                <format_enum index="12" field_format="JAUS MESSAGE"/>
+                <format_enum index="13" field_format="XML"/>
+                <format_enum index="14" field_format="RNC"/>
+                <format_enum index="15" field_format="XSD"/>
+                <format_enum index="16" field_format="Something else"/>
+              </format_field>
+              <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="1500" interpretation="This is some count field"/>
+            </variable_format_field>            
+          </record>
+        </body>
+        <footer name="VariableFormatField"/>
+      </message_def>
+
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_VariableFormatField" state_name="init"/>
+    <state_machine name="SD_VariableFormatField">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

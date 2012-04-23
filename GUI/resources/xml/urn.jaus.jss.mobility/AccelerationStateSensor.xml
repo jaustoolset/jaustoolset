@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="AccelerationStateSensor" id="urn:jaus:jss:mobility:AccelerationStateSensor" version="0.6" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description>
+    This service reports the acceleration state of the unmanned platform.  The Acceleration State Sensor 
+    reports the acceleration state that is the first derivative (the rate of change) of the velocity state reported by 
+    the Velocity State Sensor. Refer to the description on Velocity State Sensor for coordinate details.
+  </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="QueryAccelerationState" declared_type_ref="mobility.queryClass.QueryAccelerationState"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportAccelerationState" declared_type_ref="mobility.informClass.ReportAccelerationState"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="events.transport.ReceiveFSM"
+      state_name="Receiving.Ready"/>
+    <state_machine name="events.transport.ReceiveFSM" 
+        interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="events.transport.Receive">
+                  <parameter type="QueryAccelerationState" value="msg" interpretation="enveloped query acceleration
+                    state message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="events.transport.Send" interpretation="Send a Report
+                    Acceleration State message">
+                    <argument value=" 'ReportAccelerationState' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

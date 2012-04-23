@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="GlobalVectorDriver" id="urn:jaus:jss:mobility:GlobalVectorDriver" version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description>The function of the Global Vector Driver is to perform closed loop control 
+    of the desired global heading, altitude and speed of a mobile platform.  The Global Vector Driver 
+    takes the desired heading of the platform as measured with respect to the global coordinate system 
+    and the desired speed of the platform.  The desired heading angle is defined in a right hand sense 
+    about the Z axis of the global coordinate system (the Z axis points downward) where North is 
+    defined as zero degrees.  The desired Altitude, measured in accordance with the WGS 84 standard, 
+    provides a means through which systems capable of flight can be controlled.  For ground-based 
+    systems, the Altitude field is ignored.  The Global Vector Driver also receives 
+    data from the Global Pose Sensor and the Velocity State Sensor.  This 
+    information allows the Global Vector Driver to perform closed loop control on the 
+    platform’s global heading, altitude and speed.
+  </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SetGlobalVector" declared_type_ref="mobility.commandClass.SetGlobalVector"/>
+      <declared_message_def name="QueryGlobalVector" declared_type_ref="mobility.queryClass.QueryGlobalVector"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportGlobalVector" declared_type_ref="mobility.informClass.ReportGlobalVector"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="management.accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled.StateA"/>
+    <state_machine name="management.accessControl.events.transport.ReceiveFSM" 
+        interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled" interpretation="redefine state in order to extend">
+          <state name="NotControlled" initial_state="StateA" interpretation="redefine state in order to extend">
+            <state name="StateA" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryGlobalVector" value="msg" interpretation="enveloped query global
+                    vector message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Global Vector message">
+                    <argument value=" 'ReportGlobalVector' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+             </state>
+            </state>
+          <state name="Controlled" initial_state="StateB" interpretation="redefine state in order to extend">
+            <state name="StateB" interpretation="redefine state in order to extend">
+              <state name="Ready">
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetGlobalVector" value="msg" interpretation="enveloped set global
+                    vector message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered the 
+                    transition is received from the client that is in control of this service."/>
+                  <simple/>
+                  <action name="setGlobalVector" interpretation="Set the global vector values for the platform."/>
+                  </transition>
+              </state>
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryGlobalVector" value="msg" interpretation="enveloped query global
+                    vector message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Global Vector message">
+                    <argument value=" 'ReportGlobalVector' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+              </state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

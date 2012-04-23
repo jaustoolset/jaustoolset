@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<array xmlns="urn:jaus:jsidl:1.0" name="ArrayTestInterpretation1" interpretation="a" optional="false" >
+	<declared_variable_format_field name="VariableFormatFieldTest1" declared_type_ref="unitTest.VariableFormatFieldTest1"/>
+	++++DimensionTest1.xml++++
+</array>

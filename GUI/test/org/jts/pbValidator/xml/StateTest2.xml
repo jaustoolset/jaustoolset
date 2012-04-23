@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:StateTest2"
+  name="StateTest2" version="1.0">
+  <description xml:space="preserve">
+     An initial state must be defined for every level of nesting, except when only one substate exists
+  </description>
+  <assumptions/> 
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="Ready"/>
+    <state_machine name="FSM">
+      <state name="Ready">
+         <!-- no initial state defined which is not acceptable because there are multiple children-->
+         <state name="StateA">
+            <!-- no initial state defined which is acceptable because only one sub state exists -->
+            <state name="StateAA">
+               <state name="StateAAA"/>
+            </state>
+            <state name="StateAB"/>
+            <state name="StateAC"/>
+         </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

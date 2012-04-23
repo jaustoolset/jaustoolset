@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_set xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SS_InherRef_SetRef" id="ImportTest:SS_InherRef_SetRef" version="1.0">
+  <description xml:space="preserve"> 
+    This service set was created to test the import function of the JTS GUI.
+    This service set contains two services. The first service contains a 
+    inherits_from reference to the second.
+  </description>
+
+  <service_def name="SS_InherRef_SetRef_1" id="ImportTest:SS_InherRef_SetRef_1" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service includes two client_of references to services in the same set.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <references>
+      <inherits_from name="SS_InherRef_SetRef_2" id="ImportTest:SS_InherRef_SetRef_2" version="1.0"/>
+    </references>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_InherRef_SetRef_1" state_name="init"/>
+      <state_machine name="SS_InherRef_SetRef_1">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  
+  <service_def name="SS_InherRef_SetRef_2" id="ImportTest:SS_InherRef_SetRef_2" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      It is used as a client_of for another service in this set.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_InherRef_SetRef_2" state_name="init"/>
+      <state_machine name="SS_InherRef_SetRef_2">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  
+</service_set>

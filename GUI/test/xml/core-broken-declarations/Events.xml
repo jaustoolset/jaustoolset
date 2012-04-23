@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" name="Events" id="urn:jaus:jss:core:Events"
+  version="1.0">
+  <description>This service is used to set up event notifications. Since this service does not
+    contain any messages and data on which events can be setup, it is useful only when derived by
+    other services that contain messages and data on which events can be defined.</description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="transport" id="urn:jaus:jss:core:Transport" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="core" id="urn:jaus:jss:core:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="CreateEvent" declared_type_ref="core.commandClass.CreateEvent"/>
+      <declared_message_def name="UpdateEvent" declared_type_ref="core.commandClass.UpdateEvent"/>
+      <declared_message_def name="CancelEvent" declared_type_ref="core.commandClass.CancelEvent"/>
+      <declared_message_def name="QueryEvents" declared_type_ref="core.queryClass.QueryEvents"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ConfirmEventRequest" declared_type_ref="core.commandClass.ConfirmEventRequest"/>
+      <declared_message_def name="RejectEventRequest" declared_type_ref="core.commandClass.RejectEventRequest"/>
+      <declared_message_def name="ReportEvents" declared_type_ref="core.informClass.ReportEvents"/>
+      <declared_message_def name="Event" declared_type_ref="core.informClass.Event"/>
+    </output_set>
+  </message_set>
+  <internal_events_set>
+    <event_def name="EventOccurred">
+      <description> Received when an event occurs. </description>
+      <header name="Header"/>
+      <body name="Body"/>
+      <footer name="Footer"/>
+    </event_def>
+    <event_def name="EventError">
+      <description> Received when an event error occurs. </description>
+      <header name="Header"/>
+      <body name="Body"/>
+      <footer name="Footer"/>
+    </event_def>
+  </internal_events_set>
+  <protocol_behavior is_stateless="false">
+    <start state_machine_name="transport.ReceiveFSM" state_name="Receiving.Ready"/>
+    <state_machine name="transport.ReceiveFSM" interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready">
+          <transition name="transport.Receive">
+            <parameter type="QueryEvents" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <ns1:internal/>
+            <action name="transport.Send" interpretation="Send Report Events message to the
+              component that sent the query">
+              <argument value=" 'ReportEvents' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+          </transition>
+          <transition name="transport.Receive">
+            <parameter type="CreateEvent" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <guard condition="isSupported(msg) &amp;&amp; ! eventExists(msg)" interpretation="True if parameters are supported and the event does not already exist."/>
+            <ns1:internal/>
+            <action name="createEvent" interpretation="create the event">
+              <argument value="msg"/>
+            </action>
+            <action name="transport.Send" interpretation="Send Confirm Event Request
+              message">
+              <argument value=" 'ConfirmEventRequest' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+          </transition>
+          <transition name="transport.Receive">
+            <parameter type="CreateEvent" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <guard condition="isSupported(msg) &amp;&amp; eventExists(msg)" interpretation="True if parameters are supported and the event already exists."/>
+            <ns1:internal/>
+            <action name="updateEvent" interpretation="update the event">
+              <argument value="msg"/>
+            </action>
+            <action name="transport.Send" interpretation="Send Confirm Event Request
+              message">
+              <argument value=" 'ConfirmEventRequest' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+          </transition>
+          <transition name="transport.Receive">
+            <parameter type="CreateEvent" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <guard condition="! isSupported(msg)" interpretation="True if parameters are not
+              supported."/>
+            <ns1:internal/>
+            <action name="transport.Send" interpretation="Send Reject Event Request message">
+              <argument value=" 'RejectEventRequest' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+          </transition>
+          <transition name="transport.Receive">
+            <parameter type="UpdateEvent" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <guard condition="isSupported(msg) &amp;&amp; eventExists(msg)"
+              interpretation="True if parameters are supported and if the specified event exists"/>
+            <ns1:internal/>
+            <action name="updateEvent" interpretation="update the event">
+              <argument value="msg"/>
+            </action>
+            <action name="transport.Send" interpretation="Send Confirm Event Request
+              message">
+              <argument value=" 'ConfirmEventRequest' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+          </transition>
+          <transition name="transport.Receive">
+            <parameter type="UpdateEvent" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <guard condition="! isSupported(msg) || ! eventExists(msg)"/>
+            <ns1:internal/>
+            <action name="transport.Send" interpretation="Send Reject Event Request message">
+              <argument value=" 'RejectEventRequest' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+          </transition>
+          <transition name="transport.Receive">
+            <parameter type="CancelEvent" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <guard condition="! eventExists(msg)"/>
+            <ns1:internal/>
+            <action name="transport.Send" interpretation="Send Reject Event Request message">
+              <argument value=" 'RejectEventRequest' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+          </transition>
+          <transition name="transport.Receive">
+            <parameter type="CancelEvent" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <guard condition="eventExists(msg)"/>
+            <ns1:internal/>
+            <action name="cancelEvent" interpretation="cancel the event">
+              <argument value="msg"/>
+            </action>
+            <action name="transport.Send" interpretation="Send Confirm Event Request
+              message">
+              <argument value=" 'ConfirmEventRequest' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+          </transition>
+          <transition name="EventOccurred">
+            <guard condition="eventExists()"/>
+            <ns1:internal/>
+            <action name="sendEvent" interpretation="send an event notification"/>
+          </transition>
+          <transition name="EventError">
+            <guard condition="eventExists()"/>
+            <ns1:internal/>
+            <action name="sendRejectEventRequest" interpretation="Send Reject Event Request message"/>
+          </transition>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  JAUS Service Interface Definition Language (JSIDLv1.0)
+  
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.0">
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+  <xs:element name="service_def">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:description"/>
+        <xs:element ref="ns1:assumptions"/>
+        <xs:element minOccurs="0" ref="ns1:references"/>
+        <xs:element minOccurs="0" ref="ns1:declared_const_set"/>
+        <xs:element minOccurs="0" ref="ns1:declared_type_set"/>
+        <xs:element ref="ns1:message_set"/>
+        <xs:element ref="ns1:internal_events_set"/>
+        <xs:element ref="ns1:protocol_behavior"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="id" use="required" type="xs:anyURI"/>
+      <xs:attribute name="version" use="required" type="ns1:version_num"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="description">
+    <xs:complexType mixed="true">
+      <xs:attribute ref="xml:space"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="assumptions">
+    <xs:complexType mixed="true">
+      <xs:attribute ref="xml:space"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="references">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="ns1:inherits_from"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:client_of"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="inherits_from">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="id" use="required" type="xs:anyURI"/>
+      <xs:attribute name="version" use="required" type="ns1:version_num_ref"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="client_of">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="id" use="required" type="xs:anyURI"/>
+      <xs:attribute name="version" use="required" type="ns1:version_num_ref"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- ==================== declared constants =========================== -->
+  <xs:element name="declared_const_set">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:declared_const_set_ref"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:const_def"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="id" type="xs:anyURI"/>
+      <xs:attribute name="version" type="ns1:version_num"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_const_set_ref">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="id" use="required" type="xs:anyURI"/>
+      <xs:attribute name="version" use="required" type="ns1:version_num"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="const_def">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attributeGroup ref="ns1:attribute_field_units"/>
+      <xs:attribute name="const_type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="byte"/>
+            <xs:enumeration value="short integer"/>
+            <xs:enumeration value="integer"/>
+            <xs:enumeration value="long integer"/>
+            <xs:enumeration value="unsigned byte"/>
+            <xs:enumeration value="unsigned short integer"/>
+            <xs:enumeration value="unsigned integer"/>
+            <xs:enumeration value="unsigned long integer"/>
+            <xs:enumeration value="float"/>
+            <xs:enumeration value="long float"/>
+            <xs:enumeration value="string"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="const_value" use="required" type="xs:string"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- ==================== declared data types =========================== -->
+  <xs:element name="declared_type_set">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:declared_const_set_ref"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:declared_type_set_ref"/>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="ns1:message_def"/>
+          <xs:element ref="ns1:header"/>
+          <xs:element ref="ns1:body"/>
+          <xs:element ref="ns1:footer"/>
+          <xs:element ref="ns1:array"/>
+          <xs:element ref="ns1:record"/>
+          <xs:element ref="ns1:list"/>
+          <xs:element ref="ns1:variant"/>
+          <xs:element ref="ns1:sequence"/>
+          <xs:element ref="ns1:fixed_field"/>
+          <xs:element ref="ns1:variable_field"/>
+          <xs:element ref="ns1:bit_field"/>
+          <xs:element ref="ns1:fixed_length_string"/>
+          <xs:element ref="ns1:variable_length_string"/>
+          <xs:element ref="ns1:variable_length_field"/>
+          <xs:element ref="ns1:variable_format_field"/>
+          <xs:element ref="ns1:declared_message_def"/>
+          <xs:element ref="ns1:declared_event_def"/>
+          <xs:element ref="ns1:declared_header"/>
+          <xs:element ref="ns1:declared_body"/>
+          <xs:element ref="ns1:declared_footer"/>
+          <xs:element ref="ns1:declared_list"/>
+          <xs:element ref="ns1:declared_sequence"/>
+          <xs:element ref="ns1:declared_variant"/>
+          <xs:element ref="ns1:declared_record"/>
+          <xs:element ref="ns1:declared_array"/>
+          <xs:element ref="ns1:declared_fixed_field"/>
+          <xs:element ref="ns1:declared_variable_field"/>
+          <xs:element ref="ns1:declared_bit_field"/>
+          <xs:element ref="ns1:declared_fixed_length_string"/>
+          <xs:element ref="ns1:declared_variable_length_string"/>
+          <xs:element ref="ns1:declared_variable_length_field"/>
+          <xs:element ref="ns1:declared_variable_format_field"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="id" type="xs:anyURI"/>
+      <xs:attribute name="version" type="ns1:version_num"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_type_set_ref">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="id" use="required" type="xs:anyURI"/>
+      <xs:attribute name="version" use="required" type="ns1:version_num"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="attribute_declared_type">
+    <xs:attribute name="name" use="required" type="ns1:identifier"/>
+    <xs:attribute name="declared_type_ref" type="ns1:identifier_ns"/>
+    <xs:attribute name="interpretation"/>
+  </xs:attributeGroup>
+  <xs:element name="declared_message_def">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_event_def">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_header">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_body">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_footer">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_variant">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_sequence">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_record">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_list">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_array">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_fixed_field">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_variable_field">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_bit_field">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_fixed_length_string">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_variable_length_string">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_variable_length_field">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_variable_format_field">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- ==================== message definition ========================= -->
+  <xs:element name="message_set">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:input_set"/>
+        <xs:element ref="ns1:output_set"/>
+      </xs:sequence>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="input_set">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="ns1:message_def"/>
+        <xs:element ref="ns1:declared_message_def"/>
+      </xs:choice>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="output_set">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="ns1:message_def"/>
+        <xs:element ref="ns1:declared_message_def"/>
+      </xs:choice>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="internal_events_set">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="ns1:event_def"/>
+        <xs:element ref="ns1:declared_event_def"/>
+      </xs:choice>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="message_def">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:description"/>
+        <xs:choice>
+          <xs:element ref="ns1:header"/>
+          <xs:element ref="ns1:declared_header"/>
+        </xs:choice>
+        <xs:choice>
+          <xs:element ref="ns1:body"/>
+          <xs:element ref="ns1:declared_body"/>
+        </xs:choice>
+        <xs:choice>
+          <xs:element ref="ns1:footer"/>
+          <xs:element ref="ns1:declared_footer"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="message_id" use="required" type="xs:hexBinary"/>
+      <xs:attribute name="is_command" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="event_def">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:description"/>
+        <xs:choice>
+          <xs:element ref="ns1:header"/>
+          <xs:element ref="ns1:declared_header"/>
+        </xs:choice>
+        <xs:choice>
+          <xs:element ref="ns1:body"/>
+          <xs:element ref="ns1:declared_body"/>
+        </xs:choice>
+        <xs:choice>
+          <xs:element ref="ns1:footer"/>
+          <xs:element ref="ns1:declared_footer"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="header">
+    <xs:complexType>
+      <xs:choice minOccurs="0">
+        <xs:element ref="ns1:record"/>
+        <xs:element ref="ns1:declared_record"/>
+        <xs:element ref="ns1:list"/>
+        <xs:element ref="ns1:declared_list"/>
+        <xs:element ref="ns1:variant"/>
+        <xs:element ref="ns1:declared_variant"/>
+        <xs:element ref="ns1:sequence"/>
+        <xs:element ref="ns1:declared_sequence"/>
+      </xs:choice>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="body">
+    <xs:complexType>
+      <xs:choice minOccurs="0">
+        <xs:element ref="ns1:record"/>
+        <xs:element ref="ns1:declared_record"/>
+        <xs:element ref="ns1:list"/>
+        <xs:element ref="ns1:declared_list"/>
+        <xs:element ref="ns1:variant"/>
+        <xs:element ref="ns1:declared_variant"/>
+        <xs:element ref="ns1:sequence"/>
+        <xs:element ref="ns1:declared_sequence"/>
+      </xs:choice>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="footer">
+    <xs:complexType>
+      <xs:choice minOccurs="0">
+        <xs:element ref="ns1:record"/>
+        <xs:element ref="ns1:declared_record"/>
+        <xs:element ref="ns1:list"/>
+        <xs:element ref="ns1:declared_list"/>
+        <xs:element ref="ns1:variant"/>
+        <xs:element ref="ns1:declared_variant"/>
+        <xs:element ref="ns1:sequence"/>
+        <xs:element ref="ns1:declared_sequence"/>
+      </xs:choice>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="array">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element ref="ns1:fixed_field"/>
+          <xs:element ref="ns1:variable_field"/>
+          <xs:element ref="ns1:bit_field"/>
+          <xs:element ref="ns1:fixed_length_string"/>
+          <xs:element ref="ns1:variable_length_string"/>
+          <xs:element ref="ns1:variable_length_field"/>
+          <xs:element ref="ns1:variable_format_field"/>
+          <xs:element ref="ns1:declared_fixed_field"/>
+          <xs:element ref="ns1:declared_variable_field"/>
+          <xs:element ref="ns1:declared_bit_field"/>
+          <xs:element ref="ns1:declared_fixed_length_string"/>
+          <xs:element ref="ns1:declared_variable_length_string"/>
+          <xs:element ref="ns1:declared_variable_length_field"/>
+          <xs:element ref="ns1:declared_variable_format_field"/>
+        </xs:choice>
+        <xs:element maxOccurs="unbounded" ref="ns1:dimension"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="dimension">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="size" use="required">
+        <xs:simpleType>
+          <xs:union memberTypes="ns1:identifier_ns xs:unsignedInt"/>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="record">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="ns1:presence_vector"/>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element ref="ns1:array"/>
+          <xs:element ref="ns1:fixed_field"/>
+          <xs:element ref="ns1:variable_field"/>
+          <xs:element ref="ns1:bit_field"/>
+          <xs:element ref="ns1:fixed_length_string"/>
+          <xs:element ref="ns1:variable_length_string"/>
+          <xs:element ref="ns1:variable_length_field"/>
+          <xs:element ref="ns1:variable_format_field"/>
+          <xs:element ref="ns1:declared_array"/>
+          <xs:element ref="ns1:declared_fixed_field"/>
+          <xs:element ref="ns1:declared_variable_field"/>
+          <xs:element ref="ns1:declared_bit_field"/>
+          <xs:element ref="ns1:declared_fixed_length_string"/>
+          <xs:element ref="ns1:declared_variable_length_string"/>
+          <xs:element ref="ns1:declared_variable_length_field"/>
+          <xs:element ref="ns1:declared_variable_format_field"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="list">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:count_field"/>
+        <xs:choice>
+          <xs:element ref="ns1:record"/>
+          <xs:element ref="ns1:declared_record"/>
+          <xs:element ref="ns1:list"/>
+          <xs:element ref="ns1:declared_list"/>
+          <xs:element ref="ns1:variant"/>
+          <xs:element ref="ns1:declared_variant"/>
+          <xs:element ref="ns1:sequence"/>
+          <xs:element ref="ns1:declared_sequence"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="variant">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:vtag_field"/>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="ns1:record"/>
+          <xs:element ref="ns1:declared_record"/>
+          <xs:element ref="ns1:list"/>
+          <xs:element ref="ns1:declared_list"/>
+          <xs:element ref="ns1:variant"/>
+          <xs:element ref="ns1:declared_variant"/>
+          <xs:element ref="ns1:sequence"/>
+          <xs:element ref="ns1:declared_sequence"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="sequence">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="ns1:presence_vector"/>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element ref="ns1:record"/>
+          <xs:element ref="ns1:declared_record"/>
+          <xs:element ref="ns1:list"/>
+          <xs:element ref="ns1:declared_list"/>
+          <xs:element ref="ns1:variant"/>
+          <xs:element ref="ns1:declared_variant"/>
+          <xs:element ref="ns1:sequence"/>
+          <xs:element ref="ns1:declared_sequence"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="fixed_field">
+    <xs:complexType>
+      <xs:choice minOccurs="0">
+        <xs:element ref="ns1:scale_range"/>
+        <xs:element ref="ns1:value_set"/>
+      </xs:choice>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attributeGroup ref="ns1:attribute_field_type"/>
+      <xs:attributeGroup ref="ns1:attribute_field_units"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="variable_field">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:type_and_units_field"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="type_and_units_field">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ns1:type_and_units_enum"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="bit_field">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ns1:sub_field"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attributeGroup ref="ns1:attribute_field_type_unsigned"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="fixed_length_string">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="string_length" use="required">
+        <xs:simpleType>
+          <xs:union memberTypes="ns1:identifier_ns xs:unsignedInt"/>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="variable_length_string">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:count_field"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="variable_length_field">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:count_field"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attributeGroup ref="ns1:attribute_field_format"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="variable_format_field">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:format_field"/>
+        <xs:element ref="ns1:count_field"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="count_field">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_field_type_unsigned"/>
+      <xs:attribute name="min_count">
+        <xs:simpleType>
+          <xs:union memberTypes="ns1:identifier_ns xs:unsignedInt"/>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="max_count">
+        <xs:simpleType>
+          <xs:union memberTypes="ns1:identifier_ns xs:unsignedInt"/>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="vtag_field">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_field_type_unsigned"/>
+      <xs:attribute name="min_count">
+        <xs:simpleType>
+          <xs:union memberTypes="ns1:identifier_ns xs:unsignedInt"/>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="max_count">
+        <xs:simpleType>
+          <xs:union memberTypes="ns1:identifier_ns xs:unsignedInt"/>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="sub_field">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:bit_range"/>
+        <xs:element ref="ns1:value_set"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="format_field">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ns1:format_enum"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="presence_vector">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_field_type_unsigned"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="attribute_field_type">
+    <xs:attribute name="field_type" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="byte"/>
+          <xs:enumeration value="short integer"/>
+          <xs:enumeration value="integer"/>
+          <xs:enumeration value="long integer"/>
+          <xs:enumeration value="unsigned byte"/>
+          <xs:enumeration value="unsigned short integer"/>
+          <xs:enumeration value="unsigned integer"/>
+          <xs:enumeration value="unsigned long integer"/>
+          <xs:enumeration value="float"/>
+          <xs:enumeration value="long float"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:attributeGroup name="attribute_field_type_unsigned">
+    <xs:attribute name="field_type_unsigned" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="unsigned byte"/>
+          <xs:enumeration value="unsigned short integer"/>
+          <xs:enumeration value="unsigned integer"/>
+          <xs:enumeration value="unsigned long integer"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:attributeGroup name="attribute_field_units">
+    <xs:attribute name="field_units" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="meter"/>
+          <xs:enumeration value="kilogram"/>
+          <xs:enumeration value="ampere"/>
+          <xs:enumeration value="kelvin"/>
+          <xs:enumeration value="mole"/>
+          <xs:enumeration value="candela"/>
+          <xs:enumeration value="square meter"/>
+          <xs:enumeration value="cubic meter"/>
+          <xs:enumeration value="meter per second"/>
+          <xs:enumeration value="meter per second squared"/>
+          <xs:enumeration value="reciprocal meter"/>
+          <xs:enumeration value="kilogram per cubic meter"/>
+          <xs:enumeration value="cubic meter per kilogram"/>
+          <xs:enumeration value="ampere per square meter"/>
+          <xs:enumeration value="ampere per meter"/>
+          <xs:enumeration value="mole per cubic meter"/>
+          <xs:enumeration value="candela per square meter"/>
+          <xs:enumeration value="one"/>
+          <xs:enumeration value="radian"/>
+          <xs:enumeration value="steradian"/>
+          <xs:enumeration value="hertz"/>
+          <xs:enumeration value="newton"/>
+          <xs:enumeration value="pascal"/>
+          <xs:enumeration value="joule"/>
+          <xs:enumeration value="watt"/>
+          <xs:enumeration value="coulomb"/>
+          <xs:enumeration value="volt"/>
+          <xs:enumeration value="farad"/>
+          <xs:enumeration value="ohm"/>
+          <xs:enumeration value="siemens"/>
+          <xs:enumeration value="weber"/>
+          <xs:enumeration value="tesla"/>
+          <xs:enumeration value="henry"/>
+          <xs:enumeration value="degree Celsius"/>
+          <xs:enumeration value="lumen"/>
+          <xs:enumeration value="lux"/>
+          <xs:enumeration value="becquerel"/>
+          <xs:enumeration value="sievert"/>
+          <xs:enumeration value="katal"/>
+          <xs:enumeration value="pascal second"/>
+          <xs:enumeration value="newton meter"/>
+          <xs:enumeration value="newton per meter"/>
+          <xs:enumeration value="radian per second"/>
+          <xs:enumeration value="radian per second squared"/>
+          <xs:enumeration value="watt per square meter"/>
+          <xs:enumeration value="joule per kelvin"/>
+          <xs:enumeration value="joule per kilogram"/>
+          <xs:enumeration value="kelvin"/>
+          <xs:enumeration value="watt per meter kelvin"/>
+          <xs:enumeration value="joule per cubic meter"/>
+          <xs:enumeration value="volt per meter"/>
+          <xs:enumeration value="coulomb per cubic meter"/>
+          <xs:enumeration value="coulomb per square meter"/>
+          <xs:enumeration value="farad per meter"/>
+          <xs:enumeration value="henry per meter"/>
+          <xs:enumeration value="joule per mole"/>
+          <xs:enumeration value="joule per mole kelvin"/>
+          <xs:enumeration value="coulomb per kilogram"/>
+          <xs:enumeration value="gray per second"/>
+          <xs:enumeration value="watt per square meter steradian"/>
+          <xs:enumeration value="katal per cubic meter"/>
+          <xs:enumeration value="minute"/>
+          <xs:enumeration value="hour"/>
+          <xs:enumeration value="day"/>
+          <xs:enumeration value="degree"/>
+          <xs:enumeration value="minute"/>
+          <xs:enumeration value="second"/>
+          <xs:enumeration value="liter"/>
+          <xs:enumeration value="metric ton"/>
+          <xs:enumeration value="neper"/>
+          <xs:enumeration value="bel"/>
+          <xs:enumeration value="nautical mile"/>
+          <xs:enumeration value="knot"/>
+          <xs:enumeration value="are"/>
+          <xs:enumeration value="hectare"/>
+          <xs:enumeration value="bar"/>
+          <xs:enumeration value="�ngstro"/>
+          <xs:enumeration value="barn"/>
+          <xs:enumeration value="curie"/>
+          <xs:enumeration value="roentgen"/>
+          <xs:enumeration value="rad"/>
+          <xs:enumeration value="rem"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:element name="type_and_units_enum">
+    <xs:complexType>
+      <xs:choice minOccurs="0">
+        <xs:element ref="ns1:value_set"/>
+        <xs:element ref="ns1:scale_range"/>
+      </xs:choice>
+      <xs:attribute name="index" use="required" type="xs:unsignedByte"/>
+      <xs:attributeGroup ref="ns1:attribute_field_type"/>
+      <xs:attributeGroup ref="ns1:attribute_field_units"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="attribute_field_format">
+    <xs:attribute name="field_format" use="required"/>
+  </xs:attributeGroup>
+  <xs:element name="format_enum">
+    <xs:complexType>
+      <xs:attribute name="index" use="required" type="xs:unsignedByte"/>
+      <xs:attributeGroup ref="ns1:attribute_field_format"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="value_set">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="ns1:value_range"/>
+        <xs:element ref="ns1:value_enum"/>
+      </xs:choice>
+      <xs:attribute name="offset_to_lower_limit" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="bit_range">
+    <xs:complexType>
+      <xs:attribute name="from_index" use="required" type="xs:unsignedByte"/>
+      <xs:attribute name="to_index" use="required" type="xs:unsignedByte"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="scale_range">
+    <xs:complexType>
+      <xs:attribute name="real_lower_limit" use="required"/>
+      <xs:attribute name="real_upper_limit" use="required"/>
+      <xs:attribute name="integer_function" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="floor"/>
+            <xs:enumeration value="round"/>
+            <xs:enumeration value="ceiling"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="value_range">
+    <xs:complexType>
+      <xs:attribute name="lower_limit" use="required"/>
+      <xs:attribute name="lower_limit_type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="inclusive"/>
+            <xs:enumeration value="exclusive"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="upper_limit" use="required"/>
+      <xs:attribute name="upper_limit_type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="inclusive"/>
+            <xs:enumeration value="exclusive"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="value_enum">
+    <xs:complexType>
+      <xs:attribute name="enum_index" use="required" type="xs:long"/>
+      <xs:attribute name="enum_const" use="required" type="xs:string"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="protocol_behavior">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ns1:start"/>
+        <xs:element maxOccurs="unbounded" ref="ns1:state_machine"/>
+      </xs:sequence>
+      <xs:attribute name="is_stateless" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="start">
+    <xs:complexType>
+      <xs:attribute name="state_machine_name" use="required" type="ns1:identifier_ns"/>
+      <xs:attribute name="state_name" use="required" type="ns1:identifier_ns"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="state_machine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ns1:state"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier_ns"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="state">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="ns1:entry"/>
+        <xs:element minOccurs="0" ref="ns1:exit"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:transition"/>
+        <xs:element minOccurs="0" ref="ns1:default_transition"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:state"/>
+        <xs:element minOccurs="0" ref="ns1:default_state"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier_ns"/>
+      <xs:attribute name="initial_state" type="ns1:identifier"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="default_state">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:transition"/>
+        <xs:element minOccurs="0" ref="ns1:default_transition"/>
+      </xs:sequence>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="default_transition">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="ns1:guard"/>
+        <xs:choice>
+          <xs:element ref="ns1:simple"/>
+          <xs:element ref="ns1:push"/>
+          <xs:element ref="ns1:pop"/>
+        </xs:choice>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="ns1:action"/>
+          <xs:element ref="ns1:send_action"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="entry">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="ns1:action"/>
+        <xs:element ref="ns1:send_action"/>
+      </xs:choice>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="exit">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="ns1:action"/>
+        <xs:element ref="ns1:send_action"/>
+      </xs:choice>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="transition">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:parameter"/>
+        <xs:element minOccurs="0" ref="ns1:guard"/>
+        <xs:choice>
+          <xs:element ref="ns1:simple"/>
+          <xs:element ref="ns1:push"/>
+          <xs:element ref="ns1:pop"/>
+        </xs:choice>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="ns1:action"/>
+          <xs:element ref="ns1:send_action"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier_ns"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="simple">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="ns1:end_state"/>
+      </xs:sequence>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="push">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:end_state"/>
+        <xs:element minOccurs="0" ref="ns1:simple"/>
+      </xs:sequence>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="pop">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:argument"/>
+      </xs:sequence>
+      <xs:attribute name="transition" type="ns1:identifier"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="argument">
+    <xs:complexType>
+      <xs:attribute name="value" use="required"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="guard">
+    <xs:complexType>
+      <xs:attribute name="condition" use="required"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="end_state">
+    <xs:complexType>
+      <xs:attribute name="state" use="required" type="ns1:identifier_ns"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parameter">
+    <xs:complexType>
+      <xs:attribute name="type" use="required" type="ns1:identifier_ns"/>
+      <xs:attribute name="value" use="required"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="action">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:argument"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier_ns"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="send_action">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:argument"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier_ns"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <!--
+    An identifier is a sequence of letters and digits. The first character
+    must be a letter or the underscore character _. Upper and lower 
+    case letters are different, and identifiers may have any length.
+  -->
+  <xs:simpleType name="identifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z_][a-zA-Z_0-9]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- namespaced identifier ( identifier(.identifier)* ) -->
+  <xs:simpleType name="identifier_ns">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z_][a-zA-Z_0-9.]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- M.N, where M and N are positive integers. -->
+  <xs:simpleType name="version_num">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(0|[1-9]([0-9]*))\.(0|[1-9]([0-9]*))"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- A valid version number M.N or *.* or combination of both. -->
+  <xs:simpleType name="version_num_ref">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="((0|\*|[1-9]([0-9]*)))\.((0|\*|[1-9]([0-9]*)))"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<array name="Array7" optional="false" interpretation="A variable format field in an array may not be optional"  xmlns="urn:jaus:jsidl:1.0">
+	<variable_format_field name="video_frames" optional="false" xmlns="urn:jaus:jsidl:1.0">
+		<format_field>
+			<format_enum index="0" field_format="MJPEG"/>
+		</format_field>
+		<count_field field_type_unsigned="unsigned short integer"/>
+	</variable_format_field>
+	<dimension name="dimension1" size="9"/>
+	<dimension name="dimension2" size="1"/>
+</array>

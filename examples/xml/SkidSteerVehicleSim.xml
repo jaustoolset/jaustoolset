@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?oxygen RNGSchema="../../GUI/resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def version="1.0" id="urn:jts:examples:SkidSteerVehicleSim"
+	name="SkidSteerVehicleSim" xmlns="urn:jaus:jsidl:1.0"
+	xmlns:plus="urn:jaus:jsidl:plus">
+	<description xml:space="preserve">The Primitive Driver allows for basic platform mobility.  This service does not imply any particular platform type such as tracked or wheeled, but describes mobility in six degrees of freedom using a percent of available effort in each direction.  Additionally, no power plant (gasoline, diesel, or battery) is implied and the service functions strictly in an open loop manner, i.e., a velocity is not commanded since that requires a speed sensor.  Note that the specific actuator commands are not defined by JAUS.</description>
+	<assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+	<references>
+		<inherits_from version="1.0" id="urn:jaus:jss:core:Management"
+			name="Management"/>
+	</references>
+	<message_set>
+		<input_set>
+			<message_def is_command="false" message_id="2D03"
+				name="QuerySimulatedPose">
+				<description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4D03h: ReportSimulatedPose message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder. The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+				<header name="JAUSApplicationLayerHeader">
+					<record optional="false" name="HeaderRec">
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="false"
+							name="MessageID"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record optional="false"
+						name="QuerySimulatedPoseRec">
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="false"
+							name="PresenceVector"/>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def is_command="true" message_id="0405"
+				name="SetWrenchEffort">
+				<description xml:space="preserve">This message is used to provide open-loop mobility control in the vehicle coordinate frame.  The command consists of a six element propulsive wrench and a six element resistive wrench.  The six elements of each wrench break down into three linear elements and three rotational elements, which are mapped to the three axis orthogonal coordinate frame of the vehicle.  All elements of the Wrench message are not necessarily applicable to a particular platform.</description>
+				<header name="JAUSApplicationLayerHeader">
+					<record optional="false" name="HeaderRec">
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="false"
+							name="MessageID"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record optional="false" name="WrenchEffortRec">
+						<presence_vector
+							field_type_unsigned="unsigned short integer"/>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveLinearEffortX">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveLinearEffortY">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveLinearEffortZ">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveRotationalEffortX">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveRotationalEffortY">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveRotationalEffortZ">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveLinearEffortX">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveLinearEffortY">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveLinearEffortZ">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveRotationalEffortX">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveRotationalEffortY">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveRotationalEffortZ">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def is_command="false" message_id="2405"
+				name="QueryWrenchEffort">
+				<description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4405h: ReportWrenchEffort message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder. The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+				<header name="JAUSApplicationLayerHeader">
+					<record optional="false" name="HeaderRec">
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="false"
+							name="MessageID"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record optional="false"
+						name="QueryWrenchEffortRec">
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="false"
+							name="PresenceVector"/>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+		</input_set>
+		<output_set>
+			<message_def is_command="false" message_id="4D03"
+				name="ReportSimulatedPose">
+				<description xml:space="preserve">This message is used to provide the receiver the position and attitude of the platform relative to a local reference frame.  All times are in Coordinated Universal Time (UTC).  The message data and mapping of the presence vector for this message are identical to ID 0403h: SetLocalPose.</description>
+				<header name="JAUSApplicationLayerHeader">
+					<record optional="false" name="HeaderRec">
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="false"
+							name="MessageID"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record optional="false" name="LocalPoseRec">
+						<presence_vector
+							field_type_unsigned="unsigned short integer"/>
+						<fixed_field field_type="unsigned integer"
+							field_units="meter" optional="true"
+							name="X">
+							<scale_range integer_function="round"
+								real_upper_limit="100000"
+								real_lower_limit="-100000"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned integer"
+							field_units="meter" optional="true"
+							name="Y">
+							<scale_range integer_function="round"
+								real_upper_limit="100000"
+								real_lower_limit="-100000"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned integer"
+							field_units="meter" optional="true"
+							name="Z">
+							<scale_range integer_function="round"
+								real_upper_limit="100000"
+								real_lower_limit="-100000"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned integer"
+							field_units="meter" optional="true"
+							name="Position_RMS">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="radian" optional="true"
+							name="Roll">
+							<scale_range integer_function="round"
+								real_upper_limit="3.14159265358979323846"
+								real_lower_limit="-3.14159265358979323846"
+							/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="radian" optional="true"
+							name="Pitch">
+							<scale_range integer_function="round"
+								real_upper_limit="3.14159265358979323846"
+								real_lower_limit="-3.14159265358979323846"
+							/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="radian" optional="true"
+							name="Yaw">
+							<scale_range integer_function="round"
+								real_upper_limit="3.14159265358979323846"
+								real_lower_limit="-3.14159265358979323846"
+							/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="radian" optional="true"
+							name="Attitude_RMS">
+							<scale_range integer_function="round"
+								real_upper_limit="3.14159265358979323846"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<bit_field
+							field_type_unsigned="unsigned integer"
+							optional="false" name="TimeStamp">
+							<sub_field name="Milliseconds">
+								<bit_range to_index="9" from_index="0"/>
+								<value_set
+								offset_to_lower_limit="false">
+								<value_range
+								upper_limit_type="inclusive"
+								upper_limit="999"
+								lower_limit_type="inclusive"
+								lower_limit="0"/>
+								</value_set>
+							</sub_field>
+							<sub_field name="Seconds">
+								<bit_range to_index="15"
+								from_index="10"/>
+								<value_set
+								offset_to_lower_limit="false">
+								<value_range
+								upper_limit_type="inclusive"
+								upper_limit="59"
+								lower_limit_type="inclusive"
+								lower_limit="0"/>
+								</value_set>
+							</sub_field>
+							<sub_field name="Minutes">
+								<bit_range to_index="21"
+								from_index="16"/>
+								<value_set
+								offset_to_lower_limit="false">
+								<value_range
+								upper_limit_type="inclusive"
+								upper_limit="59"
+								lower_limit_type="inclusive"
+								lower_limit="0"/>
+								</value_set>
+							</sub_field>
+							<sub_field name="Hour">
+								<bit_range to_index="26"
+								from_index="22"/>
+								<value_set
+								offset_to_lower_limit="false">
+								<value_range
+								upper_limit_type="inclusive"
+								upper_limit="23"
+								lower_limit_type="inclusive"
+								lower_limit="0"/>
+								</value_set>
+							</sub_field>
+							<sub_field name="Day">
+								<bit_range to_index="31"
+								from_index="27"/>
+								<value_set
+								offset_to_lower_limit="false">
+								<value_range
+								upper_limit_type="inclusive"
+								upper_limit="31"
+								lower_limit_type="inclusive"
+								lower_limit="1"/>
+								</value_set>
+							</sub_field>
+						</bit_field>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def is_command="false" message_id="4405"
+				name="ReportWrenchEffort">
+				<description xml:space="preserve">This message is used to provide the receiver the current values of the commanded wrench effort. The message data and mapping of the presence vector for this message are identical to ID 0405	h: SetWrenchEffort.</description>
+				<header name="JAUSApplicationLayerHeader">
+					<record optional="false" name="HeaderRec">
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="false"
+							name="MessageID"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record optional="false" name="WrenchEffortRec">
+						<presence_vector
+							field_type_unsigned="unsigned short integer"/>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveLinearEffortX">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveLinearEffortY">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveLinearEffortZ">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveRotationalEffortX">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveRotationalEffortY">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field
+							field_type="unsigned short integer"
+							field_units="one" optional="true"
+							name="PropulsiveRotationalEffortZ">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="-100"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveLinearEffortX">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveLinearEffortY">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveLinearEffortZ">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveRotationalEffortX">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveRotationalEffortY">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+						<fixed_field field_type="unsigned byte"
+							field_units="one" optional="true"
+							name="ResistiveRotationalEffortZ">
+							<scale_range integer_function="round"
+								real_upper_limit="100"
+								real_lower_limit="0"/>
+						</fixed_field>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+		</output_set>
+	</message_set>
+	<internal_events_set/>
+	<protocol_behavior>
+		<start state_name="Receiving.Ready.NotControlled.StateA.Init"
+			state_machine_name="SkidSteerVehicleSim.Management.AccessControl.Events.Transport.ReceiveFSM"/>
+		<start state_name="Sending"
+			state_machine_name="SkidSteerVehicleSim.Management.AccessControl.Events.Transport.SendFSM"/>
+		<state_machine
+			name="SkidSteerVehicleSim.Management.AccessControl.Events.Transport.ReceiveFSM">
+			<state initial_state="Ready" name="Receiving">
+				<state initial_state="NotControlled" name="Ready">
+					<state initial_state="StateA" name="NotControlled">
+						<state initial_state="Init" name="StateA">
+							<state name="Standby">
+								<plus:mxCell vertex="1" value="Standby;"
+								style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+								parent="150" id="151">
+								<plus:mxGeometry height="80.0"
+								width="80.0" y="220.0" x="110.0"
+								as="geometry"/>
+								</plus:mxCell>
+							</state>
+							<state name="Init">
+								<plus:mxCell vertex="1" value="Init;"
+								style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+								parent="150" id="152">
+								<plus:mxGeometry height="80.0"
+								width="80.0" y="330.0" x="110.0"
+								as="geometry"/>
+								</plus:mxCell>
+							</state>
+							<state name="Failure">
+								<plus:mxCell vertex="1" value="Failure;"
+								style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+								parent="150" id="153">
+								<plus:mxGeometry height="80.0"
+								width="80.0" y="440.0" x="110.0"
+								as="geometry"/>
+								</plus:mxCell>
+							</state>
+							<state name="Shutdown">
+								<plus:mxCell vertex="1" value="Shutdown;"
+								style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+								parent="150" id="154">
+								<plus:mxGeometry height="80.0"
+								width="80.0" y="550.0" x="110.0"
+								as="geometry"/>
+								</plus:mxCell>
+							</state>
+							<state name="Emergency">
+								<plus:mxCell vertex="1" value="Emergency;"
+								style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+								parent="150" id="155">
+								<plus:mxGeometry height="80.0"
+								width="80.0" y="660.0" x="110.0"
+								as="geometry"/>
+								</plus:mxCell>
+							</state>
+							<default_state>
+								<transition
+								name="management.accessControl.events.transport.Receive">
+								<parameter
+								interpretation="enveloped query wrench effort                     message"
+								value="msg"
+								type="QueryWrenchEffort"/>
+								<parameter
+								interpretation="transport data"
+								value="transportData"
+								type="Receive.Body.ReceiveRec"/>
+								<simple/>
+								<action
+								interpretation="Send a Report                     Wrench Effort message"
+								name="management.accessControl.events.transport.Send">
+								<argument
+								value=" 'ReportWrenchEffort' "/>
+								<argument value="transportData"/>
+								</action>
+								</transition>
+								<transition
+								name="management.accessControl.events.transport.Receive">
+								<parameter
+								interpretation="enveloped query local pose message"
+								value="msg"
+								type="QuerySimulatedPose"/>
+								<parameter
+								interpretation="transport data"
+								value="transportData"
+								type="Receive.Body.ReceiveRec"/>
+								<simple/>
+								<action
+								interpretation="Send a Report Local Pose message"
+								name="management.accessControl.events.transport.Send">
+								<argument
+								value=" 'ReportSimulatedPose' "/>
+								<argument value="transportData"/>
+								</action>
+								</transition>
+							</default_state>
+							<plus:mxCell vertex="1" value="StateA;"
+								style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+								parent="27" id="150">
+								<plus:mxGeometry height="80.0" width="80.0"
+								y="110.0" x="110.0" as="geometry"/>
+							</plus:mxCell>
+						</state>
+						<plus:mxCell vertex="1" value="NotControlled;"
+							style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+							parent="14" id="27">
+							<plus:mxGeometry height="80.0" width="80.0"
+								y="110.0" x="110.0" as="geometry"/>
+						</plus:mxCell>
+					</state>
+					<state initial_state="StateB" name="Controlled">
+						<state initial_state="Standby" name="StateB">
+							<state name="Standby">
+								<plus:mxCell vertex="1" value="Standby;"
+								style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+								parent="161" id="162">
+								<plus:mxGeometry height="80.0"
+								width="80.0" y="220.0" x="110.0"
+								as="geometry"/>
+								</plus:mxCell>
+							</state>
+							<state name="Ready">
+								<transition
+								name="management.accessControl.events.transport.Receive">
+								<parameter
+								interpretation="enveloped set wrench                     effort message"
+								value="msg" type="SetWrenchEffort"/>
+								<parameter
+								interpretation="transport data"
+								value="transportData"
+								type="Receive.Body.ReceiveRec"/>
+								<guard
+								interpretation="True if the message that triggered the                      transition is received from the client that is in control of this service."
+								condition="isControllingClient( transportData )"/>
+								<simple/>
+								<action
+								interpretation="Set the wrench effort for the platform."
+								name="setWrenchEffort">
+								<argument value="msg"/>
+								</action>
+								</transition>
+								<plus:mxCell vertex="1" value="Ready;"
+								style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+								parent="161" id="163">
+								<plus:mxGeometry height="80.0"
+								width="80.0" y="330.0" x="110.0"
+								as="geometry"/>
+								</plus:mxCell>
+							</state>
+							<state name="Emergency">
+								<plus:mxCell vertex="1" value="Emergency;"
+								style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+								parent="161" id="164">
+								<plus:mxGeometry height="80.0"
+								width="80.0" y="440.0" x="110.0"
+								as="geometry"/>
+								</plus:mxCell>
+							</state>
+							<default_state>
+								<transition
+								name="management.accessControl.events.transport.Receive">
+								<parameter
+								interpretation="enveloped query wrench effort                     message"
+								value="msg"
+								type="QueryWrenchEffort"/>
+								<parameter
+								interpretation="transport data"
+								value="transportData"
+								type="Receive.Body.ReceiveRec"/>
+								<simple/>
+								<action
+								interpretation="Send a Report                     Wrench Effort message"
+								name="management.accessControl.events.transport.Send">
+								<argument
+								value=" 'ReportWrenchEffort' "/>
+								<argument value="transportData"/>
+								</action>
+								</transition>
+								<transition
+								name="management.accessControl.events.transport.Receive">
+								<parameter
+								interpretation="enveloped query local pose message"
+								value="msg"
+								type="QuerySimulatedPose"/>
+								<parameter
+								interpretation="transport data"
+								value="transportData"
+								type="Receive.Body.ReceiveRec"/>
+								<simple/>
+								<action
+								interpretation="Send a Report Local Pose message"
+								name="management.accessControl.events.transport.Send">
+								<argument
+								value=" 'ReportSimulatedPose' "/>
+								<argument value="transportData"/>
+								</action>
+								</transition>
+							</default_state>
+							<plus:mxCell vertex="1" value="StateB;"
+								style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+								parent="28" id="161">
+								<plus:mxGeometry height="80.0" width="80.0"
+								y="110.0" x="110.0" as="geometry"/>
+							</plus:mxCell>
+						</state>
+						<plus:mxCell vertex="1" value="Controlled;"
+							style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+							parent="14" id="28">
+							<plus:mxGeometry height="80.0" width="80.0"
+								y="220.0" x="110.0" as="geometry"/>
+						</plus:mxCell>
+					</state>
+					<default_state>
+						<plus:mxCell vertex="1" value="default_state"
+							style="defaultState;strokeColor=#BC1212;fontColor=#BC1212;"
+							parent="14" id="29">
+							<plus:mxGeometry height="80.0" width="80.0"
+								y="0.0" x="100.0" as="geometry"/>
+						</plus:mxCell>
+					</default_state>
+					<plus:mxCell vertex="1" value="Ready;"
+						style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+						parent="3" id="14">
+						<plus:mxGeometry height="80.0" width="80.0"
+							y="110.0" x="110.0" as="geometry"/>
+					</plus:mxCell>
+				</state>
+				<plus:mxCell vertex="1" value="Receiving;"
+					style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+					parent="2" id="3">
+					<plus:mxGeometry height="80.0" width="80.0" y="110.0"
+						x="110.0" as="geometry"/>
+				</plus:mxCell>
+			</state>
+			<pseudo_start_state>
+				<state>
+					<plus:mxCell vertex="1" value=""
+						style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;"
+						parent="2" id="10">
+						<plus:mxGeometry height="20.0" width="20.0"
+							y="70.0" x="70.0" as="geometry"/>
+					</plus:mxCell>
+				</state>
+				<transition>
+					<plus:mxCell edge="1" value=""
+						style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;"
+						target="3" source="10" parent="2" id="11">
+						<plus:mxGeometry height="20.0" width="20.0"
+							y="70.0" x="70.0" as="geometry"/>
+					</plus:mxCell>
+				</transition>
+			</pseudo_start_state>
+			<plus:mxCell vertex="1"
+				value="name = SkidSteerVehicleSim.Management.AccessControl.Events.Transport.ReceiveFSM; isStateless = false;"
+				style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;"
+				parent="1" id="2">
+				<plus:mxGeometry height="400.0" width="850.0" y="0.0"
+					x="0.0" as="geometry"/>
+			</plus:mxCell>
+		</state_machine>
+		<state_machine
+			name="SkidSteerVehicleSim.Management.AccessControl.Events.Transport.SendFSM">
+			<state name="Sending">
+				<plus:mxCell vertex="1" value="Sending;"
+					style="state;strokeColor=#BC1212;fontColor=#BC1212;"
+					parent="5" id="6">
+					<plus:mxGeometry height="80.0" width="80.0" y="110.0"
+						x="110.0" as="geometry"/>
+				</plus:mxCell>
+			</state>
+			<pseudo_start_state>
+				<state>
+					<plus:mxCell vertex="1" value=""
+						style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;"
+						parent="5" id="12">
+						<plus:mxGeometry height="20.0" width="20.0"
+							y="70.0" x="70.0" as="geometry"/>
+					</plus:mxCell>
+				</state>
+				<transition>
+					<plus:mxCell edge="1" value=""
+						style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;"
+						target="6" source="12" parent="5" id="13">
+						<plus:mxGeometry height="20.0" width="20.0"
+							y="70.0" x="70.0" as="geometry"/>
+					</plus:mxCell>
+				</transition>
+			</pseudo_start_state>
+			<plus:mxCell vertex="1"
+				value="name = SkidSteerVehicleSim.Management.AccessControl.Events.Transport.SendFSM; isStateless = false;"
+				style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;"
+				parent="1" id="5">
+				<plus:mxGeometry height="400.0" width="850.0" y="400.0"
+					x="0.0" as="geometry"/>
+			</plus:mxCell>
+		</state_machine>
+	</protocol_behavior>
+</service_def>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_FixedField" id="ImportTest:SD_FixedField" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a fixed_field entity with all levels of multiplicity and options.
+
+    The 1st message_def contains a fixed_field with all optional items missing.
+    The 2nd message_def contains a fixed_field with an interpretation and a scale_range.
+    The 3rd message_def contains a fixed_field a value_set.
+  </description>
+
+  <!-- 
+    element fixed_field 
+    {
+      attribute name { identifier }, attribute_field_type, attribute_field_units, 
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,  
+      (scale_range | value_set)? 
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, fixed_field -->
+      <message_def name="FixedField1" message_id="0121" is_command="false">
+        <description>
+          A message to test the fixed_field entity. Contains a fixed_field 
+          with all optional items missing.
+        </description>
+        <header name="FixedField"/>
+        <body name="FixedField1">
+          <record name="FixedField1Rec" optional="false">
+            <fixed_field name="FixedField1" field_type="byte" field_units="one" optional="false" />
+          </record>
+          </body>
+          <footer name="FixedField"/>
+      </message_def>
+
+      <!-- fixed_field with interpretation and scale_range -->
+      <message_def name="FixedField2" message_id="0122" is_command="false">
+        <description>
+          The 2nd message_def contains a fixed_field with an interpretation and a scale_range.
+        </description>
+        <header name="FixedField"/>
+        <body name="FixedField2">
+          <record name="FixedField2Rec" optional="false" interpretation="A fixed_field Interpretation">
+            <fixed_field name="FixedField2" field_type="byte" field_units="one" optional="false" interpretation="This is a fixed_field interpretation.">
+              <scale_range integer_function="round" real_lower_limit="-1.0" real_upper_limit="1.0" />
+            </fixed_field>
+          </record>
+        </body>
+        <footer name="FixedField"/>
+      </message_def>
+
+      <!-- fixed_field with value_set -->
+      <message_def name="FixedField3" message_id="0123" is_command="false">
+        <description>
+          The 3rd message_def contains a fixed_field a value_set.
+        </description>
+        <header name="FixedField"/>
+        <body name="FixedField3">
+          <record name="FixedField3Rec" optional="false">
+            <fixed_field name="FixedField2" field_type="byte" field_units="one" optional="false" interpretation="This is a fixed_field interpretation.">
+              <value_set offset_to_lower_limit="false">
+                <value_range lower_limit="0" upper_limit="9" lower_limit_type="inclusive" upper_limit_type="inclusive"/>
+                <value_enum enum_index="0" enum_const="’low priority’" interpretation="implies a low priority message."/>
+                <value_enum enum_index="5" enum_const="’medium priority’" interpretation="implies medium priority message."/>
+                <value_enum enum_index="9" enum_const="’high priority’" interpretation="implies a high priority message."/>
+              </value_set>
+            </fixed_field>
+          </record>
+        </body>
+        <footer name="FixedField"/>
+      </message_def>
+      
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_FixedField" state_name="init"/>
+    <state_machine name="SD_FixedField">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<internal_events_set xmlns="urn:jaus:jsidl:1.0">
+  <event_def name="Send">
+    <description xml:space="preserve">
+      The Send event is used by a derived service to hand over the payload data that it needs to send to a specified destination endpoint via the transport layer. Upon receipt, this service prepares the message for delivery (marshals the message) as specified by the transport layer specification and attempts to deliver the encapsulated payload data to the destination endpoint.
+    </description>
+    <header name="Header"/>
+    <body name="Body">
+      <record name="SendRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <fixed_field name="DestSubsystemID" field_type="unsigned short integer"
+          field_units="one" interpretation="Destination Subsystem ID, where a value of 0xFFFF represents all subsystems" optional="false"/>
+        <fixed_field name="DestNodeID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Node ID where a value of 0xFF represents all nodes." optional="false"/>
+        <fixed_field name="DestComponentID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Component ID where a value of 0xFF represents all components." optional="false"/>
+        <fixed_field name="SrcSubsystemID" field_type="unsigned short integer" field_units="one"
+          interpretation="Source Subsystem ID" optional="true"/>
+        <fixed_field name="SrcNodeID" field_type="unsigned byte" field_units="one"
+          interpretation="Source Node ID" optional="true"/>
+        <fixed_field name="SrcComponentID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Component ID" optional="false"/>
+        <fixed_field name="Priority" field_type="unsigned byte" field_units="one" optional="true"
+          interpretation="Priority level of this message. If not specified, the normal priority
+          level is used.">
+          <value_set offset_to_lower_limit="false">
+            <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="3"
+              upper_limit_type="inclusive" interpretation="priority range"/>
+            <value_enum enum_index="0" enum_const="LOW"/>
+            <value_enum enum_index="1" enum_const="NORMAL"/>
+            <value_enum enum_index="2" enum_const="HIGH"/>
+            <value_enum enum_index="3" enum_const="SAFETY"/>
+          </value_set>
+        </fixed_field>
+        <variable_length_field name="MessagePayload" field_format="JAUS MESSAGE"
+          optional="false" interpretation="Message payload.">
+          <count_field field_type_unsigned="unsigned long integer" min_count="2"/>
+        </variable_length_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </event_def>
+  <event_def name="BroadcastLocal">
+    <description xml:space="preserve">
+      The Broadcast Local event is the same as the Send event except that this service sends the payload to all endpoints within the subsystem.
+    </description>
+    <header name="Header"/>
+    <body name="Body">
+      <record name="SendRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <fixed_field name="DestSubsystemID" field_type="unsigned short integer"
+          field_units="one" interpretation="Destination Subsystem ID, where a value of 0xFFFF represents all subsystems" optional="false"/>
+        <fixed_field name="DestNodeID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Node ID where a value of 0xFF represents all nodes." optional="false"/>
+        <fixed_field name="DestComponentID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Component ID where a value of 0xFF represents all components." optional="false"/>
+        <fixed_field name="SrcSubsystemID" field_type="unsigned short integer" field_units="one"
+          interpretation="Source Subsystem ID" optional="true"/>
+        <fixed_field name="SrcNodeID" field_type="unsigned byte" field_units="one"
+          interpretation="Source Node ID" optional="true"/>
+        <fixed_field name="SrcComponentID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Component ID" optional="false"/>
+        <fixed_field name="Priority" field_type="unsigned byte" field_units="one" optional="true"
+          interpretation="Priority level of this message. If not specified, the normal priority
+          level is used.">
+          <value_set offset_to_lower_limit="false">
+            <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="3"
+              upper_limit_type="inclusive" interpretation="priority range"/>
+            <value_enum enum_index="0" enum_const="LOW"/>
+            <value_enum enum_index="1" enum_const="NORMAL"/>
+            <value_enum enum_index="2" enum_const="HIGH"/>
+            <value_enum enum_index="3" enum_const="SAFETY"/>
+          </value_set>
+        </fixed_field>
+        <variable_length_field name="MessagePayload" field_format="JAUS MESSAGE"
+          optional="false" interpretation="Message payload.">
+          <count_field field_type_unsigned="unsigned long integer" min_count="2"/>
+        </variable_length_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </event_def>
+  <event_def name="BroadcastGlobal">
+    <description xml:space="preserve">
+      The Broadcast Global event is the same as the Send event except that this service sends the payload to all endpoints on all subsystems.
+    </description>
+    <header name="Header"/>
+    <body name="Body">
+      <record name="SendRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <fixed_field name="DestSubsystemID" field_type="unsigned short integer"
+          field_units="one" interpretation="Destination Subsystem ID, where a value of 0xFFFF represents all subsystems" optional="false"/>
+        <fixed_field name="DestNodeID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Node ID where a value of 0xFF represents all nodes." optional="false"/>
+        <fixed_field name="DestComponentID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Component ID where a value of 0xFF represents all components." optional="false"/>
+        <fixed_field name="SrcSubsystemID" field_type="unsigned short integer" field_units="one"
+          interpretation="Source Subsystem ID" optional="true"/>
+        <fixed_field name="SrcNodeID" field_type="unsigned byte" field_units="one"
+          interpretation="Source Node ID" optional="true"/>
+        <fixed_field name="SrcComponentID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Component ID" optional="false"/>
+        <fixed_field name="Priority" field_type="unsigned byte" field_units="one" optional="true"
+          interpretation="Priority level of this message. If not specified, the normal priority
+          level is used.">
+          <value_set offset_to_lower_limit="false">
+            <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="3"
+              upper_limit_type="inclusive" interpretation="priority range"/>
+            <value_enum enum_index="0" enum_const="LOW"/>
+            <value_enum enum_index="1" enum_const="NORMAL"/>
+            <value_enum enum_index="2" enum_const="HIGH"/>
+            <value_enum enum_index="3" enum_const="SAFETY"/>
+          </value_set>
+        </fixed_field>
+        <variable_length_field name="MessagePayload" field_format="JAUS MESSAGE"
+          optional="false" interpretation="Message payload.">
+          <count_field field_type_unsigned="unsigned long integer" min_count="2"/>
+        </variable_length_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </event_def>
+  <event_def name="Receive">
+    <description xml:space="preserve">
+      The Receive event is used by derived services to hand over the data that was sent by another service to an endpoint established by this service.
+    </description>
+    <header name="Header"/>
+    <body name="Body">
+      <record name="ReceiveRec" optional="false" interpretation="transport data">
+        <fixed_field name="SrcSubsystemID" field_type="unsigned short integer" field_units="one"
+          interpretation="Source Subsystem ID" optional="false"/>
+        <fixed_field name="SrcNodeID" field_type="unsigned byte" field_units="one"
+          interpretation="Source Node ID" optional="false"/>
+        <fixed_field name="SrcComponentID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Component ID" optional="false"/>
+        <variable_length_field name="MessagePayload" field_format="JAUS MESSAGE"
+          optional="false" interpretation="message payload">
+          <count_field field_type_unsigned="unsigned long integer" min_count="2"/>
+        </variable_length_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </event_def>
+</internal_events_set>
+    

@@ -1,0 +1,6 @@
+VariantDir('Build', '.', duplicate=0)
+sources = ['Build/EventsService.cpp', 'Build/Events_ReceiveFSM.cpp', 'Build/Events_ReceiveFSM_sm.cpp', 'Build/Events_SendFSM.cpp', 'Build/Events_SendFSM_sm.cpp', 'Build/InternalEvents/BroadcastGlobal.cpp', 'Build/InternalEvents/BroadcastLocal.cpp', 'Build/InternalEvents/CommandCompleted.cpp', 'Build/InternalEvents/CommandExpired.cpp', 'Build/InternalEvents/EventError.cpp', 'Build/InternalEvents/EventOccurred.cpp', 'Build/InternalEvents/Timeout.cpp', 'Build/Messages/CancelEvent.cpp', 'Build/Messages/CommandEvent.cpp', 'Build/Messages/ConfirmEventRequest.cpp', 'Build/Messages/CreateCommandEvent.cpp', 'Build/Messages/CreateEvnt.cpp', 'Build/Messages/Event.cpp', 'Build/Messages/QueryEventTimeout.cpp', 'Build/Messages/QueryEvents.cpp', 'Build/Messages/RejectEventRequest.cpp', 'Build/Messages/ReportEventTimeout.cpp', 'Build/Messages/ReportEvents.cpp', 'Build/Messages/UpdateEvent.cpp']
+Import('env')
+lib = env.SharedLibrary('./lib/EventsService', sources, LIBS=['Common', 'TransportService'])
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )

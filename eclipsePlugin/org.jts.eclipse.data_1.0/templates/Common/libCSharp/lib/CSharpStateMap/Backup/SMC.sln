@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMC", "SMC.csproj", "{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = DebugNoTrace
+		ConfigName.2 = Release
+		ConfigName.3 = ReleaseNoTrace
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.Debug.ActiveCfg = Debug|.NET
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.Debug.Build.0 = Debug|.NET
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.DebugNoTrace.ActiveCfg = DebugNoTrace|.NET
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.DebugNoTrace.Build.0 = DebugNoTrace|.NET
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.Release.ActiveCfg = Release|.NET
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.Release.Build.0 = Release|.NET
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.ReleaseNoTrace.ActiveCfg = ReleaseNoTrace|.NET
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.ReleaseNoTrace.Build.0 = ReleaseNoTrace|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

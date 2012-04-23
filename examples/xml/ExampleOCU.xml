@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="OCU" id="urn:jts:example_ocu" version="1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references/>
+    <message_set>
+        <input_set>
+            <message_def name="ReportLocalPose" message_id="4403" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the position and attitude of the platform relative to a local reference frame.  All times are in Coordinated Universal Time (UTC).  The message data and mapping of the presence vector for this message are identical to ID 0403h: SetLocalPose.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="LocalPoseRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="X" optional="true" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Y" optional="true" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Z" optional="true" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Position_RMS" optional="true" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_units="radian" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_units="radian" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Yaw" optional="true" field_units="radian" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Attitude_RMS" optional="true" field_units="radian" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <bit_field name="TimeStamp" optional="true" field_type_unsigned="unsigned integer">
+                            <sub_field name="Milliseconds">
+                                <bit_range from_index="0" to_index="9"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="999" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Seconds">
+                                <bit_range from_index="10" to_index="15"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Hour">
+                                <bit_range from_index="22" to_index="26"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="23" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Minutes">
+                                <bit_range from_index="16" to_index="21"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Day">
+                                <bit_range from_index="27" to_index="31"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportIdentification" message_id="4B00" is_command="false">
+                <description xml:space="preserve">This message shall provide the requesting component an identification summary of the Subsystem, Node, or Component.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportIdentificationRec" optional="false">
+                        <fixed_field name="QueryType" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="5.00" lower_limit_type="inclusive" upper_limit="255.00" upper_limit_type="inclusive"/>
+                                <value_enum enum_index="1" enum_const="System Identification"/>
+                                <value_enum enum_index="2" enum_const="Subsystem Identification"/>
+                                <value_enum enum_index="3" enum_const="Node Identification"/>
+                                <value_enum enum_index="4" enum_const="Component Identification"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Type" optional="false" field_units="one" field_type="unsigned short integer">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="10002.00" lower_limit_type="inclusive" upper_limit="20000.00" upper_limit_type="inclusive"/>
+                                <value_range lower_limit="20002.00" lower_limit_type="inclusive" upper_limit="30000.00" upper_limit_type="inclusive"/>
+                                <value_range lower_limit="30002.00" lower_limit_type="inclusive" upper_limit="40000.00" upper_limit_type="inclusive"/>
+                                <value_range lower_limit="40002.00" lower_limit_type="inclusive" upper_limit="50000.00" upper_limit_type="inclusive"/>
+                                <value_range lower_limit="50002.00" lower_limit_type="inclusive" upper_limit="60000.00" upper_limit_type="inclusive"/>
+                                <value_range lower_limit="60002.00" lower_limit_type="inclusive" upper_limit="65535.00" upper_limit_type="inclusive"/>
+                                <value_enum enum_index="0" enum_const="RESERVED"/>
+                                <value_enum enum_index="10001" enum_const="VEHICLE"/>
+                                <value_enum enum_index="20001" enum_const="OCU"/>
+                                <value_enum enum_index="30001" enum_const="OTHER_SUBSYSTEM"/>
+                                <value_enum enum_index="40001" enum_const="NODE"/>
+                                <value_enum enum_index="50001" enum_const="PAYLOAD"/>
+                                <value_enum enum_index="60001" enum_const="COMPONENT"/>
+                            </value_set>
+                        </fixed_field>
+                        <variable_length_string name="Identification" optional="false">
+                            <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        </variable_length_string>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ConfirmElementRequest" message_id="041C" is_command="false">
+                <description xml:space="preserve">This message is used to confirm successful operation on an element list.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="RequestIDRec" optional="false">
+                        <fixed_field name="RequestID" optional="false" field_units="one" field_type="unsigned byte"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ConfirmControl" message_id="000F" is_command="false">
+                <description xml:space="preserve">The Confirm Control message is used to notify a component that it accepts control from that component (or not).  When control has been granted, response code of 0, the component under control will only execute messages from the controlling component until control is released or interrupted.  When the requesting component has lower authority than the current controlling entity, the response will be 2.  For components not supporting interruptible control, or if the component is engaged in other operations that would prevent this service from performing its actions to grant control, the response code value of 1 can be used.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ConfirmControlRec" optional="false">
+                        <fixed_field name="ResponseCode" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="CONTROL_RELEASED"/>
+                                <value_enum enum_index="1" enum_const="NOT_AVAILABLE"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportServices" message_id="4B03" is_command="false">
+                <description xml:space="preserve">This message allows a component to publish its capabilities, according to the Service Dictionary presented below.  If a component ID is specified in the RA, it may report only one service in beyond the core message support, and this service must be equal to the component ID.  If a component ID is not listed in the RA, it may report any number of services.  For example, a component with ID 33 must provide only service 33. The exception to this rule is component ID 1 (the Node Manager) which may provide any number of services in addition to core message support.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="NodeList" optional="false">
+                        <count_field min_count="1" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <sequence name="NodeSeq" optional="false">
+                            <record name="NodeRec" optional="false">
+                                <fixed_field name="NodeID" optional="false" field_units="one" field_type="unsigned byte"/>
+                            </record>
+                            <list name="ComponentList" optional="false">
+                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                <sequence name="ComponentSeq" optional="false">
+                                    <record name="ComponentRec" optional="false">
+                                        <fixed_field name="ComponentID" optional="false" field_units="one" field_type="unsigned byte"/>
+                                        <fixed_field name="InstanceID" optional="false" field_units="one" field_type="unsigned byte"/>
+                                    </record>
+                                    <list name="ServiceList" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                        <record name="ServiceRec" optional="false">
+                                            <variable_length_string name="URI" optional="false">
+                                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                            </variable_length_string>
+                                            <fixed_field name="MajorVersionNumber" optional="false" field_units="one" field_type="unsigned byte"/>
+                                            <fixed_field name="MinorVersionNumber" optional="false" field_units="one" field_type="unsigned byte"/>
+                                        </record>
+                                    </list>
+                                </sequence>
+                            </list>
+                        </sequence>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportLocalWaypoint" message_id="440D" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the values of the current waypoint fields as specified by the data in ID 240D: QueryLocalWaypoint.  The message data and mapping of the presence vector of this message are identical to ID 040Dh: SetLocalWaypoint.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="LocalWaypointRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="X" optional="false" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Y" optional="false" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Z" optional="true" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_units="radian" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_units="radian" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Yaw" optional="true" field_units="radian" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="WaypointTolerance" optional="true" field_units="meter" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PathTolerance" optional="true" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportActiveElement" message_id="441E" is_command="false">
+                <description xml:space="preserve">This message is used to report the identifier of the current list element being executed.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ActiveElementRec" optional="false">
+                        <fixed_field name="ElementUID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportStatus" message_id="4002" is_command="false">
+                <description xml:space="preserve">This message is used to report the current status of the sender of the message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportStatusRec" optional="false">
+                        <fixed_field name="Status" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="INITIALIZE"/>
+                                <value_enum enum_index="1" enum_const="READY"/>
+                                <value_enum enum_index="2" enum_const="STANDBY"/>
+                                <value_enum enum_index="3" enum_const="SHUTDOWN"/>
+                                <value_enum enum_index="4" enum_const="FAILURE"/>
+                                <value_enum enum_index="5" enum_const="EMERGENCY"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Reserved" optional="false" field_units="one" field_type="unsigned integer"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportControl" message_id="400D" is_command="false">
+                <description xml:space="preserve">This message is used to report the current state of control of this service.  If the serivce is in the Controlled state, this message reports the ID of the controlling component. The ID fields shall be set to zero (0) if this service is in the NotControlled state..</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportControlRec" optional="false">
+                        <fixed_field name="SubsystemID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                        <fixed_field name="NodeID" optional="false" field_units="one" field_type="unsigned byte"/>
+                        <fixed_field name="ComponentID" optional="false" field_units="one" field_type="unsigned byte"/>
+                        <fixed_field name="AuthorityCode" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="QueryLocalPose" message_id="2403" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4403h: ReportLocalPose message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder. The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryLocalPoseRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ExecuteList" message_id="041E" is_command="false">
+                <description xml:space="preserve">This message is used to begin execution of a sequential list of motion commands.  Field #2 sets the desired speed of the platform.  The starting element UID can also be specified, where a value of zero (0) indicates the first (head) element in the list.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ExecuteListRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="Speed" optional="false" field_units="meter per second" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="0" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ElementUID" optional="true" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryLocalWaypoint" message_id="240D" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 440Dh: ReportLocalWaypoint message.  Field #1 specifies the fields to be returned in the Report Local Waypoint message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryLocalWaypointRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" field_units="one" field_type="unsigned byte"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetLocalWaypoint" message_id="040D" is_command="true">
+                <description xml:space="preserve">This message is used to set waypoint data based on the local coordinate system.  A local waypoint can have up to six fields to describe it completely.  The waypoint is defined in a local coordinate system using the X, Y, and Z fields.  The desired orientation of the platform at the waypoint is defined using the roll, pitch, and yaw fields.  Only fields 1-3 (presence vector, X, and Y) are required for each waypoint.  The presence vector is used to specify if the remaining fields, i.e., Z, roll, pitch, and yaw, are used to further describe each waypoint and the desired orientation at that point.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="LocalWaypointRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="X" optional="false" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Y" optional="false" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Z" optional="true" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_units="radian" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_units="radian" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Yaw" optional="true" field_units="radian" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="WaypointTolerance" optional="true" field_units="meter" field_type="unsigned short integer">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PathTolerance" optional="true" field_units="meter" field_type="unsigned integer">
+                            <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetElement" message_id="041A" is_command="true">
+                <description xml:space="preserve">This message is used to add, insert or replace one or more elements in a list.  Each element is uniquely identified by the UID, and the sequence within the list is specified by the previous (parent) and next (child) elements.  This message can also be used to update an existing element.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="SetElementSeq" optional="false">
+                        <record name="RequestIDRec" optional="false">
+                            <fixed_field name="RequestID" optional="false" field_units="one" field_type="unsigned byte"/>
+                        </record>
+                        <list name="ElementList" optional="false">
+                            <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            <record name="ElementRec" optional="false">
+                                <fixed_field name="ElementUID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                                <fixed_field name="PreviousUID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                                <fixed_field name="NextUID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                                <variable_format_field name="ElementData" optional="false">
+                                    <format_field>
+                                        <format_enum index="0" field_format="JAUS MESSAGE"/>
+                                        <format_enum index="1" field_format="User defined"/>
+                                    </format_field>
+                                    <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                                </variable_format_field>
+                            </record>
+                        </list>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryStatus" message_id="2002" is_command="false">
+                <description xml:space="preserve">This message is used by clients of this service to query the state of this service.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryControl" message_id="200D" is_command="false">
+                <description xml:space="preserve">This message is used by clients to query the current control state of this service.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="RequestControl" message_id="000D" is_command="true">
+                <description xml:space="preserve">This message is used to request interruptible control of the receiving component.  Once control is established, the receiving component shall only execute commands from the sending component.  The authority code parameter is to be set equal to that of the sending component.  The receiving component must always accept the control of the highest authority component that is requesting uninterruptible control.  Commands from all other components are ignored unless from a component with higher authority.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="RequestControlRec" optional="false">
+                        <fixed_field name="AuthorityCode" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="Resume" message_id="0004" is_command="true">
+                <description xml:space="preserve">This message is used to transition the receiving component to the ready state.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryServices" message_id="2B03" is_command="false">
+                <description xml:space="preserve">This message allows a component to request the service information of an entire subsystem or node, or a single component. The corresponding Report Services message will respond with service information only for new component implementations. It will not report service information for legacy component implementations.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="NodeList" optional="false">
+                        <count_field min_count="1" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <sequence name="NodeSeq" optional="false">
+                            <record name="NodeRec" optional="false">
+                                <fixed_field name="NodeID" optional="false" field_units="one" field_type="unsigned byte"/>
+                            </record>
+                            <list name="ComponentList" optional="false">
+                                <count_field min_count="1" max_count="255" field_type_unsigned="unsigned byte"/>
+                                <record name="ComponentRec" optional="false">
+                                    <fixed_field name="ComponentID" optional="false" field_units="one" field_type="unsigned byte"/>
+                                </record>
+                            </list>
+                        </sequence>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryIdentification" message_id="2B00" is_command="false">
+                <description xml:space="preserve">This message shall request the identification summary of a Subsystem, Node, or Component.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryIdentificationRec" optional="false">
+                        <fixed_field name="QueryType" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="5.00" lower_limit_type="inclusive" upper_limit="255.00" upper_limit_type="inclusive"/>
+                                <value_enum enum_index="1" enum_const="System Identification"/>
+                                <value_enum enum_index="2" enum_const="Subsystem Identification"/>
+                                <value_enum enum_index="3" enum_const="Node Identification"/>
+                                <value_enum enum_index="4" enum_const="Component Identification"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryActiveElement" message_id="241E" is_command="false">
+                <description xml:space="preserve">This message is used to query the current active element of an executing list.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set>
+        <event_def name="GuiControlEntered">
+            <description xml:space="preserve"></description>
+            <header name="empty"/>
+            <body name="GuiControlEnteredBody">
+                <record name="GuiControlEnteredRecord" optional="false">
+                    <presence_vector field_type_unsigned="unsigned byte"/>
+                    <fixed_field name="Command" optional="false" field_units="one" field_type="integer"/>
+                    <fixed_field name="value" optional="true" field_units="one" field_type="float"/>
+                </record>
+            </body>
+            <footer name="empty"/>
+        </event_def>
+    </internal_events_set>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="OCU.OcuFSM" state_name="FindDiscoveryServer"/>
+        <state_machine name="OCU.OcuFSM">
+            <state name="FindDiscoveryServer">
+                <entry>
+                    <action name="sendQueryIdentification"/>
+                </entry>
+                <transition name="ReportIdentification">
+                    <parameter type="unsigned int" value="source_id"/>
+                    <simple>
+                        <end_state state="FindWaypointDriver"/>
+                    </simple>
+                    <action name="saveDiscoveryServerID">
+                        <argument value="source_id"/>
+                    </action>
+                </transition>
+            </state>
+            <state name="FindWaypointDriver">
+                <entry>
+                    <action name="sendQueryServices"/>
+                </entry>
+                <transition name="ReportServices">
+                    <parameter type="ReportServices" value="msg"/>
+                    <simple>
+                        <end_state state="WaitForControl"/>
+                    </simple>
+                    <action name="findWaypointDriver">
+                        <argument value="msg"/>
+                    </action>
+                </transition>
+            </state>
+            <state name="WaitForControl">
+                <entry>
+                    <action name="sendRequestControl"/>
+                </entry>
+                <transition name="ConfirmControl">
+                    <parameter type="ConfirmControl" value="msg"/>
+                    <guard condition=" ! isControlAccepted(msg) "/>
+                    <ns2:internal/>
+                </transition>
+                <transition name="ConfirmControl">
+                    <parameter type="ConfirmControl" value="msg"/>
+                    <guard condition=" isControlAccepted(msg) "/>
+                    <simple>
+                        <end_state state="WaitForResume"/>
+                    </simple>
+                </transition>
+            </state>
+            <state name="WaitForResume">
+                <entry>
+                    <action name="sendQueryStatus"/>
+                    <action name="sendResume"/>
+                </entry>
+                <transition name="ReportStatus">
+                    <parameter type="ReportStatus" value="msg"/>
+                    <guard condition=" ! inReadyState(msg) "/>
+                    <simple>
+                        <end_state state="WaitForResume"/>
+                    </simple>
+                </transition>
+                <transition name="ReportStatus">
+                    <parameter type="ReportStatus" value="msg"/>
+                    <guard condition=" inReadyState(msg) "/>
+                    <simple>
+                        <end_state state="Running"/>
+                    </simple>
+                </transition>
+            </state>
+            <state name="Running">
+                <entry>
+                    <action name="setupQueryTimer"/>
+                </entry>
+                <transition name="ReportActiveElement">
+                    <parameter type="ReportActiveElement" value="msg"/>
+                    <ns2:internal/>
+                    <action name="printDebug">
+                        <argument value="msg"/>
+                    </action>
+                </transition>
+                <transition name="ReportLocalWaypoint">
+                    <parameter type="ReportLocalWaypoint" value="msg"/>
+                    <ns2:internal/>
+                    <action name="saveTargetData">
+                        <argument value="msg"/>
+                    </action>
+                </transition>
+                <transition name="ReportLocalPose">
+                    <parameter type="ReportLocalPose" value="msg"/>
+                    <ns2:internal/>
+                    <action name="saveLocalPose">
+                        <argument value="msg"/>
+                    </action>
+                </transition>
+                <transition name="GuiControlEntered">
+                    <parameter type="GuiControlEntered" value="msg"/>
+                    <ns2:internal/>
+                    <action name="sendControlMessage">
+                        <argument value="msg"/>
+                    </action>
+                </transition>
+                <transition name="ConfirmElementRequest">
+                    <parameter type="ConfirmElementRequest" value="msg"/>
+                    <ns2:internal/>
+                </transition>
+            </state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

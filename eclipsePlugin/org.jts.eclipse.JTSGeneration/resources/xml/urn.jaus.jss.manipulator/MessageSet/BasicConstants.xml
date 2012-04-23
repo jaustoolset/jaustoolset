@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?> <?oxygen RNGSchema="../../jsidl/jaus_service_interface_definition_language.rnc" type="compact"?>
+<declared_const_set name="BasicConstants" id="urn:jaus:jss:manipulator:MessageSet:BasicConstants" version="1.0"
+  xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <const_def name="PI" const_type="long float" const_value="3.14159265358979323846" field_units="one" interpretation="ratio of any circle's circumference to its diameter"/>
+</declared_const_set>

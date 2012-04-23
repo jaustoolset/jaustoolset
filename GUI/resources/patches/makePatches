@@ -1,0 +1,24 @@
+#!/bin/bash
+diff ./AbstractComplexEObject.java.original ./AbstractComplexEObject.java.modified > ./AbstractComplexEObject.java.patch
+diff ./AbstractListEO.java.original ./AbstractListEO.java.modified > ./AbstractListEO.java.patch
+
+diff ./CriteriaListEO.java.original ./CriteriaListEO.java.modified > ./CriteriaListEO.java.patch
+diff ./RelationalList.java.original ./RelationalList.java.modified > ./RelationalList.java.patch
+
+diff ./Association.java.original ./Association.java.modified > ./Association.java.patch
+diff ./AssociationStrategy.java.original ./AssociationStrategy.java.modified > ./AssociationStrategy.java.patch
+diff ./DynaAssociationStrategy.java.original ./DynaAssociationStrategy.java.modified > ./DynaAssociationStrategy.java.patch
+diff ./BasicAssociationStrategy.java.original ./BasicAssociationStrategy.java.modified > ./BasicAssociationStrategy.java.patch
+
+diff ./Command.java.original ./Command.java.modified > ./Command.java.patch
+
+diff ./AppFrame.java.original ./AppFrame.java.modified > ./AppFrame.java.patch
+diff ./EntryPoint.java.original ./EntryPoint.java.modified > ./EntryPoint.java.patch
+diff ./ReorderListView.java.original ./ReorderListView.java.modified > ./ReorderListView.java.patch
+diff ./EditableListView.java.original ./EditableListView.java.modified > ./EditableListView.java.patch
+
+diff ./GradientPanel.java.original ./GradientPanel.java.modified > ./GradientPanel.java.patch
+diff ./SeeThruTree.java.original ./SeeThruTree.java.modified > ./SeeThruTree.java.patch
+diff ./SeeThruList.java.original ./SeeThruList.java.modified > ./SeeThruList.java.patch
+diff ./SeeThruTable.java.original ./SeeThruTable.java.modified > ./SeeThruTable.java.patch
+diff ./GridList.java.original ./GridList.java.modified > ./GridList.java.patch

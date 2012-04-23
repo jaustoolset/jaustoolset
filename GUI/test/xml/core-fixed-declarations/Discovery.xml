@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" name="Discovery" id="urn:jaus:jss:core:Discovery"
+  version="1.0">
+  <description>The process of discovery is conducted at both the node level and the subsystem level.
+    This service supports the discovery of both legacy components defined in the JAUS Reference
+    Architecture versions 3.2+, and new components. The Component IDs of legacy components were
+    fixed at specification time (Primitive Driver = 33 for example) and could contain only one
+    service beyond the core service support. New components may use any component ID that is outside
+    the range of IDs that have been allocated to legacy component definitions. New components can
+    also contain two or more services beyond the core service support. </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="core" id="urn:jaus:jss:core:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="QueryIdentification"
+        declared_type_ref="core.queryClass.QueryIdentification"/>
+      <declared_message_def name="QueryConfiguration"
+        declared_type_ref="core.queryClass.QueryConfiguration"/>
+      <declared_message_def name="QuerySubsystemList"
+        declared_type_ref="core.queryClass.QuerySubsystemList"/>
+      <declared_message_def name="QueryServices" declared_type_ref="core.queryClass.QueryServices"/>
+      <declared_message_def name="RegisterServices"
+        declared_type_ref="core.commandClass.RegisterServices"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportIdentification"
+        declared_type_ref="core.informClass.ReportIdentification"/>
+      <declared_message_def name="ReportConfiguration"
+        declared_type_ref="core.informClass.ReportConfiguration"/>
+      <declared_message_def name="ReportSubsystemList"
+        declared_type_ref="core.informClass.ReportSubsystemList"/>
+      <declared_message_def name="ReportServices"
+        declared_type_ref="core.informClass.ReportServices"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior is_stateless="false">
+    <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+    <state_machine name="events.transport.ReceiveFSM" interpretation="extending ReceiveFSM of base
+      service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to
+        extend">
+        <state name="Ready">
+          <default_state>
+            <transition name="transport.Receive">
+              <parameter type="QueryIdentification" value="msg"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+              <simple/>
+              <action name="transport.Send" interpretation="Send a Report Identification
+                message               to querying client">
+                <argument value=" 'ReportIdentification' "/>
+                <argument value="transportData"/>
+              </action>
+            </transition>
+            <transition name="transport.Receive">
+              <parameter type="QueryConfiguration" value="msg"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+              <simple/>
+              <action name="transport.Send" interpretation="Send a Report Configuration
+                message               to querying client">
+                <argument value=" 'ReportConfiguration' "/>
+                <argument value="transportData"/>
+              </action>
+            </transition>
+            <transition name="transport.Receive">
+              <parameter type="QuerySubsystemList" value="msg"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+              <simple/>
+              <action name="transport.Send" interpretation="Send a Report Subsystem List
+                message               to querying client">
+                <argument value=" 'ReportSubsystemList' "/>
+                <argument value="transportData"/>
+              </action>
+            </transition>
+            <transition name="transport.Receive">
+              <parameter type="QueryServices" value="msg"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+              <simple/>
+              <action name="transport.Send" interpretation="Send a Report Services message
+                to querying client">
+                <argument value=" 'ReportServices' "/>
+                <argument value="transportData"/>
+              </action>
+            </transition>
+            <transition name="transport.Receive">
+              <parameter type="RegisterServices" value="msg"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+              <simple/>
+              <action name="PublishServices" interpretation="Add the component that sent the message
+                to the list of reported services">
+              	<argument value="msg"/>
+              	<argument value="transportData"/>
+              </action>
+            </transition>
+          </default_state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

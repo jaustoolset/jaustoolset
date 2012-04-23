@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_DeclaredConstSet" id="ImportTest:SD_DeclaredConstSet" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+
+    This service tests the ablity to include a Declared Const Set within a ServiceDef.
+  </description>
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+
+  <declared_const_set name="MySDConstants">
+    <declared_const_set_ref name="ConstantSet1" id="ImportTest:ConstantSet1" version="1.0" />
+  </declared_const_set>
+  
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+
+  <protocol_behavior>
+    <start state_machine_name="SD_DeclaredConstSet" state_name="init"/>
+    <state_machine name="SD_DeclaredConstSet">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

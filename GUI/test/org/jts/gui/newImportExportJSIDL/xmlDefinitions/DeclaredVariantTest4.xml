@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<variant xmlns="urn:jaus:jsidl:1.0" name="VariantTest4" optional="false">
+	<vtag_field field_type_unsigned="unsigned byte" min_count="0" max_count="0"/>
+	<declared_sequence name="SequenceTest1" declared_type_ref="unitTest.SequenceTest1"/>
+</variant>

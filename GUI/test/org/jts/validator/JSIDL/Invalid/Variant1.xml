@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<variant name="shape" xmlns="urn:jaus:jsidl:1.0">
+  <vtag_field field_type_unsigned="unsigned byte" min_count="0" max_count="4"/>
+  <record name="rectangle">
+    <fixed_field name="length" field_type="byte" field_units="one" optional="false"/>
+    <fixed_field name="height" field_type="byte" field_units="one" optional="false"/>
+  </record>
+  <record name="square">
+    <fixed_field name="side" field_type="byte" field_units="one" optional="false"/>
+  </record>
+  <record name="circle">
+    <fixed_field name="radius" field_type="byte" field_units="one" optional="false"/>
+  </record>
+</variant>

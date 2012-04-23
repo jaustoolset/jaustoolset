@@ -1,0 +1,87 @@
+service AckermanDriver (id="AS4:AS6091:AckermanDriver", version="0.1") {
+  // First cut
+  // Parag Batavia
+  // Neya Systems, LLC
+
+  description "The AckermanDriver provides the means to control Ackerman 
+          steered vehicles";
+  assumptions "None";
+
+  types Types {
+    record SkidSteerPlatformSpecificationsRec {
+      required int16 SteeringAngle one [-100, 100] = 1;
+      required uint16 AcceleratorPosition one [0, 100] = 2;
+      required uint16 BrakePosition one [0, 100] = 3;
+    }
+    record AckermanPlatformSpecificationsRec {
+      required uint16 SteeringAngleRange radian [-24.0, 24.0] = 1;
+      required uint16 MaximumSpeed meter_per_second [0, 90.0] = 2;
+      required uint8 MaximumAcceleration meter_per_second_squared [0.0, 40.0] = 3;
+      required uint8 MaximumDeceleratin meter_per_second_squared [0.0, 40.0] = 4;
+    }
+    variant PlatformSpecificSpecification {
+        uint8 vtag[1,2];
+      vtag 1: SkidSteerPlatformSpecificationsRec skidsteer;
+      vtag 2: AckermanPlatformSpecificationsRec ackerman;
+    }
+    enum uint8 PlatformType one {
+        ACKERMAN = 1;
+	SKID_STEER = 2;
+    }
+    record PlatformSpecificationsRec {
+      required string MobilityPlatformName[15] = 1;
+      required PlatformType platformType = 2;
+      optional uint16 Front one = 3;
+      optional uint16 Back one = 4;
+      optional uint16 Right one = 5;
+      optional uint16 Left one = 6;
+      optional uint16 Bottom one = 7;
+      optional uint16 Top one = 8;
+      optional uint16 Front one = 9;
+      optional uint16 Xcg one = 10;
+      optional uint16 Ycg one = 11;
+      optional uint16 Zcg one = 12;
+      optional uint16 WheelBase one = 13;
+      optional uint16 StaticPitchOver one = 14;
+      optional uint16 StaticRollOver one = 15;
+    }
+  }
+
+  messages {
+
+    query 0x1000 QueryPlatformSpecifications {
+      description "Request PlatformSpecifications data";
+    }
+
+    inform 0x2000 ReportPlatformSpecifications {
+      description "Sends PlatformSpecifications data";
+      PlatformSpecificationsRec platformData;
+    }
+
+    query 0x1001 QueryAckermanDriver {
+      description "Queries ackerman driver for current set data";
+    }
+    
+    inform 0x2001 ReportAckermanDriver {
+      description "Reports ackerman driver data ";
+      PlatformSpecificSpecification ackermanData;
+      // AckermanDriverRec is this a different record that you haven't defined yet?
+    }
+	
+    command 0x3001 SetAckermanDriver {
+      description "Sets ackerman driver parameters";
+      PlatformSpecificSpecification ackermanData;
+      // AckermanDriverRec is this a different record that you haven't defined yet?
+    }
+  }
+  events Events {
+
+  }
+  protocol {
+    start fsm.init;
+    state_machine fsm {
+      state init {}
+    }
+  }
+}
+    

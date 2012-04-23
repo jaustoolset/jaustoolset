@@ -1,0 +1,6 @@
+VariantDir('Build', '.', duplicate=0)
+sources = ['Build/AdditionClientServiceDefService.cpp', 'Build/AdditionClientServiceDef_additionClientFSM.cpp', 'Build/AdditionClientServiceDef_additionClientFSM_sm.cpp', 'Build/InternalEvents/InitToReadyEventDef.cpp', 'Build/Messages/QueryAddition.cpp', 'Build/Messages/ReportAddition.cpp']
+Import('env')
+lib = env.SharedLibrary('./lib/AdditionClientServiceDefService', sources, LIBS=['Common'])
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )

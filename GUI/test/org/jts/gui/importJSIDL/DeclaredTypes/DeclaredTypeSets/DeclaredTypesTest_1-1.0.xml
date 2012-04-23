@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set name="DeclaredTypesTest_1" id="ImportTests:DeclaredTypesTest_1" version="1.0" xmlns="urn:jaus:jsidl_plus:0.11" >
+    <declared_type_set_ref name="DeclaredTypesTest_3" id="ImportTest:DeclaredTypesTest_3" version="1.0" /> 
+    
+    <list name="DeclaredList" optional="false">
+        <count_field field_type_unsigned="unsigned byte"/>
+        <record name="Record1" optional="false">
+            <fixed_field name="FixedField" field_type="byte" field_units="one" optional="false"/>
+        </record>
+    </list>
+    
+    <declared_variant name="MyVariant" declared_type_ref="DeclaredTypesTest_3.DeclaredVariant"/>    
+    
+</declared_type_set>

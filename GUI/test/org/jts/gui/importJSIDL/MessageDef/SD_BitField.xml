@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_BitField" id="ImportTest:SD_BitField" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a bit_field entity with all levels of multiplicity and options.
+
+    The 1st message_def contains a bit_field with all optional items missing.
+    The 2nd message_def contains a bit_field with all optional items, one sub_field and a value_set with multiple value_enums.
+    The 3rd message_def contains a bit_field with multiple sub_fields.
+
+    Note: This file also provides full coverage of the value_enum, value_range, value_set and sub_field entity.
+  </description>
+
+  <!-- 
+    element bit_field 
+    {
+      attribute name { identifier }, 
+      attribute_field_type_unsigned,  
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,  
+      sub_field+
+    }    
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, bit_field -->
+      <message_def name="BitField1" message_id="0141" is_command="false">
+        <description>
+          The 1st message_def contains a bit_field with all optional items missing.
+        </description>
+        <header name="BitField"/>
+        <body name="BitField1">
+          <record name="BitField1Rec" optional="false">
+
+            <bit_field name="BitField1" field_type_unsigned="unsigned byte" optional="false">
+              <sub_field name="SubField1">
+                <bit_range from_index="0" to_index="1"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="1" upper_limit_type="inclusive"/>
+                </value_set>
+              </sub_field>
+            </bit_field>
+            
+          </record>
+          </body>
+          <footer name="BitField"/>
+      </message_def>
+
+      <!-- All optional elements, bit_field -->
+      <message_def name="BitField2" message_id="0142" is_command="false">
+        <description>
+          The 2nd message_def contains a bit_field with all optional items, one sub_field and a value_set with multiple value_enums.
+        </description>
+        <header name="BitField"/>
+        <body name="BitField2">
+          <record name="BitField2Rec" optional="false">
+            
+            <bit_field name="BitField2" field_type_unsigned="unsigned byte" optional="false">
+              <sub_field name="SubField2" interpretation="This SubField is a Subfield">
+                <bit_range from_index="0" to_index="7" interpretation="A BitRange Interpretation"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_enum enum_index="0" enum_const="Zero"/>
+                  <value_enum enum_index="1" enum_const="One" />
+                  <value_enum enum_index="2" enum_const="Two" interpretation="A value of Two" />
+                  <value_enum enum_index="3" enum_const="Three" interpretation="A value of Three" />
+                  <value_enum enum_index="4" enum_const="Four" interpretation="A value of Four" />
+                  <value_enum enum_index="5" enum_const="Five" interpretation="A value of Five" />
+                  <value_enum enum_index="6" enum_const="Six" interpretation="A value of Six" />
+                  <value_enum enum_index="7" enum_const="Seven" interpretation="A value of Seven" />
+                </value_set>
+              </sub_field>
+            </bit_field>
+            
+          </record>
+        </body>
+        <footer name="BitField"/>
+      </message_def>
+
+      <!-- bit_field (unsigned short), multiple subFields -->
+      <message_def name="BitField2" message_id="0143" is_command="false">
+        <description>
+          The 3rd message_def contains a bit_field with multiple sub_fields.
+        </description>
+        <header name="BitField"/>
+        <body name="BitField2">
+          <record name="BitField2Rec" optional="false">
+            
+            <bit_field name="BitField3" field_type_unsigned="unsigned integer" optional="false" interpretation="A timestamp specified in an unsigned integer">
+              <sub_field name="Milliseconds">
+                <bit_range from_index="0" to_index="9"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="999"
+                    upper_limit_type="inclusive" interpretation="A ValueRange Interpretation"/>
+                </value_set>
+              </sub_field>
+              <sub_field name="Seconds">
+                <bit_range from_index="10" to_index="15"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+                    upper_limit_type="inclusive"/>
+                </value_set>
+              </sub_field>
+              <sub_field name="Minutes">
+                <bit_range from_index="16" to_index="21"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+                    upper_limit_type="inclusive"/>
+                </value_set>
+              </sub_field>
+              <sub_field name="Hour">
+                <bit_range from_index="22" to_index="26"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="23"
+                    upper_limit_type="inclusive"/>
+                </value_set>
+              </sub_field>
+              <sub_field name="Day">
+                <bit_range from_index="27" to_index="31"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+                    upper_limit_type="inclusive"/>
+                </value_set>
+              </sub_field>
+            </bit_field>
+            
+          </record>
+        </body>
+        <footer name="BitField"/>
+      </message_def>
+      
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_BitField" state_name="init"/>
+    <state_machine name="SD_BitField">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

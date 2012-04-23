@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest4" version="1.0">
+  <description>test for appending entry actions onto transitions where state is not the initial state</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMEntryTest2" state_name="parent"></start>
+    <state_machine name="FSMEntryTest2">
+      <state name="parent" initial_state="B">
+	      <state name="A">
+	 			<entry>
+	 				<send_action name="EntryAction">
+	 				</send_action>
+	 			</entry>
+	      </state>
+	      <state name="B">
+			<transition name = "T1">
+				<simple>
+					<end_state state="parent.A" />
+				</simple>
+				<action name="TransitionAction">
+				</action>
+			</transition>
+			<transition name = "T2">
+				<simple>
+					<end_state state="parent.B" />
+				</simple>
+			</transition>
+	      </state>
+	  </state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

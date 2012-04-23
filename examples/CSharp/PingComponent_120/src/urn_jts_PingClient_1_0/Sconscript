@@ -1,0 +1,18 @@
+Import('env')
+
+sources = Split("""
+		Messages\QueryHeartbeatPulse.cs
+		Messages\ReportHeartbeatPulse.cs
+		PingClientService.cs
+		PingClient_PingClientFSM.cs
+		PingClient_PingClientFSM_sm.cs
+	""")
+
+libs = ['statemap', 'CSharpCommon' ]
+pathlibs = env.CLIRefs(libs)
+
+lib = env.CLILibrary('./lib/PingClientService', sources, ASSEMBLYREFS=pathlibs)
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )
+env.AddToRefPaths(lib)
+Return('lib')

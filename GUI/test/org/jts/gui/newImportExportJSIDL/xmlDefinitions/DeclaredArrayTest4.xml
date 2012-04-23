@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<array xmlns="urn:jaus:jsidl:1.0" name="ArrayTest4" optional="false" >
+	<declared_fixed_length_string name="FixedLengthStringTest1" declared_type_ref="unitTest.FixedLengthStringTest1"/>
+	++++DimensionTest1.xml++++
+</array>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:ProtocolBehaviorTest1"
+  name="ProtocolBehaviorTest1" version="1.0">
+  <description xml:space="preserve">
+     Tests "At least one state machine must be defined"  
+  </description>
+  <assumptions/> 
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="Ready"/>
+     <!-- The state machine called FSM is removed programmatically
+        before the validator is called. -->
+    <state_machine name="FSM">
+      <state name="Ready"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

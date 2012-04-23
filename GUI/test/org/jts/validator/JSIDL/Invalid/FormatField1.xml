@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<format_field xmlns="urn:jaus:jsidl:1.0">
+  <format_enum index="1" field_format="MJPEG"/>
+  <format_enum index="1" field_format="MPEG-1"/>
+  <format_enum index="2" field_format="MPEG-2"/>
+  <format_enum index="3" field_format="MP4"/>
+</format_field>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest4" version="1.0">
+  <description>test for appending exit actions for nested states</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMExitTest4" state_name="A"/>
+    <state_machine name="FSMExitTest4">
+      <state name="A" initial_state="initial">
+ 			<exit>
+ 				<send_action name="ExitA">
+ 				</send_action>
+ 			</exit>
+			<transition name = "StateATransition">
+				<simple>
+					<end_state state="B" />
+				</simple>
+				<action name="StateATransition">
+				</action>
+			</transition>
+ 			<state name="initial">
+ 				<exit>
+ 					<send_action name="ExitInitial">
+ 					</send_action>
+ 				</exit>
+				<transition name = "T1">
+					<simple>
+						<end_state state="B" />
+					</simple>
+					<action name="T1">
+					</action>
+				</transition>
+ 			</state>
+ 			<state name="notInitial">
+ 				<exit>
+ 					<send_action name="ExitNotInitial">
+ 					</send_action>
+ 				</exit>
+				<transition name = "T1">
+					<simple>
+						<end_state state="B" />
+					</simple>
+					<action name="T1">
+					</action>
+				</transition>
+ 			</state>
+      </state>
+      <state name="B">
+      </state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

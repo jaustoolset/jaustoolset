@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:TransitionTest2"
+   name="TransitionTest2" version="1.0">
+  <description xml:space="preserve">
+     Transition name must match a namespaced input message name or internal event name in the scope of the inheritance chain
+     (This spec is the derived service that contains the transitions being tested)
+  </description>
+  <assumptions/> 
+   <references>
+      <inherits_from name="TransitionTest1" version="1.0" id="urn:jts:TransitionTest1"/>
+   </references>
+  <message_set>
+    <input_set>
+       <message_def name="Message2" message_id="0002" is_command="true">
+          <description xml:space="preserve">
+             A message
+          </description>
+          <header name="header"/>
+          <body name="body"/>
+          <footer name="footer"/>
+       </message_def>
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set>
+     <event_def name="Timeout1">
+        <description xml:space="preserve">
+           An event
+        </description>
+        <header name="header"/>
+        <body name="body"/>
+        <footer name="footer"/>
+     </event_def>
+  </internal_events_set>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="Ready"/>
+    <state_machine name="FSM">
+      <state name="Ready">
+         <transition name="TransitionTest1.Message1">
+            <simple/>
+         </transition>
+         <!-- TransitionTest1.Message2 does not exist -->
+         <transition name="TransitionTest1.Message2">
+            <simple/>
+         </transition>
+         <!-- Message1 is defined by the parent service -->
+         <transition name="Message1">
+            <simple/>
+         </transition>
+         <transition name="Message2">
+            <simple/>
+         </transition>
+         <!-- Message3 does not exist -->
+         <transition name="Message3">
+            <simple/>
+         </transition>
+         <transition name="Timeout1">
+            <simple/>
+         </transition>
+         <!-- Timeout2 does not exist -->
+         <transition name="Timeout2">
+            <simple/>
+         </transition>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

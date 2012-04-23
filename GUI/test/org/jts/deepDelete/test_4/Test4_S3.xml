@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="S3" id="s3.sd" version="1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">Service def 3 for test 4</description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references/>
+    <message_set>
+        <input_set>
+            <message_def name="S3_MessageDef" message_id="010C" is_command="false">
+                <description xml:space="preserve">message def for service 3</description>
+                <header name="S3_MessageDef_EmptyHeader"/>
+                <body name="S3_MessageDef_Body">
+                    <sequence name="S3_MessageDef_Sequence" optional="false">
+                        <record name="Rec3" optional="false">
+                            <fixed_field name="FF7" optional="false" field_units="joule" field_type="integer"/>
+                            <fixed_field name="FF8" optional="false" field_units="joule" field_type="integer"/>
+                            <fixed_field name="FF9" optional="false" field_units="joule" field_type="integer"/>
+                        </record>
+                        <record name="Rec4" optional="false">
+                            <fixed_field name="FF10" optional="false" field_units="joule" field_type="integer"/>
+                            <fixed_field name="FF11" optional="false" field_units="joule" field_type="integer"/>
+                            <fixed_field name="FF12" optional="false" field_units="joule" field_type="integer"/>
+                        </record>
+                        <record name="Rec5" optional="false">
+                            <fixed_field name="FF13" optional="false" field_units="joule" field_type="integer"/>
+                            <fixed_field name="FF14" optional="false" field_units="joule" field_type="integer"/>
+                            <fixed_field name="FF15" optional="false" field_units="joule" field_type="integer"/>
+                        </record>
+                    </sequence>
+                </body>
+                <footer name="S3_MessageDef_EmptyFooter"/>
+            </message_def>
+        </input_set>
+        <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="NullFSM_3" state_name="Null"/>
+        <state_machine name="NullFSM_3">
+            <state name="Null"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

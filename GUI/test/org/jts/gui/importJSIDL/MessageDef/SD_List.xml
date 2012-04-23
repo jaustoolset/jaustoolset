@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_List" id="ImportTest:SD_List" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a list entity with all levels of multiplicity and options.
+
+    The 1st message_def contains a list with optional items missing and a record entity
+    The 2nd message_def contains a list with all optional items (interpretaion) and a record element
+    The 3rd message_def contains a list with a list entity
+    The 4th message_def contains a list with a variant entity
+    The 5th message_def contains a list with a sequence entity
+    
+    Note: This service also provides full coverage of the count_field entity
+  </description>
+
+  <!-- 
+    element list 
+    { 
+      attribute name { identifier },
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,
+      count_field,
+      ( record | declared_record |
+      \list | declared_list |
+      variant | declared_variant |
+      sequence | declared_sequence )
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, record -->
+      <message_def name="List1" message_id="00E1" is_command="false">
+        <description>
+          A message to test the list entity. Contains a list with 
+          optional items missing and a record entity.
+        </description>
+        <header name="List"/>
+        <body name="List1">
+          <list name="List1" optional="false">
+            <count_field field_type_unsigned="unsigned byte"/>
+            <record name="Record1" optional="false">
+              <fixed_field name="FixedField" field_type="byte" field_units="one" optional="false"/>
+            </record>
+          </list>
+          </body>
+          <footer name="List"/>
+      </message_def>
+
+      <!-- All optional elements, record -->
+      <message_def name="List2" message_id="00E2" is_command="false">
+        <description>
+          A message to test the list entity. Contains a list with 
+          all optional items and a record entity.
+        </description>
+        <header name="List"/>
+        <body name="List2">
+          <list name="List2" optional="false" interpretation="This is a list interpretation">
+            <count_field field_type_unsigned="unsigned byte" min_count="0" max_count="100" interpretation="A count_field interpretation"/>
+            <record name="Record2" optional="false">
+              <fixed_field name="FixedField" field_type="byte" field_units="one" optional="false"/>
+            </record>
+          </list>
+        </body>
+        <footer name="List"/>
+      </message_def>
+
+      <!-- List Element -->
+      <message_def name="List3" message_id="00E3" is_command="false">
+        <description>
+          A message to test the list entity. Contains a list with a list entity.
+        </description>
+        <header name="List"/>
+        <body name="List3">
+          <list name="List3" optional="false">
+            <count_field field_type_unsigned="unsigned long integer"/>
+            <list name="Internal_List" optional="true">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="Record2" optional="false">
+                <fixed_field name="FixedField" field_type="byte" field_units="one" optional="false"/>
+              </record>
+            </list>
+          </list>
+        </body>
+        <footer name="List"/>
+      </message_def>
+      
+      <!-- Variant Element -->
+      <message_def name="List4" message_id="00E4" is_command="false">
+        <description>
+          A message to test the list entity. Contains a list with a variant entity.
+        </description>
+        <header name="List"/>
+        <body name="List4">
+          <list name="List4" optional="false">
+            <count_field field_type_unsigned="unsigned short integer"/>            
+            <variant name="shape" optional="false">
+              <vtag_field field_type_unsigned="unsigned byte" min_count="0" max_count="2"/>
+              <record name="rectangle" optional="false">
+                <fixed_field name="length" field_type="byte" field_units="one" optional="false"/>
+                <fixed_field name="height" field_type="byte" field_units="one" optional="false"/>
+              </record>
+              <record name="square" optional="false">
+                <fixed_field name="side" field_type="byte" field_units="one" optional="false"/>
+              </record>
+              <record name="circle" optional="false">
+                <fixed_field name="radius" field_type="byte" field_units="one" optional="false"/>
+              </record>
+            </variant>
+          </list>
+        </body>
+        <footer name="List"/>
+      </message_def>
+      
+      <!-- Sequence Element -->
+      <message_def name="List5" message_id="00E5" is_command="false">
+        <description>
+          A message to test the list entity. Contains a list with a sequence entity.
+        </description>
+        <header name="List"/>
+        <body name="List5">
+          <list name="List5" optional="false">
+            <count_field field_type_unsigned="unsigned integer"/>            
+            <sequence name="GlobalPose" optional="false">
+              <list name="Position" optional="false">
+                <count_field field_type_unsigned="unsigned byte"/>
+                <record name="PositionRec" optional="false">
+                  <fixed_field name="LatitudeDegrees" field_type="float" field_units="degree" optional="false"/>
+                </record>
+              </list>
+              <list name="Orientation" optional="false">
+                <count_field field_type_unsigned="unsigned byte"/>
+                <record name="OrientationRec" optional="false">
+                  <fixed_field name="YawDegrees" field_type="float" field_units="degree" optional="false"/>
+                </record>
+              </list>
+            </sequence>
+          </list>
+        </body>
+        <footer name="List"/>
+      </message_def>
+      
+
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_List" state_name="init"/>
+    <state_machine name="SD_List">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

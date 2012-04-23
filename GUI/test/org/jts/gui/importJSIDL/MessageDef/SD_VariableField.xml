@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_VariableField" id="ImportTest:SD_VariableField" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a variable_field entity with all levels of multiplicity and options.
+
+    The 1st message_def contains a variable_field with all optional items missing.
+    The 2nd message_def contains a variable_field with an interpretation and multiple type enums.
+
+    Note: This file also provides full coverage of the types_and_units_enum element
+  </description>
+
+  <!-- 
+    element variable_field 
+    {
+      attribute name { identifier }, 
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,  
+      element type_and_units_field 
+      {
+        type_and_units_enum+ 
+      }
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, variable_field -->
+      <message_def name="VariableField1" message_id="0131" is_command="false">
+        <description>
+          The 1st message_def contains a variable_field with all optional items missing.
+        </description>
+        <header name="VariableField"/>
+        <body name="VariableField1">
+          <record name="VariableField1Rec" optional="false">
+
+            <variable_field name="VariableField1" optional="false">
+              <type_and_units_field>
+                <type_and_units_enum index="0" field_type="short integer" field_units="one"/>
+              </type_and_units_field>                
+            </variable_field>
+
+          </record>
+          </body>
+          <footer name="VariableField"/>
+      </message_def>
+
+      <!-- variable_field with interpretation and all possible enum types -->
+      <message_def name="VariableField2" message_id="0132" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with all optional items 
+          (presence_vector and interpretaion) and a single fixed_field element.
+        </description>
+        <header name="VariableField"/>
+        <body name="VariableField2">
+          <record name="VariableField2Rec" optional="false" interpretation="A variable_field record">
+            <variable_field name="VariableField1" optional="false" interpretation="A Variable_field interpretation">
+              <type_and_units_field>
+                <type_and_units_enum index="0" field_type="byte" field_units="one">
+                  <value_set offset_to_lower_limit="false">
+                    <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="1" upper_limit_type="inclusive"/>
+                  </value_set>
+                </type_and_units_enum>
+                
+                <type_and_units_enum index="1" field_type="short integer" field_units="one">
+                   <scale_range integer_function="round" real_lower_limit="-10000.0" real_upper_limit="10000.0"/>
+                </type_and_units_enum>
+
+                <type_and_units_enum index="2" field_type="integer" field_units="one"/>
+                <type_and_units_enum index="3" field_type="long integer" field_units="one"/>
+                <type_and_units_enum index="4" field_type="unsigned byte" field_units="one"/>
+                <type_and_units_enum index="5" field_type="unsigned short integer" field_units="one"/>
+                <type_and_units_enum index="6" field_type="unsigned integer" field_units="one"/>
+                <type_and_units_enum index="7" field_type="unsigned long integer" field_units="one"/>
+
+                <type_and_units_enum index="8" field_type="float" field_units="one"/>
+                <type_and_units_enum index="9" field_type="long float" field_units="one"/>
+              </type_and_units_field>                
+            </variable_field>
+          </record>
+        </body>
+        <footer name="VariableField"/>
+      </message_def>
+
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_VariableField" state_name="init"/>
+    <state_machine name="SD_VariableField">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

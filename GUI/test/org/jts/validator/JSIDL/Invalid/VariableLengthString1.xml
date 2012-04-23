@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<variable_length_string name="node description" 
+	interpretation="a brief description of the node's functions" 
+	optional="true" xmlns="urn:jaus:jsidl:1.0">
+  <count_field field_type_unsigned="unsigned byte"/>
+</variable_length_string>

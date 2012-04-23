@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="NestedSet2" id="urn:DeVivo:jaus_services:TestSet2" version="0.1" xmlns="urn:jaus:jsidl:1.0">
+	<description xml:space="preserve">A simple state machine for protocol testing</description>
+	<service_def name="NestedDef2" id="urn:DeVivo:jaus_services:NestedDef" version="1.0">
+		<description>This service is used for JTS protocol testing.</description>
+		<assumptions>Messages may be delayed, lost or reordered.</assumptions>
+		<message_set>
+			<input_set>
+				<message_def name="StandbyToPA_Simple" message_id="0001" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="K1ToPC_Simple" message_id="0002" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="K1ToPC_Push" message_id="0003" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="K1_Pop" message_id="0004" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="K2ToK3_Simple" message_id="0005" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="K3ToK1_Push" message_id="0006" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="K3ToPC_Simple" message_id="0007" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="PCToK1_Simple" message_id="0008" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="PCToK1_Push" message_id="0009" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="PC_Pop" message_id="0010" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="K1ToK2_Simple" message_id="0011" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="K2ToK1_Push" message_id="0012" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>	
+				<message_def name="StandbyToK3_Simple" message_id="0012" is_command="true">
+					<description xml:space="preserve">...</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>								
+			</input_set>
+			
+      <output_set/>
+    </message_set>
+		<internal_events_set/>
+		<protocol_behavior is_stateless="false">
+			<start state_machine_name="NestedStateMachn" state_name="NsmStandbyState"/>
+			<state_machine name="NestedStateMachn">
+				<state name="NsmStandbyState" interpretation="The Standby State">
+          <entry> <action name="EnteredStandbyState"/> </entry>				
+					<transition name="StandbyToK3_Simple">
+            <simple> <end_state state="PB.K3"/> </simple>											
+						<action name="FromStandbyToK3"/>
+					</transition>
+				</state>
+				<state name="PA" interpretation="Parent A State" initial_state="K1">
+          <entry> <action name="Entered_PA"/> </entry>
+          <exit>  <action name="Exited_PA"/>  </exit>								
+					<state name="K1" interpretation="Kid 1 State">
+					  <entry> <action name="Entered_K1"/> </entry>
+					  <exit> <action name="Exited_K1"/> </exit>
+  					<transition name="K1ToPC_Simple">
+              <simple> <end_state state="PC"/> </simple>						
+						  <action name="FromK1ToPC_Simple"/>
+					  </transition>
+  					<transition name="K1ToPC_Push">
+              <push> <end_state state="PC"/> </push>						
+						  <action name="FromK1ToPC_Push"/>
+					  </transition>		
+  					<transition name="K1ToK2_Simple">
+              <simple> <end_state state="PA.K2"/> </simple>						
+						  <action name="FromK1ToK2_Simple"/>
+					  </transition>
+					  <transition name="K1_Pop">
+              <pop/>						
+						  <action name="FromK1_Pop"/>
+					  </transition>
+					</state>
+					<state name="K2" interpretation="Kid 2 State">
+					  <entry> <action name="Entered_K2"/> </entry>
+					  <exit> <action name="Exited_K2"/> </exit>
+  					<transition name="K2ToK3_Simple">
+              <simple> <end_state state="PB.K3"/> </simple>						
+						  <action name="FromK2ToK3_Simple"/>
+					  </transition>
+    				<transition name="K2ToK1_Push">
+              <push> <end_state state="PA.K1"/> </push>						
+						  <action name="FromK2ToPA_Push"/>
+					  </transition>
+					</state>   
+				</state>
+				<state name="PB" interpretation="Parent B State" initial_state="K3">
+          <entry> <action name="Entered_PB"/> </entry>
+          <exit>  <action name="Exited_PB"/>  </exit>								
+					<state name="K3" interpretation="Kid 3 State">
+					  <entry> <action name="Entered_K3"/> </entry>
+					  <exit>  <action name="Exited_K3"/>  </exit>
+  					<transition name="K3ToK1_Push">
+              <push> <end_state state="PA.K1"/> </push>						
+						  <action name="FromK3ToK1_Push"/>
+					  </transition>
+  					<transition name="K3ToPC_Simple">
+              <simple> <end_state state="PC"/> </simple>						
+						  <action name="FromK3ToPC_Simple"/>
+					  </transition>
+					</state>
+				</state>
+				<state name="PC" interpretation="Parent C State">
+          <entry> <action name="Entered_PC"/> </entry>
+          <exit>  <action name="Exited_PC"/>  </exit>		
+  				<transition name="PCToK1_Simple">
+            <simple> <end_state state="PA.K1"/> </simple>						
+						<action name="FromPCToK1_Simple"/>
+					</transition>          						
+  				<transition name="PCToK1_Push">
+            <push> <end_state state="PA.K1"/> </push>						
+						<action name="FromPCToK1_Push"/>
+					</transition>
+  				<transition name="PC_Pop">
+            <pop/>						
+						<action name="FromPC_Pop"/>
+					</transition>
+				</state>				
+			</state_machine>
+		</protocol_behavior>
+  </service_def>
+</ns1:service_set>

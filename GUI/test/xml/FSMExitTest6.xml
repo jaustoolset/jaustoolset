@@ -1,0 +1,30 @@
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest5" version="1.0">
+	<description>test for appending exit actions for nested states - leaf of tri-nested transitions</description>
+	<assumptions></assumptions>
+	<message_set>
+	<input_set></input_set>
+	<output_set></output_set>
+	</message_set>
+	<internal_events_set></internal_events_set>
+	<protocol_behavior is_stateless="false">
+		<start state_machine_name="FSMExitTest6" state_name="A"/>
+		<state_machine name="FSMExitTest6">
+			<state name="A" initial_state="B">
+			<exit>  <action name="ExitA"/>  </exit>	
+				<state name="B" initial_state="C">
+				<exit>  <action name="ExitB"/>  </exit>								
+					<state name="C">
+					<exit> <action name="ExitC"/> </exit>	
+					
+						<transition name = "Pop">
+							<pop/>
+						</transition>
+						
+					</state>
+				</state>
+			</state>
+			<state name="D">
+			</state>				
+		</state_machine>
+	</protocol_behavior>
+</service_def>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="LocalWaypointListDriver"
+  id="urn:jaus:jss:mobility:LocalWaypointListDriver" version="1.0"
+  xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description> The function of the Local Waypoint List Driver is to move the platform
+    given a series of target waypoints, desired travel speed, current platform pose and
+    current velocity state. The sequence of waypoints is specified by one or more
+    SetElement messages. A waypoint consists of the desired position and orientation of
+    the platform. The second input consists of the desired travel speed and an optional
+    starting element. The desired travel speed remains unchanged unless a new ExecuteList
+    command is received. The travel speed may then be changed at any time during waypoint
+    navigation. The travel speed is reset to zero for all transitions from the Ready
+    State. </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="listManager" id="urn:jaus:jss:mobility:ListManager" version="1.0"
+    />
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet"
+      version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="ExecuteList"
+        declared_type_ref="mobility.commandClass.ExecuteList"/>
+      <declared_message_def name="QueryTravelSpeed"
+        declared_type_ref="mobility.queryClass.QueryTravelSpeed"/>
+      <declared_message_def name="QueryLocalWaypoint"
+        declared_type_ref="mobility.queryClass.QueryLocalWaypoint"/>
+      <declared_message_def name="QueryActiveElement"
+        declared_type_ref="mobility.queryClass.QueryActiveElement"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportTravelSpeed"
+        declared_type_ref="mobility.informClass.ReportTravelSpeed"/>
+      <declared_message_def name="ReportLocalWaypoint"
+        declared_type_ref="mobility.informClass.ReportLocalWaypoint"/>
+      <declared_message_def name="ReportActiveElement"
+        declared_type_ref="mobility.informClass.ReportActiveElement"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start
+      state_machine_name="listManager.management.accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled.StateA"/>
+    <state_machine name="listManager.management.accessControl.events.transport.ReceiveFSM"
+      interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready"
+        interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled"
+          interpretation="redefine state in order to extend">
+          <state name="NotControlled" initial_state="StateA"
+            interpretation="redefine state in order to extend">
+            <state name="StateA" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryTravelSpeed" value="msg"
+                    interpretation="enveloped query travel speed message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Travel Speed message">
+                    <argument value=" 'ReportTravelSpeed' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryLocalWaypoint" value="msg"
+                    interpretation="enveloped query local waypoint message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="waypointExists( msg )"
+                    interpretation="True if a valid waypoint has been received."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Local Waypoint message">
+                    <argument value=" 'ReportLocalWaypoint' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryActiveElement" value="msg"
+                    interpretation="enveloped query active element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Active Element message">
+                    <argument value=" 'ReportActiveElement' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+            </state>
+          </state>
+          <state name="Controlled" initial_state="StateB"
+            interpretation="redefine state in order to extend">
+            <state name="StateB" interpretation="redefine state in order to extend">
+              <state name="Ready">
+                <exit>
+                  <action name="resetTravelSpeed"
+                    interpretation="When leaving the Ready 
+                    state, reset the travel speed to zero."
+                  />
+                </exit>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="ExecuteList" value="msg"
+                    interpretation="enveloped execute list message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="isControllingClient( transportData ) &amp;&amp; 
+                    elementExists( msg )"
+                    interpretation="True if the message that triggered the transition is
+                    received from the client that is in control of this service AND the 
+                    Element UID specified in the message exists in the list."/>
+                  <simple/>
+                  <action name="executeWaypointList"
+                    interpretation="Begin sequential execution of the waypoint
+                    list starting at the specified element at the specified speed.">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="ExecuteList" value="msg"
+                    interpretation="enveloped execute list message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="isControllingClient( transportData ) &amp;&amp; 
+                    ! elementSpecified( msg )"
+                    interpretation="True if the message that triggered the transition 
+                    is received from the client that is in control of this service AND 
+                    the message does not contain an ElementUID."/>
+                  <simple/>
+                  <action name="modifyTravelSpeed" interpretation="Set the travel speed to the specified value.">
+                    <argument value="msg"></argument>
+                  </action>
+                </transition>
+              </state>
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetElement" value="msg"
+                    interpretation="enveloped set element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="isControllingClient( transportData ) &amp;&amp;
+                    isValidElementRequest( msg ) &amp;&amp; isElementSupported( msg )"
+                    interpretation="True if the message that triggered the transition 
+                    is received from the client that is in control of this service AND the
+                    resulting list will not be invalid as defined by the List Manager 
+                    Service description and the receiving entity has sufficient memory 
+                    to store the element(s) AND the message contains payload(s) of valid 
+                    serialized Set Local Waypoint messages(s)."/>
+                  <simple/>
+                  <action name="setElement"
+                    interpretation="Store the given waypoint(s) in the waypoint list 
+                    with sequence specified by the previous and next element UIDs.  
+                    If this action represents an insert or append into an existing list,
+                    the service should modify the NextUID of the previous element and/or
+                    the Previous UID of the next element to reflect the updated 
+                    sequence.">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Confirm Element Request message.">
+                    <argument value=" 'ConfirmElementRequest' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetElement" value="msg"
+                    interpretation="enveloped set element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="isControllingClient( transportData ) &amp;&amp; 
+                    ! isValidElementRequest( msg )"
+                    interpretation="True if the message that triggered the transition 
+                    is received from the client that is in control of this service 
+                    AND the resulting list would be invalid as defined by the List Manager 
+                    Service description or the receiving entity does not have sufficient
+                    memory to store the element(s)."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Reject Element Request message.">
+                    <argument value=" 'RejectElementRequest' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetElement" value="msg"
+                    interpretation="enveloped set element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="isControllingClient( transportData ) &amp;&amp; 
+                    ! isElementSupported( msg )"
+                    interpretation="True if the message that triggered the transition 
+                    is received from the client that is in control of this service AND 
+                    the message contains payload(s) that are not valid serialized Set 
+                    Local Waypoint message(s)."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Reject Element Request message.">
+                    <argument value=" 'RejectElementRequest' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryTravelSpeed" value="msg"
+                    interpretation="enveloped query travel speed message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Travel Speed message">
+                    <argument value=" 'ReportTravelSpeed' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryLocalWaypoint" value="msg"
+                    interpretation="enveloped query local waypoint message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="waypointExists( msg )"
+                    interpretation="True if a valid waypoint has been received."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Local Waypoint message">
+                    <argument value=" 'ReportLocalWaypoint' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryActiveElement" value="msg"
+                    interpretation="enveloped query active element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Active Element message">
+                    <argument value=" 'ReportActiveElement' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+            </state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_Record" id="ImportTest:SD_Record" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a record entity with all levels of multiplicity and options.
+
+    The 1st message_def contains a record with optional items missing and a single fixed_field element
+    The 2nd message_def contains a record with all optional items (presence_vector and interpretaion) and a single fixed_field element
+    The 3rd message_def contains a record with an array entity
+    The 4th message_def contains a record with a variable_field entity
+    The 5th message_def contains a record with a bit_field entity
+    The 6th message_def contains a record with a fixed_length_string entity
+    The 7th message_def contains a record with a variable_length_string entity
+    The 8th message_def contains a record with a variable_length_field entity
+    The 9th message_def contains a record with a variable_format_field entity
+    The 10th message_def contains a record with four fixed_field entities
+  </description>
+
+  <!-- 
+    element record 
+    {
+      attribute name { identifier }, 
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,
+      presence_vector?,
+      ( array | fixed_field | variable_field | bit_field |  
+      fixed_length_string | variable_length_string |
+      variable_length_field |variable_format_field | 
+      declared_array | declared_fixed_field |declared_variable_field | 
+      declared_bit_field | declared_fixed_length_string | 
+      declared_variable_length_string | declared_variable_length_field | 
+      declared_variable_format_field )+
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, fixed_field -->
+      <message_def name="Record1" message_id="00D1" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with 
+          optional items missing and a single fixed_field element.
+        </description>
+        <header name="Record"/>
+        <body name="Record1">
+          <record name="Record1Rec" optional="false">
+            <fixed_field name="FixedField" field_type="byte" field_units="one" 
+              optional="false" interpretation="A simple fixed field to create a valid record."/>
+          </record>
+          </body>
+          <footer name="Record"/>
+      </message_def>
+
+      <!-- Optional elements, fixed_field -->
+      <message_def name="Record2" message_id="00D2" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with all optional items 
+          (presence_vector and interpretaion) and a single fixed_field element.
+        </description>
+        <header name="Record"/>
+        <body name="Record2">
+          <record name="Record2Rec" optional="false" interpretation="A Record Interpretation">
+            <presence_vector field_type_unsigned="unsigned byte" />
+            <fixed_field name="FixedField" field_type="byte" field_units="one" 
+              optional="false" interpretation="A simple fixed field to create a valid record."/>
+          </record>
+        </body>
+        <footer name="Record"/>
+      </message_def>
+
+      <!-- array element -->
+      <message_def name="Record3" message_id="00D3" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with an array entity.
+        </description>
+        <header name="Record"/>
+        <body name="Record3">
+          <record name="Record3Rec" optional="false">
+            <array name="Array1" optional="false" interpretation="A linear array of fixed fields of type byte">
+              <fixed_field name="Field1" field_type="byte" field_units="one" optional="false"/>
+              <dimension name="dimension1" size="9"/>
+            </array>
+          </record>
+        </body>
+        <footer name="Record"/>
+      </message_def>
+      
+      <!-- variable_field element -->
+      <message_def name="Record4" message_id="00D4" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with a variable_field entity.
+        </description>
+        <header name="Record"/>
+        <body name="Record4">
+          <record name="Record4Rec" optional="false">
+            <variable_field name="temperature" interpretation="CPU temperature" optional="false">
+              <type_and_units_field>
+                <type_and_units_enum index="0" field_type="short integer" field_units="degree Celsius"/>
+                <type_and_units_enum index="1" field_type="short integer" field_units="kelvin"/>
+                <type_and_units_enum index="2" field_type="float" field_units="degree Celsius"/>
+                <type_and_units_enum index="3" field_type="float" field_units="kelvin"/>
+              </type_and_units_field>                
+            </variable_field>
+          </record>
+        </body>
+        <footer name="Record"/>
+      </message_def>
+
+      <!-- bit_field element -->
+      <message_def name="Record5" message_id="00D5" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with a bit_field entity.
+        </description>
+        <header name="Record"/>
+        <body name="Record5">
+          <record name="Record5Rec" optional="false">
+            <bit_field name="BitField1" field_type_unsigned="unsigned integer" optional="false"
+              interpretation="A timestamp specified in an unsigned integer">
+              <sub_field name="Milliseconds">
+                <bit_range from_index="0" to_index="9"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="999"
+                    upper_limit_type="inclusive"/>
+                </value_set>
+              </sub_field>
+              <sub_field name="Seconds">
+                <bit_range from_index="10" to_index="15"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+                    upper_limit_type="inclusive"/>
+                </value_set>
+              </sub_field>
+              <sub_field name="Minutes">
+                <bit_range from_index="16" to_index="21"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+                    upper_limit_type="inclusive"/>
+                </value_set>
+              </sub_field>
+              <sub_field name="Hour">
+                <bit_range from_index="22" to_index="26"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="23"
+                    upper_limit_type="inclusive"/>
+                </value_set>
+              </sub_field>
+              <sub_field name="Day">
+                <bit_range from_index="27" to_index="31"/>
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+                    upper_limit_type="inclusive"/>
+                </value_set>
+              </sub_field>
+            </bit_field>
+          </record>
+        </body>
+        <footer name="Record"/>
+      </message_def>
+
+      <!-- fixed_length_string element -->
+      <message_def name="Record6" message_id="00D6" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with a fixed_length_string entity.
+        </description>
+        <header name="Record"/>
+        <body name="Record6">
+          <record name="Record6Rec" optional="false">
+            <fixed_length_string name="subsystem_name" string_length="80" optional="false" />
+          </record>
+        </body>
+        <footer name="Record"/>
+      </message_def>
+
+      <!-- variable_length_string element -->
+      <message_def name="Record7" message_id="00D7" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with a variable_length_string entity.
+        </description>
+        <header name="Record"/>
+        <body name="Record7">
+          <record name="Record7Rec" optional="false">
+            <variable_length_string name="node_description" interpretation="a brief description of the node's functions" optional="true">
+              <count_field field_type_unsigned="unsigned byte"/>
+            </variable_length_string>
+          </record>
+        </body>
+        <footer name="Record"/>
+      </message_def>
+
+      <!-- variable_length_field element -->
+      <message_def name="Record8" message_id="00D8" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with a variable_length_field entity.
+        </description>
+        <header name="Record"/>
+        <body name="Record8">
+          <record name="Record8Rec" optional="false">
+            <variable_length_field name="QueryMessage" field_format="JAUS MESSAGE" optional="false" interpretation="The JAUS Query message to be used by the receiving component to generate the report message(s)" >
+              <count_field min_count="2" field_type_unsigned="unsigned integer"/>
+            </variable_length_field>
+          </record>
+        </body>
+        <footer name="Record"/>
+      </message_def>
+      
+      <!-- variable_format_field element -->
+      <message_def name="Record9" message_id="00D9" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with a variable_format_field entity.
+        </description>
+        <header name="Record"/>
+        <body name="Record9">
+          <record name="Record9Rec" optional="false">
+            <variable_format_field name="video_frames" optional="false">
+              <format_field>
+                <format_enum index="0" field_format="MJPEG"/>
+                <format_enum index="1" field_format="MPEG-1"/>
+                <format_enum index="2" field_format="MPEG-2"/>
+                <format_enum index="3" field_format="MP4"/>
+              </format_field>
+              <count_field field_type_unsigned="unsigned short integer"/>
+            </variable_format_field>            
+          </record>
+        </body>
+        <footer name="Record"/>
+      </message_def>
+
+      <!-- four fixed_field elements -->
+      <message_def name="Record10" message_id="00DA" is_command="false">
+        <description>
+          A message to test the record entity. Contains a record with four fixed_field entities.
+        </description>
+        <header name="Record"/>
+        <body name="Record10">
+          <record name="Record10Rec" optional="false">
+            <fixed_field name="FixedField1" field_type="byte" field_units="one" optional="false"/>
+            <fixed_field name="FixedField2" field_type="byte" field_units="one" optional="false"/>
+            <fixed_field name="FixedField3" field_type="byte" field_units="one" optional="false"/>
+            <fixed_field name="FixedField4" field_type="byte" field_units="one" optional="false"/>
+          </record>
+        </body>
+        <footer name="Record"/>
+      </message_def>
+      
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_Record" state_name="init"/>
+    <state_machine name="SD_Record">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

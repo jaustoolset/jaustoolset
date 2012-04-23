@@ -1,0 +1,137 @@
+# JAUS Service Interface Definition Language (JSIDLv1.0)
+#
+
+default namespace = "urn:jaus:jsidl:1.0"
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
+
+include "patterns.rnc"
+
+protocol_behavior =
+  element protocol_behavior {
+    attribute is_stateless { xsd:boolean }?,
+    \start+,
+    state_machine+
+  }
+  
+\start = 
+  element start {
+    attribute state_machine_name { identifier_ns },  
+    attribute state_name { identifier_ns }, 
+    attribute interpretation { text }?
+  }
+   
+state_machine = 
+   element state_machine {
+     attribute name { identifier_ns },
+     attribute interpretation { text }?,
+     state+
+   }
+   
+state = 
+   element state {
+     attribute name { identifier_ns },
+     attribute initial_state {identifier}?,
+     attribute interpretation { text }?,
+     entry?,
+     exit?,
+     transition*, 
+     default_transition?, 
+     state*,
+     default_state?
+   }
+   
+default_state = 
+  element default_state {
+     attribute interpretation { text }?,
+     transition*,
+     default_transition? 
+  }
+
+default_transition =   
+  element default_transition { 
+    attribute interpretation { text }?,
+    guard?,
+    (simple | push | pop),
+    (action | send_action)* 
+  }
+
+entry = 
+  element entry {
+    attribute interpretation { text }?,
+    (action | send_action)* 
+  }
+
+exit = 
+  element exit {
+    attribute interpretation { text }?,
+    (action | send_action)* 
+  }
+
+transition =
+  element transition {
+    attribute name { identifier_ns },
+    attribute interpretation { text }?,
+    parameter*,
+    guard?,
+    (simple | push | pop),
+    (action | send_action)*
+ }
+   
+simple = 
+  element simple {
+    attribute interpretation { text }?, 
+    end_state?
+  }
+
+push = 
+  element push {
+    attribute interpretation { text }?,
+    end_state, 
+    simple?
+  }
+
+pop = 
+  element pop {
+    attribute transition { identifier }?,
+    attribute interpretation { text }?, 
+    argument*
+  }
+
+argument = 
+  element argument {
+    attribute value { text },  
+    attribute interpretation { text }?
+  }
+
+guard = 
+  element guard {
+    attribute condition { text }, 
+    attribute interpretation { text }? 
+  }
+
+end_state = 
+  element end_state {
+    attribute state { identifier_ns }, 
+    attribute interpretation { text }? 
+  }
+
+parameter = 
+  element parameter {
+    attribute type { identifier_ns }, 
+    attribute value { text },
+    attribute interpretation { text }?  
+  }
+  
+action = 
+  element action {
+    attribute name { identifier_ns },
+    attribute interpretation { text }?,
+    argument*
+  }
+
+send_action = 
+  element send_action {
+    attribute name { identifier_ns },
+    attribute interpretation { text }?,
+    argument*
+  }

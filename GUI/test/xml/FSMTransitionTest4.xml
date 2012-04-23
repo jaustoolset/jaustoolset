@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest6" version="1.0">
+  <description>flattening single state transitions and default transitions</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMTransitionTest4" state_name="A"/>
+    <state_machine name="FSMTransitionTest4">
+		<state name="A">
+			<transition name="T1">
+				<parameter type="ParameterType" value="ParameterValue"/>
+				<guard condition="g1()"/>
+				<simple>
+					<end_state state="A"/>
+				</simple>
+				<action name="Action">
+					<argument value="ParameterValue"/>
+                	<argument value="'0'"/>
+              	</action>
+			</transition>
+			<default_transition>
+				<guard condition="g2()"/>
+				<simple>
+					<end_state state="A"/>
+				</simple>
+				<action name="Action">
+					<argument value="ParameterValue"/>
+                	<argument value="'0'"/>
+              	</action>
+			</default_transition>
+			<default_state>
+				<transition name="T2">
+					<parameter type="ParameterType" value="ParameterValue"/>
+					<guard condition="g3()"/>
+					<simple>
+						<end_state state="A"/>
+					</simple>
+					<action name="Action">
+						<argument value="ParameterValue"/>
+	                	<argument value="'0'"/>
+	              	</action>
+				</transition>
+				<default_transition>
+					<guard condition="g4()"/>
+					<simple>
+						<end_state state="A"/>
+					</simple>
+					<action name="Action">
+						<argument value="ParameterValue"/>
+	                	<argument value="'0'"/>
+	              	</action>
+				</default_transition>
+			</default_state>
+		</state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

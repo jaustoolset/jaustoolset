@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<type_and_units_field xmlns="urn:jaus:jsidl:1.0">
+  <type_and_units_enum index="0" field_type="short integer" field_units="degree Celsius"/>
+  <type_and_units_enum index="1" field_type="short integer" field_units="kelvin"/>
+  <type_and_units_enum index="2" field_type="float" field_units="degree Celsius"/>
+  <type_and_units_enum index="3" field_type="float" field_units="kelvin"/>
+</type_and_units_field>

@@ -1,0 +1,450 @@
+// NOTE: This is an obsolete test file used for initial informal testing.
+// This does not reflect accurately any work in progress or any specification
+// related to any standard.
+//
+service MissionManagement ( id="com:neya:mpms:MissionManagement" , version="0.1" ) {
+
+  // 9/7/2010 TODO:  Need Query/Report for task packages.
+  //                 Need design overview, walkthrough w/ PIT.
+  //
+  description "The Mission Management service provides the means to distribute,
+	monitor, and control Mission Task Packages that allow assets to perform
+	parts of a Mission Plan autonomously and collaboratively";
+  assumptions "All random deviations will tend in our favor.";
+
+  constants Constants {
+    uint32 MAX_JSIDL_LEN = 16384 one; // arbitrary
+    uint32 MAX_JC3IEDM_CODE = 6 one; // defined by JC3IEDM
+    uint32 MAX_JC3IEDM_VALUE = 64 one;
+  }
+
+  types Types {
+
+    // #include BasicTypes.jaus
+
+    // ByteData, ByteList, and ItemRef are from MPMS Events Service,
+    // will factor out later into shared CJSIDL.
+    record ByteData  {
+      required uint8 byte_field one  = 1;
+    } // record ByteData
+
+    list ByteList  {
+      uint16 count [0,65535];
+      repeated ByteData bytes;
+    } // list ByteList
+
+    list ItemRef  {
+      uint16 count [0,65535];
+      repeated ByteData item_index;
+    } // list ItemRef
+    record JausId {
+      required uint16 subsystem_id one = 1;
+      required uint8 node_id one = 2 ;
+      required uint8 component_id one = 3;
+    }
+    list JausIdList {
+      uint8 count[0,255];
+      repeated JausId jausId;
+    }
+    // Globally unique identifiers.
+    field uint32 MissionUID one;
+    field uint32 PackageUID one;
+    field uint32 TaskUID one;
+
+    record MissionParametersSpec {
+      // This is the JSIDL XML defining the MissionParameter
+      // data structure for this specific Task.
+      required MissionUID missionId = 1;
+      required vstring jsidl[0,MAX_JSIDL_LEN] = 2;
+    }
+    sequence MissionParameterBinding {
+      // Reference to a specific item in the MissionParameters.
+      required ItemRef item = 1;
+      // Multiple publishers per item gives a way to represent
+      // multiple-writers.
+      required JausIdList publishers = 2;
+    }
+    list MissionParameterBindingList {
+      uint8 count[0,255]; // arbitrary
+      repeated MissionParameterBinding binding;
+    }
+    // Types for managing Mission Parameter values.
+    list MissionParameterRefSet {
+      uint8 count[0,255];
+      repeated ItemRef ref;
+    }
+    record MissionId {
+      required MissionUID missionId = 1;
+    }
+    sequence MissionParameterRefs {
+      required MissionId missionId = 1;
+      required MissionParameterRefSet refs = 2;
+    }
+    sequence MissionParameterAssignment {
+      required ItemRef item = 1;
+      required ByteList encodedValue = 2;
+    }
+    list MissionParameterValueSet {
+      uint8 count[0,255];
+      repeated MissionParameterAssignment assignment;
+    }
+    record TimeRec {
+      required TimeStamp timeStamp = 1; // time of value snapshot
+    }
+    sequence MissionParameterValues {
+      required MissionId missionId = 1;
+      required MissionParameterValueSet values = 2;
+      optional TimeRec timestamp = 3;
+    }
+    // Types for managing Tasks.
+    record TaskId {
+      required TaskUID taskId = 1;
+    }
+    list TaskIdList {
+      uint8 count[0,255];
+      repeated TaskId taskId;
+    }
+    sequence TslTask {
+      required TaskId taskId = 1;
+      required ByteList encodedTask = 2;
+    }
+    list TslTaskList {
+      uint8 count[0,255];
+      repeated TslTask task;
+    }
+    record PackageId {
+      required PackageUID pid = 1;
+    }
+    sequence StandardTaskPackage {
+      required MissionId missionId = 1;
+      required PackageId packageId = 2;
+      optional MissionParametersSpec missionParameters = 3;
+      optional MissionParameterValues initialParams = 4;
+      optional MissionParameterBindingList publishers = 5;
+      // used to setup JAUS Events.
+      optional TslTaskList tasks = 6;
+      optional TaskId main = 7;
+      optional JausIdList exceptionListeners = 8;
+      optional JausIdList logListeners = 9;
+      optional CapabilityList requiredCapabilities = 10;
+      // TODO: Additional TaskPackage specifications:
+      //  -- Logging spec.
+      //  -- Digital signature.
+      //  -- JAUS configuration, like subsystem_id?
+      //  -- Other configuration, preconditions, constraints?
+    }
+
+    variant TaskPackage {
+      uint8 vtag[1,1];
+      vtag 1: StandardTaskPackage stp;
+      // TODO: Other variants of TaskPackage?
+      // e.g. TslTask pre-compiled for embedded JVM?
+    }
+    enum uint8 RunStatusCode one {
+      INVALID = 0; // Cannot run, invalid data or can't resolve references.
+      LOADED = 1;  // All resource references resolved,
+      // ready to run when preconditions allow.
+      READY = 2;   // Preconditions satisfied.  Ad-hoc tasks will go
+      // immediately to PAUSED.
+      PAUSED = 3;
+      RUNNING = 4;
+      ABORTED = 5; // External command or error.  Failsafed.
+      ERROR = 6;  // Internal error, cannot restart. TODO: work out details.
+      // TODO: More errors here.
+    }
+    record MissionStatus {
+      required MissionUID mission = 1;
+      required RunStatusCode status = 2;
+      optional vstring extendedText[0,MAX_STRING] = 3;
+      optional TimeStamp time = 4;  // Time of last status change.
+    }
+    record TaskStatus {
+      required TaskUID tid = 1;
+      required RunStatusCode status = 2;
+      optional vstring extendedText[0,MAX_STRING] = 3;
+      optional TimeStamp time = 4;  // Time of last status change.
+    }
+    list TaskStatusList {
+      uint8 count[0,255];
+      repeated TaskStatus status;
+    }
+
+    // Use lists of command requestIds to retrieve extended error info.
+    // These RequestIds are the same as those used in CreateCommandEvent
+    // and CommandEvent, discussed below.
+    field uint8 RequestId one;
+    record RequestIdRec {
+      required RequestId rid = 1;
+    }
+    list RequestIdList {
+      uint8 count[0,255];
+      repeated RequestIdRec reqId;
+    }
+    record InfoSelection {
+      required uint8 infoSelect one {
+        EXTENDED_TEXT = 1;
+        TIMESTAMPS = 2;
+        ALL_INFO = 3; // extended text and timestamps
+      } = 1;
+    }
+    sequence ExtendedErrorQuery {
+      required RequestIdList requestIds = 1; // of command(s) of interest.
+      optional InfoSelection selection = 2;
+    }
+    record ErrorInfo {
+      required RequestId reqId = 1;
+      required uint64 extendedErrorCode one = 2;   // TODO: or uint32?
+      optional vstring extendedText[0,MAX_STRING] = 3;
+      optional TimeStamp time = 4;  // Time of command/error.
+    }
+    list ErrorInfoList {
+      uint8 count[0,255];
+      repeated ErrorInfo info;
+    }
+    enum uint8 MissionManagementResponseCode one {
+      // For each of these, details will be available
+      // in ExtendedError.
+      SUCCESSFUL = 0;
+      FAILED_GENERIC = 1;
+      NOT_PERMITTED = 2;
+      TRY_AGAIN = 3; // possibly transitory condition.
+      NOT_CAPABLE = 4;  // cannot satisfy required capability.
+      INVALID_MISSION_ID = 5;
+      INVALID_PACKAGE_ID = 6;
+      INVALID_TASK_ID = 7;
+      OTHER_INVALID_PARAMETER = 8;
+      // TODO: More errors here.
+    }
+    sequence TaskExceptionQuery {
+      required TaskIdList taskIds = 1; // of the task(s) of interest.
+      required ByteData numExceptions = 2; // number of most recent exceptions we want.
+      optional InfoSelection selection = 3;
+    }
+    record ExceptionInfo {
+      required TaskUID tid = 1;
+      required uint64 exceptionCode one = 2;   // TODO: or uint32?
+      optional vstring extendedText[0,MAX_STRING] = 3;
+      optional TimeStamp time = 4;  // Time of command/error.
+    }
+    list TaskExceptionList {
+      uint8 count[0,255];
+      repeated ExceptionInfo info;
+    }
+    // Managing log info.
+    enum uint8 LogLevelVal one {
+      LOG_EMERG = 0; // system is unusable
+      LOG_ALERT = 1; // action must be taken immediately
+      LOG_CRIT = 2; // critical conditions
+      LOG_ERR =	3;  // error conditions
+      LOG_WARNING = 4;	// warning conditions
+      LOG_NOTICE = 5; // normal but significant condition
+      LOG_INFO = 6; // informational
+      LOG_DEBUG = 7; // debug-level messages
+    }
+    record LogLevel {
+      required LogLevelVal level = 1;
+    }
+    sequence TaskLogQuery {
+      required TaskIdList taskIds = 1; // of the task(s) we're interested in.
+      required ByteData numEntries = 2; // number of most recent log entries we want.
+      required LogLevel level = 3; // of this level or higher.
+    }
+    record LogInfo {
+      required TaskUID tid = 1;
+      required uint8 level one = 2;
+      optional vstring extendedText[0,MAX_STRING] = 3;
+      optional TimeStamp time = 4;  // Time of command/error.
+    }
+    list TaskLogList {
+      uint8 count[0,255];
+      repeated LogInfo info;
+    }
+    record Jc3iedmCapability {
+      required string jc3Code[MAX_JC3IEDM_CODE] = 1;
+      optional vstring jc3Value[0,MAX_JC3IEDM_VALUE] = 2;  // TODO: later make variant
+    }
+    list CapabilityList {
+      uint8 count[0,255];
+      repeated Jc3iedmCapability capability;
+    }
+  }
+  messages {
+    // -- JSS v1.1 allows a client to submit a command that generates a
+    //    0x41f6 CommandEvent using the 0x01f6 CreateCommandEvent.
+    //
+    // In v1.1, the only result code that can be returned is
+    // 0 = SUCCESS or 1 = FAIL.  We are going to propose that this
+    // result code be extended to support service-specific and
+    // command-specific result codes, enumerated below for each message.
+
+    // To simplify things at the application layer, we use
+    // 'returns' declarations to indicate result codes defined
+    // for the specific command.
+
+    // Command Codes for this service must be allocated and defined
+    // to be globally unique.  These codes are temporary until
+    // assigned as part of the standards process.
+    command 0x0fa1 AddTaskPackage {
+      description "Download a task package to the service";
+      TaskPackage package;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fa2 UpdateTaskPackage {
+      description "Selectively update contents of a loaded task package";
+      TaskPackage package;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fa3  RemoveTaskPackage {
+      description "Remove a loaded task package.";
+      TaskId packageId;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fa4 ActivateMission {
+      description "Make designated Mission the active mission
+                   and Run its main Task, if any.";
+      MissionId mission;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fa5 DectivateMission {
+      description "Deactivate the designated Mission,
+                   Abort and Reset all Tasks, unsubscribe
+                   all parameter subscriptions, etc.";
+      MissionId mission;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fa6 AbortMission {
+      description "Equivalent to sending AbortTask to all
+                   Tasks in the mission.";
+      MissionId mission;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fa7 PauseMission {
+      description "Equivalent to sending PauseTask to all
+                   Tasks in the mission.";
+      MissionId mission;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fa8 ResumeMission {
+      description "Equivalent to sending ResumeTask to all
+                   Tasks in the mission.";
+      MissionId mission;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fa9 AbortMission {
+      description "Equivalent to sending AbortTask to all
+                   Tasks in the mission.";
+      MissionId mission;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0faa RunTask {
+      description "Command a task to begin executing.";
+      TaskId task;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fab AbortTask {
+      description "Command a task to failsafe and abort.";
+      TaskId task;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fac PauseTask {
+      description "Command a task to pause in a failsafe manner.";
+      TaskId task;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fad  ResumeTask {
+      description "Command a task to resume.";
+      TaskId task;
+      returns MissionManagementResponseCode code;
+    }
+    command 0x0fae  SetMissionParameters {
+      description "Push Mission Parameter updates to the service.";
+      // Since we don't have a predefined MissionParameter data structure,
+      // we need to use ItemRefs and encoded values in ByteLists.
+      MissionParameterValues update;
+      returns MissionManagementResponseCode code;
+    }
+    query 0x2fa1  QueryAssetCapabilities {
+      description "Request a set of JC3IEDM asset capabilities. Each item in
+                   the list should include only the code field. If the value
+                   field is included, it is ignored.  '*' and '?' wildcards
+                   are supported.";
+      CapabilityList requestedCapabilities;
+    }
+    query 0x2fa2  QueryMissionStatus {
+      description "Return status for overall Mission.";
+      MissionId mission;
+    }
+    query 0x2fa3  QueryTaskStatus {
+      description "Return status for all selected tasks.";
+      TaskIdList tasks;
+    }
+    query 0x2fa4  QueryStoredTasks {
+      description "Return a dump of all selected tasks.";
+      TaskIdList tasks;
+    }
+    query 0x2fa5  QueryMissionParameters {
+      description "Query current values of specific parameters";
+      MissionParameterRefs paramQuery;
+    }
+    query 0x2fa6  QueryExtendedErrorInfo {
+      description "Query extended info for one or more commands
+                   invoked w/ CreateCommandEvent";
+      ExtendedErrorQuery req;
+    }
+    query 0x4fa7  QueryTaskException {
+      description "Report task exceptions, will report to all listeners
+                  in TaskPackage spec.";
+      TaskExceptionQuery exceptReq;
+    }
+    query 0x4fa8  ReportTaskLog {
+      description "Report log info from specific tasks, will report to
+                   all listeners in TaskPackage spec.";
+      TaskLogQuery logReq;
+    }
+    inform 0x4fa1  ReportAssetCapabilities {
+      description "Report a set of JC3IEDM asset capabilities. If the
+                   optional value field for any item in the list is missing,
+                   that means the capability is not defined for this asset.";
+      CapabilityList reportedCapabilities;
+    }
+    inform 0x4fa2  ReportMissionStatus {
+      description "Report status of a mission.";
+      MissionStatus missionStatus;
+    }
+    inform 0x4fa3  ReportTaskStatus {
+      description "Report status of tasks.";
+      TaskStatusList tasksStatus;
+    }
+    inform 0x4fa4  ReportStoredTasks {
+      description "Provide a dump of specified tasks.";
+      TslTaskList tasks;
+    }
+    inform 0x4fa5  ReportMissionParameters {
+      description "Report a set of current values for a specific
+                   Mission Parameters";
+      MissionParameterValues report;
+    }
+    inform 0x4fa6  ReportExtendedErrorInfo {
+      description "Report extended error info for commands invoked
+                   with CommandEvent";
+      ErrorInfoList report;
+    }
+    inform 0x4fa7  ReportTaskException {
+      description "Report task exceptions, will report to all listeners in
+                   TaskPackage spec.";
+      TaskExceptionList exception;
+    }
+    inform 0x4fa8  ReportTaskLog {
+      description "Report log info from specific tasks, will report to all
+                   listeners in TaskPackage spec.";
+      TaskLogList log;
+    }
+  }
+  events Events {}
+  protocol {
+    start fsm.init;
+    state_machine fsm {
+      state init {}
+    }
+  }
+}

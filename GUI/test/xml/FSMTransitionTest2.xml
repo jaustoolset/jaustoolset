@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest6" version="1.0">
+  <description>simple, push, pop, and internal transitions with parameters actions and guards</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMTransitionTest2" state_name="A"/>
+    <state_machine name="FSMTransitionTest2">
+		<state name="A">
+			<transition name = "T1">
+				<parameter type="ParameterType" value="ParameterValue"/>
+				<parameter type="bool" value="Run"/>
+				<guard condition="guard1() == true &amp;&amp; guard2( Run )"/>
+				<simple>
+					<end_state state="A"/>
+				</simple>
+				<action name="Action">
+					<argument value="ParameterValue"/>
+                	<argument value="'0'"/>
+              	</action>
+			</transition>
+			<transition name = "T2">
+				<parameter type="ParameterType" value="ParameterValue"/>
+				<parameter type="bool" value="Run"/>
+				<guard condition="guard1() == true &amp;&amp; guard2( Run )"/>
+				<pop transition="T5">
+				</pop>
+				<action name="Action">
+					<argument value="ParameterValue"/>
+                	<argument value="'0'"/>
+              	</action>
+			</transition>
+			<transition name = "T3">
+				<parameter type="ParameterType" value="ParameterValue"/>
+				<parameter type="bool" value="Run"/>
+				<guard condition="guard1() == true &amp;&amp; guard2( Run )"/>
+				<push>
+					<end_state state="A" />
+				</push>
+				<action name="Action">
+					<argument value="ParameterValue"/>
+                	<argument value="'0'"/>
+              	</action>
+			</transition>
+			<transition name = "T4">
+				<parameter type="ParameterType" value="ParameterValue"/>
+				<parameter type="bool" value="Run"/>
+				<guard condition="guard1() == true &amp;&amp; guard2( Run )"/>
+				<internal>
+
+				</internal>
+				<action name="Action">
+					<argument value="ParameterValue"/>
+                	<argument value="'0'"/>
+              	</action>
+			</transition>
+		</state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

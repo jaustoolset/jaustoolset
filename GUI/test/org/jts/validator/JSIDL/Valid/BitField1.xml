@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bit_field name="BitField1" field_type_unsigned="unsigned integer" optional="false"
+  interpretation="A timestamp specified in an unsigned integer" xmlns="urn:jaus:jsidl:1.0">
+  <sub_field name="Milliseconds">
+    <bit_range from_index="0" to_index="9"/>
+    <value_set offset_to_lower_limit="false">
+      <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="999"
+        upper_limit_type="inclusive"/>
+    </value_set>
+  </sub_field>
+  <sub_field name="Seconds">
+    <bit_range from_index="10" to_index="15"/>
+    <value_set offset_to_lower_limit="false">
+      <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+        upper_limit_type="inclusive"/>
+    </value_set>
+  </sub_field>
+  <sub_field name="Minutes">
+    <bit_range from_index="16" to_index="21"/>
+    <value_set offset_to_lower_limit="false">
+      <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+        upper_limit_type="inclusive"/>
+    </value_set>
+  </sub_field>
+  <sub_field name="Hour">
+    <bit_range from_index="22" to_index="26"/>
+    <value_set offset_to_lower_limit="false">
+      <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="23"
+        upper_limit_type="inclusive"/>
+    </value_set>
+  </sub_field>
+  <sub_field name="Day">
+    <bit_range from_index="27" to_index="31"/>
+    <value_set offset_to_lower_limit="false">
+      <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+        upper_limit_type="inclusive"/>
+    </value_set>
+  </sub_field>
+</bit_field>

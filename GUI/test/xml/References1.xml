@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../doc/JSIDL_Semantics.rnc" type="compact"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="TestSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">The set of services to be tested</description>
+  <service_def name="HiddenServerOfServer1" id="urn:org.jts.test:HiddenServerOfServer1" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <message_set>
+      <input_set>
+        <message_def name="HiddenInputMessage1" is_command="true" message_id="0110">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set>
+        <message_def name="HiddenOutputMessage1" is_command="true" message_id="0111">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="HiddenServerOfServer1FSM" state_name="Ready"/>
+      <state_machine name="HiddenServerOfServer1FSM">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  <service_def name="ServerParent1" id="urn:org.jts.test:ServerParent1" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <references>
+      <client_of name="HiddenServerOfServer1" id="urn:org.jts.test:HiddenServerOfServer1" version="1.0"/>
+    </references>
+    <message_set>
+      <input_set>
+        <message_def name="ServerParentInputMessage1" is_command="true" message_id="0010">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set>
+        <message_def name="ServerParentOutputMessage1" is_command="true" message_id="0011">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="ServerParent1FSM" state_name="Ready"/>
+      <state_machine name="ServerParent1FSM">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  <service_def name="Server1Child" id="urn:org.jts.test:Server1Child" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <references>
+      <inherits_from name="ServerParent1" id="urn:org.jts.test:ServerParent1" version="1.0"/>
+      <client_of name="HiddenServerOfServer1" id="urn:org.jts.test:HiddenServerOfServer1" version="1.0"/>
+    </references>
+    <message_set>
+      <input_set>
+        <message_def name="ServerInputMessage1" is_command="true" message_id="0001">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set>
+        <message_def name="ServerOutputMessage1" is_command="true" message_id="0002">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </output_set>
+      </message_set>
+    <internal_events_set>
+      <event_def name="HiddenEvent1">
+        <description xml:space="default"> This event is hidden from the client </description>
+        <header name="EmptyHeader"/>
+        <body name="EmptyBody"/>
+        <footer name="EmptyFooter"/>
+      </event_def>
+    </internal_events_set>
+    <protocol_behavior>
+      <start state_machine_name="Server1Child.ServerParent1FSM" state_name="Ready"/>
+      <state_machine name="Server1Child.ServerParent1FSM">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  <service_def name="Server2" id="urn:org.jts.test:Server2" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <message_set>
+      <input_set>
+        <message_def name="ServerInputMessage2" is_command="true" message_id="0003">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set>
+        <message_def name="ServerOutputMessage2" is_command="true" message_id="0004">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="Server2FSM" state_name="Ready"/>
+      <state_machine name="Server2FSM">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  <service_def name="ParentServer1" id="urn:org.jts.test:ParentServer1" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <message_set>
+      <input_set>
+        <message_def name="ParentServerInputMessage1" is_command="true" message_id="0012">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set>
+        <message_def name="ParentServerOutputMessage1" is_command="true" message_id="0013">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </output_set>
+    </message_set>
+    <internal_events_set>
+      <event_def name="HiddenParentServerEvent1">
+        <description xml:space="default"> This event is hidden from the client </description>
+        <header name="EmptyHeader"/>
+        <body name="EmptyBody"/>
+        <footer name="EmptyFooter"/>
+      </event_def>
+    </internal_events_set>
+    <protocol_behavior>
+      <start state_machine_name="ParentServer1FSM" state_name="Ready"/>
+      <state_machine name="ParentServer1FSM">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  <service_def name="Parent1" id="urn:org.jts.test:Parent1" version="1.0"
+  xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <references>
+      <client_of name="ParentServer1" id="urn:org.jts.test:ParentServer1" version="1.0"/>
+    </references>
+    <message_set>
+      <input_set>
+        <message_def name="ParentInputMessage1" is_command="true" message_id="0005">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set>
+        <message_def name="ParentOutputMessage1" is_command="true" message_id="0006">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </output_set>
+    </message_set>
+    <internal_events_set>
+        <event_def name="ParentEvent1">
+          <description xml:space="default"> This event is seen from the client </description>
+          <header name="EmptyHeader"/>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </event_def>
+    </internal_events_set>
+    <protocol_behavior>
+      <start state_machine_name="Parent1FSM" state_name="Ready"/>
+      <state_machine name="Parent1FSM">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  <service_def name="Intermediary1" id="urn:org.jts.test:Intermediary1" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <references>
+      <inherits_from name="Parent1" id="urn:org.jts.test:Parent1" version="1.0"/>
+    </references>
+    <message_set>
+      <input_set>
+        <message_def name="IntermediaryInputMessage1" is_command="true" message_id="0007">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set>
+        <message_def name="IntermediaryOutputMessage1" is_command="true" message_id="0008">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="Intermediary1.Parent1FSM" state_name="Ready"/>
+      <state_machine name="Intermediary1.Parent1FSM">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>  
+  <service_def name="Client1" id="urn:org.jts.test:Client1" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <references>
+      <inherits_from name="Intermediary1" id="urn:org.jts.test:Intermediary1" version="1.0"/>
+      <client_of name="Server1Child" id="urn:org.jts.test:Server1Child" version="1.0"/>
+      <client_of name="Server2" id="urn:org.jts.test:Server2" version="1.0"/>
+    </references>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="Client1.Intermediary1.Parent1FSM" state_name="Ready"/>
+      <state_machine name="Client1.Intermediary1.Parent1FSM">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+</ns1:service_set>

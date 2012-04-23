@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<message_def name="CreateEvent" message_id="010B" is_command="true" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">
+    This message is used to set up an event.   Field 1 is a local request ID that the event provider returns in the Confirm or Reject message.  Field 2 is the Event Type, which allows the requester  to specify the type of event – Periodic specifies that the event is a service connection request and should not be queued, in which case field 3 (Requested periodic rate) must be set to a non-zero value.  Event type of Every Change specifies that the corresponding Report message should be sent every time the data associated with that message changes.  
+    Field 4 contains the size of the Query message that is to specify the contents of the Report.  Field 5 contains the Query message (including its two byte header).      
+  </description>
+  <header name="JAUSApplicationLayerHeader">
+    <record name="HeaderRec" optional="false">
+      <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+        optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+    </record>
+  </header>
+  <body name="Body">
+    <record name="CreateEventRec" optional="false">
+      <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+        interpretation="Local request ID for use in confirm event"/>
+      <fixed_field name="EventType" field_type="unsigned byte" field_units="one" optional="false"
+        interpretation="Type of event">
+        <value_set offset_to_lower_limit="false">
+          <value_enum enum_index="0" enum_const="Periodic (SC)"/>
+          <value_enum enum_index="1" enum_const="Every change"/>
+        </value_set>
+      </fixed_field>
+      <fixed_field name="RequestedPeriodicRate" field_type="unsigned short integer"
+        field_units="hertz" optional="false" interpretation="Must be specified for periodic event,
+        and set to 0 for every change ">
+        <scale_range integer_function="round" real_lower_limit="0" real_upper_limit="1092"/>
+      </fixed_field>
+      <variable_length_field name="QueryMessage" field_format="JAUS MESSAGE" optional="false"
+        interpretation="The JAUS Query message to be used by the receiving           component to
+        generate the report message(s)">
+        <count_field min_count="2" field_type_unsigned="unsigned integer"/>
+      </variable_length_field>
+    </record>
+  </body>
+  <footer name="Footer"/>
+</message_def>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="StillImage" id="urn:jaus:jss:environmentSensing:StillImage" version="1.0"
+	xmlns="urn:jaus:jsidl:1.0">
+	<description xml:space="preserve">This service provides access to the capabilities and 
+		configuration of a camera, allowing the controlling component to set the camera 
+		to a particular operational profile and to obtain images from the camera.  While 
+		this service reports each image individually, the Events service can be used 
+		to automatically report images at a specified rate thereby simulating video 
+		(such as is typically done to create an MJPEG video stream).</description>
+	<assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+	<references>
+		<inherits_from name="visualSensor" id="urn:jaus:jss:environmentSensing:VisualSensor" version="1.0"/>
+	</references>
+	<declared_type_set name="Types">
+		<declared_type_set_ref name="environmentSensing" id="urn:jaus:jss:environmentSensing:MessageSet"
+			version="1.0"/>
+	</declared_type_set>
+	<message_set>
+		<input_set>
+			<declared_message_def name="SetStillImageSensorConfiguration"
+				declared_type_ref="environmentSensing.commandClass.SetStillImageSensorConfiguration"/>
+			<declared_message_def name="QueryStillImageData"
+				declared_type_ref="environmentSensing.queryClass.QueryStillImageData"/>
+			<declared_message_def name="QueryStillImageSensorConfiguration"
+				declared_type_ref="environmentSensing.queryClass.QueryStillImageSensorConfiguration"/>
+			<declared_message_def name="QueryStillImageSensorCapabilities"
+				declared_type_ref="environmentSensing.queryClass.QueryStillImageSensorCapabilities"/>
+		</input_set>
+		<output_set>
+			<declared_message_def name="ReportStillImageData"
+				declared_type_ref="environmentSensing.informClass.ReportStillImageData"/>
+			<declared_message_def name="ReportStillImageSensorConfiguration"
+				declared_type_ref="environmentSensing.informClass.ReportStillImageSensorConfiguration"/>
+			<declared_message_def name="ReportStillImageSensorCapabilities"
+				declared_type_ref="environmentSensing.informClass.ReportStillImageSensorCapabilities"/>
+		</output_set>
+	</message_set>
+	<internal_events_set/>
+	<protocol_behavior is_stateless="false">
+		<start state_machine_name="StillImage.VisualSensor.AccessControl.Events.Transport.ReceiveFSM"
+			state_name="Receiving.Ready.NotControlled"/>
+		<state_machine name="StillImage.VisualSensor.AccessControl.Events.Transport.ReceiveFSM">
+			<state name="Receiving" initial_state="Ready">
+				<state name="Ready" initial_state="NotControlled">
+					<state name="NotControlled">
+						<default_state>
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryStillImageSensorCapabilities" value="msg"
+									interpretation="enveloped QueryStillImageSensorCapabilities message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportStillImageSensorCapabilities message">
+									<argument value=" 'ReportStillImageSensorCapabilities' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryStillImageSensorConfiguration" value="msg"
+									interpretation="enveloped QueryStillImageSensorConfiguration message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportStillImageSensorConfiguration message">
+									<argument value=" 'ReportStillImageSensorConfiguration' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryStillImageData" value="msg"
+									interpretation="enveloped QueryStillImageData message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<guard condition="isCoordinateTransformSupported( )"
+									interpretation="True if the service supports coordinate 
+									system transformations for data reports."/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportStillImageData message using 
+									the requested coordinate system">
+									<argument value=" 'ReportStillImageData' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryStillImageData" value="msg"
+									interpretation="enveloped QueryStillImageData message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<guard condition="! isCoordinateTransformSupported( )"
+									interpretation="True if the service does not support 
+									coordinate system transformations for data reports."/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportStillImageData message in 
+									native coordinate system">
+									<argument value=" 'ReportStillImageData' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+						</default_state>
+					</state>
+					<state name="Controlled">
+						<default_state>
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="SetStillImageSensorConfiguration" value="msg"
+									interpretation="enveloped SetStillImageSensorConfiguration message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<guard condition="accessControl.isControllingClient( transportData )"
+									interpretation="True if the message that triggered the 
+									transition is received from the client that is in control 
+									of this service."/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send sendConfirmSensorConfiguration message">
+									<argument value=" 'ConfirmSensorConfiguration' "/>
+									<argument value="transportData"/>
+								</action>
+								<action name="updateStillImageSensorConfiguration"
+									interpretation="Update the sensor user controllable 
+									configuration parameters according to the ones specified."
+								/>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryStillImageSensorCapabilities" value="msg"
+									interpretation="enveloped QueryStillImageSensorCapabilities message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportStillImageSensorCapabilities message">
+									<argument value=" 'ReportStillImageSensorCapabilities' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryStillImageSensorConfiguration" value="msg"
+									interpretation="enveloped QueryStillImageSensorConfiguration message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportStillImageSensorConfiguration message">
+									<argument value=" 'ReportStillImageSensorConfiguration' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryStillImageData" value="msg"
+									interpretation="enveloped QueryStillImageData message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<guard condition="isCoordinateTransformSupported( )"
+									interpretation="True if the service supports coordinate 
+									system transformations for data reports."/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportStillImageData message using 
+									the requested coordinate system">
+									<argument value=" 'ReportStillImageData' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryStillImageData" value="msg"
+									interpretation="enveloped QueryStillImageData message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<guard condition="! isCoordinateTransformSupported( )"
+									interpretation="True if the service does not support 
+									coordinate system transformations for data reports."/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportStillImageData message 
+									in native coordinate system">
+									<argument value=" 'ReportStillImageData' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+						</default_state>
+					</state>
+					<default_state> </default_state>
+				</state>
+			</state>
+		</state_machine>
+	</protocol_behavior>
+</service_def>

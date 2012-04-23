@@ -1,0 +1,96 @@
+/*
+ * Created on Oct 9, 2003
+ */
+package com.u2d.ui;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+import com.u2d.css4swing.style.ComponentStyle;
+
+/**
+ * @author Eitan Suez
+ */
+public class SeeThruList extends JList
+{
+
+	public SeeThruList()
+	{
+		addMouseListener(new MouseAdapter()
+		{
+			public void mousePressed(MouseEvent evt)
+			{
+				if (evt.isPopupTrigger())
+					dispatch(evt);
+			}
+			// for microsoft platform:
+			public void mouseReleased(MouseEvent evt)
+			{
+				if (evt.isPopupTrigger())
+					dispatch(evt);
+			}
+			public void mouseClicked(MouseEvent evt)
+			{
+				dispatch(evt);
+			}
+		});
+		
+		addMouseMotionListener(new MouseMotionAdapter()
+		{
+			public void mouseDragged(MouseEvent evt)
+			{
+				dispatch(evt);
+			}
+		});
+      
+      addKeyListener(new KeyListener()
+      {
+         public void keyTyped(KeyEvent evt) { dispatch(evt); }
+         public void keyPressed(KeyEvent evt) { dispatch(evt); }
+         public void keyReleased(KeyEvent evt) { dispatch(evt); }
+      });
+      
+	// JTS
+	ComponentStyle.addClass(this, "lists");
+	// jts
+         
+   }
+
+   private void dispatch(MouseEvent evt)
+	{
+		int index = locationToIndex(new Point(evt.getX(), evt.getY()));
+		if (index < 0) return;
+
+//		setSelectedIndex(index);
+
+		Object value = getModel().getElementAt(index);
+		ListCellRenderer renderer = getCellRenderer();
+		Component item = renderer.getListCellRendererComponent(SeeThruList.this, value, index, false, false);
+
+		item.dispatchEvent(evt);
+	}
+   private void dispatch(KeyEvent evt)
+   {
+      // dispatch key event down..
+      int index = getSelectedIndex();
+      if (index < 0) return;
+
+      // filter out navigation keys: issue in java 5.
+      if (isNavigationKey(evt.getKeyCode())) return;
+      
+      Object value = getModel().getElementAt(index);
+      ListCellRenderer renderer = getCellRenderer();
+      Component item = renderer.getListCellRendererComponent(SeeThruList.this, value, index, false, false);
+
+      item.dispatchEvent(evt);
+   }
+
+   private boolean isNavigationKey(int keyCode)
+   {
+      return (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_UP ||
+          keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT ||
+          keyCode == KeyEvent.VK_HOME || keyCode == KeyEvent.VK_END ||
+          keyCode == KeyEvent.VK_PAGE_UP || keyCode == KeyEvent.VK_PAGE_DOWN );
+   }
+}

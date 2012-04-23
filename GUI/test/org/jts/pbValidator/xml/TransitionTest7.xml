@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:TransitionTest7"
+   name="TransitionTest7" version="1.0">
+   <description xml:space="preserve">
+      Tests: Add a warning to this effect – “If the trigger of an added transition is an internal event that causes a state change 
+      in the base services, care must be taken to ensure that the internal event is first initialized by another transition that is 
+      triggered by a newly defined input message. That is, the new internal event must be causally and temporally related 
+      to a new input message such that the internal event executes only after a transition to the related input message has 
+      been executed at least once.
+      (This is the base service and TransitionTest8 is the derived service that specifies the internal event and associated transition)
+   </description>
+   <assumptions/> 
+   <message_set>
+      <input_set>
+         <message_def name="Message1" message_id="0001" is_command="true">
+            <description xml:space="preserve">
+               A message
+            </description>
+            <header name="header"/>
+            <body name="body"/>
+            <footer name="footer"/>
+         </message_def>
+      </input_set>
+      <output_set/>
+   </message_set>
+   <internal_events_set/>
+   <protocol_behavior>
+      <start state_machine_name="FSM" state_name="Ready"/>
+      <state_machine name="FSM">
+         <state name="NotReady"/>
+         <state name="Ready"/>
+      </state_machine>
+   </protocol_behavior>
+</service_def>

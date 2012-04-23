@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="InheritanceServiceDef" id="urn.jts.InheritanceTest" version="1.1" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references>
+        <inherits_from name="Transport" id="urn:jaus:jss:core:Transport" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="Message2" message_id="1514" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+            <message_def name="Message1" message_id="5013" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+        </input_set>
+        <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="InheritanceServiceDef.Transport.ReceiveFSM" state_name="Receiving"/>
+        <start state_machine_name="InheritanceServiceDef.Transport.SendFSM" state_name="Sending"/>
+        <state_machine name="InheritanceServiceDef.Transport.ReceiveFSM">
+            <state name="Receiving">
+                <transition name="transport.Receive">
+                    <parameter type="Message1" value="msg"/>
+                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                    <simple>
+                        <end_state state="NewState"/>
+                    </simple>
+                </transition>
+            </state>
+            <state name="NewState"/>
+        </state_machine>
+        <state_machine name="InheritanceServiceDef.Transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_Entry" id="ImportTest:SD_Entry" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the entry element with all levels of multiplicity.
+
+    The 1st state has no optional elements and all multiplicity set to 0.
+    The 2nd state has all optional elements and all multiplicity set to 1.
+    The 3rd state has all multiplicity set to *.
+  </description>
+
+  <!-- 
+    element entry 
+    {
+      attribute interpretation { text }?,
+      (action | send_action)* 
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    
+    <start state_machine_name="SD_Entry" state_name="Entry1"/>
+    <state_machine name="SD_Entry">
+      <!-- The 1st state has no optional elements and all multiplicity set to 0 -->
+      <state name="Entry1">
+        <entry/>
+      </state>
+
+      <!-- The 2nd state has all optional elements and all multiplicity set to 1 -->
+      <state name="Entry2">
+        <entry interpretation="An entry interpretation" >
+          <action name="initialize" interpretation="call the initialize internal event"/>
+        </entry>
+      </state>
+      
+      <!-- The 3rd state has all multiplicity set to * -->
+      <state name="Entry3">
+        <entry>
+          <action name="initialize"/>
+          <action name="initialize2"/>
+          <send_action name="One"/>
+          <send_action name="Two"/>
+        </entry>
+      </state>
+      
+    </state_machine>
+  </protocol_behavior>
+</service_def>

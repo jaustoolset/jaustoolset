@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="ListManager" id="urn:jaus:jss:mobility:ListManager" version="1.0"
+  xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description> The List Manager Service permits operations on a single ordered sequence
+    of connected elements. It supports operations to add, replace or delete elements from
+    the list, as well as querying the entire list or individual elements. Elements within
+    the list are uniquely identified by the Element UID. The Element UID is used as an
+    identifier only, and the value of the UID does not imply a sequence or order. When a
+    new element is added to the list, the previous (parent) and next (child) elements are
+    specified to denote sequencing, similar to a doubly linked list. Circular lists can be
+    created when the last element in the list specifies the first element as a child. A
+    list is considered valid when the following conditions are met: 1) A list must contain
+    exactly one head element which is defined as having a previous (parent) identifier of
+    zero (0). 2) For non-circular lists, the list must contain exactly one tail element
+    which is defined as having a next (child) identifier of zero (0). 3) Each element must
+    reference existing previous (parent) and next (child) elements, or zero. 4) Elements
+    cannot be orphaned. An orphan is defined as an element that is not connected in any
+    way to the other elements in the list. 5) The previous (parent) and next(child)
+    reference for each element cannot point to itself. The list manager service is
+    designed to be inherited, and is trivial on its own. Derived services should redefine
+    isElementSupported condition as shown by example in the Global Waypoint List Driver. </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet"
+      version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SetElement"
+        declared_type_ref="mobility.commandClass.SetElement"/>
+      <declared_message_def name="DeleteElement"
+        declared_type_ref="mobility.commandClass.DeleteElement"/>
+      <declared_message_def name="QueryElement"
+        declared_type_ref="mobility.queryClass.QueryElement"/>
+      <declared_message_def name="QueryElementList"
+        declared_type_ref="mobility.queryClass.QueryElementList"/>
+      <declared_message_def name="QueryElementCount"
+        declared_type_ref="mobility.queryClass.QueryElementCount"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ConfirmElementRequest"
+        declared_type_ref="mobility.commandClass.ConfirmElementRequest"/>
+      <declared_message_def name="RejectElementRequest"
+        declared_type_ref="mobility.commandClass.RejectElementRequest"/>
+      <declared_message_def name="ReportElement"
+        declared_type_ref="mobility.informClass.ReportElement"/>
+      <declared_message_def name="ReportElementList"
+        declared_type_ref="mobility.informClass.ReportElementList"/>
+      <declared_message_def name="ReportElementCount"
+        declared_type_ref="mobility.informClass.ReportElementCount"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="management.accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled.StateA"/>
+    <state_machine name="management.accessControl.events.transport.ReceiveFSM"
+      interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready"
+        interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled"
+          interpretation="redefine state in order to extend">
+          <state name="NotControlled" initial_state="StateA"
+            interpretation="redefine state in order to extend">
+            <state name="StateA" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryElement" value="msg"
+                    interpretation="enveloped query element
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="elementExists( msg )"
+                    interpretation="True if the Element UID specified in the message 
+                    that triggered the transition exists in the list."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report
+                    Element message with the requested element">
+                    <argument value=" 'ReportElement' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryElementList" value="msg"
+                    interpretation="enveloped query element list message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Element List message with the
+                    UIDs of all elements currently in the list">
+                    <argument value=" 'ReportElementList' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryElementCount" value="msg"
+                    interpretation="enveloped query element count message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Element Count message with 
+                    the number of elements currently in the list">
+                    <argument value=" 'ReportElementCount' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+            </state>
+          </state>
+          <state name="Controlled" initial_state="StateB"
+            interpretation="redefine state in order to extend">
+            <state name="StateB" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryElement" value="msg"
+                    interpretation="enveloped query element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="elementExists( msg )"
+                    interpretation="True if the Element UID specified in the message 
+                    that triggered the transition exists in the list."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Element message with the requested element">
+                    <argument value=" 'ReportElement' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryElementList" value="msg"
+                    interpretation="enveloped query element list message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Element List message with the
+                    UIDs of all elements currently in the list">
+                    <argument value=" 'ReportElementList' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryElementCount" value="msg"
+                    interpretation="enveloped query element count message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Report Element Count message with 
+                    the number of elements currently in the list">
+                    <argument value=" 'ReportElementCount' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetElement" value="msg"
+                    interpretation="enveloped set element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="isControllingClient(transportData) &amp;&amp;
+                    isValidElementRequest(msg) &amp;&amp; isElementSupported(msg)"
+                    interpretation="This condition is always FALSE.  It must be
+                    overridden by derived services to allow the list to be
+                    populated."/>
+                  <simple/>
+                  <action name="setElement"
+                    interpretation="Store the element(s) in the list with sequence 
+                    specified by the previous and next element IDs.  If this
+                    action represents an insert or append into an existing list,
+                    the service should modify the NextUID of the previous
+                    element and/or the Previous UID of the next element to
+                    reflect the updated sequence.">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Confirm Element Request message with the 
+                    requested element">
+                    <argument value=" 'ConfirmElementRequest' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetElement" value="msg"
+                    interpretation="enveloped set element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="isControllingClient( transportData ) &amp;&amp; 
+                    ! isValidElementRequest( msg )"
+                    interpretation="True if the message that triggered the transition is
+                    received from the client that is in control of this service AND the 
+                    resulting list would be invalid as defined by the List Manager Service
+                    description or the receiving entity does not have sufficient memory to
+                    store the element(s)."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Reject Element Request message with the 
+                    requested element">
+                    <argument value=" 'RejectElementRequest' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetElement" value="msg"
+                    interpretation="enveloped set element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="isControllingClient( transportData ) &amp;&amp; 
+                    ! isElementSupported( msg )"
+                    interpretation="True if the message that triggered the transition
+                    is received from the 
+                    client that is in control of this service.  This guard
+                    should be overridden by derived services to prevent the
+                    service from accepting unsupported elements."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Reject Element Request message with the 
+                    requested element">
+                    <argument value=" 'RejectElementRequest' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="DeleteElement" value="msg"
+                    interpretation="enveloped delete element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="isControllingClient( transportData ) &amp;&amp; 
+                    elementExists( msg )"
+                    interpretation="True if the message that triggered the transition 
+                    is received from the client that is in control of this service AND 
+                    the Element UID specified in the message that triggered the 
+                    transition exists in the list."/>
+                  <simple/>
+                  <action name="deleteElement"
+                    interpretation="Remove the specified element(s) from the
+                    list.  The service should modify the NextUID of the previous
+                    element and/or the Previous UID of the next element to
+                    reflect the updated sequence."/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Confirm Element Request message with the 
+                    requested element">
+                    <argument value=" 'ConfirmElementRequest' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="DeleteElement" value="msg"
+                    interpretation="enveloped delete element message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="isControllingClient( transportData ) &amp;&amp; 
+                    ! elementExists( msg )"
+                    interpretation="True if the message that triggered the transition is 
+                    received from the 
+                    client that is in control of this service AND the Element UID 
+                    specified in the message that triggered the transition does not exist
+                    in the list."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send"
+                    interpretation="Send a Reject Element Request message with the 
+                    requested element">
+                    <argument value=" 'RejectElementRequest' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+            </state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

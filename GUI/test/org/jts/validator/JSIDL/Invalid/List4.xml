@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list name="List4" interpretation="A variant in a list may not be optional" optional="true" xmlns="urn:jaus:jsidl:1.0">
+	<count_field field_type_unsigned="unsigned byte"/>
+	<variant name="shape" optional="true" xmlns="urn:jaus:jsidl:1.0">
+		<vtag_field field_type_unsigned="unsigned byte" min_count="0" max_count="0"/>
+		<record name="rectangle" optional="false">
+			<fixed_field name="length" field_type="byte" field_units="one" optional="false"/>
+		</record>
+	</variant>
+</list>

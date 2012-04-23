@@ -1,0 +1,38 @@
+{
+  "type": "com.u2d.type.composite.Folder",
+  "items": {
+    "item-type": "com.u2d.type.composite.Folder",
+    "items": [
+      {
+        "name": "Model",
+        "items": {
+          "item-type": "com.u2d.model.ComplexType",
+          "items": [
+          { "value": "com.u2d.generated.Component" },
+          { "value": "com.u2d.generated.ServiceSet" },
+          { "value": "com.u2d.generated.ServiceDef" },
+          { "value": "com.u2d.generated.MessageDef" },
+          { "value": "com.u2d.generated.ComplexField" },
+          { "value": "com.u2d.generated.SimpleField" },
+          { "value": "com.u2d.generated.ProtocolBehavior" }
+           /* { "value": "com.u2d.type.composite.Folder" }, */
+           /*  { "value": "com.u2d.find.CompositeQuery" } */
+          ]
+        }
+      }/*,
+      {
+        "name": "Admin",
+        "type": "com.u2d.type.composite.Folder",
+        "items": {
+          "item-type": "com.u2d.model.ComplexType",
+          "items": [
+            { "value": "com.u2d.app.User" },
+            { "value": "com.u2d.app.Role" },
+            { "value": "com.u2d.type.composite.LoggedEvent" },
+            { "value": "com.u2d.model.ComplexType" }
+          ]
+        }
+      }*/
+    ]
+  }
+}

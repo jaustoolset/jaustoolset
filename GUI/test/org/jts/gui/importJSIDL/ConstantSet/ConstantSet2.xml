@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_const_set name="ConstantSet2" id="ImportTest:ConstantSet2" version="1.0" xmlns="urn:jaus:jsidl_plus:0.11">
+    <const_def name="e" const_type="long float" const_value="2.7182818284590452354" field_units="one" interpretation="base of the natural logarithm"/>
+    <const_def name="PLUS_100" const_type="long float" field_units="one" const_value="100.0"/>
+    <const_def name="MINUS_100" const_type="long float" field_units="one" const_value="-100.0"/>
+</declared_const_set>

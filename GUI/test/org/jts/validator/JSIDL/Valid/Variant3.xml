@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<variant name="Variant3" optional="false" interpretation="A list in a variant may not be optional" xmlns="urn:jaus:jsidl:1.0">
+	<vtag_field field_type_unsigned="unsigned byte" min_count="0" max_count="0"/>
+	<list name="List2" interpretation="" optional="false" xmlns="urn:jaus:jsidl:1.0">
+		<count_field field_type_unsigned="unsigned byte"/>
+		<record name="subsystem_rec" interpretation="name,id pair" optional="false">
+			<fixed_field name="subsystem_id" field_type="unsigned byte" field_units="one" optional="false"/>
+		</record>
+	</list>
+</variant>

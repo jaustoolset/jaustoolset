@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="QueryClass"
+  id="urn:jaus:jss:core:MessageSet:QueryClass" version="1.1">
+  <declared_type_set_ref name="basicTypes"
+    id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.1"/>
+  <message_def name="QueryAuthority" message_id="2001" is_command="false">
+    <description xml:space="preserve">
+      This message is used by clients to query the current value of the authority code of this service. 
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryStatus" message_id="2002" is_command="false">
+    <description xml:space="preserve">
+      This message is used by clients of this service to query the state of this service.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryTimeout" message_id="2003" is_command="false">
+    <description xml:space="preserve">
+      This message is used by clients of this service to query the timeout period of this service.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryTime" message_id="2011" is_command="false">
+    <description xml:space="preserve">
+      This message is used by clients of this service to query the current time of this service.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="QueryTimeRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned byte"
+          field_units="one" optional="false" interpretation="See corresponding
+          report time message for presence vector           mapping"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryControl" message_id="200D" is_command="false">
+    <description xml:space="preserve">
+      This message is used by clients to query the current control state of this service.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryEvents" message_id="21F0" is_command="false">
+    <description xml:space="preserve"> 
+      The Query Events message is used to request detail on events. Queries can be made by message ID, event type or Event ID. 
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <variant name="QueryEventsVar" optional="false">
+        <vtag_field field_type_unsigned="unsigned byte" min_count="0"
+          max_count="3"/>
+        <record name="MessageIDRec" optional="false">
+          <fixed_field name="MessageCode" field_type="unsigned short integer"
+            field_units="one" optional="false" interpretation="Query Message ID
+            of the Event message that the             receiving component is
+            inquiring about."/>
+        </record>
+        <record name="EventTypeRec" optional="false">
+          <fixed_field name="EventType" field_type="unsigned byte"
+            field_units="one" optional="false" interpretation="Type of event">
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_index="0" enum_const="Periodic (SC)"/>
+              <value_enum enum_index="1" enum_const="Every change"/>
+            </value_set>
+          </fixed_field>
+        </record>
+        <record name="EventIDRec" optional="false">
+          <fixed_field name="EventID" field_type="unsigned byte"
+            field_units="one" optional="false" interpretation="Event ID returned
+            by Confirm Event for details on specific event."/>
+        </record>
+        <record name="AllEventsRec" optional="false">
+          <fixed_field name="AllEvents" field_type="unsigned byte"
+            field_units="one" optional="false" interpretation="All events should
+            be reported.">
+            <value_set offset_to_lower_limit="false">
+              <value_range lower_limit="0" lower_limit_type="inclusive"
+                upper_limit="0" upper_limit_type="inclusive"/>
+            </value_set>
+          </fixed_field>
+        </record>
+      </variant>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryEventTimeout" message_id="21F2" is_command="false">
+    <description xml:space="preserve">
+      This message is used by clients to query the timeout period of this service.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryHeartbeatPulse" message_id="2202" is_command="false">
+    <description xml:space="preserve">
+      This message shall be used to query for a heartbeat pulse.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryElement" message_id="241A" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query an element from a list.  The element is uniquely identified by the UID.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="QueryElementRec" optional="false">
+        <declared_fixed_field name="ElementUID"
+          declared_type_ref="basicTypes.ElementUID" optional="false"
+          interpretation="UID of the queried element.  A value of zero (0)
+          represents the first (head) element in the list."/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryElementList" message_id="241B" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query all elements from a list.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryElementCount" message_id="241C" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query the number of elements in a list.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryIdentification" message_id="2B00" is_command="false">
+    <description xml:space="preserve">
+      This message shall request the identification summary of a Subsystem, Node, or Component.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="QueryIdentificationRec" optional="false">
+        <fixed_field name="QueryType" field_type="unsigned byte"
+          field_units="one" optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Reserved"/>
+            <value_enum enum_index="1" enum_const="System Identification"/>
+            <value_enum enum_index="2" enum_const="Subsystem Identification"/>
+            <value_enum enum_index="3" enum_const="Node Identification"/>
+            <value_enum enum_index="4" enum_const="Component Identification"/>
+            <value_range lower_limit="5" upper_limit="255"
+              lower_limit_type="inclusive" upper_limit_type="inclusive"
+              interpretation="Reserved"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryConfiguration" message_id="2B01" is_command="false">
+    <description xml:space="preserve">
+      This message shall request the configuration summary of a subsystem or node. For example, to get the complete configuration of a subsystem, field 1 shall be set to 2. 
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="QueryConfigurationRec" optional="false">
+        <fixed_field name="QueryType" field_type="unsigned byte"
+          field_units="one" optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Reserved"/>
+            <value_enum enum_index="1" enum_const="Reserved"/>
+            <value_enum enum_index="2" enum_const="Subsystem Identification"/>
+            <value_enum enum_index="3" enum_const="Node Identification"/>
+            <value_range lower_limit="4" upper_limit="255"
+              lower_limit_type="inclusive" upper_limit_type="inclusive"
+              interpretation="Reserved"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QuerySubsystemList" message_id="2B02" is_command="false">
+    <description xml:space="preserve">
+      This message shall request the Report Subsystem List message.  There are no data fields associated with this message.
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryServices" message_id="2B03" is_command="false">
+    <description xml:space="preserve"> 
+      This message allows a component to request the service information of an entire subsystem or node, or a single component. The corresponding Report Services message will respond with service information only for new component implementations. It will not report service information for legacy component implementations.   
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <list name="NodeList" optional="false" interpretation="# of Nodes
+        reported. For a single Node         Report this field shall be 1">
+        <count_field field_type_unsigned="unsigned byte" min_count="1"
+          max_count="255"/>
+        <sequence name="NodeSeq" optional="false">
+          <record name="NodeRec" optional="false">
+            <fixed_field name="NodeID" field_type="unsigned byte"
+              field_units="one" optional="false" interpretation="Use 255 if
+              service information from all nodes in the subsystem is
+              required">
+              <value_set offset_to_lower_limit="false">
+                <value_enum enum_index="0" enum_const="Reserved"/>
+                <value_range lower_limit="1" upper_limit="254"
+                  lower_limit_type="inclusive" upper_limit_type="inclusive"
+                  interpretation="Valid Node IDs"/>
+                <value_enum enum_index="255" enum_const="All nodes in the
+                  subsystem"/>
+              </value_set>
+            </fixed_field>
+          </record>
+          <list name="ComponentList" optional="false">
+            <count_field field_type_unsigned="unsigned byte" min_count="1"
+              max_count="255"/>
+            <record name="ComponentRec" optional="false">
+              <fixed_field name="ComponentID" field_type="unsigned byte"
+                field_units="one" optional="false" interpretation="Use 255 if
+                service information from  components in                 the node
+                are                 required">
+                <value_set offset_to_lower_limit="false">
+                  <value_enum enum_index="0" enum_const="Reserved"/>
+                  <value_range lower_limit="1" upper_limit="254"
+                    lower_limit_type="inclusive" upper_limit_type="inclusive"
+                    interpretation="Valid Component IDs"/>
+                  <value_enum enum_index="255" enum_const="All components in the
+                    subsystem"/>
+                </value_set>
+              </fixed_field>
+            </record>
+          </list>
+        </sequence>
+      </list>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryServiceList" message_id="2B04" is_command="false">
+    <description xml:space="preserve"> 
+      This message allows a component to request the service information of services across all subsystems. The corresponding Report Services message will respond with service information only for new component implementations. It will not report service information for legacy component implementations.   
+    </description>
+    <declared_header name="MsgHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <list name="SubsystemList" optional="false" interpretation="Number of
+        subsystems reported. For a single subsystem report             this
+        field shall be 1">
+        <count_field field_type_unsigned="unsigned short integer" min_count="1"
+          max_count="65535"/>
+        <sequence name="SubsystemSeq" optional="false">
+          <record name="SubsystemRec" optional="false">
+            <fixed_field name="SubsystemID" field_type="unsigned short integer"
+              field_units="one" optional="false" interpretation="Use 65535 if
+              service information from all subsystems                   in the
+              system is required">
+              <value_set offset_to_lower_limit="false">
+                <value_enum enum_index="0" enum_const="Reserved"/>
+                <value_range lower_limit="1" upper_limit="65534"
+                  lower_limit_type="inclusive" upper_limit_type="inclusive"
+                  interpretation="Valid Node IDs"/>
+                <value_enum enum_index="65535" enum_const="All subsystems in the
+                  system"/>
+              </value_set>
+            </fixed_field>
+          </record>
+          <list name="NodeList" optional="false" interpretation="# of Nodes
+            reported. For a single Node                Report this field shall
+            be 1">
+            <count_field field_type_unsigned="unsigned byte" min_count="1"
+              max_count="255"/>
+            <sequence name="NodeSeq" optional="false">
+              <record name="NodeRec" optional="false">
+                <fixed_field name="NodeID" field_type="unsigned byte"
+                  field_units="one" optional="false" interpretation="Use 255 if
+                  service information from all nodes in the
+                  subsystem is required">
+                  <value_set offset_to_lower_limit="false">
+                    <value_enum enum_index="0" enum_const="Reserved"/>
+                    <value_range lower_limit="1" upper_limit="254"
+                      lower_limit_type="inclusive" upper_limit_type="inclusive"
+                      interpretation="Valid Node IDs"/>
+                    <value_enum enum_index="255" enum_const="All nodes in the
+                      subsystem"/>
+                  </value_set>
+                </fixed_field>
+              </record>
+              <list name="ComponentList" optional="false">
+                <count_field field_type_unsigned="unsigned byte" min_count="1"
+                  max_count="255"/>
+                <record name="ComponentRec" optional="false">
+                  <presence_vector field_type_unsigned="unsigned byte"/>
+                  <fixed_field name="ComponentID" field_type="unsigned byte"
+                    field_units="one" optional="false" interpretation="Use 255
+                    if service information from  components in
+                    the node are required">
+                    <value_set offset_to_lower_limit="false">
+                      <value_enum enum_index="0" enum_const="Reserved"/>
+                      <value_range lower_limit="1" upper_limit="254"
+                        lower_limit_type="inclusive"
+                        upper_limit_type="inclusive" interpretation="Valid
+                        Component IDs"/>
+                      <value_enum enum_index="255" enum_const="All components in
+                        the subsystem"/>
+                    </value_set>
+                  </fixed_field>
+                  <variable_length_string name="SearchFilter" optional="true"
+                    interpretation="An optional filter to apply to the search
+                    results.                          Only service identifiers
+                    that contain this string should be
+                    returned.">
+                    <count_field field_type_unsigned="unsigned byte"/>
+                  </variable_length_string>
+                </record>
+              </list>
+            </sequence>
+          </list>
+        </sequence>
+      </list>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+</declared_type_set>

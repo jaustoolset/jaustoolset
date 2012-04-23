@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<record xmlns="urn:jaus:jsidl:1.0" name="RecordTest4" optional="false">
+	<declared_bit_field name="BitFieldTest1" declared_type_ref="unitTest.BitFieldTest1"/>
+</record>

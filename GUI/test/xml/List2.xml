@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="TestSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">The set of services to be tested</description>
+  <service_def name="List2" id="urn:org.jts.test:List2" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <message_set>
+      <input_set>
+  			<message_def name="MsgIn" is_command="true" message_id="0001">
+  				<description xml:space="default"/>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="Body">
+            <list name="List2" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <list name="Sublist1" optional="false">
+                <count_field field_type_unsigned="unsigned byte"/>
+                <record name="Record1" optional="false">
+                  <fixed_field name="Field1" field_type="unsigned byte" field_units="one" optional="false"/>
+                </record>
+              </list>
+            </list>
+          </body>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="stateMachine" state_name="Ready"/>
+      <state_machine name="stateMachine">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+</ns1:service_set>

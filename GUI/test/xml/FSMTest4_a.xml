@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest4_a" version="1.0">
+  <description></description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="MyMachine4_a" state_name="A"/>
+    <state_machine name="MyMachine4_a">
+    	<state name="A" initial_state="AA">
+   			<transition name="t1"/>
+   			<transition name="t2"/>
+  			<transition name="t3"/>
+           	<state name="AA" initial_state="AAB">
+               	<transition name="t4"/>
+           		<state name="AAA">
+          		</state>
+           		<state name="AAB">
+               		<transition name="t5"/>
+               	</state>
+           		<state name="AAC">
+       			</state>
+            	<default_state>
+                	<transition name="t6"/>
+                	<transition name="t7"/>
+            	</default_state>
+            </state>
+            <state name="AB">
+                <transition name="t8"/>
+            </state>
+            <state name="AC">
+            </state>
+            <default_state>
+                <transition name="t9"/>
+                <transition name="t10"/>
+            </default_state>
+		</state>
+		<state name="B" initial_state="BA">
+   			<transition name="t11"/>
+   			<transition name="t12"/>
+            <state name="BA">
+                <transition name="t13"/>
+                <transition name="t14"/>
+            </state>
+            <state name="BB">
+                <transition name="t15"/>
+                <transition name="t16"/>
+            </state>
+            <state name="BC">
+                <transition name="t17"/>
+            </state>
+            <default_state>
+                <transition name="t18"/>
+            </default_state>
+		</state>
+	</state_machine>
+   </protocol_behavior>
+</service_def>
+		

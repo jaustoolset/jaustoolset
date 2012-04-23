@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="SimpleSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:1.0">
+	<description xml:space="preserve">A simple state machine for protocol testing</description>
+	<service_def name="SimpleDef" id="urn:DeVivo:jaus_services:SimpleDef" version="1.0">
+		<description>This service is used for JTS protocol testing.</description>
+		<assumptions>Messages may be delayed, lost or reordered.</assumptions>
+		<message_set>
+			<input_set>
+				<message_def name="ReadyMessage" message_id="0001" is_command="true">
+					<description xml:space="preserve">This message is used to cause the state machine to transistion from the Standby to the Ready state.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="ResetMessage" message_id="0002" is_command="true">
+					<description xml:space="preserve">This message is used to cause the state machine to transistion from the default to the Standby state.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="ErrorMessage" message_id="0003" is_command="true">
+					<description xml:space="preserve">This message is used to cause the state machine to transistion from the Ready to the Error state.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="PauseMessage" message_id="0004" is_command="true">
+					<description xml:space="preserve">This message is used to cause the state machine to push from the default to the Paused state.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="ResumeMessage" message_id="0005" is_command="true">
+					<description xml:space="preserve">This message is used to cause the state machine to pop from the Paused to the default state.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="NeverUsed" message_id="0015" is_command="true">
+					<description xml:space="preserve">This message is never used.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="EndAtSscTest1" message_id="0016" is_command="true">
+					<description xml:space="preserve">This message is never used.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="QueryStateMessage" message_id="2000" is_command="false">
+					<description xml:space="preserve">requests a report message for current server state.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>				
+			</input_set>
+      <output_set>
+        <message_def name="ReportStateMessage" message_id="4000" is_command="false">
+          <description xml:space="preserve"> 
+            Message to advise client of current server state
+          </description>
+          <header name="JAUSApplicationLayerHeader">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="Body"/>
+          <footer name="Footer"/>
+        </message_def>
+      </output_set>
+    </message_set>
+		<internal_events_set/>
+		<protocol_behavior is_stateless="false">
+			<start state_machine_name="SimpleStateMachn" state_name="SsmStandbyState"/>
+			<state_machine name="SimpleStateMachn">
+				<state name="SsmStandbyState" interpretation="The Standby State">
+          <entry>
+            <action name="EnteredStandbyState"/>
+          </entry>				
+					<transition name="ReadyMessage">
+            <guard condition="StandbyToReadyGuard()"/>										
+            <simple>
+              <end_state state="SsmReadyState"/>
+            </simple>											
+						<action name="FromStandbyToReady" interpretation="Indicate transition to CPPUnit test">
+						</action>
+					</transition>
+				</state>
+				<state name="SsmReadyState" interpretation="The Ready State">
+          <entry>
+            <action name="EnteredReadyState"/>
+          </entry>								
+					<transition name="ErrorMessage">
+            <guard condition="ReadyToErrorGuard()"/>					
+            <simple>
+              <end_state state="SsmErrorState"/>
+            </simple>						
+						<action name="FromReadyToError" interpretation="Indicate transistion to CPPUnit test">
+						</action>
+					</transition>
+					<transition name="QueryStateMessage">
+            <simple>
+              <end_state state="SsmReadyState2"/>
+            </simple>						
+						<action name="ReportState" interpretation="Indicate transistion to CPPUnit test">
+						</action>
+					</transition>										
+          <transition name="PauseMessage">
+            <push>
+              <end_state state="SsmPausedState"/>
+            </push>
+            <action name="PauseAction" interpretation="this is the pause action">
+						  <argument value="'1'"/>            
+            </action>
+          </transition>
+				</state>
+				<state name="SsmReadyState2" interpretation="The alt Ready State">
+          <entry>
+            <action name="EnteredReadyState2"/>
+          </entry>												
+					<transition name="ErrorMessage">
+            <guard condition="ReadyToErrorGuard()"/>					
+            <simple>
+              <end_state state="SsmErrorState"/>
+            </simple>						
+						<action name="FromReadyToError" interpretation="Indicate transistion to CPPUnit test">
+						</action>
+					</transition>
+					<transition name="QueryStateMessage">
+            <simple>
+              <end_state state="SsmReadyState"/>
+            </simple>						
+						<action name="ReportState" interpretation="Indicate transistion to CPPUnit test">
+						</action>
+					</transition>															
+          <transition name="PauseMessage">
+            <push>
+              <end_state state="SsmPausedState"/>
+            </push>
+            <action name="PauseAction" interpretation="this is the pause action">
+						  <argument value="'1'"/>                        
+            </action>
+          </transition>
+				</state>
+				<state name="SsmErrorState" interpretation="The Error State">
+          <entry>
+            <action name="EnteredErrorState"/>
+          </entry>
+          <transition name="NeverUsed">
+            <simple><end_state state="SsmErrorState"/></simple>
+          </transition>												
+			  </state>
+				<state name="SsmPausedState" interpretation="The Paused State">
+          <entry>
+            <action name="EnteredPausedState"/>
+          </entry>																
+          <transition name="PauseMessage">
+            <push>
+              <end_state state="SsmPausedState"/>
+            </push>
+            <action name="PauseAction" interpretation="this is the pause action">
+						  <argument value="'1'"/>                        
+            </action>
+          </transition>				
+          <transition name="ResumeMessage">
+            <pop transition = "ReadyMessage"/>
+            <action name="ResumeAction" interpretation="This is the resume action">
+            </action>
+          </transition>
+			  </state>
+			</state_machine>
+		</protocol_behavior>
+  </service_def>
+</ns1:service_set>

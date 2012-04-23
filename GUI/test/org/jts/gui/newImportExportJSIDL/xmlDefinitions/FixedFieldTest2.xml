@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<fixed_field xmlns="urn:jaus:jsidl:1.0" name="FixedFieldTest2" field_type="byte" field_units="one" optional="false">
+	<scale_range real_lower_limit="0" real_upper_limit="1" integer_function="round" />
+</fixed_field>

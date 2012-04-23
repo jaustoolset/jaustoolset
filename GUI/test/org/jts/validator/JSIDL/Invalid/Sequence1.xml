@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="GlobalPose" optional="false" xmlns="urn:jaus:jsidl:1.0">
+  <list name="Position" optional="false">
+    <count_field field_type_unsigned="unsigned byte"/>
+    <declared_record name="Position" declared_type_ref="GeodeticCoordinates"/>
+  </list>
+  <list name="Orientation" optional="false">
+    <count_field field_type_unsigned="unsigned byte"/>
+    <declared_record name="Orientation" declared_type_ref="Orientation"/>
+  </list>
+  <list name="Orientation" optional="false">
+    <count_field field_type_unsigned="unsigned byte"/>
+    <declared_record name="Orientation" declared_type_ref="Orientation"/>
+  </list>
+</sequence>

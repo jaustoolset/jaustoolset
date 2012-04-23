@@ -1,0 +1,8 @@
+10a11,12
+> import com.u2d.css4swing.style.ComponentStyle;
+> 
+48a51,54
+> 		
+> 		// JTS
+> 		ComponentStyle.addClass(this, "table");
+> 		// jts

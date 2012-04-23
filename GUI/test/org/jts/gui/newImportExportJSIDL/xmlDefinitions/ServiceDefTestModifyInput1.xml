@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns:ns3="urn:jaus:jsidl:plus" name="ServiceDefTest1" id="urn:org.jts.test:ServiceDefTest1" version="1.0">
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references/>
+	<message_set>
+		<input_set/>
+		<output_set/>
+	</message_set>
+	<internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="StateMachine1" state_name="Ready"/>
+        <state_machine name="StateMachine1">
+            <state name="Ready"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>
+  

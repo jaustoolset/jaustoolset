@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<variable_length_field name="Query Message" field_format="JAUS MESSAGE" optional="false"
+  interpretation="The JAUS Query message to be used by the receiving component to
+  generate the report message(s)" xmlns="urn:jaus:jsidl:1.0">
+  <count_field min_count="2" field_type_unsigned="unsigned integer"/>
+</variable_length_field>

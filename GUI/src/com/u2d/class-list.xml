@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<folder>
+   <name>Class List</name>
+   <items>
+      <folder>
+         <name>Model</name>
+         <items>
+            <type>com.u2d.generated.Dimension</type>
+            <type>com.u2d.generated.Footer</type>
+            <type>com.u2d.generated.SimpleField</type>
+            <type>com.u2d.generated.VariableFormatField</type>
+            <type>com.u2d.generated.BitField</type>
+            <type>com.u2d.generated.FixedField</type>
+            <type>com.u2d.generated.ValueSet</type>
+            <type>com.u2d.generated.ValueRange</type>
+            <type>com.u2d.generated.OutputSet</type>
+            <type>com.u2d.generated.Record</type>
+            <type>com.u2d.generated.Header</type>
+            <type>com.u2d.generated.BitRange</type>
+            <type>com.u2d.generated.InputSet</type>
+            <type>com.u2d.generated.ConstantSet</type>
+            <type>com.u2d.generated.VariableLengthField</type>
+            <type>com.u2d.generated.FixedLengthString</type>
+            <type>com.u2d.generated.VariableLengthString</type>
+            <type>com.u2d.generated.Sequence</type>
+            <type>com.u2d.generated.EventDef</type>
+            <type>com.u2d.generated.MessageDef</type>
+            <type>com.u2d.generated.ScaleRange</type>
+            <type>com.u2d.generated.SubField</type>
+            <type>com.u2d.generated.ProtocolBehavior</type>
+            <type>com.u2d.generated.Array</type>
+            <type>com.u2d.generated.ComplexField</type>
+            <type>com.u2d.generated.ValueEnum</type>
+            <type>com.u2d.generated.TypeAndUnitsEnum</type>
+            <type>com.u2d.generated.List</type>
+            <type>com.u2d.generated.Constant</type>
+            <type>com.u2d.generated.FormatField</type>
+            <type>com.u2d.generated.Component</type>
+            <type>com.u2d.generated.ServiceDef</type>
+            <type>com.u2d.generated.Body</type>
+            <type>com.u2d.generated.FormatEnum</type>
+            <type>com.u2d.generated.VariableField</type>
+            <type>com.u2d.generated.ServiceSet</type>
+            <type>com.u2d.generated.Variant</type>
+         </items>
+      </folder>
+      <folder>
+         <name>Reports</name>
+         <items>
+            <!-- TODO: add a type below to make it accessible from the class bar -->
+            <type>com.u2d.type.composite.Folder</type>
+            <type>com.u2d.find.CompositeQuery</type>
+            <type>com.u2d.reporting.SimpleReport</type>
+         </items>
+      </folder>
+      <folder>
+         <name>Admin</name>
+         <items>
+            <type>com.u2d.app.User</type>
+            <type>com.u2d.app.Role</type>
+            <type>com.u2d.type.composite.LoggedEvent</type>
+            <type>com.u2d.model.ComplexType</type>
+         </items>
+      </folder>
+   </items>
+</folder>

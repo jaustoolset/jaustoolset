@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?oxygen RNGSchema="../../GUI/resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def name="ManagementOCU" id="urn:jts:example_management_ocu"
+	version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:plus="urn:jaus:jsidl:plus">
+	<description xml:space="preserve"/>
+	<assumptions xml:space="preserve"/>
+	<references/>
+	<message_set>
+		<input_set>
+			<message_def name="ReportStatus" message_id="4002"
+				is_command="false">
+				<description xml:space="preserve">This message is used to report the current status of the sender of the message.</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record name="ReportStatusRec" optional="false">
+						<fixed_field name="Status" optional="false"
+							field_units="one"
+							field_type="unsigned byte">
+							<value_set offset_to_lower_limit="false">
+								<value_enum enum_index="5"
+								enum_const="EMERGENCY"/>
+								<value_enum enum_index="0"
+								enum_const="INITIALIZE"/>
+								<value_enum enum_index="1"
+								enum_const="READY"/>
+								<value_enum enum_index="2"
+								enum_const="STANDBY"/>
+								<value_enum enum_index="3"
+								enum_const="SHUTDOWN"/>
+								<value_enum enum_index="4"
+								enum_const="FAILURE"/>
+							</value_set>
+						</fixed_field>
+						<fixed_field name="Reserved" optional="false"
+							field_units="one"
+							field_type="unsigned integer"/>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def name="ConfirmControl" message_id="000F"
+				is_command="false">
+				<description xml:space="preserve">The Confirm Control message is used to notify a component that it accepts control from that component (or not).  When control has been granted, response code of 0, the component under control will only execute messages from the controlling component until control is released or interrupted.  When the requesting component has lower authority than the current controlling entity, the response will be 2.  For components not supporting interruptible control, or if the component is engaged in other operations that would prevent this service from performing its actions to grant control, the response code value of 1 can be used.</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record name="ConfirmControlRec" optional="false">
+						<fixed_field name="ResponseCode"
+							optional="false" field_units="one"
+							field_type="unsigned byte">
+							<value_set offset_to_lower_limit="false">
+								<value_enum enum_index="0"
+								enum_const="CONTROL_ACCEPTED"/>
+								<value_enum enum_index="1"
+								enum_const="NOT_AVAILABLE"/>
+								<value_enum enum_index="2"
+								enum_const="INSUFFICIENT_AUTHORITY"
+								/>
+							</value_set>
+						</fixed_field>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def name="ReportControl" message_id="400D"
+				is_command="false">
+				<description xml:space="preserve">This message is used to report the current state of control of this service.  If the serivce is in the Controlled state, this message reports the ID of the controlling component. The ID fields shall be set to zero (0) if this service is in the NotControlled state..</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record name="ReportControlRec" optional="false">
+						<fixed_field name="SubsystemID"
+							optional="false" field_units="one"
+							field_type="unsigned short integer"/>
+						<fixed_field name="NodeID" optional="false"
+							field_units="one"
+							field_type="unsigned byte"/>
+						<fixed_field name="ComponentID"
+							optional="false" field_units="one"
+							field_type="unsigned byte"/>
+						<fixed_field name="AuthorityCode"
+							optional="false" field_units="one"
+							field_type="unsigned byte">
+							<value_set offset_to_lower_limit="false">
+								<value_range lower_limit="0"
+								lower_limit_type="inclusive"
+								upper_limit="255"
+								upper_limit_type="inclusive"/>
+							</value_set>
+						</fixed_field>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def name="RejectControl" message_id="0010"
+				is_command="false">
+				<description xml:space="preserve">The Reject Control message is used to notify a component that control has been released (response code = 0), or a request to release control could not be processed (response code = 1).</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record name="RejectControlRec" optional="false">
+						<fixed_field name="ResponseCode"
+							optional="false" field_units="one"
+							field_type="unsigned byte">
+							<value_set offset_to_lower_limit="false">
+								<value_enum enum_index="0"
+								enum_const="CONTROL_RELEASED"/>
+								<value_enum enum_index="1"
+								enum_const="NOT_AVAILABLE"/>
+							</value_set>
+						</fixed_field>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+		</input_set>
+		<output_set>
+			<message_def name="ReleaseControl" message_id="000E"
+				is_command="true">
+				<description xml:space="preserve">This message is used to relinquish uninterruptible control of the receiving component.</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body"/>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def name="Standby" message_id="0003"
+				is_command="true">
+				<description xml:space="preserve">This message is used to transition the receiving component to the standby state.</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body"/>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def name="RequestControl" message_id="000D"
+				is_command="true">
+				<description xml:space="preserve">This message is used to request interruptible control of the receiving component.  Once control is established, the receiving component shall only execute commands from the sending component.  The authority code parameter is to be set equal to that of the sending component.  The receiving component must always accept the control of the highest authority component that is requesting uninterruptible control.  Commands from all other components are ignored unless from a component with higher authority.</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record name="RequestControlRec" optional="false">
+						<fixed_field name="AuthorityCode"
+							optional="false" field_units="one"
+							field_type="unsigned byte">
+							<value_set offset_to_lower_limit="false">
+								<value_range lower_limit="0"
+								lower_limit_type="inclusive"
+								upper_limit="255"
+								upper_limit_type="inclusive"/>
+							</value_set>
+						</fixed_field>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def name="Resume" message_id="0004"
+				is_command="true">
+				<description xml:space="preserve">This message is used to transition the receiving component to the ready state.</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body"/>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def name="QueryStatus" message_id="2002"
+				is_command="false">
+				<description xml:space="preserve">This message is used by clients of this service to query the state of this service.</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body"/>
+				<footer name="Footer"/>
+			</message_def>
+      <message_def name="Shutdown" message_id="0002"
+				is_command="false">
+        <description xml:space="preserve">This message is used to transition the receiving component to the shutdown state.</description>
+        <header name="AppHeader">
+          <record name="HeaderRec" optional="false">
+            <fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+          </record>
+        </header>
+        <body name="Body"/>
+        <footer name="Footer"/>
+      </message_def>      
+			<message_def name="ClearEmergency" message_id="0007"
+				is_command="true">
+				<description xml:space="preserve">This message shall notify the receiving component that the current emergency condition is to be reset and that the component shall transition back to the Ready or Standby state, provided that all emergency conditions have been cleared. JAUS currently defines only one emergency condition, the "Stop" condition.  Future versions of this document could define other emergency conditions.</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record name="ClearEmergencyRec" optional="false">
+						<fixed_field name="EmergencyCode"
+							optional="false" field_units="one"
+							field_type="unsigned short integer">
+							<value_set offset_to_lower_limit="false">
+								<value_enum enum_index="1"
+								enum_const="STOP"/>
+							</value_set>
+						</fixed_field>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+			<message_def name="SetEmergency" message_id="0006"
+				is_command="true">
+				<description xml:space="preserve">This message is used to alert the component to a safety critical situation. The component that sends the emergency command shall set the message priority to the safety critical priority range as defined by the Transport. Receive of the emergency command shall result in the component transitioning into the emergency state.</description>
+				<header name="AppHeader">
+					<record name="HeaderRec" optional="false">
+						<fixed_field name="MessageID" optional="false"
+							field_units="one"
+							field_type="unsigned short integer"/>
+					</record>
+				</header>
+				<body name="Body">
+					<record name="SetEmergencyRec" optional="false">
+						<fixed_field name="EmergencyCode"
+							optional="false" field_units="one"
+							field_type="unsigned short integer">
+							<value_set offset_to_lower_limit="false">
+								<value_enum enum_index="1"
+								enum_const="STOP"/>
+							</value_set>
+						</fixed_field>
+					</record>
+				</body>
+				<footer name="Footer"/>
+			</message_def>
+		</output_set>
+	</message_set>
+	<internal_events_set>
+		<event_def name="MenuItemEntered">
+			<description xml:space="preserve"/>
+			<header name="empty"/>
+			<body name="MenuItemEnteredBody">
+				<record name="MenuItemEnteredRecord" optional="false">
+					<fixed_field name="Selection" optional="false"
+						field_units="one" field_type="integer"/>
+				</record>
+			</body>
+			<footer name="empty"/>
+		</event_def>
+	</internal_events_set>
+	<protocol_behavior is_stateless="false">
+		<start state_machine_name="ManagementOcuFSM"
+			state_name="WaitForControl"/>
+		<state_machine name="ManagementOcuFSM">
+			<state name="WaitForControl">
+				<entry>
+					<action name="sendRequestControl"/>
+					<action name="displayMenu"/>
+				</entry>
+				<transition name="ConfirmControl">
+					<parameter type="ConfirmControl" value="msg"/>
+					<guard condition=" ! isControlAccepted(msg) "/>
+					<simple>
+						<end_state state="WaitForControl"/>
+					</simple>
+					<plus:mxCell id="25" parent="18" source="20"
+						target="20" style="simpleTransition;"
+						value="ConfirmControl( ConfirmControl msg )[ ! isControlAccepted(msg) ] /  ;                    MenuItemEntered(int selection)[!isSelectionToEnd(selection)]/printMessage('waiting for AccessControl process to end');                  MenuItemEntered(int selection)[isSelectionToEnd(selection)]/terminateService();                        "
+						edge="1">
+						<plus:mxGeometry as="geometry" width="20.0"
+							height="20.0">
+							<plus:mxPoint as="offset" x="75.0" y="30.0"/>
+							<plus:mxArray as="points">
+								<plus:mxPoint x="650.0" y="380.0"/>
+							</plus:mxArray>
+						</plus:mxGeometry>
+					</plus:mxCell>
+				</transition>
+				<transition name="MenuItemEntered">
+					<parameter type="MenuItemEntered" value="msg"/>
+					<guard condition="!isSelectionToEnd(msg)"/>
+					<simple>
+						<end_state state="WaitForControl"/>
+					</simple>
+					<action name="printMessage">
+						<argument
+							value="'waiting for AccessControl process to end'"
+						/>
+					</action>
+					<plus:mxCell id="25" parent="18" source="20"
+						target="20" style="simpleTransition;"
+						value="ConfirmControl( ConfirmControl msg )[ ! isControlAccepted(msg) ] /  ;                    MenuItemEntered(int selection)[!isSelectionToEnd(selection)]/printMessage('waiting for AccessControl process to end');                  MenuItemEntered(int selection)[isSelectionToEnd(selection)]/terminateService();                        "
+						edge="1">
+						<plus:mxGeometry as="geometry" width="20.0"
+							height="20.0">
+							<plus:mxPoint as="offset" x="75.0" y="30.0"/>
+							<plus:mxArray as="points">
+								<plus:mxPoint x="650.0" y="380.0"/>
+							</plus:mxArray>
+						</plus:mxGeometry>
+					</plus:mxCell>
+				</transition>
+				<transition name="MenuItemEntered">
+					<parameter type="MenuItemEntered" value="msg"/>
+					<guard condition="isSelectionToEnd(msg)"/>
+					<simple>
+						<end_state state="WaitForControl"/>
+					</simple>
+					<action name="terminateService"/>
+					<plus:mxCell id="25" parent="18" source="20"
+						target="20" style="simpleTransition;"
+						value="ConfirmControl( ConfirmControl msg )[ ! isControlAccepted(msg) ] /  ;                    MenuItemEntered(int selection)[!isSelectionToEnd(selection)]/printMessage('waiting for AccessControl process to end');                  MenuItemEntered(int selection)[isSelectionToEnd(selection)]/terminateService();                        "
+						edge="1">
+						<plus:mxGeometry as="geometry" width="20.0"
+							height="20.0">
+							<plus:mxPoint as="offset" x="75.0" y="30.0"/>
+							<plus:mxArray as="points">
+								<plus:mxPoint x="650.0" y="380.0"/>
+							</plus:mxArray>
+						</plus:mxGeometry>
+					</plus:mxCell>
+				</transition>
+				<transition name="ConfirmControl">
+					<parameter type="ConfirmControl" value="msg"/>
+					<guard condition=" isControlAccepted(msg) "/>
+					<simple>
+						<end_state state="HandleMenu"/>
+					</simple>
+					<plus:mxCell id="26" parent="18" source="20"
+						target="21" style="simpleTransition;"
+						value="ConfirmControl( ConfirmControl msg )[ isControlAccepted(msg) ] /  ;                          "
+						edge="1">
+						<plus:mxGeometry as="geometry" width="20.0"
+							height="20.0">
+							<plus:mxPoint as="offset" x="-60.0" y="-10.0"/>
+							<plus:mxArray as="points">
+								<plus:mxPoint x="140.0" y="720.0"/>
+							</plus:mxArray>
+						</plus:mxGeometry>
+					</plus:mxCell>
+				</transition>
+				<plus:mxCell id="20" parent="18" style="state;"
+					value="WaitForControl;                          entry: sendRequestControl();                                   entry: displayMenu();                 "
+					vertex="1">
+					<plus:mxGeometry as="geometry" x="170.0" y="310.0"
+						width="440.0" height="140.0"/>
+				</plus:mxCell>
+			</state>
+			<state name="HandleMenu">
+				<entry>
+					<action name="displayMenu"/>
+				</entry>
+				<transition name="MenuItemEntered">
+					<parameter type="MenuItemEntered" value="msg"/>
+					<guard condition="!isSelectionToEnd(msg)"/>
+					<simple>
+						<end_state state="HandleMenu"/>
+					</simple>
+					<action name="sendManagementMessage">
+						<argument value="msg"/>
+					</action>
+					<plus:mxCell id="27" parent="18" source="21"
+						target="21" style="simpleTransition;"
+						value="MenuItemEntered(int selection)[!isSelectionToEnd(selection)] / sendManagementMessage(selection);                            MenuItemEntered(int selection)[isSelectionToEnd(selection)]/terminateService();              "
+						edge="1">
+						<plus:mxGeometry as="geometry" width="20.0"
+							height="20.0">
+							<plus:mxPoint as="offset" x="40.0" y="25.0"/>
+							<plus:mxArray as="points">
+								<plus:mxPoint x="700.0" y="730.0"/>
+							</plus:mxArray>
+						</plus:mxGeometry>
+					</plus:mxCell>
+				</transition>
+				<transition name="MenuItemEntered">
+					<parameter type="MenuItemEntered" value="msg"/>
+					<guard condition="isSelectionToEnd(msg)"/>
+					<simple>
+						<end_state state="HandleMenu"/>
+					</simple>
+					<action name="terminateService"/>
+					<plus:mxCell id="27" parent="18" source="21"
+						target="21" style="simpleTransition;"
+						value="MenuItemEntered(int selection)[!isSelectionToEnd(selection)] / sendManagementMessage(selection);                            MenuItemEntered(int selection)[isSelectionToEnd(selection)]/terminateService();              "
+						edge="1">
+						<plus:mxGeometry as="geometry" width="20.0"
+							height="20.0">
+							<plus:mxPoint as="offset" x="40.0" y="25.0"/>
+							<plus:mxArray as="points">
+								<plus:mxPoint x="700.0" y="730.0"/>
+							</plus:mxArray>
+						</plus:mxGeometry>
+					</plus:mxCell>
+				</transition>
+				<transition name="RejectControl">
+					<parameter type="RejectControl" value="msg"/>
+					<simple>
+						<end_state state="WaitForControl"/>
+					</simple>
+					<plus:mxCell id="34" parent="18" source="21"
+						target="20" style="simpleTransition"
+						value="RejectControl( RejectControl msg ) /  ;                          "
+						edge="1">
+						<plus:mxGeometry relative="1" as="geometry"
+							y="-170.0" width="100.0" height="100.0">
+							<plus:mxPoint as="sourcePoint" x="160.0"
+								y="560.0"/>
+							<plus:mxPoint as="targetPoint" x="260.0"
+								y="460.0"/>
+							<plus:mxPoint as="offset" x="0.0" y="25.0"/>
+							<plus:mxArray as="points">
+								<plus:mxPoint x="410.0" y="560.0"/>
+							</plus:mxArray>
+						</plus:mxGeometry>
+					</plus:mxCell>
+				</transition>
+				<transition name="ReportStatus">
+					<parameter type="ReportStatus" value="msg"/>
+					<simple>
+						<end_state state="HandleMenu"/>
+					</simple>
+					<action name="displayStatus">
+						<argument value="msg"/>
+					</action>
+				</transition>
+				<plus:mxCell id="21" parent="18" style="state;"
+					value="HandleMenu;                           entry: displayMenu();                          "
+					vertex="1">
+					<plus:mxGeometry as="geometry" x="340.0" y="660.0"
+						width="340.0" height="130.0"/>
+				</plus:mxCell>
+			</state>
+			<pseudo_start_state>
+				<state>
+					<plus:mxCell id="32" parent="18"
+						style="pseudoStartState;" value="" vertex="1">
+						<plus:mxGeometry as="geometry" x="70.0" y="70.0"
+							width="20.0" height="20.0"/>
+					</plus:mxCell>
+				</state>
+				<transition>
+					<plus:mxCell id="33" parent="18" source="32"
+						target="20" style="simpleTransition;" value=""
+						edge="1">
+						<plus:mxGeometry as="geometry" x="70.0" y="70.0"
+							width="20.0" height="20.0"/>
+					</plus:mxCell>
+				</transition>
+			</pseudo_start_state>
+			<plus:mxCell id="18" parent="1" style="finiteStateMachine;"
+				value="name = ManagementOcuFSM;   isStateless = false;  "
+				vertex="1">
+				<plus:mxGeometry as="geometry" width="850.0" height="790.0"
+				/>
+			</plus:mxCell>
+		</state_machine>
+	</protocol_behavior>
+</service_def>

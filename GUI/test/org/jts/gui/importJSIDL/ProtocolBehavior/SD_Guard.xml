@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_Guard" id="ImportTest:SD_Guard" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the guard element with all levels of multiplicity.
+
+    The 1st guard has no optional elements.
+    The 2nd guard has all optional elements.
+  </description>
+
+  <!-- 
+    element guard 
+    {
+      attribute condition { text }, 
+      attribute interpretation { text }? 
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_Guard" state_name="Guard1"/>
+    <state_machine name="SD_Guard">
+
+      <!-- The 1st guard has no optional elements -->
+      <state name="Guard1">
+        <transition name="Guard1">
+          <guard condition="!Test(arg1, arg2) == true"/>   
+          <simple/>
+        </transition>
+      </state>
+
+      <!-- The 2nd guard has all optional elements -->
+      <state name="Guard2">
+        <transition name="Guard2">
+          <guard condition="Test(arg1, arg2) == true" interpretation="A guard interpretation"/>   
+          <simple/>
+        </transition>
+      </state>
+      
+    </state_machine>
+  </protocol_behavior>
+</service_def>

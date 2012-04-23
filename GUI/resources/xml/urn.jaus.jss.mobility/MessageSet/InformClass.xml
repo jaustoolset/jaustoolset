@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../jsidl/jaus_service_interface_definition_language.rnc" type="compact"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" name="InformClass"
+  id="urn:jaus:jss:mobility:MessageSet:InformClass" version="0.6">
+  <declared_type_set_ref name="basicTypes" id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.0"/>
+  <declared_type_set_ref name="mobilityTypes" id="urn:jaus:jss:mobility:MessageSet:BasicTypes" version="0.6"/>
+  <message_def name="ReportGlobalPose" message_id="4402" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the position and attitude of the platform.  The position of 
+      the platform is given in latitude, longitude, and altitude, in accordance with the WGS 84 standard.  
+      All times are in Coordinated Universal Time (UTC).  The message data and mapping of the 
+      presence vector for this message are identical to ID 0402h: SetGlobalPose.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+        <declared_record name="GlobalPoseRec" declared_type_ref="mobilityTypes.GlobalPoseRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportLocalPose" message_id="4403" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the position and attitude of the platform relative to a 
+      local reference frame.  All times are in Coordinated Universal Time (UTC).  The message data 
+      and mapping of the presence vector for this message are identical to ID 0403h: SetLocalPose.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="LocalPoseRec" declared_type_ref="mobilityTypes.LocalPoseRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportVelocityState" message_id="4404" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the linear velocity and rotational rate of the platform.  
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportVelocityStateRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned short integer"/>
+        <declared_fixed_field name="Velocity_X" declared_type_ref="mobilityTypes.Velocity" optional="true"/> 
+        <declared_fixed_field name="Velocity_Y" declared_type_ref="mobilityTypes.Velocity" optional="true"/>
+        <declared_fixed_field name="Velocity_Z" declared_type_ref="mobilityTypes.Velocity" optional="true"/>
+        <fixed_field name="Velocity_RMS" field_type="unsigned integer" field_units="meter per second" optional="true"
+          interpretation="An RMS value indicating the validity of the velocity data.">
+          <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+        </fixed_field>
+        <declared_fixed_field name="RollRate" declared_type_ref="mobilityTypes.RotationalVelocity" optional="true"/>
+        <declared_fixed_field name="PitchRate" declared_type_ref="mobilityTypes.RotationalVelocity" optional="true"/>
+        <declared_fixed_field name="YawRate" declared_type_ref="mobilityTypes.RotationalVelocity" optional="true"/>
+        <fixed_field name="Rate_RMS" field_type="unsigned short integer" field_units="radian per second" optional="true"
+          interpretation="An RMS value indicating the validity of the rotational velocity data.">
+          <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+        </fixed_field>
+        <declared_bit_field name="TimeStamp" declared_type_ref="basicTypes.TimeStamp" optional="true" />
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>   
+  <message_def name="ReportWrenchEffort" message_id="4405" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the current values of the commanded wrench effort.  
+      The message data and mapping of the presence vector for this message are identical to 
+      ID 0405	h: SetWrenchEffort.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="WrenchEffortRec" declared_type_ref="mobilityTypes.WrenchEffortRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportGlobalVector" message_id="4407" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the current values of the commanded global vector. 
+      The message data of this message is identical to ID 0407h: SetGlobalVector.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="GlobalVectorRec" declared_type_ref="mobilityTypes.GlobalVectorRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>   
+  <message_def name="ReportLocalVector" message_id="4408" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the current values of the commanded local vector.  The message 
+      data of this message is identical to ID 0408h: SetLocalVector.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="LocalVectorRec" declared_type_ref="mobilityTypes.LocalVectorRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def> 
+  <message_def name="ReportTravelSpeed" message_id="440A" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the current value of the commanded travel speed.  
+      The message data of this message is identical to ID 040Ah: SetTravelSpeed.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="TravelSpeedRec" declared_type_ref="mobilityTypes.TravelSpeedRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>   
+  <message_def name="ReportGlobalWaypoint" message_id="440C" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the values of the current waypoint fields as specified by the 
+      data in ID 240C: QueryGlobalWaypoint.  The message data and mapping of the presence vector of this
+      message are identical to ID 040Ch: SetGlobalWaypoint.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="GlobalWaypointRec" declared_type_ref="mobilityTypes.GlobalWaypointRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportLocalWaypoint" message_id="440D" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the values of the current waypoint fields as specified by the 
+      data in ID 240D: QueryLocalWaypoint.  The message data and mapping of the presence vector of this 
+      message are identical to ID 040Dh: SetLocalWaypoint.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="LocalWaypointRec" declared_type_ref="mobilityTypes.LocalWaypointRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>   
+  <message_def name="ReportGlobalPathSegment" message_id="440F" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the values of the current path segment.  The message data and 
+      mapping of the presence vector of this message are identical to ID 040Fh: SetGlobalPathSegment.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="GlobalPathSegmentRec" declared_type_ref="mobilityTypes.GlobalPathSegmentRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportLocalPathSegment" message_id="4410" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the values of the current path segment.  The message data and 
+      mapping of the presence vector of this message are identical to ID 0410h: SetLocalPathSegment.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="LocalPathSegmentRec" declared_type_ref="mobilityTypes.LocalPathSegmentRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportGeomagneticProperty" message_id="4412" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the current geomagnetic property value.  The message data and mapping of the 
+      presence vector of this message are identical to ID 0412h: SetGeomagneticProperty.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="GeomagneticPropertyRec" declared_type_ref="mobilityTypes.GeomagneticPropertyRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportVelocityCommand" message_id="4415" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the commanded linear velocity and rotational rate of the platform.  
+      The message data and mapping of the presence vector of this message are identical to ID 0415h: SetVelocityCommand.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="VelocityCommandRec" declared_type_ref="mobilityTypes.VelocityCommandRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportAccelerationLimit" message_id="4416" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the commanded linear and rotational acceleration limits of the platform.  
+      The message data and mapping of the presence vector of this message are identical to ID 0416h: SetAccelerationCommand.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="AccelerationLimitRec" declared_type_ref="mobilityTypes.AccelerationLimitRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportAccelerationState" message_id="4417" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the rate of change in linear velocity and rotational rate of the platform.  
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportAccelerationStateRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned short integer"/>
+        <declared_fixed_field name="Acceleration_X" declared_type_ref="mobilityTypes.Acceleration" optional="false"/>
+        <declared_fixed_field name="Acceleration_Y" declared_type_ref="mobilityTypes.Acceleration" optional="false"/>
+        <declared_fixed_field name="Acceleration_Z" declared_type_ref="mobilityTypes.Acceleration" optional="false"/>
+        <fixed_field name="Acceleration_RMS" field_type="unsigned integer" field_units="meter per second squared" optional="true"
+          interpretation="An RMS value indicating the validity of the acceleration data.">
+          <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+        </fixed_field>
+        <declared_fixed_field name="RollAcceleration" declared_type_ref="mobilityTypes.RotationalAcceleration" optional="false"/>
+        <declared_fixed_field name="PitchAcceleration" declared_type_ref="mobilityTypes.RotationalAcceleration" optional="false"/>
+        <declared_fixed_field name="YawAcceleration" declared_type_ref="mobilityTypes.RotationalAcceleration" optional="false"/>
+        <fixed_field name="RotationalAcceleration_RMS" field_type="unsigned short integer" field_units="radian per second squared" optional="true"
+          interpretation="An RMS value indicating the validity of the rotational acceleration data.">
+          <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+        </fixed_field>
+        <declared_bit_field name="TimeStamp" declared_type_ref="basicTypes.TimeStamp" optional="true" />
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportElement" message_id="441A" is_command="false">
+    <description xml:space="preserve">
+      This message is used to report a single element from a list.  The element is uniquely identified by the UID, 
+      while it&apos;s position within the list is denoted by the previous (parent) and next (child) elements.  
+      The message data is identical to the Element Record in ID 041Ah: SetElement.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="ElementRec" declared_type_ref="mobilityTypes.ElementRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportElementList" message_id="441B" is_command="false">
+    <description xml:space="preserve">
+      This message is used to report the UIDs for all elements in a list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <list name="ElementList" optional="false">
+        <count_field field_type_unsigned="unsigned short integer"/>
+        <record name="ElementListRec" optional="false">
+          <declared_fixed_field name="ElementUID" declared_type_ref="mobilityTypes.ElementUID" optional="false"
+                                                  interpretation="UID of the elements in the list."/>
+        </record>
+      </list>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportElementCount" message_id="441C" is_command="false">
+    <description xml:space="preserve">
+      This message is used to report the number of elements in a list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+        <record name="ElementCountRec" optional="false">
+          <fixed_field name="ElementCount" field_type="unsigned short integer" field_units="one" optional="false"
+                                              interpretation="Number of elements currently in the list"/>
+        </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="ReportActiveElement" message_id="441E" is_command="false">
+    <description xml:space="preserve">
+      This message is used to report the identifier of the current list element being executed.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ActiveElementRec" optional="false">
+        <declared_fixed_field name="ElementUID" declared_type_ref="mobilityTypes.ElementUID" optional="false"
+          interpretation="UID of the active list element.  A value of 0 implies that no lists are executing."/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+</declared_type_set>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simple xmlns="urn:jaus:jsidl:1.0">
+	<end_state state="Block_Pop" />
+</simple>

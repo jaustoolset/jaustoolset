@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<message_def xmlns="urn:jaus:jsidl:1.0" name="MessageDefTest1" is_command="true" message_id="0001">
+	<description xml:space="preserve"> An empty message definition </description>
+	<declared_header name="HeaderTest1" declared_type_ref="unitTest.HeaderTest1"/>
+</message_def>

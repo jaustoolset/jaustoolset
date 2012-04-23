@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="VariableLengthField1" id="urn:org.jts.test:VariableLengthField1" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+	<description/>
+	<assumptions/>
+	<message_set>
+		<input_set>
+			<message_def name="Message" is_command="true" message_id="0001">
+				<description xml:space="default"/>
+				<header name="EmptyHeader"/>
+				<body name="Body">
+					<record name="Record7" optional="false">
+						<fixed_field name="Field1" field_type="byte" field_units="one" optional="false" interpretation="just a byte field"/>
+						<fixed_field name="Field2" field_type="integer" field_units="meter" optional="false" interpretation="just an integer field"/>
+						<fixed_field name="Field3" field_type="float" field_units="meter per second" optional="false" interpretation="just a float field"/>
+						<fixed_field name="Field4" field_type="unsigned byte" field_units="meter per second               squared" optional="false" interpretation="just an unsigned byte field"/>
+						<variable_length_field name="VariableLengthField1" field_format="MJPEG" optional="false" interpretation="An 'unbounded' variable length field for MJPEG">
+							<count_field field_type_unsigned="unsigned integer"/>
+						</variable_length_field>
+						<fixed_length_string name="ErrorCode" string_length="80" optional="false" interpretation="A fixed length string of size 80"/>
+					</record>
+				</body>
+				<footer name="EmptyFooter"/>
+			</message_def>
+		</input_set>
+		<output_set/>
+	</message_set>
+	<internal_events_set/>
+	<protocol_behavior>
+		<start state_machine_name="stateMachine" state_name="Ready"/>
+		<state_machine name="stateMachine">
+			<state name="Ready"/>
+		</state_machine>
+	</protocol_behavior>
+</service_def>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE web-app
+     PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+    <servlet>
+      <servlet-name>JAUSToolSet</servlet-name>
+        <servlet-class>org.wings.session.WingServlet</servlet-class>
+        <init-param>
+            <param-name>wings.mainclass</param-name>
+            <param-value>com.u2d.app.WingSEntryPoint</param-value>
+        </init-param>
+       <init-param>
+           <param-name>wings.lookandfeel.factory</param-name>
+           <param-value>org.wings.plaf.LookAndFeelFactory$Default</param-value>
+       </init-param>
+       <init-param>
+           <param-name>wings.lookandfeel.default</param-name>
+           <param-value>org.wings.plaf.css.CSSLookAndFeel</param-value>
+       </init-param>
+       <init-param>
+           <param-name>wings.error.template</param-name>
+           <param-value>/templates/ErrorTemplate.thtml</param-value>
+          <description>The template for the default error catcher</description>
+       </init-param>
+       <init-param>
+           <param-name>wings.capture.default.bindings</param-name>
+           <param-value>alt LEFT, alt RIGHT, F1</param-value>
+          <description>See KeyStroke.getKeyStroke(String s).</description>
+       </init-param>
+       <init-param>
+           <param-name>wings.template.beanscript</param-name>
+           <param-value>TRUE</param-value>
+          <description>Allows bean scripting in STemplate layout templates.</description>
+       </init-param>
+    </servlet>
+
+    <!-- the DWR stuff is for the AJAX based features of wingS  -->
+    <!-- like SFormattedTextField                               -->
+    <servlet>
+        <servlet-name>dwr-invoker</servlet-name>
+        <display-name>DWR Servlet</display-name>
+        <description>Direct Web Remoter Servlet</description>
+        <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
+        <init-param>
+            <param-name>uk.ltd.getahead.dwr.CreatorManager</param-name>
+            <param-value>org.wings.plaf.css.dwr.SessionCreatorManager</param-value>
+            <description>Install a session local CreatorManager</description>
+        </init-param>
+        <load-on-startup>-1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+      <servlet-name>JAUSToolSet</servlet-name>
+      <url-pattern>/JAUSToolSet/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- DWR / AJAX service mapping                            -->
+    <servlet-mapping>
+        <servlet-name>dwr-invoker</servlet-name>
+        <url-pattern>/dwr/*</url-pattern>
+    </servlet-mapping>
+   
+    <listener>
+       <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+   
+    <listener>
+       <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+   
+    <context-param>
+       <param-name>contextConfigLocation</param-name>
+       <param-value>/WEB-INF/webapplicationContext.xml,
+          /WEB-INF/webpersistorContext.xml,
+          /WEB-INF/persistClasses.xml</param-value>
+    </context-param>
+
+</web-app>

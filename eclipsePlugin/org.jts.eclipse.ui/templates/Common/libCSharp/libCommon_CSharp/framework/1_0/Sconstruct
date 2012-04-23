@@ -1,0 +1,44 @@
+# Set-up build location and paths
+VariantDir('Build', 'src', duplicate=0)
+
+# Create the build environment, borrowing from parent
+import os
+Import('env')
+
+
+sources = Split ("""
+	Service.cs
+	JausUtils.cs
+	EventReceiver.cs
+	StateChangeNotification.cs	
+	SimpleThread.cs
+	StateMachine.cs
+	transport/JausRouter.cs
+	transport/Address.cs
+	transport/AddressModule.cs
+	transport/AddressModulePINVOKE.cs
+	transport/JausAddress.cs
+	transport/JausAddressModule.cs
+	transport/JausAddressModulePINVOKE.cs
+	transport/JrErrorCode.cs
+	transport/JuniorAPI.cs
+	transport/JuniorAPIPINVOKE.cs
+	transport/OS.cs
+	transport/SWIGTYPE_p_int.cs
+	transport/SWIGTYPE_p_long.cs
+	messages/Message.cs
+	internalEvents/Send.cs
+	internalEvents/Receive.cs
+	internalEvents/Send_1_0.cs
+	internalEvents/Receive_1_0.cs
+	internalEvents/InternalEvent.cs
+	internalEvents/InternalEventHandler.cs
+	""")
+
+#r = env.CLIRefs(refpaths, refs)
+
+lib = env.CLILibrary('./lib/CSharpCommon', sources)
+env.Install(env['INSTALL_LIB'], lib)
+env.Install(env['BINPATH'], lib)
+env.AddToRefPaths(lib)
+Return('lib')

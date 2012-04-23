@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:ActionTest1"
+   name="ActionTest1" version="1.0">
+  <description xml:space="preserve">
+     Arguments must be defined in the transition’s parameter list or they must be pimitive types or string constants encased in single quotes
+  </description>
+  <assumptions/> 
+  <message_set>
+    <input_set>
+       <message_def name="Message1" message_id="0001" is_command="true">
+          <description xml:space="preserve">
+             A message
+          </description>
+          <header name="header"/>
+          <body name="body"/>
+          <footer name="footer"/>
+       </message_def>
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="Ready"/>
+    <state_machine name="FSM">
+      <state name="Ready">
+         <transition name="Message1">
+            <parameter type="string" value="str"/>
+            <simple/>
+            <action name="action1">
+               <argument value="'XYZ'"/>
+               <!-- undefined argument str2 -->
+               <argument value="str2"/>
+            </action>
+         </transition>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_DefaultState" id="ImportTest:SD_DefaultState" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the state element with all levels of multiplicity.
+
+    The 1st state has no optional elements and all multiplicity set to 0.
+    The 2nd state has all optional elements and all multiplicity set to 1.
+    The 3rd state has all multiplicity set to *.
+  </description>
+
+  <!-- 
+    element default_state 
+    {
+      attribute interpretation { text }?,
+      transition*,
+      default_transition* 
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_DefaultState" state_name="DefaultState1"/>
+    <state_machine name="SD_DefaultState">
+
+      <!-- The 1st state has no optional elements and all multiplicity set to 0 -->
+      <state name="DefaultState1">
+        <default_state/>        
+      </state>
+
+      <!-- The 2nd state has all optional elements and all multiplicity set to 1 -->
+      <state name="DefaultState2">
+        <default_state interpretation="A default_state interpretation">
+          <transition name="Transition1">
+            <simple/>
+          </transition>
+          <default_transition>
+            <simple/>
+          </default_transition>
+        </default_state>        
+      </state>
+
+      <!-- The 3rd state has all multiplicity set to * -->
+      <state name="DefaultState3">
+        <default_state>
+          <transition name="Transition1">
+            <simple/>
+          </transition>
+          <transition name="Transition2">
+            <simple/>
+          </transition>
+          <default_transition>
+            <simple/>
+          </default_transition>
+          <default_transition>
+            <push>
+              <end_state state="DefaultState1"/>
+            </push>
+          </default_transition>
+        </default_state>
+      </state>
+ 
+    </state_machine>
+  </protocol_behavior>
+</service_def>

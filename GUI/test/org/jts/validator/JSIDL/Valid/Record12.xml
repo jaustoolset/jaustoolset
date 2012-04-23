@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record name="Record12" optional="false" interpretation="A fixed field in a record may be optional" xmlns="urn:jaus:jsidl:1.0">
+	<fixed_length_string name="subsystem_name" string_length="80" optional="false" xmlns="urn:jaus:jsidl:1.0"/>
+</record>

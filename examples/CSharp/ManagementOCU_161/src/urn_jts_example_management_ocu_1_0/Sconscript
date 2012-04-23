@@ -1,0 +1,29 @@
+Import('env')
+
+sources = Split("""
+		InternalEvents\MenuItemEntered.cs
+		ManagementOCUService.cs
+		ManagementOCU_ManagementOcuFSM.cs
+		ManagementOCU_ManagementOcuFSM_sm.cs
+		Messages\ClearEmergency.cs
+		Messages\ConfirmControl.cs
+		Messages\QueryStatus.cs
+		Messages\RejectControl.cs
+		Messages\ReleaseControl.cs
+		Messages\ReportControl.cs
+		Messages\ReportStatus.cs
+		Messages\RequestControl.cs
+		Messages\Resume.cs
+		Messages\SetEmergency.cs
+		Messages\Shutdown.cs
+		Messages\Standby.cs
+	""")
+
+libs = ['statemap', 'CSharpCommon' ]
+pathlibs = env.CLIRefs(libs)
+
+lib = env.CLILibrary('./lib/ManagementOCUService', sources, ASSEMBLYREFS=pathlibs)
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )
+env.AddToRefPaths(lib)
+Return('lib')

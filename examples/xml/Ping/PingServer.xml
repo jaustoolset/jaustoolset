@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="PingServer" id="urn:jts:PingServer" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">
+    This service responds to simply ping requests to show that the endpoint is alive. 
+  </description>
+  <assumptions xml:space="preserve">
+    Messages may not be lost, delayed or reordered.
+  </assumptions>
+  <declared_type_set name="types">
+    <declared_type_set_ref name="basicTypes" id="urn:jts:BasicTypes" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <message_def name="QueryHeartbeatPulse" message_id="2202" is_command="false">
+        <description xml:space="preserve">
+          This message shall be used to query for a heartbeat pulse.
+        </description>
+        <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+        <declared_body name="EmptyBody" declared_type_ref="basicTypes.EmptyBody"/>
+        <declared_footer name="EmptyFooter" declared_type_ref="basicTypes.EmptyFooter"/>
+      </message_def>
+    </input_set>
+    <output_set>
+      <message_def name="ReportHeartbeatPulse" message_id="4202" is_command="false">
+        <description xml:space="preserve">
+          This message notifies the receiver that the sender is alive.
+        </description>
+        <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+        <declared_body name="EmptyBody" declared_type_ref="basicTypes.EmptyBody"/>
+        <declared_footer name="EmptyFooter" declared_type_ref="basicTypes.EmptyFooter"/>
+      </message_def>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="PingFSM" state_name="Ready"/>
+    <state_machine name="PingFSM">
+      <state name="Ready">
+        <transition name="QueryHeartbeatPulse">
+          <simple/>
+          <action name="ReportHeartbeatPulse" interpretation="Send a ReportHeartbeatPulse message to the caller"/>
+        </transition>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

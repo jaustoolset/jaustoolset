@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <protocol_behavior xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" xmlns:ns3="urn:jaus:jsidl:plus">
+    <start state_machine_name="FSM" state_name="Ready"/>
+	    <state_machine name="FSM">
+	        <state name="Ready">
+	            <ns3:mxCell id="6" parent="5" style="state;strokeColor=#BC1212;fontColor=#BC1212; " value="Sending;" vertex="1">
+	                <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+	            </ns3:mxCell>
+	        </state>
+	        <pseudo_start_state>
+	            <state>
+	                <ns3:mxCell id="12" parent="5" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+	                    <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+	                </ns3:mxCell>
+	            </state>
+	            <transition>
+	                <ns3:mxCell id="13" parent="5" source="12" target="5" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+	                    <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+	                </ns3:mxCell>
+	            </transition>
+	        </pseudo_start_state>
+	        <ns3:mxCell id="5" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = FSM; NEWLINE isStateless = false; NEWLINE" vertex="1">
+	            <ns3:mxGeometry as="geometry" x="0.0" y="400.0" width="850.0" height="400.0"/>
+	        </ns3:mxCell>
+	    </state_machine>
+  </protocol_behavior>

@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="CommandClass"
+  id="urn:sae:as4:jss:core:MessageSet:CommandClass" version="0.1">
+  <declared_type_set_ref name="basicTypes" id="urn:sae:as4:jss:core:MessageSet:BasicTypes"
+    version="0.1"/>
+  <message_def name="SetAuthority" message_id="0001" is_command="true">
+    <description xml:space="preserve">
+      This message shall set the command authority of the receiving component.  The authority bits range in value from 0 to 255 with 255 being the highest.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="authorityRec" optional="false">
+        <fixed_field name="AuthorityCode" field_type="unsigned byte" field_units="one" optional="false">
+		    <value_set offset_to_lower_limit="false">
+		      <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="255"
+		        upper_limit_type="inclusive"/>
+		    </value_set>
+		  </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="Shutdown" message_id="0002" is_command="true">
+    <description xml:space="preserve"> 
+      This message is used to cause the receiving component to free all of the resources allocated to its process by the system and then to shutdown. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="Standby" message_id="0003" is_command="true">
+    <description xml:space="preserve"> 
+      This message is used to transition the receiving component to the standby state. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="Resume" message_id="0004" is_command="true">
+    <description xml:space="preserve"> 
+      This message is used to transition the receiving component to the ready state. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="Reset" message_id="0005" is_command="true">
+    <description xml:space="preserve"> 
+      This message is used to cause the receiving component to reinitialize. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetEmergency" message_id="0006" is_command="true">
+    <description xml:space="preserve"> 
+      This message is used to alert the component to a safety critical situation. The component that sends the emergency command shall set the message priority to the safety critical priority range as defined by the Transport. Receive of the emergency command shall result in the component transitioning into the emergency state.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="SetEmergencyRec" optional="false">
+        <fixed_field name="EmergencyCode" field_type="unsigned short integer" field_units="one"
+		    optional="false">
+		    <value_set offset_to_lower_limit="false">
+		      <value_enum enum_index="1" enum_const="STOP"/>
+		    </value_set>
+		  </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ClearEmergency" message_id="0007" is_command="true">
+    <description xml:space="preserve"> 
+      This message shall notify the receiving component that the current emergency condition is to be reset and that the component shall transition back to the Ready or Standby state, provided that all emergency conditions have been cleared.
+      JAUS currently defines only one emergency condition, the “Stop” condition.  Future versions of this document could define other emergency conditions. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ClearEmergencyRec" optional="false">
+        <fixed_field name="EmergencyCode" field_type="unsigned short integer" field_units="one"
+		    optional="false">
+		    <value_set offset_to_lower_limit="false">
+		      <value_enum enum_index="1" enum_const="STOP"/>
+		    </value_set>
+		  </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="RequestControl" message_id="000D" is_command="true">
+    <description xml:space="preserve">
+      This message is used to request interruptible control of the receiving component.  Once control is established, the receiving component shall only execute commands from the sending component.  The authority code parameter is to be set equal to that of the sending component.  The receiving component must always accept the control of the highest authority component that is requesting uninterruptible control.  Commands from all other components are ignored unless from a component with higher authority. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="RequestControlRec" optional="false">
+        <fixed_field name="AuthorityCode" field_type="unsigned byte" field_units="one" optional="false">
+		    <value_set offset_to_lower_limit="false">
+		      <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="255"
+		        upper_limit_type="inclusive"/>
+		    </value_set>
+		  </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReleaseControl" message_id="000E" is_command="true">
+    <description xml:space="preserve">
+      This message is used to relinquish uninterruptible control of the receiving component.  
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ConfirmControl" message_id="000F" is_command="false">
+    <description xml:space="preserve"> 
+      The Confirm Control message is used to notify a component that it accepts control from that component (or not).  When control has been granted, response code of 0, the component under control will only execute messages from the controlling component until control is released or interrupted.  When the requesting component has lower authority than the current controlling entity, the response will be 2.  For components not supporting interruptible control, or if the component is engaged in other operations that would prevent this service from performing its actions to grant control, the response code value of 1 can be used.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ConfirmControlRec" optional="false">
+        <fixed_field name="ResponseCode" field_type="unsigned byte" field_units="one"
+          optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="CONTROL_ACCEPTED"/>
+            <value_enum enum_index="1" enum_const="NOT_AVAILABLE"/>
+            <value_enum enum_index="2" enum_const="INSUFFICIENT_AUTHORITY"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="RejectControl" message_id="0010" is_command="false">
+    <description xml:space="preserve">
+      The Reject Control message is used to notify a component that control has been released (response code = 0), or a request to release control could not be processed (response code = 1). 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="RejectControlRec" optional="false">
+        <fixed_field name="ResponseCode" field_type="unsigned byte" field_units="one"
+          optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="CONTROL_RELEASED"/>
+            <value_enum enum_index="1" enum_const="NOT_AVAILABLE"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetTime" message_id="0011" is_command="true">
+    <description xml:space="preserve">
+      Time is configured within a JAUS system using the following message.  Accuracy of the time may be dependent on latencies in the transmission of the message.  Proper systems engineering procedures should be used to insure the accuracy of the time messages are within the system tolerance.  All times are in Coordinated Universal Time (UTC).
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="TimeRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+		    <bit_field name="TimeStamp" field_type_unsigned="unsigned integer" optional="false">
+		    <sub_field name="Milliseconds">
+		      <bit_range from_index="0" to_index="9"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="999"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Seconds">
+		      <bit_range from_index="10" to_index="15"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Minutes">
+		      <bit_range from_index="16" to_index="21"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Hour">
+		      <bit_range from_index="22" to_index="26"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="23"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Day">
+		      <bit_range from_index="27" to_index="31"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		  </bit_field>
+		  <bit_field name="DateStamp" field_type_unsigned="unsigned short integer" optional="false">
+		    <sub_field name="Day">
+		      <bit_range from_index="0" to_index="4"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Month">
+		      <bit_range from_index="5" to_index="8"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="12"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Year">
+		      <bit_range from_index="9" to_index="15"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="127"
+		          upper_limit_type="inclusive" interpretation="Where 0 is 2000, 1 is 2001, etc."/>
+		      </value_set>
+		    </sub_field>
+		  </bit_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="CreateEvent" message_id="01F0" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set up an event.   Field 1 is a local request ID that the event provider returns in the Confirm or Reject message.  Field 2 is the Event Type, which allows the requester  to specify the type of event – Periodic specifies that the event is a service connection request and should not be queued, in which case field 3 (Requested periodic rate) must be set to a non-zero value.  Event type of Every Change specifies that the corresponding Report message should be sent every time the data associated with that message changes.  
+      Field 4 contains the size of the Query message that is to specify the contents of the Report.  Field 5 contains the Query message (including its two byte header).      
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="CreateEventRec" optional="false">
+        <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="Local request ID for use in confirm event"/>
+        <fixed_field name="EventType" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="Type of event">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Periodic (SC)"/>
+            <value_enum enum_index="1" enum_const="Every change"/>
+          </value_set>
+        </fixed_field>
+        <fixed_field name="RequestedPeriodicRate" field_type="unsigned short integer"
+          field_units="hertz" optional="false" interpretation="Must be specified for periodic event,
+          and set to 0 for every change ">
+          <scale_range integer_function="round" real_lower_limit="0" real_upper_limit="1092"/>
+        </fixed_field>
+        <variable_length_field name="QueryMessage" field_format="JAUS MESSAGE" optional="false"
+          interpretation="The JAUS Query message to be used by the receiving           component to
+          generate the report message(s)">
+          <count_field min_count="2" field_type_unsigned="unsigned integer"/>
+        </variable_length_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="UpdateEvent" is_command="true" message_id="01F1">
+    <description xml:space="preserve">
+      The Update Event message allows the requester to request a rate or change.  The format is the same as the Create Event, only with the addition of Event ID field to specify the event that needs updating.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="UpdateEventRec" optional="false">
+        <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="Local request ID for use in confirm event"/>
+        <fixed_field name="EventType" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="Type of event">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Periodic (SC)"/>
+            <value_enum enum_index="1" enum_const="Every change"/>
+          </value_set>
+        </fixed_field>
+        <fixed_field name="RequestedPeriodicRate" field_type="unsigned short integer"
+          field_units="hertz" optional="false" interpretation="Must be specified for periodic event,
+          and set to 0 for every change ">
+          <scale_range integer_function="round" real_lower_limit="0" real_upper_limit="1092"/>
+        </fixed_field>
+        <fixed_field name="EventID" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="Unique identifier of existing event to update"/>
+        <variable_length_field name="QueryMessage" field_format="JAUS MESSAGE" optional="false"
+          interpretation="The JAUS Query message to be used by the receiving           component to
+          generate the report message(s)">
+          <count_field min_count="2" field_type_unsigned="unsigned integer"/>
+        </variable_length_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="CancelEvent" is_command="true" message_id="01F2">
+    <description xml:space="preserve"> 
+      The Cancel Event message is used by the requester to cancel and/or request deletion of the specified event. </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="CancelEventRec" optional="false">
+        <fixed_field name="RequestID" field_type="unsigned byte" field_units="one"
+          interpretation="Local           request id for use in confirm/reject message"
+          optional="false"/>
+        <fixed_field name="EventID" field_type="unsigned byte" field_units="one"
+          interpretation="unique id           of the event to be removed" optional="false"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ConfirmEventRequest" is_command="false" message_id="01F3">
+    <description xml:space="preserve"> 
+      The Confirm Event message is used to confirm an Event has been created/updated/or cancelled.  Field 1 represents the Request ID from the Create, Update, or Cancel message that initiated this message.  The Request ID’s scope is local to the requesting client only.  Field 2, Event ID, is a globally unique ID that is established for the event. Field 3 is used to specify the closest rate that the service can provide if it cannot match the requested rate.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ConfirmEventRequestRec" optional="false">
+        <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="ID of the event maintenance request (Create, Update, or Cancel)"/>
+        <fixed_field name="EventID" field_type="unsigned byte" field_units="one" interpretation="The
+          identifier of the specific event " optional="false"/>
+        <fixed_field name="ConfirmedPeriodicRate" field_type="unsigned short integer"
+          field_units="hertz" optional="false" interpretation="Requested rate or closest to
+          requested rate">
+          <scale_range integer_function="round" real_lower_limit="0" real_upper_limit="1092"/>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="RejectEventRequest" is_command="false" message_id="01F4">
+    <description xml:space="preserve"> 
+      The Reject Event Request message is used to reject an Event creation, update or cancellation. Field 2 represents the Request ID from the Create, Update, or Cancel message that initiated this message. The Request ID’s scope is local to the requesting client only. Field 4, Event ID, is a globally unique ID that is established for the event. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="RejectEventRequestRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="ID of the event maintenance request (create, update, or cancel)"/>
+        <fixed_field name="ResponseCode" field_type="unsigned byte" field_units="one"
+          optional="true">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="1" enum_const="periodic events not supported"/>
+            <value_enum enum_index="2" enum_const="change based events not supported"/>
+            <value_enum enum_index="3" enum_const="connection refused"/>
+            <value_enum enum_index="4" enum_const="invalid event setup"/>
+            <value_enum enum_index="5" enum_const="message not supported"/>
+            <value_enum enum_index="6" enum_const="error, invalid event ID for update event
+              request"/>
+          </value_set>
+        </fixed_field>
+        <fixed_length_string name="ErrorMessage" string_length="80" optional="true"
+          interpretation="String for additional information"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="RegisterServices" is_command="true" message_id="0B00">
+    <description xml:space="preserve">
+      This message allows a component to register its capabilities with a Discovery service.  If a component ID is specified in the RA, it may report only one service beyond the core message support, and this service must be equal to the component ID.  If a component ID is not listed in the RA, it may report any number of services.  For example, a component with ID 33 must provide only service 33.   The exception to this rule is component ID 1 (the Node Manager) which may provide any number of services in addition to core message support.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="RegisterServicesBody">
+      <list name="ServiceList" optional="false">
+        <count_field field_type_unsigned="unsigned byte" interpretation="Number of services
+          registered for this component"/>
+        <record name="ServiceRec" optional="false">
+          <variable_length_string name="URI" optional="false" interpretation="Service URI">
+            <count_field field_type_unsigned="unsigned byte"/>
+          </variable_length_string>
+          <fixed_field name="MajorVersionNumber" field_type="unsigned byte" field_units="one"
+            optional="false" interpretation="Major version number of the service"/>
+          <fixed_field name="MinorVersionNumber" field_type="unsigned byte" field_units="one"
+            optional="false" interpretation="Minor version number of the service"/>
+        </record>
+      </list>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+</declared_type_set>

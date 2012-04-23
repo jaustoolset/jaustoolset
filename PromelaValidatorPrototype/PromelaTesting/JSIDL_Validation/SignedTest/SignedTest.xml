@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="SignedServiceDef" id="urn.jts.SignedTest" version="1.1" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references/>
+    <message_set>
+        <input_set>
+            <message_def name="SignedTestMessage" message_id="5007" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="SignedBody">
+                    <record name="SignedRec" optional="false">
+                        <fixed_field name="SignedInt" optional="false" field_units="one" field_type="integer"/>
+                        <fixed_field name="SignedShort" optional="false" field_units="one" field_type="short integer"/>
+                        <fixed_field name="SignedLong" optional="false" field_units="one" field_type="long integer"/>
+                        <fixed_field name="SignedByte" optional="false" field_units="one" field_type="byte"/>
+                    </record>
+                </body>
+                <footer name="EmptyFooter"/>
+            </message_def>
+        </input_set>
+        <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="true">
+        <start state_machine_name="SignedTest" state_name="State1"/>
+        <state_machine name="SignedTest">
+            <state name="State1">
+                <transition name="SignedTestMessage">
+                    <ns2:internal/>
+                    <action name="printSignedResults"/>
+                </transition>
+            </state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

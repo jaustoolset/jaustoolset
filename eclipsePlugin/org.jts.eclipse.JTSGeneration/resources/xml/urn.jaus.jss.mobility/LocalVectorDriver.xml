@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="LocalVectorDriver" id="urn:jaus:jss:mobility:LocalVectorDriver" version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description>The Local Vector Driver performs closed loop control of the desired 
+    local heading, pitch, roll and speed of a mobile platform.  The Local Vector Driver 
+    is very similar in function to the Global Vector Driver, the difference being that the 
+    desired heading is defined in terms of a local coordinate system as opposed to the global 
+    coordinate system.  The Local Vector Driver takes as input four pieces of 
+    information, i.e. the desired heading, pitch and roll of the platform as measured with respect 
+    to a local coordinate system and the desired speed of the platform.  The desired heading 
+    angle is defined in a right hand sense about the Z axis of the local coordinate system where zero 
+    degrees defines a heading that is parallel to the X axis of the local 
+    coordinate system.  The pitch is the angle about the Y-axis and the roll is the desired angle about 
+    the X-axis. The Local Vector Driver also receives data from the Local Pose Sensor 
+    and the Velocity State Sensor component.  This information allows the Local Vector 
+    Driver to perform closed loop control on both the platform’s local orientation and speed.
+  </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SetLocalVector" declared_type_ref="mobility.commandClass.SetLocalVector"/>
+      <declared_message_def name="QueryLocalVector" declared_type_ref="mobility.queryClass.QueryLocalVector"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportLocalVector" declared_type_ref="mobility.informClass.ReportLocalVector"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="management.accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled.StateA"/>
+    <state_machine name="management.accessControl.events.transport.ReceiveFSM" 
+        interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled" interpretation="redefine state in order to extend">
+          <state name="NotControlled" initial_state="StateA" interpretation="redefine state in order to extend">
+            <state name="StateA" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryLocalVector" value="msg" interpretation="enveloped query local
+                    vector message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Local Vector message">
+                    <argument value=" 'ReportLocalVector' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+             </state>
+            </state>
+          <state name="Controlled" initial_state="StateB" interpretation="redefine state in order to extend">
+            <state name="StateB" interpretation="redefine state in order to extend">
+              <state name="Ready">
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetLocalVector" value="msg" interpretation="enveloped set local
+                    vector message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered the 
+                    transition is received from the client that is in control of this service."/>
+                  <simple/>
+                  <action name="setLocalVector" interpretation="Set the local vector values for the platform."/>
+                  </transition>
+              </state>
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryLocalVector" value="msg" interpretation="enveloped query local
+                    vector message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Local Vector message">
+                    <argument value=" 'ReportLocalVector' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+              </state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

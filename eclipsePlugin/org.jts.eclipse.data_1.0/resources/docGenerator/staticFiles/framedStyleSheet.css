@@ -1,0 +1,45 @@
+h1,h2,h3,h4,h5
+{
+   font-family: arial, 'sans serif'; 
+}
+
+p,table,li,div
+{
+   font-family: arial, 'sans serif'; 
+}
+
+body
+{
+   background-color:#ffffff;
+}
+
+p,li,div
+{
+   font-size: 80%;
+}
+
+th
+{
+   font-size: 110%;
+}
+
+h1,h2,h3,hr 
+{
+   color:#483d8b;
+}
+
+li 
+{
+   list-style: square;
+}
+
+ul 
+{
+   padding: 0px; margin: 15px;
+}
+
+/* Font used in left-hand frame lists */
+.FrameTitleFont   { font-size: 100%; font-family: Helvetica, Arial, sans-serif }
+.FrameHeadingFont { font-size:  90%; font-family: Helvetica, Arial, sans-serif }
+.FrameItemFont    { font-size:  90%; font-family: Helvetica, Arial, sans-serif }
+

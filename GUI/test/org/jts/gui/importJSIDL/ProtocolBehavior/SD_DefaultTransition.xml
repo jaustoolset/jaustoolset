@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_DefaultTransition" id="ImportTest:SD_DefaultTransition" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the entry element with all levels of multiplicity.
+
+    The 1st default_transition has no optional elements and all multiplicity set to 0.
+    The 2nd default_transition has all optional elements and all multiplicity set to 1.
+    The 3rd default_transition has all multiplicity set to * (if applicable).
+    The 4th default_transition has a pop element.
+    The 5th default_transition has a push element.
+  </description>
+
+  <!-- 
+    element default_transition 
+    { 
+      attribute interpretation { text }?,
+      guard?,
+      (simple | push | pop),
+      (action | send_action)*
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_DefaultTransition" state_name="DefaultTransition1"/>
+    <state_machine name="SD_DefaultTransition">
+
+      <!-- The 1st default_transition has no optional elements and all multiplicity set to 0 -->
+      <state name="DefaultTransition1">
+        <default_transition>
+          <simple/>
+        </default_transition>
+      </state>
+
+      <!-- The 2nd default_transition has all optional elements and all multiplicity set to 1 -->
+      <state name="DefaultTransition2">
+        <default_transition interpretation="A default_transition interpretation">
+          <guard condition="!Test(arg1, arg2) == true"/>
+          <simple/>
+          <action name="Action"/>
+        </default_transition>
+      </state>
+      
+      <!-- The 3rd default_transition has all multiplicity set to * (if applicable) -->
+      <state name="DefaultTransition3">
+        <default_transition>
+          <guard condition="!Test(arg1, arg2) == true"/>
+          <simple/>
+          <action name="TestAction" interpretation="An action interpretation.">
+            <argument value="'5'" />              
+            <argument value="true" interpretation="An arguement value interpretation"/>              
+          </action>
+          <send_action name="SendAction"/>
+        </default_transition>
+      </state>
+
+      <!-- The 4th default_transition has a pop element -->
+      <state name="DefaultTransition4">
+        <default_transition>
+          <pop/>
+        </default_transition>
+      </state>
+
+      <!-- The 5th default_transition has a push element -->
+      <state name="DefaultTransition5">
+        <default_transition>
+          <push>
+            <end_state state="DefaultTransition2"/>
+          </push>
+        </default_transition>
+      </state>
+
+    </state_machine>
+  </protocol_behavior>
+</service_def>

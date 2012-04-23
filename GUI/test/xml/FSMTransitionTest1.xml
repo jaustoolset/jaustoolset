@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest6" version="1.0">
+  <description>simple, push, pop, and internal transitions</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMTransitionTest1" state_name="A"/>
+    <state_machine name="FSMTransitionTest1">
+		<state name="A">
+			<transition name="T1">
+				<simple>
+					<end_state state="A"/>
+				</simple>
+			</transition>
+			<transition name = "T2">
+				<pop transition="T5">
+				</pop>
+			</transition>
+			<transition name = "T3">
+				<push>
+					<end_state state="A" />
+				</push>
+			</transition>
+			<transition name = "T4">
+				<internal>
+				</internal>
+			</transition>
+			<transition name = "T6">
+				<pop/>
+			</transition>
+		</state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

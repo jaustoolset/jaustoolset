@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_Pop" id="ImportTest:SD_Pop" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the simple element with all levels of multiplicity.
+
+    The 1st simple element has no optional elements.
+    The 2nd simple element has all optional elements.
+  </description>
+
+  <!-- 
+    element pop 
+    {
+      attribute transition { identifier }?,
+      attribute interpretation { text }?, 
+      argument*
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_Pop" state_name="Pop1"/>
+    <state_machine name="SD_Pop">
+
+      <!-- The 1st simple element has no optional elements -->
+      <state name="Pop1">
+        <transition name="Pop1">
+          <pop/>
+        </transition>
+      </state>
+
+      <!-- The 2nd simple element has all optional elements -->
+      <state name="Pop2">
+        <transition name="Pop2">
+          <pop interpretation="A pop transition interpretation" transition="Pop2">
+            <argument value="'5'" />
+            <argument value="true" interpretation="An arguement interpretation" />
+          </pop>
+        </transition>
+      </state>
+      
+    </state_machine>
+  </protocol_behavior>
+</service_def>

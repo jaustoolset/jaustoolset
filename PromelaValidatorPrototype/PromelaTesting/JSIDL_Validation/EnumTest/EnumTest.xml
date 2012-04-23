@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="EnumServiceDef" id="urn.jts.EnumTest" version="1.1" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references/>
+    <message_set>
+        <input_set>
+            <message_def name="EnumTestMessage" message_id="5006" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EnumBody">
+                    <record name="EnumRec" optional="false">
+                        <fixed_field name="EnumField" optional="false" field_units="one" field_type="byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="enum0"/>
+                                <value_enum enum_index="1" enum_const="enum 1 with spaces"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="EmptyFooter"/>
+            </message_def>
+        </input_set>
+        <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="true">
+        <start state_machine_name="EnumTest" state_name="State3"/>
+        <state_machine name="EnumTest">
+            <state name="State3">
+                <transition name="EnumTestMessage">
+                    <ns2:internal/>
+                    <action name="printEnumResults"/>
+                </transition>
+            </state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

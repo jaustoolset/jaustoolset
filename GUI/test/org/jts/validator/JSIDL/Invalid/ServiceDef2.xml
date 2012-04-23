@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="Palindrome" id="urn:jaus:jss:core:Palindrome" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">
+    A service that accepts palindromes built over the language {0,1} with c and e used as markers for the center and end of the input string. each of these characters is modeled as an input message.    
+    Typically in a protocol, only a subset of the set of all possible sequences of messages defined over the protocol's vocabulary are considered valid per the specification of the protocol.
+    The remaining sequences being invalid. This service models such a protocol in which sequences that are palindromes are valid while all other sequences are not.  
+  </description>
+  <assumptions>
+    Messages may not be lost or reordered.
+  </assumptions>
+  <references>
+	<inherits_from name="Palindrome" id="urn:jaus:jss:core:Palindrome" version="1.0"/>
+  </references>
+  <message_set>
+    <input_set>
+      <message_def name="Zero" message_id="0000" is_command="true">
+        <description xml:space="preserve">
+          This message respresents the '0' character.
+        </description>
+        <header name="JAUSApplicationLayerHeader">
+          <record name="HeaderRec" optional="false">
+            <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+              optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+          </record>
+        </header>
+        <body name="Body"/>
+        <footer name="Footer"/>
+      </message_def>
+      <message_def name="One" message_id="0001" is_command="true">
+        <description xml:space="preserve">
+          This message respresents the '1' character.
+        </description>
+        <header name="JAUSApplicationLayerHeader">
+          <record name="HeaderRec" optional="false">
+            <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+              optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+          </record>
+        </header>
+        <body name="Body"/>
+        <footer name="Footer"/>
+      </message_def>
+      <message_def name="Center" message_id="0002" is_command="true">
+        <description xml:space="preserve"> 
+          This message marks the center of the palindrome.
+        </description>
+        <header name="JAUSApplicationLayerHeader">
+          <record name="HeaderRec" optional="false">
+            <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+              optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+          </record>
+        </header>
+        <body name="Body"/>
+        <footer name="Footer"/>
+      </message_def>
+      <message_def name="End" message_id="0003" is_command="true">
+        <description xml:space="preserve"> 
+          This message marks the end of the palindrome.
+        </description>
+        <header name="JAUSApplicationLayerHeader">
+          <record name="HeaderRec" optional="false">
+            <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+              optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+          </record>
+        </header>
+        <body name="Body"/>
+        <footer name="Footer"/>
+      </message_def>
+    </input_set>
+    <output_set>
+      <message_def name="Acceptable" message_id="0004" is_command="true">
+        <description xml:space="preserve"> 
+          The input sequence was a palindrome
+        </description>
+        <header name="JAUSApplicationLayerHeader">
+          <record name="HeaderRec" optional="false">
+            <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+              optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+          </record>
+        </header>
+        <body name="Body"/>
+        <footer name="Footer"/>
+      </message_def>
+      <message_def name="Unacceptable" message_id="0005" is_command="true">
+        <description xml:space="preserve"> 
+          The input sequence was not a palindrome
+        </description>
+        <header name="JAUSApplicationLayerHeader">
+          <record name="HeaderRec" optional="false">
+            <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+              optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+          </record>
+        </header>
+        <body name="Body"/>
+        <footer name="Footer"/>
+      </message_def>
+    </output_set>
+  </message_set>
+  <internal_events_set>
+    <event_def name="Initialized">
+      <description> Service has initialized. </description>
+      <header name="Header"/>
+      <body name="Body"/>
+      <footer name="Footer"/>
+    </event_def>
+    <event_def name="OK">
+      <description> Event used with some pop transitions. </description>
+      <header name="Header"/>
+      <body name="Body"/>
+      <footer name="Footer"/>
+    </event_def>
+    <event_def name="Error">
+      <description> Event used with some pop transitions. </description>
+      <header name="Header"/>
+      <body name="Body"/>
+      <footer name="Footer"/>
+    </event_def>
+    <event_def name="Unknown">
+      <description> Event used when an unknown message is received. </description>
+      <header name="Header"/>
+      <body name="Body"/>
+      <footer name="Footer"/>
+    </event_def>
+  </internal_events_set>
+  <protocol_behavior is_stateless="false">
+    <start state_machine_name="PalindromeFSM" state_name="StartMap.PushIt"/>
+    <state_machine name="PalindromeFSM">
+      <state name="ZerosMap" initial_state="PushIt">
+        <state name="PushIt">
+          <transition name="Zero">
+            <push>
+              <end_state state="ZerosMap.PushIt"/>
+            </push>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'0'"/>
+            </action>
+          </transition>
+          <transition name="One">
+            <push>
+              <end_state state="OnesMap.PushIt"/>
+            </push>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'1'"/>
+            </action>
+          </transition>
+          <transition name="Center">
+            <simple>
+              <end_state state="ZerosMap.PopIt"/>
+            </simple>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'C'"/>
+            </action>
+          </transition>
+          <transition name="OK">
+            <simple>
+              <end_state state="ZerosMap.PopIt"/>
+            </simple>
+          </transition>
+          <transition name="Error">
+            <simple>
+              <end_state state="StartMap.Unacceptable"/>
+            </simple>
+            <action name="emptyStateStack"/>
+            <send_action name="Unacceptable"/>
+          </transition>
+        </state>
+        <state name="PopIt">
+          <transition name="Zero">
+            <pop transition="OK"/>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'0'"/>
+            </action>
+          </transition>
+          <default_transition>
+            <pop transition="Error"/>
+          </default_transition>
+        </state>
+        <default_state>
+          <transition name="End">
+            <simple>
+              <end_state state="StartMap.Unacceptable"/>
+            </simple>
+            <action name="emptyStateStack"/>
+            <send_action name="Unacceptable"/>
+            <action name="printSequence"/>
+          </transition>
+          <transition name="Unknown">
+            <simple>
+              <end_state state="StartMap.Unacceptable"/>
+            </simple>
+            <action name="emptyStateStack"/>
+            <send_action name="Unacceptable"/>
+          </transition>
+        </default_state>
+      </state>
+      <state name="OnesMap" initial_state="PushIt">
+        <state name="PushIt">
+          <transition name="Zero">
+            <push>
+              <end_state state="ZerosMap.PushIt"/>
+            </push>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'0'"/>
+            </action>
+          </transition>
+          <transition name="One">
+            <push>
+              <end_state state="OnesMap.PushIt"/>
+            </push>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'1'"/>
+            </action>
+          </transition>
+          <transition name="Center">
+            <simple>
+              <end_state state="OnesMap.PopIt"/>
+            </simple>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'C'"/>
+            </action>
+          </transition>
+          <transition name="OK">
+            <simple>
+              <end_state state="OnesMap.PopIt"/>
+            </simple>
+          </transition>
+          <transition name="Error">
+            <simple>
+              <end_state state="StartMap.Unacceptable"/>
+            </simple>
+            <action name="emptyStateStack"/>
+            <send_action name="Unacceptable"/>
+          </transition>
+        </state>
+        <state name="PopIt">
+          <transition name="One">
+            <pop transition="OK"/>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'1'"/>
+            </action>
+          </transition>
+          <default_transition>
+            <pop transition="Error"/>
+          </default_transition>
+        </state>
+        <default_state>
+          <transition name="End">
+            <simple>
+              <end_state state="StartMap.Unacceptable"/>
+            </simple>
+            <action name="emptyStateStack"/>
+            <send_action name="Unacceptable"/>
+            <action name="printSequence"/>
+          </transition>
+          <transition name="Unknown">
+            <simple>
+              <end_state state="StartMap.Unacceptable"/>
+            </simple>
+            <action name="emptyStateStack"/>
+            <send_action name="Unacceptable"/>
+          </transition>
+        </default_state>
+      </state>
+      <state name="StartMap" initial_state="PushIt">
+        <state name="PushIt">
+          <transition name="Zero">
+            <push>
+              <end_state state="ZerosMap.PushIt"/>
+            </push>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'0'"/>
+            </action>
+          </transition>
+          <transition name="One">
+            <push>
+              <end_state state="OnesMap.PushIt"/>
+            </push>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'1'"/>
+            </action>
+          </transition>
+          <transition name="Center">
+            <simple>
+              <end_state state="StartMap.PopIt"/>
+            </simple>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'C'"/>
+            </action>
+          </transition>
+          <transition name="OK">
+            <simple>
+              <end_state state="StartMap.PopIt"/>
+            </simple>
+          </transition>
+          <transition name="Error">
+            <simple>
+              <end_state state="StartMap.Unacceptable"/>
+            </simple>
+            <send_action name="Unacceptable"/>
+          </transition>
+        </state>
+        <state name="PopIt">
+          <transition name="End">
+            <simple>
+              <end_state state="StartMap.Acceptable"/>
+            </simple>
+            <send_action name="Acceptable"/>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'E'"/>
+            </action>
+            <action name="printSequence"/>
+          </transition>
+          <default_transition>
+            <simple>
+              <end_state state="StartMap.Unacceptable"/>
+            </simple>
+            <send_action name="Unacceptable"/>
+          </default_transition>
+        </state>
+        <state name="Acceptable">
+          <entry>
+            <action name="initialize" interpretation="call the initialize internal event"/>
+          </entry>
+          <exit>
+            <action name="emptyStoredSequence"/>
+          </exit>
+          <transition name="Initialized">
+            <simple>
+              <end_state state="StartMap.PushIt"/>
+            </simple>
+          </transition>
+        </state>
+        <state name="Unacceptable">
+          <entry>
+            <action name="initialize" interpretation="call the initialize internal event"/>
+          </entry>
+          <exit>
+            <action name="emptyStoredSequence"/>
+          </exit>
+          <transition name="Initialized">
+            <simple>
+              <end_state state="StartMap.PushIt"/>
+            </simple>
+          </transition>
+        </state>
+        <default_state>
+          <transition name="End">
+            <simple>
+              <end_state state="StartMap.Unacceptable"/>
+            </simple>
+            <send_action name="Unacceptable"/>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'E'"/>
+            </action>
+            <action name="printSequence"/>
+          </transition>
+          <transition name="Unknown">
+            <simple>
+              <end_state state="StartMap.Unacceptable"/>
+            </simple>
+            <send_action name="Unacceptable"/>
+            <action name="storeInSequence" interpretation="store character in sequence">
+              <argument value="'U'"/>
+            </action>
+            <action name="printSequence"/>
+          </transition>
+        </default_state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

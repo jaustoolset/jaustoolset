@@ -1,0 +1,229 @@
+/* Assumes guard condition is not present */
+
+
+options {
+  LOOKAHEAD = 1;
+  CHOICE_AMBIGUITY_CHECK = 2;
+  OTHER_AMBIGUITY_CHECK = 1;
+  STATIC = false;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  ERROR_REPORTING = true;
+  JAVA_UNICODE_ESCAPE = false;
+  UNICODE_INPUT = false;
+  IGNORE_CASE = false;
+  USER_TOKEN_MANAGER = false;
+  USER_CHAR_STREAM = false;
+  BUILD_PARSER = true;
+  BUILD_TOKEN_MANAGER = true;
+  SANITY_CHECK = true;
+  FORCE_LA_CHECK = false;
+}
+
+PARSER_BEGIN(PushTransitionParser)
+package org.jts.gui.mxGraphtoJAXB.parser;
+
+import org.jts.gui.mxGraphtoJAXB.mxPushTransition;
+import org.jts.gui.mxGraphtoJAXB.mxParameter;
+import org.jts.gui.mxGraphtoJAXB.mxAction;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Vector;
+
+/** Push transition element */
+public class PushTransitionParser {
+
+  /** Main entry point. */
+  public static void main(String args[]) throws ParseException {
+  String test = "trigger1;" +
+                      "trigger2() {endState};" +
+                      "trigger3()[]{endState};" + 
+                      "trigger4()[]/{endState};" + 
+                      "namespace.trigger5(type1 arg1)[]/action1(arg1){endState};" +
+                      "trigger6(type1 arg1, type2 arg2)[]/action1(arg1), action2(arg1, arg2){endState};" +
+                      "trigger7(type1 arg1, type2 '8')[]/action1('9'), action2('LIT', arg2){endState}; ";
+  InputStream stream = new ByteArrayInputStream( test.getBytes() );
+  
+  PushTransitionParser parser = new PushTransitionParser( stream );
+  Vector <mxPushTransition>pushTransitions = parser.Input();
+  for(int ii=0; ii<pushTransitions.size(); ii++)
+      System.out.println(pushTransitions.get(ii));
+  }
+}
+
+PARSER_END(PushTransitionParser)
+
+SKIP :
+{
+  " "
+  | "\t"
+  | "\n"
+  | "\r"
+  | "\""
+}
+
+TOKEN :
+{
+    <UNSIGNED: "unsigned">  
+      |
+    <ID: ["a"-"z","A"-"Z","_"] ( ["a"-"z","A"-"Z","_","0"-"9","."] )*>
+      |
+    <LITERAL: "\'" (~["\'"])* "\'">    
+      |
+    <NUM: ( ["0"-"9","."] )+>
+}
+
+/** Parses a push transition */
+Vector Input() :
+{
+Vector <mxPushTransition>transitionList = new Vector<mxPushTransition>();
+String name = null;  
+Vector <mxParameter> paramList = new Vector<mxParameter>();
+Vector <mxAction> actionList = new Vector<mxAction>();
+String endState = null;
+}
+{      
+    name=Identifier()  ("(" paramList = Parameters() ")")?  ("[" "]")?  ("/" actionList = Actions() )?  ("{"  (endState=Identifier())?  "}")? ";"
+      {
+        transitionList.add( new mxPushTransition( name, null, paramList, null, actionList, null, endState) );
+		
+		paramList = new Vector<mxParameter>();
+		actionList = new Vector<mxAction>();
+		endState = null;
+      }
+   (
+     name=Identifier()  ("(" paramList = Parameters() ")")?  ("[" "]")?  ("/" actionList = Actions() )?  ("{"(endState=Identifier())?  "}")? ";"
+      {
+        transitionList.add( new mxPushTransition( name, null, paramList, null, actionList, null, endState) );
+		
+		paramList = new Vector<mxParameter>();
+		actionList = new Vector<mxAction>();
+		endState = null;
+      }
+   )* <EOF>
+    {
+      return transitionList;
+    }
+}
+  
+/***** A parameter list ******/
+Vector Parameters() :
+{
+  Vector <mxParameter>paramList = new Vector<mxParameter>();
+  String type = null;  
+  String value = null;  
+}
+{  
+    (type=ParamType() value=ParamValue())?
+      {
+        if( type != null && value != null ) 
+          paramList.add( new mxParameter(type, value) );
+      }
+   (
+     "," type=ParamType() value=ParamValue() 
+     {
+       if( type != null && value != null ) 
+         paramList.add( new mxParameter(type, value) );
+     }
+   )*
+    {
+      return paramList;      
+    }
+}
+
+String ParamType() :
+{
+Token u= null;
+Token t;    
+}
+{
+   (u=<UNSIGNED>)? t=<ID>
+    {
+      if( u != null ) 
+      return u.image+" "+t.image;
+      else
+      return t.image;
+    }
+}
+
+String ParamValue() :
+{
+Token t;
+}
+{
+   ( t=<ID> | t=<LITERAL>  )
+    {
+      return t.image;
+    }
+}   
+  
+/******** An action list *********/
+
+Vector Actions() :
+{
+Vector <mxAction>actionList = new Vector<mxAction>();
+String name = new String();  
+Vector args = null;  
+}
+{  
+   ( name=Identifier() "(" args = Arguments() ")"
+    {
+      mxAction action = new mxAction(name, args, mxAction.TYPE_TRANSITION);
+      actionList.add(action);     
+    } )?
+   ("," name=Identifier() "(" args = Arguments() ")"
+    {
+      mxAction action = new mxAction(name, args, mxAction.TYPE_TRANSITION);
+      actionList.add(action);
+    }  
+   )*
+    {
+      return actionList;
+    }
+}
+
+Vector Arguments() :
+{
+Vector <String>args = new Vector<String>();
+String str = null;
+}
+{
+   [ str = ArgValue() ]
+    { if( str != null ) args.add(str); }
+   (
+   "," str = ArgValue() 
+    { if( str != null ) args.add(str); }    
+   )*
+    {
+      return args;
+    }
+}
+
+String ArgValue() :
+{
+Token t;
+String s;
+}
+{
+   (t=<ID> | t=<LITERAL>)
+    {
+      return t.image;
+    }
+}
+
+
+/************ an identifier ***************/
+String Identifier() :
+{
+Token t;
+}
+{
+  t=<ID>
+  {
+     return t.image;
+   }
+}
+    
+
+         

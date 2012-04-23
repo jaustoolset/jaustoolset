@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="TestSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:plus">
+   <description xml:space="preserve" xmlns="urn:jaus:jsidl:1.0">The set of services to be tested</description>
+  <service_def name="Array8" id="urn:org.jts.test:Array8" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <message_set>
+      <input_set>
+  	<message_def name="MsgIn" is_command="true" message_id="0001">
+  	  <description xml:space="default"/>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="Body">
+            <record name="Record" optional="false">
+              <array name="Array8" optional="false" interpretation="A 2D array of bit fields with underlying type unsigned short integer.">
+                <bit_field name="ColorField" field_type_unsigned="unsigned short integer" optional="false">
+                    <sub_field name="R">
+                      <bit_range from_index="0" to_index="4"/>
+                      <value_set offset_to_lower_limit="false">
+                          <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="31" upper_limit_type="inclusive"/>
+                      </value_set>
+                    </sub_field>
+                    <sub_field name="G">
+                      <bit_range from_index="5" to_index="10"/>
+                      <value_set offset_to_lower_limit="false">
+                          <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="63" upper_limit_type="inclusive"/>
+                      </value_set>
+                    </sub_field>
+                    <sub_field name="B">
+                      <bit_range from_index="11" to_index="15"/>
+                      <value_set offset_to_lower_limit="false">
+                          <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="31" upper_limit_type="inclusive"/>
+                      </value_set>
+                    </sub_field>
+                </bit_field>
+                <dimension name="X" size="2"/>
+                <dimension name="Y" size="4"/>
+              </array>
+            </record>    
+          </body>      
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="stateMachine" state_name="Ready"/>
+      <state_machine name="stateMachine">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+</ns1:service_set>

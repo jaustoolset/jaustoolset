@@ -1,0 +1,101 @@
+options {
+  LOOKAHEAD = 1;
+  CHOICE_AMBIGUITY_CHECK = 2;
+  OTHER_AMBIGUITY_CHECK = 1;
+  STATIC = false;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  ERROR_REPORTING = true;
+  JAVA_UNICODE_ESCAPE = false;
+  UNICODE_INPUT = false;
+  IGNORE_CASE = false;
+  USER_TOKEN_MANAGER = false;
+  USER_CHAR_STREAM = false;
+  BUILD_PARSER = true;
+  BUILD_TOKEN_MANAGER = true;
+  SANITY_CHECK = true;
+  FORCE_LA_CHECK = false;
+}
+
+PARSER_BEGIN(StateMachineParser)
+package org.jts.gui.mxGraphtoJAXB.parser;
+
+import java.io.ByteArrayInputStream;
+
+/** parameter element */
+public class StateMachineParser {
+  public String name = null;
+  public String isStateless = null;
+  public String interpretation = null; // currently not parsed
+  
+  /** Main entry point. */
+  public static void main(String args[]) throws ParseException {
+  
+    String test = "name=fsm; isStateless=true";
+    ByteArrayInputStream stream = new ByteArrayInputStream( test.getBytes() );
+    
+    StateMachineParser parser = new StateMachineParser( stream );
+    parser.Input();
+    System.out.println( "name= "+parser.name+" isStateless= "+parser.isStateless+" interpretation= "+parser.interpretation );
+  }
+}
+
+PARSER_END(StateMachineParser)
+
+SKIP :
+{
+  " "
+  | "\t"
+  | "\n"
+  | "\r"
+  | "\""
+}
+
+TOKEN :
+{
+    <NAME: "name">
+      |
+    <IS_STATELESS: "isStateless">
+      |
+    <TRUE: "true">
+      |
+    <FALSE: "false">
+      |
+    <ID: ["a"-"z","A"-"Z","_"] ( ["a"-"z","A"-"Z","_","0"-"9","."] )*>
+}
+
+/** Parses a parameter */
+void Input() :
+{
+}
+{  
+    <NAME> "=" name = Identifier() (";")?  <IS_STATELESS> "=" isStateless = IsStateless()  (";")?   
+      {
+      }
+}
+
+String Identifier() :
+{
+Token t;
+String s;
+}
+{
+  t=<ID>
+  {
+     return t.image;
+   }
+}
+    
+String IsStateless() :
+{
+Token t;
+String s;
+}
+{
+  ( t=<TRUE> | t=<FALSE> )
+   {
+     return t.image;
+   }
+}    
+         

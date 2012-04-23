@@ -1,0 +1,35 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="libCommon_CSharp/framework/StateMachine.cs" ctype="Workbench">
+    <Files>
+      <File FileName="libCommon_CSharp/framework/StateMachine.cs" Line="43" Column="4" />
+      <File FileName="libCommon_CSharp/framework/transport/OS.cs" Line="49" Column="14" />
+      <File FileName="libCommon_CSharp/framework/transport/JausRouter.cs" Line="30" Column="3" />
+      <File FileName="libCommon_CSharp/framework/internalEvents/Receive.cs" Line="103" Column="27" />
+      <File FileName="libCommon_CSharp/framework/internalEvents/InternalEventHandler.cs" Line="49" Column="44" />
+      <File FileName="libCommon_CSharp/framework/internalEvents/Send.cs" Line="236" Column="28" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="libCommon_CSharp" expanded="True">
+            <Node name="References" expanded="True" />
+            <Node name="framework" expanded="True">
+              <Node name="internalEvents" expanded="True" />
+              <Node name="transport" expanded="True" />
+              <Node name="StateMachine.cs" selected="True" />
+            </Node>
+          </Node>
+          <Node name="Packages" expanded="True" />
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches ctype="PinnedWatchStore" />
+</Properties>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<event_def xmlns="urn:jaus:jsidl:1.0" name="EventDefTest1">
+	<description xml:space="preserve"> Received when an event occurs. </description>
+	<declared_header name="HeaderTest1" declared_type_ref="unitTest.HeaderTest1"/>
+	<declared_body name="BodyTest1" declared_type_ref="unitTest.BodyTest1"/>
+	<declared_footer name="FooterTest1" declared_type_ref="unitTest.FooterTest1"/>
+</event_def>

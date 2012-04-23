@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record name="Record8" optional="false" interpretation="A variable field in a record may be optional" xmlns="urn:jaus:jsidl:1.0">
+	<variable_field name="temperature" interpretation="CPU temperature" optional="false" xmlns="urn:jaus:jsidl:1.0">
+		<type_and_units_field>
+			<type_and_units_enum name="degreeCelsiusShort" index="0" field_type="short integer" field_units="degree Celsius"/>
+		</type_and_units_field>
+	</variable_field>
+</record>

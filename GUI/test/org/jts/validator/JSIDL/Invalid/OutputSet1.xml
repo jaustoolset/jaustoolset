@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<output_set xmlns="urn:jaus:jsidl:1.0">
+  <message_def name="LOGIN_ERROR" message_id="000f" is_command="false">
+    <description>A message for reporting error conditions</description>
+    <header/>
+    <body>
+      <record name="Error_Rec" optional="false">
+        <fixed_field name="Error_Code" field_type="byte" field_units="one" optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="’0’" interpretation="Invalid user name."/>
+            <value_enum enum_const="’1’" enum_index="1" interpretation="Invalid password."/>
+            <value_enum enum_const="’2’" enum_index="2" interpretation="User logged in."/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer/>
+  </message_def >
+  <message_def name="LOGIN_ERROR" message_id="000f" is_command="false">
+    <description>A message for reporting error conditions</description>
+    <header/>
+    <body>
+      <record name="Error_Rec" optional="false">
+        <fixed_field name="Error_Code" field_type="byte" field_units="one" optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="’0’" interpretation="Invalid user name."/>
+            <value_enum enum_const="’1’" enum_index="1" interpretation="Invalid password."/>
+            <value_enum enum_const="’2’" enum_index="2" interpretation="User logged in."/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer/>
+  </message_def >
+</output_set>

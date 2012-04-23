@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="PingClient" id="urn:jts:PingClient" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">
+    This service broadcasts for a ping service.
+  </description>
+  <assumptions>
+    Messages may not be lost, delayed or reordered.
+  </assumptions>
+  <references>
+    <client_of name="PingServer" id="urn:jts:PingServer" version="1.0"/>
+  </references>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="PingClientFSM" state_name="Ready"/>
+    <state_machine name="PingClientFSM">
+      <state name="Ready">
+        <entry>
+          <action name="QueryHeartBeatPulse" interpretation="Broadcast a QueryHeartBeatPulse message"/>
+        </entry>
+        <transition name="ReportHeartbeatPulse">
+          <simple/>
+          <action name="printToScreen" interpretation="print a message on the screen"/>
+        </transition>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

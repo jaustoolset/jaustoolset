@@ -1,0 +1,60 @@
+# mxGraph
+#
+default namespace = "urn:jaus:mxGraph:0.1"
+
+start = mxGraphModel
+
+mxGraphModel = 
+  element mxGraphModel {
+    element root {
+      mxCell+
+    }
+  }  
+  
+mxCell = 
+  element mxCell {
+    attribute id { xsd:unsignedInt },
+    attribute parent { xsd:unsignedInt }?,
+    attribute source { xsd:unsignedInt }?,
+    attribute target { xsd:unsignedInt }?,
+    attribute style { xsd:string },
+    attribute value { xsd:string }, # remember value is already contained in the encapsulating element
+    attribute edge { xsd:unsignedInt }?,
+    attribute vertex { xsd:unsignedInt }?,
+    mxGeometry?
+  }
+  
+mxGeometry = 
+  element mxGeometry {
+    attribute relative { xsd:unsignedInt }?,
+    attribute as { xsd:string }?,
+    attribute x { xsd:float }?,
+    attribute y { xsd:float }?,
+    attribute width { xsd:float }?,
+    attribute height { xsd:float }?,
+    mxPoint*, 
+    mxRectangle?,
+    Array?
+  }
+  
+mxPoint = 
+  element mxPoint {
+    attribute as { "sourcePoint" | "targetPoint"| "offset"| text }?,
+    attribute x { xsd:float },
+    attribute y { xsd:float }
+  }
+  
+mxRectangle = 
+  element mxRectangle {
+    attribute as { "alternateBounds" | text }?,
+    attribute height { xsd:float },
+    attribute width { xsd:float },
+    attribute x { xsd:float },
+    attribute y { xsd:float }
+  }
+  
+Array = 
+  element Array {
+    attribute as { "points" | text }?,
+    mxPoint+ 
+  }

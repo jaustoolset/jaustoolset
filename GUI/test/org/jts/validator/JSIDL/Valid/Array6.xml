@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<array name="Array6" optional="false" interpretation="A variable length string in an array may not be optional"  xmlns="urn:jaus:jsidl:1.0">
+	<variable_length_string name="node_description" interpretation="" optional="false" xmlns="urn:jaus:jsidl:1.0">
+		<count_field field_type_unsigned="unsigned byte"/>
+	</variable_length_string>
+	<dimension name="dimension1" size="9"/>
+	<dimension name="dimension2" size="1"/>
+</array>

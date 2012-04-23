@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part xmlns="http://docbook.org/ns/docbook"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      version="1.0">
+  <title>Enter Document Title</title>
+  <info>
+    <!-- This information is rendered into the SAE boilerplate table
+         in customization layer -->
+    <productname>AEROSPACE STANDARD</productname>
+    <productnumber>AS5710</productnumber>
+    <biblioid class="pubsnumber">0.5</biblioid> <!--revision-->
+    <releaseinfo role="stage">Proposed Draft</releaseinfo>
+    <releaseinfo role="logo">images/SAEAeroLogo.png</releaseinfo>
+    <releaseinfo role="tla">SAE</releaseinfo>
+    <releaseinfo role="svn">
+      <phrase>$Id: JSS_db.xml 698 2007-07-30 22:28:30Z jalbers $</phrase>
+      <phrase>$URL: https://www.fastpilot.com/svn/asfour/as4c/trunk/JSS/JSS_db.xml $</phrase>
+    </releaseinfo>
+    <publisher>
+      <publishername>The Society of Automotive Engineers</publishername>
+      <address>
+        <phone role="USA">724-776-4970 (outside USA)</phone>
+        <phone role="Intl">877-606-7323 (inside USA and Canada)</phone>
+        <email>custsvc@sae.org</email>
+        <fax>724-776-0790</fax>
+        <otheraddr>http://www.sae.org</otheraddr>
+      </address>
+    </publisher>
+    <revhistory>
+      <revision>
+        <revnumber>0.5</revnumber>
+        <date>2007-06-01</date>
+        <author>
+          <orgname>AS-4C</orgname>
+        </author>
+        <revremark>
+          <phrase>for balloting</phrase>
+        </revremark>
+      </revision>
+    </revhistory>
+    <pubdate>2007-06-01</pubdate>
+    <copyright>
+      <year>2007</year>
+      <holder>The Society of Automotive Engineers</holder>
+    </copyright>
+  </info>
+  <partintro xml:id="intro.FRONTMATTER">
+    <informaltable frame='all'>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+        <!-- colspecs based on Microsoft doc from SAE Editor 6/26/2007 -->
+        <colspec colname='c1' colwidth='2.6in'/>
+        <colspec colname='c2' colwidth='2.6in'/>
+        <colspec colname='c3a' colwidth='1.0in'/>
+        <colspec colname='c3b' colwidth='0.88in'/>
+        <colspec colname='c3c' colwidth='0.59in'/>
+        <tbody>
+          <row>
+            <?dbfo row-height="30pt"?>
+            <entry morerows='2' colsep="0">
+              <inlinemediaobject xml:id="SAEAeroLogo">
+                <imageobject>
+                  <imagedata contentwidth="2.1in"
+                             fileref="images/SAEAeroLogo.png"
+                             format="PNG"/>
+                </imageobject>
+              </inlinemediaobject>
+            </entry>
+            <entry morerows='2' valign='top'>
+              <emphasis role="saedoctype">AEROSPACE STANDARD</emphasis>
+            </entry>
+            <entry namest="c3a" nameend="c3b" colsep="1" valign="middle">[STANDARD #]</entry>
+            <entry valign="middle">[REVISION #]</entry>
+          </row>
+          <row>
+            <entry colsep="0" rowsep="0">Issued</entry>
+            <entry namest='c3b' nameend='c3c' rowsep="0">[DRAFT STATUS]</entry>
+          </row>
+          <row>
+            <entry colsep="0"></entry>
+            <entry namest='c3b' nameend='c3c'>[ISSUED DATE]</entry>
+          </row>
+          <row>
+            <entry namest="c1" nameend="c3b" valign='top'  align='center'>
+              <para><emphasis role="bold">Enter Service Title</emphasis></para>
+              <!-- Remove before final version -->
+              <!-- Move to separate header doc and control via status="draft" -->
+              <para>Document generated: <?dbtimestamp format="Y-m-d H:M:S"?> PDT</para>
+            </entry>
+            <entry valign="middle">
+            <inlinemediaobject xml:id="SAEAeroLogo">
+              <imageobject>
+                <imagedata contentwidth="1.2in" fileref="images/JTSman_large.png"
+                           format="PNG"/>
+              </imageobject>
+            </inlinemediaobject>
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+    <simplesect xml:id="ss.RATIONALE">
+      <title>RATIONALE</title>
+      <para>
+        Give rationale for this particular document here.
+      </para>
+    </simplesect>
+	<simplesect xml:id="ss.INTRODUCTION">
+      <title>INTRODUCTION</title>
+      <para>
+        First paragraph of introduction here.
+      </para>
+      <para>
+        Second paragraph of introduction here.  Demo crossreference to AS5669 documentation: <xref xrefstyle="select:nopage" linkend="AS5669"/>
+      </para>
+      <para>
+        Third paragraph of introduction here.   
+        Demo crossreference to Relax-NG Compact info here: [<xref xrefstyle="select:nopage" linkend="RNG"/>].
+      </para>
+      <para>
+        Last paragraph of introduction.  This document uses a number of conventions to simplify the text.  All names are 
+        given in Camel Case.  Names start with upper case, while reference names start with a lower case.
+      </para>
+    </simplesect>
+  </partintro>
+  <article xmlns="http://docbook.org/ns/docbook"
+           xmlns:xi="http://www.w3.org/2001/XInclude"
+           class="specification"
+           xml:id="article.JAUS_SERVICE_SET">
+    <title>JAUS Service Set</title>
+    <section xml:id="sect.SCOPE">
+      <title>SCOPE</title>
+      <para>
+        Give info about the scope of this document <emphasis>here.</emphasis>.
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>List services here.</para>
+        </listitem>
+      </itemizedlist>
+      <para>
+        Each service is described by a JAUS Service Definition (JSD) which specifies the message set and protocol required for compliance. 
+        Each JSD is fully compliant with the JAUS Service Interface Definition Language [JSIDL].
+      </para>
+      <section>
+        <title>Purpose</title>
+        <para>
+          Insert purpose of this document and set of services here.
+        </para>
+      </section>
+      <section>
+        <title>Compliance</title>
+        <para>
+          Insert info about "compliance" of the services described in this document.
+        </para>
+      </section>
+      <section>
+        <title>Document Organization</title>
+        <para>
+          The layout of this document is as follows. Section 2 lists external references, definitions of common terms and a list of 
+          acronyms used throughout the specification. Section 3 specifies aspects of message encoding that are common across all 
+          services.  Many of these encoding rules are more thoroughly discussed in [JSIDL].    Section 4 provides context for 
+          interpreting the protocol portion of a Service Definition.  Section 5 specifies the JAUS Service Definition for each of 
+          the core services, with particular emphasis on the description, assumptions, message set, and protocol behavior.  Section 
+          6 describes the message encoding for each message set.  Finally, Appendix A and Appendix B contain the complete JSIDL 
+          representation for each service and their associated message set.
+        </para>
+      </section>
+    </section>
+    <section xml:id="sect.REFERENCES" xmlns="http://docbook.org/ns/docbook">
+      <title>REFERENCES</title>
+      <section>
+        <title>Applicable Documents</title>
+        <para>The following publications form a part of this document to the extent specified herein. The latest issue of SAE 
+          publications shall apply. The applicable issue of other publications shall be the issue in effect on the date of the 
+          purchase order. In the event of conflict between the text of this document and references cited herein, the text of 
+          this document takes precedence.</para>
+        <para>Nothing in this document, however, supersedes applicable laws and regulations unless a specific exemption has been 
+        obtained.</para>
+        <section>
+          <title>SAE Publications</title>
+          <para>Available from SAE International, 400 Commonwealth Drive, Warrendale, PA 15096-0001, Tel: 877-606-7323 (inside USA
+          and Canada) or 724-776-4970 (outside USA), Web address: www.sae.org</para>
+          <para xml:id="AIR5665" xreflabel="AIR5665">AIR5665 Architecture Framework for Unmanned Systems, v1.0, May 2008</para>
+          <para xml:id="AS5669" xreflabel="AS5669">AS5669 JAUS Transport Specification, v2.0, Publication Pending</para>
+          <para xml:id="AS5684" xreflabel="AS5684">AS5684 JAUS Service Interface Definition Language, v1.0, Publication Pending</para>
+        </section>
+        <section>
+          <title>JAUS Technical References</title>
+          <para xml:id="RA33P1" xreflabel="RA33P1">RA33P1 JAUS Reference Architecture Specification, Volume II, Part 1, Architecture Framework, Version 3.3, June 22, 2007</para>
+          <para xml:id="RA33P2" xreflabel="RA33P2">RA33P2 JAUS Reference Architecture Specification, Volume II, Part 2, Message Definition, Version 3.3, June 22, 2007</para>
+          <para xml:id="RA33P3" xreflabel="RA33P3">RA33P3 JAUS Reference Architecture Specification, Volume II, Part 3, Message Set, Version 3.3, June 22, 2007</para>
+        </section>
+        <section>
+          <title>Other Publication</title>
+          <para xml:id="BNT" xreflabel="BNT">Barry N. Taylor. The International System of Units (SI), National Institute of Standards and Technology Special 
+            Publication 330, 1991 Edition. [http://physics.nist.gov/Document/sp330.pdf]</para>
+          <para xml:id="RNG" xreflabel="RNG">Relax NG: [http://www.oasis-open.org/committees/relax-ng/spec-20011203.html] Standard lightweight XML schema language.</para>
+        </section>  
+      </section>
+      <section>
+        <title>Definitions</title>
+        <glosslist>
+          <glossentry>
+            <glossterm>Sample Definition</glossterm>
+            <glossdef>
+              <para>
+                This is a sample definition.  Add more definitions here! 
+              </para>
+            </glossdef>
+          </glossentry>
+        </glosslist>
+      </section> <!-- definitions end -->
+      <section>
+        <title>List of Acronyms</title>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis role="bold">ACRO</emphasis> Add list of acronyms here!</para>
+          </listitem>
+        </itemizedlist>
+      </section> <!-- acronyms end -->
+    </section>
+    <section xml:id="sect.COMMON_CONVENTIONS">
+      <title>COMMON CONVENTIONS</title>
+      <para>
+        Enter common conventions info for your services here.
+      </para>
+    </section>
+    <?hard-pagebreak?>
+    <section xml:id="section.SERVICE_DEFINITIONS">
+      <!-- note: template MUST contain section with xml:id of "section.SERVICE_DEFINITIONS"! -->
+      <!-- Java code will programmatically add info about service definitions here. -->
+      <title>SERVICE DEFINITIONS</title>
+      <para>Put general comments about service definitions here, or leave this
+      para element empty to have it automatically removed during document generation.</para>
+    </section>
+    <?hard-pagebreak?>
+    <section>
+      <title>NOTES</title>
+      <para>Enter additional notes info for your services here.</para>
+    </section>
+    <?hard-pagebreak?>
+    <appendix xml:id="appendix.APPENDIX_A">
+      <!-- note: template MUST contain appendix with xml:id of "appendix.APPENDIX_A"! -->
+      <!-- Java code will programmatically add source code for service definitions here. -->
+      <title xml:id="title.APPENDIX_A">
+        APPENDIX A - XML FOR SERVICE DEFINITIONS
+      </title>
+      <para>This appendix contains JSIDL XML text of the documented services.</para>
+    </appendix>
+  </article>
+</part>

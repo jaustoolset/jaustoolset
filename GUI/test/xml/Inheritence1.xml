@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" xmlns:version_1_1="urn:jaus:jsidl:1.1" xmlns:plus="urn:jaus:jsidl:plus" name="TestSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1"
+  xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">The set of services to be tested</description>
+  <service_def name="Parent" id="urn:org.jts.test:Parent" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <references/>
+    <message_set>
+      <input_set>
+        <message_def name="ParentInputMessage1" is_command="true" message_id="0001">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false"
+                interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+        <message_def name="ParentInputMessage2" is_command="true" message_id="0002">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false"
+                interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="Parent.Parent1FSM" state_name="Top1"/>
+      <state_machine name="Parent.Parent1FSM">
+        <state name="Top1">
+          <transition name="ParentInputMessage1">
+            <simple>
+              <end_state state="Top2"/>
+            </simple>
+            <action name="Action_Top1_To_Top2"/>
+          </transition>
+        </state>
+        <state name="Top2">
+          <entry>
+            <action name="Top2_Entry"/>
+          </entry>
+          <exit>
+            <action name="Top2_Exit"/>
+          </exit>
+          <transition name="ParentInputMessage2">
+            <guard condition="false"/>
+            <simple>
+              <end_state state="Top1"/>
+            </simple>
+          </transition>
+        </state>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  <service_def name="Intermediary" id="urn:org.jts.test:Intermediary" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <references>
+      <inherits_from name="Parent" id="urn:org.jts.test:Parent" version="1.0"/>
+    </references>
+    <message_set>
+      <input_set>
+        <message_def name="IntermediaryInputMessage1" is_command="true" message_id="0003">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false"
+                interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="Intermediary.Parent.Parent1FSM" state_name="Top1.Intermediary1"/>
+      <state_machine name="Intermediary.Parent.Parent1FSM">
+        <state name="Top1" initial_state="Intermediary1">
+          <state name="Intermediary1">
+            <entry>
+              <action name="Top1_Intermediary1_Entry"/>
+            </entry>
+            <exit>
+              <action name="Top1_Intermediary1_Exit"/>
+            </exit>
+          </state>
+        </state>
+        <state name="Top2" initial_state="Intermediary1">
+          <transition name="ParentInputMessage2" interpretation="Override transition to relax guard">
+            <simple>
+              <end_state state="Top1"/>
+            </simple>
+          </transition>
+          <state name="Intermediary1">
+            <entry>
+              <action name="Top2_Intermediary1_Entry"/>
+            </entry>
+            <exit>
+              <action name="Top2_Intermediary1_Exit"/>
+            </exit>
+            <transition name="IntermediaryInputMessage1">
+              <simple>
+                <end_state state="Top2.Intermediary2"/>
+              </simple>
+            </transition>
+          </state>
+          <state name="Intermediary2">
+            <entry>
+              <action name="Top2_Intermediary2_Entry"/>
+            </entry>
+            <exit>
+              <action name="Top2_Intermediary2_Exit"/>
+            </exit>
+          </state>
+        </state>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  <service_def name="Child" id="urn:org.jts.test:Child" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <references>
+      <inherits_from name="Intermediary" id="urn:org.jts.test:Intermediary"
+        version="1.0"/>
+    </references>
+    <message_set>
+      <input_set>
+        <message_def name="ChildInputMessage1" is_command="true" message_id="0004">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false"
+                interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+        <message_def name="ChildInputMessage2" is_command="true" message_id="0005">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false"
+                interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+        <message_def name="ChildInputMessage3" is_command="true" message_id="0006">
+          <description xml:space="default"> An empty message definition </description>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false"
+                interpretation="A two byte field to hold the message ID of a message"/>
+            </record>
+          </header>
+          <body name="EmptyBody"/>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="Child.Intermediary.Parent.Parent1FSM" state_name="Top1.Intermediary1"/>
+      <state_machine name="Child.Intermediary.Parent.Parent1FSM">
+        <state name="Top1" initial_state="Intermediary1">
+          <state name="Intermediary1"/>
+        </state>
+        <state name="Top2" initial_state="Intermediary1">
+          <state name="Intermediary1">
+            <transition name="ChildInputMessage3">
+              <simple>
+                <end_state state="Top1.Intermediary1"/>
+              </simple>
+              <action name="Top2Intermediary1_toTop1Intermediary1"/>
+            </transition>
+          </state>
+          <default_state>
+            <transition name="ChildInputMessage1">
+              <simple/>
+            </transition>
+            <transition name="ChildInputMessage2">
+              <version_1_1:internal/>
+            </transition>
+            <default_transition>
+              <version_1_1:internal/>
+              <action name="DefaultTransitionAction"/>
+            </default_transition>
+          </default_state>
+        </state>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+</ns1:service_set>

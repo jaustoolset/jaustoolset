@@ -1,0 +1,50 @@
+types BasicTypes( id="urn:jaus:jss:core:MessageSet:BasicTypes", version="1.1" ) {
+  field uint8 AuthorityCode one {
+     RESERVED = [0,255];
+    };
+  field uint16 EmergencyCode one {
+     STOP = 1;
+    };
+  // TimeStamp
+  bit_field uint32 TimeStamp  {
+    Milliseconds [0:9] [0,999] one;
+    Seconds [10:15] [0,59] one;
+    Minutes [16:21] [0,59] one;
+    Hour [22:26] [0,23] one;
+    Day [27:31] [1,31] one;
+  };
+  // DateStamp
+  bit_field uint16 DateStamp  {
+    Day [0:4] [1,31] one;
+    Month [5:8] [1,12] one;
+    Year [9:15] [0,127] one;
+  };
+  record TimeRec {
+    optional TimeStamp TimeStamp = 1;
+    optional DateStamp DateStamp = 2;
+  };// record TimeRec
+  // JausID
+  bit_field uint32 JausID  {
+    ComponentID [0:7] [1,255] one; // Component ID where a value of 255 represents
+      // all components.
+    NodeID [8:15] [1,255] one; // Node ID where a value of 255 represents all nodes.
+    SubsystemID [16:31] [1,65535] one; // Subsystem ID, where a value of 65535
+      // represents all subsystems
+  };    // Identifier of a JAUS compliant end point
+  // Element UID
+  field uint16 ElementUID one ;
+  // ListElement
+  record ElementRec {
+    required ElementUID ElementUID = 1; // Values zero (0) and 65535 are invalid
+      // (reserved).
+    required ElementUID PreviousUID = 2; // UID of the previous (parent) element in
+      // the list. The value is zero (0) if this is the first (head) element.
+    required ElementUID NextUID = 3; // UID of the next (child) element in the list.
+      // The value is zero (0) if this is the last (tail) element.
+    required variable_format_field ElementData  {
+      uint16 tag;
+      tag 0: JAUS_MESSAGE;
+      tag 1: User_defined;
+    } = 4; // variable_format_field ElementData 
+  };// record ElementRec
+}// types BasicTypes

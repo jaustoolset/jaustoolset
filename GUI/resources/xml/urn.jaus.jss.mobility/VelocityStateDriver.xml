@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="VelocityStateDriver" id="urn:jaus:jss:mobility:VelocityStateDriver" version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description>
+    The Velocity State Driver allows for low level control of platform mobility.  This service does 
+    not imply any particular platform type such as tracked or wheeled, but describes mobility 
+    in six degrees of freedom using velocity commands relative to the vehicle’s coordinate 
+    system.  The function of the Velocity State Driver service is to control the desired linear and 
+    angular velocity of a mobile platform.  The Velocity State Driver takes the desired velocity as 
+    measured with respect to the vehicle coordinate system.  
+  </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SetVelocityCommand" declared_type_ref="mobility.commandClass.SetVelocityCommand"/>
+      <declared_message_def name="SetAccelerationLimit" declared_type_ref="mobility.commandClass.SetAccelerationLimit"/>
+      <declared_message_def name="QueryVelocityCommand" declared_type_ref="mobility.queryClass.QueryVelocityCommand"/>
+      <declared_message_def name="QueryAccelerationLimit" declared_type_ref="mobility.queryClass.QueryAccelerationLimit"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportVelocityCommand" declared_type_ref="mobility.informClass.ReportVelocityCommand"/>
+      <declared_message_def name="ReportAccelerationLimit" declared_type_ref="mobility.informClass.ReportAccelerationLimit"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="management.accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled.StateA"/>
+    <state_machine name="management.accessControl.events.transport.ReceiveFSM" 
+        interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled" interpretation="redefine state in order to extend">
+          <state name="NotControlled" initial_state="StateA" interpretation="redefine state in order to extend">
+            <state name="StateA" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryVelocityCommand" value="msg" interpretation="enveloped query 
+                    velocity command message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Velocity Command message">
+                    <argument value=" 'ReportVelocityCommand' "/>
+                    <argument value="transportData"/>
+                  </action>
+                  </transition>
+                  <transition name="management.accessControl.events.transport.Receive">
+                    <parameter type="QueryAccelerationLimit" value="msg" interpretation="enveloped query 
+                      acceleration limit message"/>
+                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                    <simple/>
+                    <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                      Acceleration Limit message">
+                      <argument value=" 'ReportAccelerationLimit' "/>
+                      <argument value="transportData"/>
+                    </action>
+                </transition>
+              </default_state>
+             </state>
+            </state>
+          <state name="Controlled" initial_state="StateB" interpretation="redefine state in order to extend">
+            <state name="StateB" interpretation="redefine state in order to extend">
+              <state name="Ready">
+                <exit>
+                  <action name="resetCmdVelocityToDefault" interpretation="When leaving the Ready state, 
+                    reset the commanded velocity to the previously established default values."/>
+                </exit>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetVelocityCommand" value="msg" interpretation="enveloped set 
+                    velocity command message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData ) &amp;&amp; isCurrentVelocityCmd( msg )" 
+                    interpretation="True if the message that triggered the transition is received from 
+                    the client that is in control of this service AND the message has a CommandType 
+                    of 'Set current command'."/>
+                  <simple/>
+                  <action name="setCurrentVelocityCommand" interpretation="Update the current commanded velocity vector."/>
+                </transition>
+              </state>
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetVelocityCommand" value="msg" interpretation="enveloped set 
+                    velocity command message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData ) &amp;&amp; !isCurrentVelocityCmd( msg )" 
+                    interpretation="True if the message that triggered the transition is received from 
+                    the client that is in control of this service AND the message does not have a CommandType 
+                    of 'Set current command'."/>
+                  <simple/>
+                  <action name="setVelocityLimit" interpretation="Set the max, min or default velocity as requested."/>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetAccelerationLimit" value="msg" interpretation="enveloped set 
+                    acceleration limit message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered 
+                    the transition is received from the client that is in control of this service."/>
+                  <simple/>
+                  <action name="setAccelerationLimit" interpretation="Set the max or min acceleration as requested."/>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryVelocityCommand" value="msg" interpretation="enveloped query 
+                    velocity command message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Velocity Command message">
+                    <argument value=" 'ReportVelocityCommand' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryAccelerationLimit" value="msg" interpretation="enveloped query 
+                    acceleration limit message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Acceleration Limit message">
+                    <argument value=" 'ReportAccelerationLimit' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+              </state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

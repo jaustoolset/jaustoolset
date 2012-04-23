@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest11" version="1.0">
+  <description>transition to child state should include current state entry actions along with child's actions</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMEntryTest11" state_name="B"/>
+    <state_machine name="FSMEntryTest11">
+      <state name="B" initial_state="BB1">
+      	<entry>
+      		<action name ="EnterB">
+      		</action>
+      	</entry>
+		<transition name = "T1">
+			<simple>
+				<end_state state="B.BB1" />
+			</simple>
+			<action name="T1Action">
+			</action>
+		</transition>
+      	<state name="BB1">
+      		<entry>
+      		<action name="EnterBB1">
+      		</action>
+      		</entry>
+      	</state>
+      	<state name="BB2">
+      		<entry>
+      		<action name="EnterBB2">
+      		</action>
+      		</entry>
+      	</state>
+      </state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

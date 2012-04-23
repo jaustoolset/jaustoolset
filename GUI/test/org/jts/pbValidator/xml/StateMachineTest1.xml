@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:StateMachineTest1"
+   name="StateMachineTest1" version="1.0">
+  <description xml:space="preserve">
+     Names of concurrent state machines must be unique among the set of all state machine names in the protocol behavior
+  </description>
+  <assumptions/> 
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="Ready"/>
+     <start state_machine_name="FSM" state_name="NotReady"/>
+    <state_machine name="FSM">
+      <state name="Ready"/>
+    </state_machine>
+     <state_machine name="FSM">
+        <state name="NotReady"/>
+     </state_machine>
+  </protocol_behavior>
+</service_def>

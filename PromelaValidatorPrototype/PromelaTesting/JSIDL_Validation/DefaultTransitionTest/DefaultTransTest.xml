@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="DefaultTransitionServiceDef" id="urn.jts.DefaultTransTest" version="1.1" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references/>
+    <message_set>
+        <input_set>
+            <message_def name="Message1" message_id="5013" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+            <message_def name="Message2" message_id="1514" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+            <message_def name="Message3" message_id="1515" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+            <message_def name="DefaultTransMsg" message_id="1520" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="GuardBody">
+                    <record name="GuardRec" optional="false">
+                        <fixed_field name="intField" optional="false" field_units="one" field_type="integer"/>
+                    </record>
+                </body>
+                <footer name="EmptyFooter"/>
+            </message_def>
+        </input_set>
+        <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="DefaultTransFSM" state_name="State18"/>
+        <state_machine name="DefaultTransFSM">
+            <state name="State18">
+                <transition name="Message1">
+                    <simple>
+                        <end_state state="State19"/>
+                    </simple>
+                </transition>
+                <default_transition>
+                    <guard condition="Guard()"/>
+                    <simple>
+                        <end_state state="State19"/>
+                    </simple>
+                </default_transition>
+                <default_transition>
+                    <simple>
+                        <end_state state="State19"/>
+                    </simple>
+                </default_transition>
+            </state>
+            <state name="State19">
+                <transition name="Message3">
+                    <simple>
+                        <end_state state="State18"/>
+                    </simple>
+                </transition>
+            </state>
+			<default_state>
+				<transition name="Message1">
+					<guard condition="Guard()"/>                    
+                    <simple>
+                        <end_state state="State19"/>
+                    </simple>
+				</transition>
+				<transition name="Message2">
+					<simple>
+                        <end_state state="State19"/>
+                    </simple>
+				</transition>
+				<default_transition>
+                    <simple>
+                        <end_state state="State19"/>
+                    </simple>
+				</default_transition>
+				<default_transition>
+					<guard condition="Guard()"/>                    
+                    <simple>
+                        <end_state state="State19"/>
+                    </simple>
+				</default_transition>
+			</default_state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest8" version="1.0">
+  <description>single state test</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMStateTest8" state_name="A"/>
+    <state_machine name="FSMStateTest8">
+      <state name="A" initial_state="A1">
+	      <default_state>
+				<transition name="dsA">
+					<simple/>
+					<action name="Action"/>
+				</transition>      
+	      </default_state>
+	      <state name="A1" initial_state="A1a">
+		      <default_state>
+					<transition name="dsA1">
+						<simple/>
+						<action name="Action"/>
+					</transition> 
+		      </default_state>
+		      <state name="A1a">
+		      </state>
+		      <state name="A1b">
+		      </state>
+	      </state>
+	      <state name="A2" initial_state="A2a">
+		      <default_state>
+					<transition name="dsA2">
+						<simple/>
+						<action name="Action"/>
+					</transition> 
+		      </default_state>
+		      <state name="A2a">
+		      </state>
+		      <state name="A2b">
+		      </state>
+	      </state>
+      </state>
+      
+      <state name="B" initial_state="B1">
+	      <default_state>
+				<transition name="dsB">
+					<simple/>
+					<action name="Action"/>
+				</transition>      
+	      </default_state>
+	      <state name="B1" initial_state="B1a">
+		      <default_state>
+					<transition name="dsB1">
+						<simple/>
+						<action name="Action"/>
+					</transition> 
+		      </default_state>
+		      <state name="B1a">
+		      </state>
+		      <state name="B1b">
+		      </state>
+	      </state>
+	      <state name="B2" initial_state="B2a">
+		      <default_state>
+					<transition name="dsB2">
+						<simple/>
+						<action name="Action"/>
+					</transition> 
+		      </default_state>
+		      <state name="B2a">
+		      </state>
+		      <state name="B2b">
+		      </state>
+	      </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

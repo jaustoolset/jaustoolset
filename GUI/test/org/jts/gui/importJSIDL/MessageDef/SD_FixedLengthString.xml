@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_FixedLengthString" id="ImportTest:SD_FixedLengthString" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a fixed_length_string entity with all levels of multiplicity and options.
+
+    The 1st message_def contains a fixed_length_string with all optional items missing.
+    The 2nd message_def contains a fixed_length_string with an interpretation.
+  </description>
+
+  <!-- 
+    element fixed_length_string 
+    {
+      attribute name { identifier }, 
+      attribute string_length { identifier_ns | xsd:unsignedInt }, 
+      attribute optional {xsd:boolean }, 
+      attribute interpretation { text }?
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, fixed_length_string -->
+      <message_def name="FixedLengthString1" message_id="0151" is_command="false">
+        <description>
+          The 1st message_def contains a fixed_length_string with all optional items missing.
+        </description>
+        <header name="FixedLengthString"/>
+        <body name="FixedLengthString1">
+          <record name="FixedLengthString1Rec" optional="false">
+            <fixed_length_string name="MyString" string_length="80" optional="false" />
+          </record>
+          </body>
+          <footer name="FixedLengthString"/>
+      </message_def>
+
+      <!-- All optional elements, fixed_length_string -->
+      <message_def name="FixedLengthString2" message_id="0152" is_command="false">
+        <description>
+          The 2nd message_def contains a fixed_length_string with an interpretation.
+        </description>
+        <header name="FixedLengthString"/>
+        <body name="FixedLengthString2">
+          <record name="FixedLengthString2Rec" optional="false">
+            <fixed_length_string name="MyString2" string_length="256" optional="true" interpretation="A fixed_length_string with an interpretation."/>
+          </record>
+        </body>
+        <footer name="FixedLengthString"/>
+      </message_def>
+
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_FixedLengthString" state_name="init"/>
+    <state_machine name="SD_FixedLengthString">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

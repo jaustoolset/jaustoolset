@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <array name="2Array1" optional="false" interpretation="A linear array of fixed fields of type byte" xmlns="urn:jaus:jsidl:1.0">
+	  <fixed_field name="Field1" field_type="byte" field_units="one" optional="false"/>
+	  <dimension name="dimension1" size="9"/>
+    </array>

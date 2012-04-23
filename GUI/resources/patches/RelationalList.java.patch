@@ -1,0 +1,8 @@
+37a38,44
+>    
+>    // JTS -- remove item by index instead of object
+>    public void dissociate(int index)
+>    {
+>        association().dissociateItem(index);
+>    }
+>    // jts

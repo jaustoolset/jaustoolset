@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="MessageSet"
+  id="urn:jaus:jss:core:MessageSet" version="1.1">
+  <declared_type_set_ref name="commandClass"
+    id="urn:jaus:jss:core:MessageSet:CommandClass" version="1.1"/>
+  <declared_type_set_ref name="informClass"
+    id="urn:jaus:jss:core:MessageSet:InformClass" version="1.1"/>
+  <declared_type_set_ref name="queryClass"
+    id="urn:jaus:jss:core:MessageSet:QueryClass" version="1.1"/>
+</declared_type_set>

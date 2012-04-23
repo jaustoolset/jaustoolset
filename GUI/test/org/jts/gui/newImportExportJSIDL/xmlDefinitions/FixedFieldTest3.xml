@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<fixed_field xmlns="urn:jaus:jsidl:1.0" name="FixedFieldTest3" field_type="byte" field_units="one" optional="false">
+	++++ValueSetTest1.xml++++
+</fixed_field>

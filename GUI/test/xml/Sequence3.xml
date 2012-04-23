@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="TestSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">The set of services to be tested</description>
+  <service_def name="Sequence3" id="urn:org.jts.test:Sequence3" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <message_set>
+      <input_set>
+  			<message_def name="MsgIn" is_command="true" message_id="0001">
+  				<description xml:space="default"/>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="Body">
+            <sequence name="Sequence3" optional="false">
+              <variant name="Variant1" optional="false" interpretation="A Variant of records">
+                <vtag_field field_type_unsigned="unsigned byte" min_count="0" max_count="3"/>
+                <record name="MessageIDRec" optional="false">
+                  <fixed_field name="MessageCode" field_type="unsigned short integer" field_units="one"
+                    optional="false" interpretation="Query Message ID of the Event message that the
+                    receiving component is inquiring about."/>
+                </record>
+                <record name="EventTypeRec" optional="false">
+                  <fixed_field name="EventType" field_type="unsigned byte" field_units="one"
+                    optional="false" interpretation="Type of event">
+                    <value_set offset_to_lower_limit="false">
+                      <value_enum enum_index="0" enum_const="Periodic (SC)"/>
+                      <value_enum enum_index="1" enum_const="Every change"/>
+                    </value_set>
+                  </fixed_field>
+                </record>
+                <record name="EventIDRec" optional="false">
+                  <fixed_field name="EventID" field_type="unsigned byte" field_units="one"
+                    optional="false" interpretation="Event ID returned by Confirm Event for details on
+                    specific event."/>
+                </record>
+                <record name="AllEventsRec" optional="false">
+                  <fixed_field name="AllEvents" field_type="unsigned byte" field_units="one"
+                    optional="false" interpretation="All events should be reported.">
+                    <value_set offset_to_lower_limit="false">
+                      <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="0"
+                        upper_limit_type="inclusive"/>
+                    </value_set>
+                  </fixed_field>
+                </record>
+              </variant>
+            </sequence>
+          </body>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="stateMachine" state_name="Ready"/>
+      <state_machine name="stateMachine">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+</ns1:service_set>

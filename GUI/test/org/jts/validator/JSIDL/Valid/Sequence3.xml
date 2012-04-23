@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="Sequence3" optional="false" interpretation="A record may be optional in a sequence" xmlns="urn:jaus:jsidl:1.0">
+	<record name="subsystem_rec" interpretation="name,id pair" optional="false">
+		<fixed_field name="subsystem_id" field_type="unsigned byte" field_units="one" optional="false"/>
+	</record>
+</sequence>

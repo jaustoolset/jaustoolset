@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="TestSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:plus">
+   <description xml:space="preserve" xmlns="urn:jaus:jsidl:1.0">The set of services to be tested</description>
+  <service_def name="Array7" id="urn:org.jts.test:Array7" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <message_set>
+      <input_set>
+  			<message_def name="MsgIn" is_command="true" message_id="0001">
+  				<description xml:space="default"/>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="Body">
+            <record name="Record" optional="false">
+              <array name="Array7" optional="false" interpretation="A linear array of variable length strings">
+                <variable_length_string name="VariableLengthString1" optional="false">
+                    <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="1000"/>
+                </variable_length_string>
+                <dimension name="dimension1" size="9"/>
+              </array>
+            </record>    
+          </body>      
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="stateMachine" state_name="Ready"/>
+      <state_machine name="stateMachine">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+</ns1:service_set>

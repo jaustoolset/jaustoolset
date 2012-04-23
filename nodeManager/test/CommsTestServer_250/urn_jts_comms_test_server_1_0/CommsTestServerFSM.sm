@@ -1,0 +1,24 @@
+%class CommsTestServerFSM
+%package urn_jts_comms_test_server_1_0
+%header <MessageSet.h>
+%include "CommsTestServerFSM.h"
+%start CommsTestServerFSM_SM::Running
+%map CommsTestServerFSM_SM
+// State 	 Transition 	 End State 	 Action(s)
+%%
+Running
+{
+		QueryServicesTransition(msg:QueryServices,sender:JausAddress)
+		nil
+		{
+			sendReportServicesAction(msg,sender);
+		}
+
+		CommsTestMsgTransition(msg:CommsTestMsg,sender:JausAddress)
+		nil
+		{
+			sendCommsTestMsgAction(msg,sender);
+		}
+}
+
+%%

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_const_set name="basic_constants" version="1.1" xmlns="urn:jaus:jsidl:1.0">
+    
+    <const_def name="PI" const_type="long float" const_value="3.14159265358979323846" field_units="one" interpretation="ratio of any circle's circumference to its diameter"/>
+    
+    <const_def name="e" const_type="long float" const_value="2.7182818284590452354" field_units="one" interpretation="base of the natural logarithm"/>
+    
+    <const_def name="PLUS_100" const_type="long float" field_units="one" const_value="100.0"/>
+    
+    <const_def name="MINUS_100" const_type="long float" field_units="one" const_value="-100.0"/>
+
+</declared_const_set>

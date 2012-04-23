@@ -1,0 +1,110 @@
+/* set heading sizes explicitly */
+h1
+{
+    font-size: 16pt;
+}
+h2
+{
+    font-size : 16pt;
+}
+
+h3 { font-size : 14pt; }
+
+h4, h5, h6
+{
+    font-size: 10pt;
+}
+
+/* set font, sizes for other elements */
+body
+{
+   font-family: arial, 'sans serif';
+   font-size: 10pt;
+}
+
+td
+{
+   font-size: 10pt;
+}
+
+th
+{
+   font-size: 10pt;
+}
+
+/* use one-pixel solid borders for all tables, with small padding in cells.  no inter-cell border space. */
+table
+{
+   border-collapse: collapse;
+}
+table td
+{
+   padding: 2px 3px 2px 3px;
+}
+
+/* Classes for easy styling of specific tables */
+.doc-header-table
+{
+}
+/* hide cells if they're empty */
+.doc-header-table table {
+   empty-cells: hide;
+}
+
+.internal-event-set-table
+{
+
+}
+
+.vocabulary-table
+{
+
+}
+
+.state-conditions-table
+{
+
+}
+
+.state-transition-actions-table
+{
+
+}
+
+.state-transition-table
+{
+
+}
+
+.event-def-table
+{
+
+}
+
+.message-def-table
+{
+
+}
+
+/* Examples of classes Docbook XSL docbook-to-HTML transform adds to generated HTML.  These correspond to
+elements in Docbook. Consult Docbook XSL documentation for more info about what classes correspond to which
+element. */
+.article
+{
+}
+
+.section
+{
+}
+
+.toc
+{
+}
+
+.itemizedlist
+{
+}
+
+.inlinemediaobject
+{
+}

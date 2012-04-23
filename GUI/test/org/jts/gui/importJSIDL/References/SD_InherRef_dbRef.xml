@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11"
+  name="SS_InherRef_dbRef" id="ImportTest:SS_InherRef_dbRef" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This tests a Service with an inherits_from reference. 
+    
+    Note: The service inherited from is included in SS_noRef_setupDB.xml
+  </description>
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <references>
+    <inherits_from name="ServiceDef_dbRef" id="ImportTest:ServiceDef_dbRef" version="1.0"/>
+  </references>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SS_InherRef_dbRef" state_name="init"/>
+    <state_machine name="SS_InherRef_dbRef">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,37 @@
+Import('env')
+
+sources = Split("""
+		EventsService.cs
+		Events_ReceiveFSM.cs
+		Events_ReceiveFSM_sm.cs
+		Events_SendFSM.cs
+		Events_SendFSM_sm.cs
+		InternalEvents\BroadcastGlobal.cs
+		InternalEvents\BroadcastLocal.cs
+		InternalEvents\CommandCompleted.cs
+		InternalEvents\CommandExpired.cs
+		InternalEvents\EventError.cs
+		InternalEvents\EventOccurred.cs
+		InternalEvents\Timeout.cs
+		Messages\CancelEvent.cs
+		Messages\CommandEvent.cs
+		Messages\ConfirmEventRequest.cs
+		Messages\CreateCommandEvent.cs
+		Messages\CreateEvent.cs
+		Messages\Event.cs
+		Messages\QueryEvents.cs
+		Messages\QueryEventTimeout.cs
+		Messages\RejectEventRequest.cs
+		Messages\ReportEvents.cs
+		Messages\ReportEventTimeout.cs
+		Messages\UpdateEvent.cs
+	""")
+
+libs = ['statemap', 'CSharpCommon' , 'TransportService']
+pathlibs = env.CLIRefs(libs)
+
+lib = env.CLILibrary('./lib/EventsService', sources, ASSEMBLYREFS=pathlibs)
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )
+env.AddToRefPaths(lib)
+Return('lib')

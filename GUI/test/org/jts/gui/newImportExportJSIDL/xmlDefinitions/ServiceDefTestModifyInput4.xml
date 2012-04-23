@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns:ns3="urn:jaus:jsidl:plus" name="ServiceDefTest4" id="urn:org.jts.test:ServiceDefTest4" version="1.0" >
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references/>
+	<message_set>
+		<input_set/>
+		<output_set/>
+	</message_set>
+	<internal_events_set>
+		<event_def name="EventDefTest1">
+			<description xml:space="preserve"> Received when an event occurs. </description>
+			<header name="Header"/>
+			<body name="Body"/>
+			<footer name="Footer"/>
+		</event_def>
+	</internal_event_set>
+    <protocol_behavior>
+        <start state_machine_name="StateMachine4" state_name="Ready"/>
+        <state_machine name="StateMachine4">
+            <state name="Ready"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>
+  

@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="CommandClass"
+	id="urn:jaus:jss:environmentSensing:MessageSet:CommandClass"
+	version="1.0">
+	<declared_type_set_ref name="coreTypes"
+		id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.0"/>
+	<declared_type_set_ref name="environmentTypes"
+		id="urn:jaus:jss:environmentSensing:MessageSet:BasicTypes"
+		version="1.0"/>
+
+	<message_def name="ConfirmSensorConfiguration" message_id="0801"
+		is_command="false">
+		<description xml:space="preserve">This message is used to notify a 
+            client component that the sensor’s configuration has been set 
+            to the values specified in the corresponding set message with 
+            Request ID matching the value of field 1 of this message. If 
+            the specified sensor configuration is deemed valid, the SensorIdRec 
+            is returned with the matching SensorID of the sensor for 
+            which the configuration was set. If the specified configuration 
+            is invalid, one of the ErrorRec  types shall be returned 
+            (depending on the source message) with an error code and 
+            description of the configuration setting which was deemed 
+            invalid.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<sequence name="ConfirmSensorConfigurationSequence"
+				optional="false">
+				<declared_record name="RequestIdRec"
+					declared_type_ref="environmentTypes.RequestIdRec"
+					optional="false"/>
+				<list name="ConfirmSensorList" optional="false">
+					<count_field min_count="0" max_count="65535"
+						field_type_unsigned="unsigned short integer"/>
+					<variant name="ConfirmSensorConfigurationVariant"
+						optional="false">
+						<vtag_field min_count="0" max_count="5"
+							field_type_unsigned="unsigned byte"/>
+						<declared_record name="SensorIdRec"
+							declared_type_ref="environmentTypes.SensorIdRec"
+							optional="false"/>
+						<record name="RangeSensorErrorRec"
+							optional="false">
+							<declared_fixed_field name="SensorID"
+								declared_type_ref="environmentTypes.SensorID"
+								optional="false"/>
+							<fixed_field name="RangeSensorErrorCode"
+								optional="false" field_units="one"
+								field_type="unsigned byte">
+								<value_set
+								offset_to_lower_limit="false">
+								<value_enum enum_index="0"
+								enum_const="Unknown Sensor ID"/>
+								<value_enum enum_index="1"
+								enum_const="Invalid Horizontal Field of View"/>
+								<value_enum enum_index="2"
+								enum_const="Invalid Vertical Field of View"/>
+								<value_enum enum_index="3"
+								enum_const="Invalid Update Rate"/>
+								<value_enum enum_index="4"
+								enum_const="Invalid Sensor Range"/>
+								<value_enum enum_index="5"
+								enum_const="Invalid Sensor State"/>
+								<value_enum enum_index="6"
+								enum_const="Multiple Invalid Parameters"/>
+								<value_enum enum_index="255"
+								enum_const="Unknown Error / Fault"
+								/>
+								</value_set>
+							</fixed_field>
+							<declared_variable_length_string
+								name="ErrorMessage"
+								declared_type_ref="environmentTypes.ErrorMessage"
+								optional="false"/>
+						</record>
+						<record name="VisualSensorErrorRec"
+							optional="false">
+							<declared_fixed_field name="SensorID"
+								declared_type_ref="environmentTypes.SensorID"
+								optional="false"/>
+							<fixed_field name="VisualSensorErrorCode"
+								optional="false" field_units="one"
+								field_type="unsigned byte">
+								<value_set
+								offset_to_lower_limit="false">
+								<value_enum enum_index="0"
+								enum_const="Unknown Sensor ID"/>
+								<value_enum enum_index="1"
+								enum_const="Invalid Sensor State"/>
+								<value_enum enum_index="2"
+								enum_const="Invalid Zoom Mode"/>
+								<value_enum enum_index="3"
+								enum_const="Invalid Zoom Value"/>
+								<value_enum enum_index="4"
+								enum_const="Invalid Focus Mode"/>
+								<value_enum enum_index="5"
+								enum_const="Invalid Focus Value"/>
+								<value_enum enum_index="6"
+								enum_const="Invalid White Balance"/>
+								<value_enum enum_index="7"
+								enum_const="Invalid Imaging Mode"/>
+								<value_enum enum_index="8"
+								enum_const="Invalid Exposure Mode"/>
+								<value_enum enum_index="9"
+								enum_const="Invalid Metering Mode"/>
+								<value_enum enum_index="10"
+								enum_const="Invalid Shutter Speed"/>
+								<value_enum enum_index="11"
+								enum_const="Invalid Aperture Value"/>
+								<value_enum enum_index="12"
+								enum_const="Invalid Light Sensitivity"/>
+								<value_enum enum_index="13"
+								enum_const="Invalid Image Stabilization"/>
+								<value_enum enum_index="14"
+								enum_const="Invalid Horizontal FOV"/>
+								<value_enum enum_index="15"
+								enum_const="Invalid Vertical FOV"/>
+								<value_enum enum_index="16"
+								enum_const="Multiple Invalid Parameters"/>
+								<value_enum enum_index="255"
+								enum_const="Unknown Error / Fault"
+								/>
+								</value_set>
+							</fixed_field>
+							<declared_variable_length_string
+								name="ErrorMessage"
+								declared_type_ref="environmentTypes.ErrorMessage"
+								optional="false"/>
+						</record>
+						<record name="DigitalVideoSensorErrorRec"
+							optional="false">
+							<declared_fixed_field name="SensorID"
+								declared_type_ref="environmentTypes.SensorID"
+								optional="false"/>
+							<fixed_field name="DigitalVideoErrorCode"
+								optional="false" field_units="one"
+								field_type="unsigned byte">
+								<value_set
+								offset_to_lower_limit="false">
+								<value_enum enum_index="0"
+								enum_const="Unknown Sensor ID"/>
+								<value_enum enum_index="1"
+								enum_const="Invalid Minimum Bit Rate"/>
+								<value_enum enum_index="2"
+								enum_const="Invalid Maximum Bit Rate"/>
+								<value_enum enum_index="3"
+								enum_const="Invalid Minimum Frame Rate"/>
+								<value_enum enum_index="4"
+								enum_const="Invalid Maximum Frame Rate"/>
+								<value_enum enum_index="5"
+								enum_const="Invalid Frame Size"/>
+								<value_enum enum_index="6"
+								enum_const="Invalid Format"/>
+								<value_enum enum_index="7"
+								enum_const="Multiple Invalid Parameters"/>
+								<value_enum enum_index="255"
+								enum_const="Unknown Error / Fault"
+								/>
+								</value_set>
+							</fixed_field>
+							<declared_variable_length_string
+								name="ErrorMessage"
+								declared_type_ref="environmentTypes.ErrorMessage"
+								optional="false"/>
+						</record>
+						<record name="AnalogVideoSensorErrorRec"
+							optional="false">
+							<declared_fixed_field name="SensorID"
+								declared_type_ref="environmentTypes.SensorID"
+								optional="false"/>
+							<fixed_field name="AnalogVideoErrorCode"
+								optional="false" field_units="one"
+								field_type="unsigned byte">
+								<value_set
+								offset_to_lower_limit="false">
+								<value_enum enum_index="0"
+								enum_const="Unknown Sensor ID"/>
+								<value_enum enum_index="1"
+								enum_const="Invalid Format"/>
+								<value_enum enum_index="255"
+								enum_const="Unknown Error / Fault"
+								/>
+								</value_set>
+							</fixed_field>
+							<declared_variable_length_string
+								name="ErrorMessage"
+								declared_type_ref="environmentTypes.ErrorMessage"
+								optional="false"/>
+						</record>
+						<record name="StillImageSensorErrorRec"
+							optional="false">
+							<declared_fixed_field name="SensorID"
+								declared_type_ref="environmentTypes.SensorID"
+								optional="false"/>
+							<fixed_field name="StillImageErrorCode"
+								optional="false" field_units="one"
+								field_type="unsigned byte">
+								<value_set
+								offset_to_lower_limit="false">
+								<value_enum enum_index="0"
+								enum_const="Unknown Sensor ID"/>
+								<value_enum enum_index="1"
+								enum_const="Invalid Frame Size"/>
+								<value_enum enum_index="2"
+								enum_const="Invalid Format"/>
+								<value_enum enum_index="3"
+								enum_const="Multiple Invalid Parameters"/>
+								<value_enum enum_index="255"
+								enum_const="Unknown Error / Fault"
+								/>
+								</value_set>
+							</fixed_field>
+							<declared_variable_length_string
+								name="ErrorMessage"
+								declared_type_ref="environmentTypes.ErrorMessage"
+								optional="false"/>
+						</record>
+					</variant>
+				</list>
+			</sequence>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="SetRangeSensorConfiguration" message_id="0802"
+		is_command="true">
+		<description xml:space="preserve">This message is used to set the 
+            range sensors’ current configuration. Configuration is based 
+            off of each range sensor’s capabilities as described in the 
+            Report Range Sensor Capabilities message. This message shall 
+            cause the receiving service to reply to the sender with a 
+            Confirm Range Sensor Configuration message. If the configuration 
+            specified is invalid for a given sensor ID, the confirm 
+            message shall contain an Range Sensor Error Record for the 
+            given Sensor ID however other, valid, configurations specified 
+            shall be set (if they exist).</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<sequence name="RangeSensorConfigurationSequence"
+				optional="false">
+				<declared_record name="RequestIdRec"
+					declared_type_ref="environmentTypes.RequestIdRec"
+					optional="false"/>
+				<list name="RangeSensorConfigurationList"
+					optional="false">
+					<count_field min_count="0" max_count="65535"
+						field_type_unsigned="unsigned short integer"/>
+					<declared_record
+						name="RangeSensorConfigurationRec"
+						declared_type_ref="environmentTypes.RangeSensorConfigurationRec"
+						optional="false"/>
+				</list>
+			</sequence>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="SetVisualSensorConfiguration" message_id="0803"
+		is_command="true">
+		<description xml:space="preserve">This message is used to set the 
+            configuration of the visual sensors associated with the service. 
+            Configuration is based off of each sensor’s capabilities as 
+            described in the Report Visual Sensor Capabilities message. 
+            This message shall cause the receiving service to reply to 
+            the sender with a Confirm Sensor Configuration message. If 
+            the configuration specified is invalid for a given sensor ID, 
+            the confirm message shall contain an Visual Sensor Error Record 
+            for the given Sensor ID however other, valid, configurations 
+            specified shall be set (if they exist).</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<sequence name="VisualSensorConfigurationSequence"
+				optional="false">
+				<declared_record name="RequestIdRec"
+					declared_type_ref="environmentTypes.RequestIdRec"
+					optional="false"/>
+				<list name="VisualSensorConfigurationList"
+					optional="false">
+					<count_field min_count="0" max_count="65535"
+						field_type_unsigned="unsigned short integer"/>
+					<declared_record
+						name="VisualSensorConfigurationRec"
+						declared_type_ref="environmentTypes.VisualSensorConfigurationRec"
+						optional="false"/>
+				</list>
+			</sequence>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="SetDigitalVideoSensorConfiguration"
+		message_id="0804" is_command="true">
+		<description xml:space="preserve">This message is used to set the 
+            configuration of the digital video sensor associated with the 
+            service. Configuration is based off of each sensor’s capabilities 
+            as described in the Report Digital Video Sensor Capabilities 
+            message. This message shall cause the receiving service to 
+            reply to the sender with a Confirm Sensor Configuration message.
+            If the configuration specified is invalid for a given sensor ID, 
+            the confirm message shall contain an Digital Video Error Record 
+            for the given Sensor ID however other, valid, configurations 
+            specified shall be set (if they exist).</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<sequence name="DigitalVideoSensorConfigurationSequence"
+				optional="false">
+				<declared_record name="RequestIdRec"
+					declared_type_ref="environmentTypes.RequestIdRec"
+					optional="false"/>
+				<list name="DigitalVideoSensorList" optional="false">
+					<count_field min_count="0" max_count="65535"
+						field_type_unsigned="unsigned short integer"/>
+					<declared_record
+						name="DigitalVideoSensorConfigurationRec"
+						declared_type_ref="environmentTypes.DigitalVideoSensorConfigurationRec"
+						optional="false"/>
+				</list>
+			</sequence>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="ControlDigitalVideoSensorStream"
+		message_id="0805" is_command="true">
+		<description xml:space="preserve">This message is used to control 
+            the playback state of the video stream from a digital video 
+            service. The actual stream protocol for this is outside the 
+            scope of the protocol. The streaming mechanism selected may 
+            support other methods to control the stream within its own 
+            protocol. In such a case, this message shall be a redunant 
+            mechanism and a service client may choose to use either the 
+            native protocol or this message for stream control.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<record name="ControlDigitalVideoSensorStreamRec"
+				optional="false">
+				<declared_fixed_field name="SensorID"
+					declared_type_ref="environmentTypes.SensorID"
+					optional="false"/>
+				<fixed_field name="StreamState" optional="false"
+					field_units="one" field_type="unsigned byte">
+					<value_set offset_to_lower_limit="false">
+						<value_enum enum_index="0" enum_const="Play"/>
+						<value_enum enum_index="1" enum_const="Pause"/>
+						<value_enum enum_index="2" enum_const="Stop"/>
+					</value_set>
+				</fixed_field>
+			</record>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="SetAnalogVideoSensorConfiguration"
+		message_id="0806" is_command="true">
+		<description xml:space="preserve">This message is used to set the 
+            configuration of the analog video sensor associated with the 
+            service. Configuration is based off of each sensor’s capabilities 
+            as described in the Report Analog Video Sensor Capabilities 
+            message. This message shall cause the receiving service to reply 
+            to the sender with a Confirm Sensor Configuration message. If 
+            the configuration specified is invalid for a given sensor ID, 
+            the confirm message shall contain an Analog Video Error Record 
+            for the given Sensor ID however other, valid, configurations 
+            specified shall be set (if they exist).</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<sequence name="AnalogVideoSensorConfigurationSequence"
+				optional="false">
+				<declared_record name="RequestIdRec"
+					declared_type_ref="environmentTypes.RequestIdRec"
+					optional="false"/>
+				<list name="AnalogVideoSensorList" optional="false">
+					<count_field min_count="0" max_count="65535"
+						field_type_unsigned="unsigned short integer"/>
+					<declared_record
+						name="AnalogVideoSensorConfigurationRec"
+						declared_type_ref="environmentTypes.AnalogVideoSensorConfigurationRec"
+						optional="false"/>
+				</list>
+			</sequence>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="SetStillImageSensorConfiguration"
+		message_id="0807" is_command="true">
+		<description xml:space="preserve">This message is used to set the 
+            configuration of the still image sensor associated with the 
+            service. Configuration is based off of each sensor’s capabilities 
+            as described in the Report Still Image Sensor Capabilities 
+            message. This message shall cause the receiving service to reply 
+            to the sender with a Confirm Sensor Configuration message. If the 
+            configuration specified is invalid for a given sensor ID, the 
+            confirm message shall contain an Still Image Error Record for 
+            the given Sensor ID however other, valid, configurations 
+            specified shall be set (if they exist).</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<sequence name="StillImageSensorConfigurationSequence"
+				optional="false">
+				<declared_record name="RequestIdRec"
+					declared_type_ref="environmentTypes.RequestIdRec"
+					optional="false"/>
+				<list name="StillImageSensorList" optional="false">
+					<count_field min_count="0" max_count="65535"
+						field_type_unsigned="unsigned short integer"/>
+					<declared_record
+						name="StillImageSensorConfigurationRec"
+						declared_type_ref="environmentTypes.StillImageSensorConfigurationRec"
+						optional="false"/>
+				</list>
+			</sequence>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+</declared_type_set>

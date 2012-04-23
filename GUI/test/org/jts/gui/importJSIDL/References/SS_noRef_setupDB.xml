@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_set xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SS_noRef_setupDB" id="ImportTest:SS_noRef_setupDB" version="1.0">
+  <description xml:space="preserve"> 
+    This service set is part of the ImportTests. It is used to import two services which are 
+    used in later tests to ensure that database references work.
+  </description>
+  <service_def name="ServiceDef_dbRef" id="ImportTest:ServiceDef_dbRef" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      It is used as a database reference in later test cases. 
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="ServiceDef_dbRef" state_name="init"/>
+      <state_machine name="ServiceDef_dbRef">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+</service_set>

@@ -1,0 +1,4 @@
+63a64,66
+>    // JTS -- dissociate by index
+>    public void dissociateItem(int index) { _as.dissociateItem(index); }
+>    // jts

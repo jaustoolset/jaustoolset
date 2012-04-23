@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<variable_field xmlns="urn:jaus:jsidl:1.0" name="VariableFieldTest1" optional="false">
+	<type_and_units_field>
+		++++TypeAndUnitsEnumTest1.xml++++
+	</type_and_units_field>
+</variable_field>

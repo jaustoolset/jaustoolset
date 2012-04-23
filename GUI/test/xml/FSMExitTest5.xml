@@ -1,0 +1,45 @@
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest5" version="1.0">
+	<description>test for appending entry actions for nested states</description>
+	<assumptions></assumptions>
+	<message_set>
+	<input_set></input_set>
+	<output_set></output_set>
+	</message_set>
+	<internal_events_set></internal_events_set>
+	<protocol_behavior is_stateless="false">
+		<start state_machine_name="FSMExitTest5" state_name="NsmStandbyState"/>
+		<state_machine name="FSMExitTest5">
+			<state name="NsmStandbyState" interpretation="The Standby State">
+			<entry> <action name="EnteredStandbyState"/> </entry>				
+
+			</state>
+			<state name="PA" interpretation="Parent A State" initial_state="K1">
+			<entry> <action name="Entered_PA"/> </entry>
+			<exit>  <action name="Exited_PA"/>  </exit>								
+				<state name="K1" interpretation="Kid 1 State">
+				  <entry> <action name="Entered_K1"/> </entry>
+				  <exit> <action name="Exited_K1"/> </exit>
+				<transition name="K1ToPC_Simple">
+					<simple> <end_state state="PC"/> </simple>						
+					  <action name="FromK1ToPC_Simple"/>
+				</transition>
+				<transition name="K1ToK2_Simple">
+					<simple> <end_state state="K2"/> </simple>						
+					  <action name="FromK1ToPC_Simple"/>
+				</transition>
+
+				</state>
+				<state name="K2" interpretation="Kid 2 State">
+				  <entry> <action name="Entered_K2"/> </entry>
+				  <exit> <action name="Exited_K2"/> </exit>
+	
+				</state>   
+			</state>
+			<state name="PC" interpretation="Parent C State">
+			<entry> <action name="Entered_PC"/> </entry>
+			<exit>  <action name="Exited_PC"/>  </exit>		
+
+			</state>				
+		</state_machine>
+	</protocol_behavior>
+</service_def>

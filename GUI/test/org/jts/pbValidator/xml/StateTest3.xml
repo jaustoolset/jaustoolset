@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:StateTest3"
+  name="StateTest3" version="1.0">
+  <description xml:space="preserve">
+     Tests "when inheritance is used, base service states must be present in derived service in the same order as in the base service". 
+     This is the base service and StateTest4 is the derived service.
+  </description>
+  <assumptions/> 
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="StateA"/>
+    <state_machine name="FSM">
+      <state name="StateA" initial_state="StateAA">
+         <state name="StateAA">
+         </state>
+         <state name="StateAB">
+         </state>
+      </state>
+       <state name="B"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

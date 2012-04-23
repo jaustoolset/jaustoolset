@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record name="Record10" optional="false" interpretation="A bit field in a record may be optional" xmlns="urn:jaus:jsidl:1.0">
+	<bit_field name="BitField1" field_type_unsigned="unsigned integer" optional="false" interpretation="" xmlns="urn:jaus:jsidl:1.0">
+		<sub_field name="Milliseconds">
+		<bit_range from_index="0" to_index="9"/>
+			<value_set offset_to_lower_limit="false">
+				<value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="999" upper_limit_type="inclusive"/>
+			</value_set>
+		</sub_field>
+	</bit_field>
+</record>

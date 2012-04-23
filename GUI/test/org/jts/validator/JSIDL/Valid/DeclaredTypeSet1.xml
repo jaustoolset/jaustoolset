@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set name="global_pose" version="1.1" xmlns="urn:jaus:jsidl:1.0">
+    <fixed_field name="positionRms" field_type="unsigned integer" field_units="meter" optional="true" interpretation="A RMS value indicating the validity; of the position data.">
+      <scale_range integer_function="round" real_lower_limit="MINUS_100" real_upper_limit="PLUS_100" />
+    </fixed_field>
+    <fixed_field name="orientationRms" field_type="unsigned integer" field_units="radian" optional="true" interpretation="A RMS value indicating the validity; of the orientation data.">
+      <scale_range integer_function="round" real_lower_limit="-1.0" real_upper_limit="1.0" />
+    </fixed_field>
+</declared_type_set>

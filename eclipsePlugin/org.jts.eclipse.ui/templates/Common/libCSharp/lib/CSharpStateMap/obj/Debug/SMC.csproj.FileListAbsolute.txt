@@ -1,0 +1,5 @@
+C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\Debug\statemap.dll
+C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\Debug\statemap.pdb
+C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\obj\Debug\statemap.dll
+C:\Documents and Settings\vnearing\My Documents\Downloads\smc\lib\CSharp\obj\Debug\statemap.pdb

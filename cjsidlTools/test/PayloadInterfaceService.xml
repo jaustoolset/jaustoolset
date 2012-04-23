@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<service_def name="PayloadInterfaceService" id="urn:jaus:jss:payload:payloadInterface" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+  <description>The Payload Interface Service provides a mechanism for run-time discovery
+    of simple data interfaces. Each instance of the service defines zero or
+    more command (input) interfaces and zero or more information (output)
+    interfaces. Each interface is described by its name, identification number,
+    description, data type, units, and range of values. Clients may then set
+    input values or query output values based on the unique identification
+    number for each interface.</description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="payload" id="urn:jaus:jss:payload:MessageSet" version="1.0"/>
+    <sequence name="SetPayloadCommandSeq" optional="false">
+      <record name="requestID" optional="false" interpretation="">
+        <fixed_field field_type="unsigned short integer" name="RequestID" optional="false" field_units="one"/>
+      </record>
+      <list name="commandList" optional="false">
+        <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+        <record name="interfaceData" optional="false" interpretation=" byte-encoded data per interface JSIDL spec record interfaceData">
+          <fixed_field field_type="unsigned short integer" name="InterfaceNumber" optional="false" field_units="one"/>
+          <variable_length_string name="data" optional="false">
+            <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned integer"/>
+          </variable_length_string>
+        </record>
+      </list>
+    </sequence>
+    <list name="QueryPayloadDataList" optional="false">
+      <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+      <record name="InterfaceNumberRec" optional="false" interpretation=" record InterfaceNumberRec">
+        <fixed_field field_type="unsigned short integer" name="InterfaceNumber" optional="false" field_units="one"/>
+      </record>
+    </list>
+    <sequence name="PayloadInterfaceSeq" optional="false">
+      <record name="PayloadDescriptionRec" optional="false" interpretation="">
+        <variable_length_string name="Name" optional="false">
+          <count_field min_count="0" max_count="20" field_type_unsigned="unsigned integer"/>
+        </variable_length_string>
+        <variable_length_string name="Description" optional="false">
+          <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned integer"/>
+        </variable_length_string>
+      </record>
+      <list name="PayloadCommandInterfaces" optional="false">
+        <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+        <sequence name="PayloadCommandSeq" optional="false">
+          <record name="commandInterfaces" optional="false" interpretation=" Units, Min, Max, values can all be specified in the dataSpec JSIDL on a per-item basis. (In original, not clear why all data items in a payload interface should have the same semantic type with same units and bounds....)  Future: JSIDL should be able to pecify default values in addition to range constraints. ">
+            <fixed_field field_type="unsigned short integer" name="InterfaceNumber" optional="false" field_units="one"/>
+            <variable_length_string name="Name" optional="false">
+              <count_field min_count="0" max_count="20" field_type_unsigned="unsigned integer"/>
+            </variable_length_string>
+            <variable_length_string name="Description" optional="false">
+              <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned integer"/>
+            </variable_length_string>
+            <variable_length_string name="Reserved" optional="false">
+              <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned integer"/>
+            </variable_length_string>
+            <variable_length_string name="dataSpec" optional="false">
+              <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned integer"/>
+            </variable_length_string>
+          </record>
+          <record name="BlockingRec" optional="false" interpretation="">
+            <fixed_field field_type="unsigned byte" name="Blocking" optional="false" field_units="one">
+              <value_set offset_to_lower_limit="false">
+                <value_enum enum_const="FALSE" enum_index="0"/>
+                <value_enum enum_const="TRUE" enum_index="1"/>
+              </value_set>
+            </fixed_field>
+          </record>
+        </sequence>
+      </list>
+      <list name="PayloadInformationInterfaces" optional="false">
+        <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+        <sequence name="PayloadInformationSeq" optional="false">
+          <record name="informationInterfaces" optional="false" interpretation=" Units, Min, Max, values can all be specified in the dataSpec JSIDL on a per-item basis. (In original, not clear why all data items in a payload interface should have the same semantic type with same units and bounds....)  Future: JSIDL should be able to pecify default values in addition to range constraints. ">
+            <fixed_field field_type="unsigned short integer" name="InterfaceNumber" optional="false" field_units="one"/>
+            <variable_length_string name="Name" optional="false">
+              <count_field min_count="0" max_count="20" field_type_unsigned="unsigned integer"/>
+            </variable_length_string>
+            <variable_length_string name="Description" optional="false">
+              <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned integer"/>
+            </variable_length_string>
+            <variable_length_string name="Reserved" optional="false">
+              <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned integer"/>
+            </variable_length_string>
+            <variable_length_string name="dataSpec" optional="false">
+              <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned integer"/>
+            </variable_length_string>
+          </record>
+          <record name="AssociationRec" optional="false" interpretation="">
+            <presence_vector field_type_unsigned="unsigned byte"/>
+            <fixed_field field_type="unsigned short integer" name="CommandInterfaceAssociation" optional="true" field_units="one"/>
+          </record>
+        </sequence>
+      </list>
+    </sequence>
+    <sequence name="PayloadDataSeq" optional="false">
+      <record name="time" optional="false" interpretation="">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <declared_bit_field name="TimeStamp" declared_type_ref="TimeStamp" optional="true"/>
+        <declared_bit_field name="DateStamp" declared_type_ref="DateStamp" optional="true"/>
+      </record>
+      <list name="dataList" optional="false">
+        <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+        <record name="interfaceData" optional="false" interpretation=" byte-encoded data per interface JSIDL spec record interfaceData">
+          <fixed_field field_type="unsigned short integer" name="InterfaceNumber" optional="false" field_units="one"/>
+          <variable_length_string name="data" optional="false">
+            <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned integer"/>
+          </variable_length_string>
+        </record>
+      </list>
+    </sequence>
+    <sequence name="SetPayloadCommandResponseSeq" optional="false">
+      <record name="requestID" optional="false" interpretation="">
+        <fixed_field field_type="unsigned short integer" name="RequestID" optional="false" field_units="one"/>
+      </record>
+      <variant name="result" optional="false">
+        <vtag_field field_type_unsigned="unsigned byte"/>
+        <variant name="Success" optional="false">
+          <vtag_field field_type_unsigned="unsigned byte"/>
+        </variant>
+        <list name="InvalidCommandList" optional="false">
+          <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+          <record name="InterfaceNumberRec" optional="false" interpretation=" record InterfaceNumberRec">
+            <fixed_field field_type="unsigned short integer" name="InterfaceNumber" optional="false" field_units="one"/>
+          </record>
+        </list>
+      </variant>
+    </sequence>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <message_def name="QueryPayloadInterface" message_id="2D00" is_command="false">
+        <description>This message is used to query for a description of the interface to the
+        payload.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body"/>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="QueryPayloadData" message_id="2D01" is_command="false">
+        <description>Querying of a payload data element may specify one or more Interface
+        Identification Numbers to be reported in the Report Payload Data
+        message. Querying of command and control data elements is not
+        supported. The Information Interface Number is the unique identifier as
+        specified in the Report Payload Interface message.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_list name="payloadData" optional="false" declared_type_ref="QueryPayloadDataList"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="SetPayloadCommand" message_id="0D01" is_command="false">
+        <description>The Set Payload Command message allows the using component to set
+        command and control interface fields published by the Report Payload
+        Message Interface message. The Command Interface Number is the unique
+        identifier as specified in the Report Payload Interface message.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_sequence name="payloadCommand" optional="false" declared_type_ref="SetPayloadCommandSeq"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+    </input_set>
+    <output_set>
+      <message_def name="ReportPayloadInterface" message_id="4D00" is_command="false">
+        <description>The Report Payload Interface Message is used to publish the command and
+        informational element description, along with their respective types,
+        units and ranges.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_sequence name="payloadInterface" optional="false" declared_type_ref="PayloadInterfaceSeq"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="ReportPayloadData" message_id="4D01" is_command="false">
+        <description>The Report Payload Data message is used as a response to the Query
+        Payload Data message. The Information Interface Number is the unique
+        identifier as specified by the Report Payload Interface message.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_sequence name="payloadData" optional="false" declared_type_ref="PayloadDataSeq"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="SetPayloadCommandResponse" message_id="0D02" is_command="false">
+        <description>The Set Payload Command Response message is sent as a notification back
+        to a client on the status of the SetPayloadCommand message.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body"/>
+        <footer name="footer"/>
+      </message_def>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_name="NotControlled" state_machine_name="Receiving.Ready"/>
+    <state_machine name="PayloadInterface.AccessControl.Events.Transport.ReceiveFSM">
+      <state name="Receiving" interpretation=" state Receiving">
+        <state name="Ready" interpretation=" initial state Ready">
+          <state name="NotControlled" interpretation=" initial state NotControlled">
+            <default_state interpretation=""/>
+          </state>
+          <state name="Controlled" interpretation=" state Controlled">
+            <default_state interpretation=""/>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>
+

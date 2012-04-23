@@ -1,0 +1,152 @@
+50a51,57
+> //JTS
+> import org.hibernate.Query;
+> import org.hibernate.Session;
+> import com.u2d.app.Context;
+> import org.hibernate.Transaction;
+> //jts
+> 
+120a128,131
+> 	  // JTS
+> 	  _desktopPane.getContextMenu().add(new JTS_DeleteDatabaseAction());
+> 	  _desktopPane.getContextMenu().addSeparator();
+> 	  // jts
+169a181,187
+>       
+>       // JTS
+>       addSplashFirstRun();
+>       // set paginable page size to arbitrary large number
+>       // so paginable views never cut pages (easier than making separate views without pagination)
+>       _app.setPagesize( 1000000 );
+>       // jts
+316c334,336
+<                   showUserMenu();
+---
+>                   // JTS - never show the user menu 
+> 				  //showUserMenu();
+> 				  // jts
+414c434,436
+<          Substance.addSkinMenuTo(_menuBar);
+---
+>     	  // JTS
+>          //Substance.addSkinMenuTo(_menuBar);
+>     	  // jts
+612a635,714
+>    // JTS
+>    class JTS_DeleteDatabaseAction extends AbstractAction
+>    {
+>       public JTS_DeleteDatabaseAction()
+>       {
+>          putValue(javax.swing.Action.NAME, "Delete Database");
+>       }
+> 
+>       public void actionPerformed(ActionEvent evt)
+>       {
+> 		JTS_deleteDatabase();
+> 	  }
+>    }
+>    private void JTS_deleteDatabase()
+>    {
+>      com.u2d.persist.HBMSingleSession persistenceMechanism = (com.u2d.persist.HBMSingleSession) Context.getInstance().getPersistenceMechanism();
+> 	 Session session = persistenceMechanism.getSession();
+> 	 Transaction tx = session.beginTransaction();
+> 
+> 	 JTS_deleteItem(session, "AbstractComplexEObject_JTS");
+> 	 JTS_deleteItem(session, "Component");
+> 	 JTS_deleteItem(session, "ServiceSet");
+> 	 JTS_deleteItem(session, "ServiceDef");
+> 	 
+> 	 JTS_deleteItem(session, "ProtocolBehavior");
+> 	 JTS_deleteItem(session, "MessageDef");
+> 	 JTS_deleteItem(session, "EventDef");
+> 	 
+> 	 JTS_deleteItem(session, "ConstantSet");
+> 	 JTS_deleteItem(session, "Constant");
+> 	 JTS_deleteItem(session, "InputSet");
+> 	 JTS_deleteItem(session, "OutputSet");
+> 	 JTS_deleteItem(session, "Header");
+> 	 JTS_deleteItem(session, "Body");
+> 	 JTS_deleteItem(session, "Footer");
+> 	 
+> 	 JTS_deleteItem(session, "ComplexField");
+> 	 JTS_deleteItem(session, "Record");
+> 	 JTS_deleteItem(session, "Sequence");
+> 	 JTS_deleteItem(session, "Variant");
+> 	 JTS_deleteItem(session, "List");
+> 	 
+> 	 JTS_deleteItem(session, "SimpleField");
+> 	 JTS_deleteItem(session, "FormatField");
+> 	 JTS_deleteItem(session, "VariableField");
+> 	 JTS_deleteItem(session, "VariableFormatField");
+> 	 JTS_deleteItem(session, "BitField");
+> 	 JTS_deleteItem(session, "FixedField");
+> 	 
+> 	 JTS_deleteItem(session, "ValueSet");
+> 	 JTS_deleteItem(session, "SubField");
+> 	 JTS_deleteItem(session, "TypeAndUnitsEnum");
+> 	 
+> 	 JTS_deleteItem(session, "Dimension");
+> 	 JTS_deleteItem(session, "ScaleRange");
+> 	 JTS_deleteItem(session, "ValueRange");
+> 	 JTS_deleteItem(session, "ValueEnum");
+> 	 JTS_deleteItem(session, "BitRange");
+> 	 JTS_deleteItem(session, "FormatEnum");
+> 	 JTS_deleteItem(session, "VariableLengthField");
+> 	 JTS_deleteItem(session, "FixedLengthString");
+> 	 JTS_deleteItem(session, "VariableLengthString");
+> 
+> 	 tx.commit();
+> 	 
+> 	 com.u2d.app.Context.getInstance().getViewMechanism().message(
+>                         "Database deletion complete!");
+>    }
+>    private void JTS_deleteItem(Session session, String tableName)
+>    {
+>      String query = "from " + tableName;
+> 	 Iterator it = session.createQuery(query).list().iterator();
+> 	 
+> 	 while(it.hasNext())
+> 	 {
+> 		session.delete(it.next());
+> 	 }
+>    }
+>    
+>    //jts
+683c785,792
+<          add(new JScrollPane(descriptionArea));
+---
+>          // JTS
+>          descriptionArea.setLineWrap(true);
+>          descriptionArea.setWrapStyleWord(true);
+>          JScrollPane pane = new JScrollPane(descriptionArea);
+>          pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+>          add(pane);
+>          //add(new JScrollPane(descriptionArea));
+>          // jts
+710a820,845
+>    // JTS
+>    public void addSplashFirstRun()
+>    {
+> 	   AboutDlgSplash_JTS splash = new AboutDlgSplash_JTS();
+> 
+> 	   // test to see if this run is the first time JTS was run
+> 	   // assume that the initial run condition will be when
+> 	   // there are no logged events stored in the database
+> 	   com.u2d.persist.HBMSingleSession persistenceMechanism = (com.u2d.persist.HBMSingleSession) Context.getInstance().getPersistenceMechanism();
+> 	   Session session = persistenceMechanism.getSession();
+> 	   String hql = "from LoggedEvent";
+> 
+> 	   Query hibernateQuery = session.createQuery(hql);
+> 	   if( hibernateQuery.list().size() == 0 )
+> 	   {
+> 		   splash.setVisible(true);
+> 	   }
+>    }
+>    class AboutDlgSplash_JTS extends AboutDlg
+>    {
+> 	   public AboutDlgSplash_JTS()
+> 	   {
+> 		   super();
+> 	   }
+>    }
+>    // jts

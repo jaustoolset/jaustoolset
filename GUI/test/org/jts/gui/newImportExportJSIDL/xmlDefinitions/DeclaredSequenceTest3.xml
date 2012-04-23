@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sequence xmlns="urn:jaus:jsidl:1.0" name="SequenceTest3" optional="false">
+	<declared_variant name="VariantTest1" declared_type_ref="unitTest.VariantTest1"/>
+</sequence>

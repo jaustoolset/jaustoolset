@@ -1,0 +1,90 @@
+drop database jtsRepository;
+
+create database jtsRepository;
+
+use jtsRepository;
+
+CREATE TABLE CategoryList (
+  categoryTitle varchar(50) PRIMARY KEY
+  categoryDescription varchar(1024)
+  categoryIconName varchar(80)
+);
+
+CREATE TABLE ServiceEntry (
+  serviceURI varchar(200),
+  serviceTitle varchar(80),
+  author varchar(80),
+  briefDescription varchar(140),
+  verboseDescription varchar(3096),
+  version varchar(80),
+  jsidl varchar(60000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  PRIMARY KEY (serviceURI, version)
+);
+
+CREATE TABLE CategoryByService (
+  categoryTitle varchar(50) REFERENCES CategoryList (categoryTitle),
+  serviceURI varchar(200) REFERENCES ServiceEntry (serviceURI),
+  PRIMARY KEY (categoryTitle, serviceURI)
+);
+
+CREATE TABLE ServiceDependency (
+  parent varchar(200) REFERENCES ServiceEntry (serviceURI),
+  parentVer varchar(80) REFERENCES ServiceEntry (version),
+  child varchar(200) REFERENCES ServiceEntry (serviceURI),
+  childVer varchar(80) REFERENCES ServiceEntry (version),
+  PRIMARY KEY (parent, parentVer, child, childVer)
+);
+
+CREATE TABLE SchemaList (
+  theSchema varchar(64000), 
+  schemaId int PRIMARY KEY
+);
+
+INSERT into CategoryList (categoryTitle)
+       values("Core");
+INSERT into CategoryList (categoryTitle)
+       values("Mobility");
+INSERT into CategoryList (categoryTitle)
+       values("Manipulation");
+INSERT into CategoryList (categoryTitle)
+       values("Environmental Sensors");
+INSERT into CategoryList (categoryTitle)
+       values("Mission Planning");
+INSERT into CategoryList (categoryTitle)
+       values("UGV");
+INSERT into CategoryList (categoryTitle)
+       values("UUV");
+INSERT into CategoryList (categoryTitle)
+       values("USV");
+INSERT into CategoryList (categoryTitle)
+       values("UAV");
+INSERT into CategoryList (categoryTitle)
+       values("EOD");
+
+
+INSERT into ServiceEntry (serviceURI, serviceTitle, author, briefDescription, verboseDescription, version)
+       values("urn:jaus:jss:test:Core1", "Core Service 1", "Parag Batavia", "The First Test Service", "This is a service that tests other basic services", "v1.0");
+
+INSERT into ServiceEntry (serviceURI, serviceTitle, author, briefDescription, verboseDescription, version)
+       values("urn:jaus:jss:test:Core2","Core Service 2", "Parag Batavia", "The Second Test Service", "This is yet another service that tests other basic services", "v1.0");
+
+INSERT into ServiceEntry (serviceURI, serviceTitle, author, briefDescription, verboseDescription, version)
+       values("urn:jaus:jss:test:UGV1","UGV Service 1", "Parag Batavia", "The First UGV Test Service", "This is a service that tests UGV services", "v1.0");
+
+INSERT into ServiceEntry (serviceURI, serviceTitle, author, briefDescription, verboseDescription, version)
+       values("urn:jaus:jss:test:UGV2","UGV Service 2", "Parag Batavia", "The Second UGV Test Service", "This is another service that tests UGV services", "v1.0");
+
+INSERT into CategoryByService (categoryTitle, serviceURI)
+       values("Core","urn:jaus:jss:test:Core1" );
+INSERT into CategoryByService (categoryTitle, serviceURI)
+       values("Core","urn:jaus:jss:test:Core2");
+INSERT into CategoryByService (categoryTitle, serviceURI)
+       values("UGV", "urn:jaus:jss:test:UGV1");
+INSERT into CategoryByService (categoryTitle, serviceURI)
+       values("UGV", "urn:jaus:jss:test:UGV2");
+
+INSERT into ServiceDependency (parent, parentVer, child, childVer)
+       value("urn:jaus:jss:test:UGV2", "v1.0", "urn:jaus:jss:test:Core1", "v1.0");
+INSERT into ServiceDependency (parent, parentVer, child, childVer)
+       value("urn:jaus:jss:test:UGV2", "v1.0", "dummy", "v1.0");
+

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_State" id="ImportTest:SD_State" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the state element with all levels of multiplicity.
+
+    The 1st state has no optional elements and all multiplicity set to 0.
+    The 2nd state has all optional elements and all multiplicity set to 0.
+    The 3rd state has all multiplicity set to 1.
+    The 4th state has all multiplicity set to * (if applicable).
+  </description>
+
+  <!-- 
+    element state 
+    {
+      attribute name { identifier_ns },
+      attribute initial_state {identifier}?,
+      attribute interpretation { text }?,
+      entry?,
+      exit?,
+      transition*, 
+      default_transition*, 
+      state*,
+      default_state?
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_State" state_name="State1"/>
+    <state_machine name="SD_State">
+      <!-- The 1st state has no optional elements and all multiplicity set to 0 -->
+      <state name="State1"/>
+
+      <!-- The 2nd state has all optional elements and all multiplicity set to 0. -->
+      <state name="State2" interpretation="This is a state interpretation.">
+        <entry/>
+        <exit/>
+        <default_state/>
+      </state>
+      
+      <!-- The 3rd state has all multiplicity set to 1. -->
+      <state name="State3" initial_state="State21">
+        <entry/>
+        <exit/>
+        <transition name="StateTransition">
+          <simple/>
+        </transition>
+        <default_transition>
+          <simple/>
+        </default_transition>        
+        <state name="State21" interpretation="This is a nested state"/>
+        <default_state/>
+      </state>
+      
+    </state_machine>
+  </protocol_behavior>
+</service_def>

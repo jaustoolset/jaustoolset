@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record name="Record16" optional="false" interpretation="A variable length field in a record may be optional" xmlns="urn:jaus:jsidl:1.0">
+	<variable_length_field name="QueryMessage" field_format="JAUS MESSAGE" optional="false" interpretation="" xmlns="urn:jaus:jsidl:1.0">
+		<count_field min_count="2" field_type_unsigned="unsigned integer"/>
+	</variable_length_field>
+</record>

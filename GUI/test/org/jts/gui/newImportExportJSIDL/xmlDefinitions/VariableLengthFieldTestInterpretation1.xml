@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<variable_length_field xmlns="urn:jaus:jsidl:1.0" name="VariableLengthFieldTestInterpretation1" interpretation="a" field_format="MJPEG" optional="false">
+	++++CountFieldTest1.xml++++
+</variable_length_field>

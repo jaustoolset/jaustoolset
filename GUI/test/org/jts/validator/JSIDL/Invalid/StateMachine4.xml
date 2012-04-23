@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<state_machine name="FSM_A" xmlns="urn:jaus:jsidl:1.0">
+	<state name="Init">
+		<transition name="Message1">
+			<simple>
+				<end_state state="Invalid"/>
+			</simple>
+		</transition>
+	</state>
+	
+	<state name="Running">
+		<transition name="InternalEvent2">
+			<simple>
+				<end_state state="Running"/>
+			</simple>
+		</transition>
+	</state>
+
+</state_machine>

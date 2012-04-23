@@ -1,0 +1,19 @@
+26,27c26,31
+<       _color = color;
+<       _otherColor = (transparent) ? TRANSPARENT : Color.white;
+---
+>       // JTS
+>       //_color = color;
+>       //_otherColor = (transparent) ? TRANSPARENT : Color.white;
+>       _color = new Color(159,186,205);
+>       _otherColor = new Color(214,217,223);
+>       // jts
+28a33
+>    // JTS
+33c38,39
+<       GradientPaint paint = new GradientPaint(0, 0, _color, getWidth(), 0, _otherColor);
+---
+>       //GradientPaint paint = new GradientPaint(0, 0, _color, getWidth(), 0, _otherColor);
+>       GradientPaint paint = new GradientPaint(0, 0, _color, 0, getHeight(), _otherColor);
+37a44
+>    // jts

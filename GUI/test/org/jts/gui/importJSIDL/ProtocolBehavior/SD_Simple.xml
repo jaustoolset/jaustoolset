@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_Simple" id="ImportTest:SD_Simple" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the simple element with all levels of multiplicity.
+
+    The 1st simple element has no optional elements.
+    The 2nd simple element has all optional elements.
+  </description>
+
+  <!-- 
+    element simple 
+    {
+      attribute interpretation { text }?, 
+      end_state?
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_Simple" state_name="Simple1"/>
+    <state_machine name="SD_Simple">
+
+      <!-- The 1st simple element has no optional elements -->
+      <state name="Simple1">
+        <transition name="Simple1">
+          <simple/>
+        </transition>
+      </state>
+
+      <!-- The 2nd simple element has all optional elements -->
+      <state name="Simple2">
+        <transition name="Simple2">
+          <simple interpretation="A simple transition interpretation">
+            <end_state state="Simple2"/>
+          </simple>
+        </transition>
+      </state>
+      
+    </state_machine>
+  </protocol_behavior>
+</service_def>

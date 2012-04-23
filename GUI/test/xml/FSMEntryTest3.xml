@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest3" version="1.0">
+  <description>test for appending entry actions for nested states with multiple nested state entry actions</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMEntryTest3" state_name="A"/>
+    <state_machine name="FSMEntryTest3">
+      <state name="A" initial_state="nested_initial">
+ 			<entry>
+ 				<send_action name="EntryA">
+ 				</send_action>
+ 			</entry>
+ 			<state name="nested_initial">
+ 				<entry>
+ 					<send_action name="EntryNestedA_initial">
+ 					</send_action>
+ 				</entry>
+ 			</state>
+ 			<state name="nested_not">
+ 				<entry>
+ 					<send_action name="EntryNestedA_not_initial">
+ 					</send_action>
+ 				</entry>
+ 			</state>
+      </state>
+      <state name="B">
+		<transition name = "T1">
+			<simple>
+				<end_state state="A" />
+			</simple>
+			<action name="BT1Action">
+			</action>
+		</transition>
+		<transition name = "T2">
+			<simple>
+				<end_state state="A.nested_initial" />
+			</simple>
+			<action name="BT2Action">
+			</action>
+		</transition>
+		<transition name = "T3">
+			<simple>
+				<end_state state="A.nested_not" />
+			</simple>
+			<action name="BT3Action">
+			</action>
+		</transition>
+      </state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{292EFE3C-9818-4AFB-B2DC-1D020E949E0E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>libCommon_CSharp</RootNamespace>
+    <AssemblyName>libCommon_CSharp</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="framework\1_0\internalEvents\InternalEvent.cs" />
+    <Compile Include="framework\1_0\internalEvents\InternalEventHandler.cs" />
+    <Compile Include="framework\1_0\internalEvents\Receive.cs" />
+    <Compile Include="framework\1_0\internalEvents\Receive_1_0.cs" />
+    <Compile Include="framework\1_0\internalEvents\Send.cs" />
+    <Compile Include="framework\1_0\internalEvents\Send_1_0.cs" />
+    <Compile Include="framework\1_0\JausUtils.cs" />
+    <Compile Include="framework\1_0\messages\Message.cs" />
+    <Compile Include="framework\1_0\Service.cs" />
+    <Compile Include="framework\1_0\SimpleThread.cs" />
+    <Compile Include="framework\1_0\StateMachine.cs" />
+    <Compile Include="framework\1_0\transport\Address.cs" />
+    <Compile Include="framework\1_0\transport\AddressModule.cs" />
+    <Compile Include="framework\1_0\transport\AddressModulePINVOKE.cs" />
+    <Compile Include="framework\1_0\transport\JausAddress.cs" />
+    <Compile Include="framework\1_0\transport\JausAddressModule.cs" />
+    <Compile Include="framework\1_0\transport\JausAddressModulePINVOKE.cs" />
+    <Compile Include="framework\1_0\transport\JausRouter.cs" />
+    <Compile Include="framework\1_0\transport\JrErrorCode.cs" />
+    <Compile Include="framework\1_0\transport\JuniorAPI.cs" />
+    <Compile Include="framework\1_0\transport\JuniorAPIPINVOKE.cs" />
+    <Compile Include="framework\1_0\transport\OS.cs" />
+    <Compile Include="framework\1_0\transport\SWIGTYPE_p_int.cs" />
+    <Compile Include="framework\1_0\transport\SWIGTYPE_p_long.cs" />
+    <Compile Include="framework\1_0\transport\SWIGTYPE_p_p_char.cs" />
+    <Compile Include="framework\1_1\internalEvents\InternalEvent.cs" />
+    <Compile Include="framework\1_1\internalEvents\InternalEventHandler.cs" />
+    <Compile Include="framework\1_1\internalEvents\Receive.cs" />
+    <Compile Include="framework\1_1\internalEvents\Receive_1_1.cs" />
+    <Compile Include="framework\1_1\internalEvents\Send.cs" />
+    <Compile Include="framework\1_1\internalEvents\Send_1_1.cs" />
+    <Compile Include="framework\1_1\JausUtils.cs" />
+    <Compile Include="framework\1_1\messages\Message.cs" />
+    <Compile Include="framework\1_1\Service.cs" />
+    <Compile Include="framework\1_1\SimpleThread.cs" />
+    <Compile Include="framework\1_1\StateMachine.cs" />
+    <Compile Include="framework\1_1\transport\Address.cs" />
+    <Compile Include="framework\1_1\transport\AddressModule.cs" />
+    <Compile Include="framework\1_1\transport\AddressModulePINVOKE.cs" />
+    <Compile Include="framework\1_1\transport\JausAddress.cs" />
+    <Compile Include="framework\1_1\transport\JausAddressModule.cs" />
+    <Compile Include="framework\1_1\transport\JausAddressModulePINVOKE.cs" />
+    <Compile Include="framework\1_1\transport\JausRouter.cs" />
+    <Compile Include="framework\1_1\transport\JrErrorCode.cs" />
+    <Compile Include="framework\1_1\transport\JuniorAPI.cs" />
+    <Compile Include="framework\1_1\transport\JuniorAPIPINVOKE.cs" />
+    <Compile Include="framework\1_1\transport\OS.cs" />
+    <Compile Include="framework\1_1\transport\SWIGTYPE_p_int.cs" />
+    <Compile Include="framework\1_1\transport\SWIGTYPE_p_long.cs" />
+    <Compile Include="framework\1_1\transport\SWIGTYPE_p_p_char.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

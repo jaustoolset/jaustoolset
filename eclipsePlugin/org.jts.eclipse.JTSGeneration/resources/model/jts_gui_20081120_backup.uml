@@ -1,0 +1,552 @@
+package com.u2d.generated;
+
+
+class FixedField extends SimpleField 
+[dx="1570.0" dy="770.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    type PrimitiveType [required="true" ]; 
+    units SIUnit [required="true" ]; 
+    interpretation StringEO ; 
+    scaleRange ScaleRange ; 
+}
+
+
+class BitField extends SimpleField 
+[dx="1370.0" dy="770.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    type PrimitiveTypeUnsigned [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class SimpleField  
+[abstract dx="1420.0" dy="390.0" ]
+{
+}
+
+
+class Record extends ComplexField 
+[title="name.title()" dx="1130.0" dy="490.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class Variant extends ComplexField 
+[dx="650.0" dy="770.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class ComplexField  
+[abstract dx="1060.0" dy="330.0" ]
+{
+}
+
+
+class List extends ComplexField 
+[dx="1170.0" dy="840.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    minSize IntEO ; 
+    maxSize IntEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class Sequence extends ComplexField 
+[dx="870.0" dy="840.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class Header  
+[dx="650.0" dy="320.0" ]
+{
+    name StringEO [required="true" ];
+    interpretation StringEO ; 
+}
+
+
+class Body  
+[dx="650.0" dy="410.0" ]
+{
+    name StringEO [required="true" ];
+    interpretation StringEO ; 
+}
+
+
+class Footer  
+[dx="650.0" dy="510.0" ]
+{
+    name StringEO [required="true" ];
+    interpretation StringEO ; 
+}
+
+
+class MessageDef  
+[dx="410.0" dy="420.0" ]
+{
+    name StringEO [required="true" ]; 
+    messageId StringEO [label="ID (2 byte hex)" required="true" ]; 
+    description TextEO [required="true" ]; 
+    isCommand BooleanEO [required="true" ]; 
+}
+
+
+class ScaleRange  
+[dx="650.0" dy="1170.0" ]
+{
+    realLowerLimit StringEO [required="true" ]; 
+    realUpperLimit StringEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class ValueRange  
+[dx="870.0" dy="1290.0" ]
+{
+    name StringEO [required="true" ];
+    lowerLimit StringEO [required="true" ]; 
+    upperLimit StringEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class ValueEnum  
+[dx="850.0" dy="1170.0" ]
+{
+    name StringEO [required="true" ];
+    enumIndex IntEO [required="true" ]; 
+    enumConstant StringEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class ValueSet  
+[dx="1540.0" dy="1250.0" ]
+{
+    name StringEO [required="true" ];
+    offsetToLowerLimit BooleanEO ; 
+}
+
+
+class TypeAndUnitsEnum  
+[dx="1730.0" dy="1090.0" ]
+{
+    name StringEO [required="true" ]; 
+    index IntEO [required="true" ]; 
+    type PrimitiveType [required="true" ]; 
+    units SIUnit [required="true" ]; 
+    scaleRange ScaleRange ; 
+}
+
+
+class VariableField extends SimpleField 
+[dx="1740.0" dy="770.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class BitRange  
+[dx="650.0" dy="1290.0" ]
+{
+    fromIndex IntEO [required="true" ]; 
+    toIndex IntEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class SubField  
+[dx="1400.0" dy="1030.0" ]
+{
+    name StringEO [required="true" ]; 
+    bitRange BitRange [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class FixedLengthString extends SimpleField 
+[dx="1900.0" dy="770.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    stringLength IntEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class VariableLengthString extends SimpleField 
+[dx="2060.0" dy="770.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    minLength IntEO ; 
+    maxLength IntEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class VariableLengthField extends SimpleField 
+[dx="2220.0" dy="770.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    fieldFormat DataFormat [required="true" ]; 
+    minSize IntEO ; 
+    maxSize IntEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+
+class FormatEnum  
+[dx="2380.0" dy="1140.0" ]
+{
+    name StringEO [required="true" ]; 
+    index IntEO [required="true" ]; 
+    fieldFormat DataFormat [required="true" ]; 
+}
+
+
+class FormatField  
+[dx="2400.0" dy="990.0" ]
+{
+}
+
+
+class VariableFormatField extends SimpleField 
+[dx="2380.0" dy="770.0" ]
+{
+    name StringEO [required="true" ]; 
+    optional BooleanEO [required="true" ]; 
+    minSize IntEO ; 
+    maxSize IntEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+class Dimension  
+[dx="2550.0" dy="800.0" ]
+{
+    name StringEO [required="true" ]; 
+    size IntEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+class Array extends SimpleField 
+[plural="Arrays" dx="2550.0" dy="530.0" ]
+{
+    name StringEO [label="" required="true" ]; 
+    optional BooleanEO [flatten="false" label="" required="true" ]; 
+    interpretation StringEO ; 
+}
+
+class EventDef  
+[dx="400.0" dy="620.0" ]
+{
+    name StringEO [required="true" ]; 
+    description TextEO [required="true" ]; 
+}
+
+class ProtocolBehavior  
+[dx="10.0" dy="450.0" ]
+{
+    protocolBehavior TextEO ; 
+}
+
+class ServiceDef  
+[title="" dx="10.0" dy="280.0" ]
+{
+    name StringEO [required="true" ]; 
+    serviceId StringEO [label="ID" required="true" ]; 
+    _version StringEO [label="Version" required="true" ]; 
+    description TextEO [required="true" ]; 
+    assumptions StringEO [required="true" ]; 
+}
+
+class ServiceSet  
+[title="" dx="20.0" dy="70.0" ]
+{
+    name StringEO [required="true" ]; 
+    serviceSetId StringEO [label="ID" required="true" ]; 
+    _version StringEO [label="Version" required="true" ]; 
+    description TextEO ; 
+}
+
+class InputSet  
+[dx="230.0" dy="380.0" ]
+{
+    name StringEO [required="true" ]; 
+}
+
+class OutputSet  
+[dx="230.0" dy="530.0" ]
+{
+    name StringEO [required="true" ]; 
+}
+
+class Component  
+[dx="400.0" dy="60.0" ]
+{
+    name StringEO [required="true" ]; 
+    componentId IntEO [label="ID" required="true" ]; 
+    path FileEO [required="true" ];
+    interpretation StringEO ; 
+}
+
+class Constant  
+[dx="800.00" dy="190.0" ]
+{
+    name StringEO [required="true" ]; 
+    units SIUnit [required="true" ]; 
+    type ConstType [required="true" ]; 
+    value StringEO [required="true" ]; 
+    interpretation StringEO ; 
+}
+
+class ConstantSet  
+[title="" dx="560.0" dy="190.0" ]
+{
+    name StringEO [required="true" ]; 
+    constantSetId StringEO [label="ID" required="true" ]; 
+    _version StringEO [label="Version" required="true" ]; 
+    description TextEO ; 
+}
+
+association RecordSimpleField {
+( Record as referencingRecords   )
+*-*
+( SimpleField as simpleFields  )
+}
+
+association VariantComplexField {
+( Variant as referencingVariants   )
+*-*
+( ComplexField as complexFields  )
+}
+
+association ListComplexField {
+( List as referencingLists   )
+*-1
+( ComplexField as listElementType  )
+}
+
+association SequenceComplexField {
+( Sequence as referencingSequences   )
+*-*
+( ComplexField as complexFields  )
+}
+
+association HeaderComplexField {
+( Header as referencingHeaders   )
+*-1
+( ComplexField as complexField  )
+}
+
+association BodyComplexField {
+( Body as referencingBodies   )
+*-1
+( ComplexField as complexField  )
+}
+
+association FooterComplexField {
+( Footer as referencingFooters   )
+*-1
+( ComplexField as complexField  )
+}
+
+association MessageDefBody {
+( MessageDef as referencingMessageDefs   )
+*-1
+( Body as body  )
+}
+
+association MessageDefHeader {
+( MessageDef as referencingMessageDefs   )
+*-1
+( Header as header  )
+}
+
+association MessageDefFooter {
+( MessageDef as referencingMessageDefs   )
+*-1
+( Footer as footer  )
+}
+
+association ValueSetValueRange {
+( ValueSet as referencingValueSet [no_navigate]  )
+1-*
+( ValueRange as valueRanges  )
+}
+
+association ValueSetValueEnum {
+( ValueSet as referencingValueSet [no_navigate]  )
+1-*
+( ValueEnum as valueEnums  )
+}
+
+association FixedFieldValueSet {
+( FixedField as referencingFixedField [no_navigate]  )
+1-1
+( ValueSet as valueSet  )
+}
+
+association TypeAndUnitsEnumValueSet {
+( TypeAndUnitsEnum as referencingTypeAndUnitsEnum [no_navigate]  )
+1-1
+( ValueSet as valueSet  )
+}
+
+association VariableFieldTypeAndUnitsEnum {
+( VariableField as referencingVariableField [no_navigate]  )
+1-*
+( TypeAndUnitsEnum as typeAndUnitsEnums  )
+}
+
+association SubFieldValueSet {
+( SubField as referencingSubField [no_navigate]  )
+1-1
+( ValueSet as valueSet  )
+}
+
+association BitFieldSubField {
+( BitField as referencingBitField [no_navigate]  )
+1-*
+( SubField as subFields  )
+}
+
+association FormatFieldFormatEnum {
+( FormatField as referencingFormatField [no_navigate]  )
+1-*
+( FormatEnum as formatEnums  )
+}
+
+association VariableFormatFieldFormatField {
+( VariableFormatField as referencingVariableFormatField [no_navigate]  )
+1-1
+( FormatField as formatField  )
+}
+
+association ArrayDimension {
+( Array as array [no_navigate]  )
+1-*
+( Dimension as dimensions  )
+}
+
+association ArraySimpleField {
+( Array as referencingArrays   )
+*-1
+( SimpleField as arrayElementType  )
+}
+
+association EventDefHeader {
+( EventDef as referencingEventDefs   )
+*-1
+( Header as header  )
+}
+
+association EventDefBody {
+( EventDef as referencingEventDefs   )
+*-1
+( Body as body  )
+}
+
+association EventDefFooter {
+( EventDef as referencingEventDefs   )
+*-1
+( Footer as footer  )
+}
+
+association ServiceSetServiceDef {
+( ServiceSet as referencingServiceSets   )
+*-*
+( ServiceDef as serviceDefs  )
+}
+
+association ServiceDefProtocolBehavior {
+( ServiceDef as referencingServiceDef [no_navigate]  )
+1-1
+( ProtocolBehavior as protocolBehavior  )
+}
+
+association ServiceDefEventDef {
+( ServiceDef as referencingServiceDef [no_navigate]  )
+1-*
+( EventDef as eventDefs  )
+}
+
+association ServiceDefInputSet {
+( ServiceDef as referencingServiceDef [no_navigate]  )
+1-1
+( InputSet as inputSet  )
+}
+
+association ServiceDefOutputSet {
+( ServiceDef as referencingServiceDef [no_navigate]  )
+1-1
+( OutputSet as outputSet  )
+}
+
+association InputSetMessageDef {
+( InputSet as referencingInputSets   )
+*-*
+( MessageDef as messageDefs  )
+}
+
+association OutputSetMessageDef {
+( OutputSet as referencingOutputSets   )
+*-*
+( MessageDef as messageDefs  )
+}
+
+association ComponentServiceSet {
+( Component as referencingComponents  )
+*-*
+( ServiceSet as serviceSets  )
+}
+
+association ServiceDefServiceDef {
+( ServiceDef as inheritsFrom   )
+1-*
+( ServiceDef as baseServiceTo  )
+}
+
+association ServiceDefServiceDef {
+( ServiceDef as clientOf   )
+*-*
+( ServiceDef as serverTo  )
+}
+
+association ConstantSetConstant {
+( ConstantSet as referencingConstantSets   )
+*-*
+( Constant as Constants  )
+}
+
+association ServiceDefConstantSet {
+( ServiceDef as referencingServiceDefs   )
+*-1
+( ConstantSet as ConstantSet  )
+}
+
+association ServiceSetConstantSet {
+( ServiceSet as referencingServiceSets   )
+*-*
+( ConstantSet as ConstantSets  )
+}
+

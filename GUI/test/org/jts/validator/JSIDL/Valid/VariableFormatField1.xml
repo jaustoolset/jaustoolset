@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<variable_format_field name="video_frames" optional="false" xmlns="urn:jaus:jsidl:1.0">
+  <format_field>
+    <format_enum index="0" field_format="MJPEG"/>
+    <format_enum index="1" field_format="MPEG-1"/>
+    <format_enum index="2" field_format="MPEG-2"/>
+    <format_enum index="3" field_format="MP4"/>
+  </format_field>
+  <count_field field_type_unsigned="unsigned short integer"/>
+</variable_format_field>

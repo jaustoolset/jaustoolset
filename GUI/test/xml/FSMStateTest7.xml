@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest2" version="1.0">
+  <description>multiple nested states</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMStateTest7" state_name="A"/>
+    <state_machine name="FSMStateTest7">
+      <state name="A" initial_state="AA">
+      	<state name="AA" initial_state="AAA">
+      		<state name="AAA">
+				<transition name="T1">
+					<simple>
+						<end_state state="A"/>
+					</simple>
+				</transition>
+				<transition name="T2">
+					<simple>
+						<end_state state="A.AA"/>
+					</simple>
+				</transition>
+				<transition name="T3">
+					<simple>
+						<end_state state="A.AA.AAA"/>
+					</simple>
+				</transition>
+				<transition name="T4">
+					<simple>
+						<end_state state="AA"/>
+					</simple>
+				</transition>
+				<transition name="T5">
+					<simple>
+						<end_state state="AA.AAA"/>
+					</simple>
+				</transition>
+				<transition name="T6">
+					<simple>
+						<end_state state="AAA"/>
+					</simple>
+				</transition>
+				<transition name="T7">
+					<simple>
+						<end_state state="AAAsecond"/>
+					</simple>
+				</transition>
+				<transition name="T8">
+					<simple>
+						<end_state state="AA.AAAsecond"/>
+					</simple>
+				</transition>
+				<transition name="T9">
+					<simple>
+						<end_state state="A.AA.AAAsecond"/>
+					</simple>
+				</transition>
+				<transition name="T10">
+					<simple>
+						<end_state state="A.BB"/>
+					</simple>
+				</transition>
+				<transition name="T11">
+					<simple>
+						<end_state state="A.BB.BBB"/>
+					</simple>
+				</transition>
+				<transition name="T12">
+					<simple>
+						<end_state state="C"/>
+					</simple>
+				</transition>
+      		</state>
+      		<state name="AAAsecond">
+      		</state>
+      	</state>
+      	<state name="BB" initial_state="BBB">
+      		<state name="BBB">
+      		</state>
+      	</state>
+      </state>
+      <state name="C">
+      </state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

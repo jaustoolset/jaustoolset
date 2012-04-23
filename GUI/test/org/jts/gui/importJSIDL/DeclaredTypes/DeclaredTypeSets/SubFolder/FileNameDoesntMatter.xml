@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set name="DeclaredTypesTest_3" id="ImportTests:DeclaredTypesTest_3" version="1.0" xmlns="urn:jaus:jsidl_plus:0.11" >
+    <variant name="DeclaredVariant" optional="false">
+        <vtag_field field_type_unsigned="unsigned byte"/>
+        <record name="SomeRecord" optional="false">
+            <fixed_field name="SomeFixedField" field_type="byte" field_units="one" optional="false"/>
+        </record>
+    </variant>
+</declared_type_set>

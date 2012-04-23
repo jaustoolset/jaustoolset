@@ -1,0 +1,1251 @@
+// NOTE: This is just a test file.  This is not guaranteed to conform
+// to any specification for any AS-4 standard.
+//
+service MissionSpooler( id="urn:jaus:jss:missionSpooler:MissionSpooler",
+                        version="1.0" ) {
+  description "The Mission Spooler Service is responsible for storing and spooling
+    missions. A mission is a set of SAE JAUS messages (e.g. Set Global Waypoint
+    [AS6009]) to be performed by one or more Services of one or more unmanned
+    systems. The mission structure is an N-ary tree, which allows for parallel,
+    sequential, iterative, and coordinated missions. Each mission has a unique
+    ID allowing for multiple missions. A mission is made up of tasks, which
+    contain JAUS messages, and/or children tasks. A JAUS message within a
+    mission plan can be blocking (synchronous) or non-blocking (asynchoronous).
+    The Mission Spooler shall not spool messages beyond a blocking SAE JAUS
+    message until the unmanned system has completed the action associated with
+    the blocking SAE JAUS message. Payload commands are a good example of where
+    blocking messages may be used. Some payloads can only perform their
+    functions when the unmanned system is stationary (e.g. soil sampling, video
+    image) while other payloads can perform their functions (e.g. start mine
+    flail) while in motion. The blocking flag ensures that no other messages
+    are spooled until the blocking message is complete. Since a mission spooler
+    may be a client of itself, one mission spooler can delegate a part of a
+    mission to another mission spooler.";
+  assumptions "Messages may be delayed, lost or reordered. All the messages that make up
+    the mission are command messages belonging to services that inherit from
+    the Events service with service ID \"urn:jaus:jss:core:Events\" and version
+    \"1.1\", or any other backwards compatible version.";
+  references {
+    inherits_from accessControl "urn:jaus:jss:core:AccessControl" "1.1";
+    client_of missionSpooler "urn:jaus:jss:missionSpooler:MissionSpooler" "1.0";
+  }
+  types MissionSpoolerTypes {
+    using "urn:jaus:jss:missionSpooler:MessageSet" "1.0" as missionSpooler;
+  // #include BasicTypes.jaus
+    sequence SpoolMissionSeq  {
+      required MissionInfo missionInfo = 1;
+      required list MissionPlan  {
+        uint16 count [0,65535];
+        repeated sequence Task  {
+          required sequence TaskData  {
+            required record TaskInfo {
+              required uint16 TaskID one  = 1;
+            } = 1;// record TaskInfo
+            required list JAUSMessages  {
+              uint16 count [0,65535];
+              repeated record MessageData {
+                required uint16 UID one  = 1;
+                required JausID DestinationID = 2; // Identifier of
+                  // destination to send the message
+                required AppMessage JausMessage = 3; // JAUS message to be spooled.
+                required uint8 Blocking one {
+                   non_blocking = 0;
+                   blocking = 1;
+                   RESERVED = [2,255];
+                  } = 4; // Blocking
+              }// record MessageData
+            } = 2; // list JAUSMessages 
+          } = 1; // sequence TaskData 
+          required list SubTasks  {
+            uint16 count [0,65535];
+            repeated record SubTaskIndex {
+              required uint16 ChildTaskIndex one  = 1; // Index into the MissionPlan
+                // List that points to a task making it a subtask of the
+                // encapsulating Task
+            }// record SubTaskIndex
+          } = 2; // list SubTasks 
+        } // sequence Task 
+      } = 2; // list MissionPlan 
+    } // sequence SpoolMissionSeq
+    record MissionInfo {
+      required uint16 MissionID one  = 1;
+      required JausID SourceID = 2; // Identifier of destination to send
+        // the message
+    }// record MissionInfo
+    record RunMissionRec {
+      optional uint16 MissionID one  = 1;
+      optional uint16 TaskID one  = 2;
+      optional uint16 MessageUID one  = 3;
+    }// record RunMissionRec
+    record AbortMissionRec {
+      required uint16 MissionID one  = 1;
+    }// record AbortMissionRec
+    record PauseMissionRec {
+      optional uint16 MissionID one  = 1;
+      optional uint16 TaskID one  = 2;
+    }// record PauseMissionRec
+    record ResumeMissionRec {
+      required uint16 MissionID one  = 1;
+    }// record ResumeMissionRec
+    sequence RemoveData  {
+      required MissionInfo missionInfo = 1;
+      required list MessageList  {
+        uint16 count [0,65535];
+        repeated record MessageInfo {
+          required uint16 UID one  = 1;
+        }// record MessageInfo
+      } = 2; // list MessageList 
+    } // sequence RemoveData 
+    record MissionInfo {
+      required uint16 MissionID one  = 1;
+      required uint16 TaskID one  = 2;
+    }// record MissionInfo
+    sequence InsertData  {
+      required MissionAndTaskInfo missionAndTaskInfo = 1;
+      required list InsertMessageList  {
+        uint16 count [0,65535];
+        repeated record InsertMessageInfo {
+          required uint16 UID one  = 1;
+          required JausID DestinationID = 2; // Identifier of destination
+            // to send the message
+          required AppMessage JausMessage = 3; // JAUS message to insert
+          required uint8 Blocking one {
+             non_blocking = 0;
+             blocking = 1;
+             RESERVED = [2,255];
+            } = 4; // Blocking
+        }// record InsertMessageInfo
+      } = 2; // list InsertMessageList 
+    } // sequence InsertData 
+    record MissionAndTaskInfo {
+      required uint16 MissionID one  = 1;
+      required uint16 TaskID one  = 2;
+      required uint16 UID one  = 3;
+      required uint8 InsertLocation one {
+         insert_before_UID_in_field_3 = 0;
+         insert_after_UID_in_field_3 = 1;
+         RESERVED = [2,255];
+        } = 4; // Insert Location
+    }// record MissionAndTaskInfo
+    sequence RemoveData  {
+      required MissionAndTaskInfo missionAndTaskInfo = 1;
+      required list RemoveTaskList  {
+        uint16 count [0,65535];
+        repeated record RemoveTaskInfo {
+          required uint16 TaskID one  = 1;
+        }// record RemoveTaskInfo
+      } = 2; // list RemoveTaskList 
+    } // sequence RemoveData 
+    record MissionAndTaskInfo {
+      required uint16 MissionID one  = 1;
+      required uint16 TaskID one  = 2;
+    }// record MissionAndTaskInfo
+    sequence InsertMission  {
+      required MissionAndTaskInfo missionAndTaskInfo = 1;
+      required sequence Task  {
+        required sequence TaskData  {
+          required record TaskInfo {
+            required uint16 TaskID one  = 1;
+          } = 1;// record TaskInfo
+          required list TaskMessages  {
+            uint16 count [0,65535];
+            repeated record MessageData {
+              required uint16 UID one  = 1;
+              required JausID DestinationID = 2; // Identifier of
+                // destination to send the message
+              required AppMessage JausMessage = 3; // JAUS message to be inserted
+              required uint8 Blocking one {
+                 non_blocking = 0;
+                 blocking = 1;
+                 RESERVED = [2,255];
+                } = 4; // Blocking
+            }// record MessageData
+          } = 2; // list TaskMessages 
+        } = 1; // sequence TaskData 
+        required list SubTasks  {
+          uint16 count [0,65535];
+          repeated record SubTaskIndex {
+            required uint16 ChildTaskIndex one  = 1; // Index into the MissionTree
+              // that points at subtasks of this MissionTask
+          }// record SubTaskIndex
+        } = 2; // list SubTasks 
+      } = 2; // sequence Task 
+    } // sequence InsertMission 
+    record MissionAndTaskInfo {
+      required uint16 MissionID one  = 1;
+      required uint16 TaskID one  = 2;
+      required uint8 InsertLocation one {
+         Insert_before_task_ID_in_field_2 = 0;
+         Insert_after_task_ID_in_field_2 = 1;
+         RESERVED = [2,255];
+        } = 3; // Insert Location
+      required uint16 NewParentTaskID one  = 4;
+    }// record MissionAndTaskInfo
+    record QueryMissionStatusRec {
+      optional uint16 MissionID one  = 1;
+      optional uint16 TaskID one  = 2;
+      optional uint16 UID one  = 3;
+    }// record QueryMissionStatusRec
+    record QueryMissionPlanRec {
+      required uint16 MissionID one  = 1;
+    }// record QueryMissionPlanRec
+    record SpoolingPreferencesRec {
+      required variant_field Data  {
+        tag 0: numberOfSeconds uint16 one ;
+        tag 1: distanceToCover uint32 meter <0,35000>;
+      } = 1; // variant_field Data 
+    }// record SpoolingPreferencesRec
+    record MissionStatusRec {
+      required uint8 Type one {
+         Mission = 0;
+         Task = 1;
+         Message = 2;
+         RESERVED = [3,255];
+        } = 1; // Type
+      required uint16 ID one  = 2; // ID of the type specified in field 1
+      required uint8 Status one {
+         Init = 0;
+         Running = 1;
+         Pausing = 2;
+         Paused = 3;
+         Aborting = 4;
+         Aborted = 5;
+         Blocked = 6;
+         Finished = 7;
+         RESERVED = [8,255];
+        } = 3; // Status
+      required uint8 SecondaryStatus one {
+         Non_error_Condition = 0;
+         Lost_Component_Control = 1;
+         Tolerance_Not_Met = 2;
+         Internal_Failure = 3;
+         RESERVED = [4,255];
+        } = 4; // Secondary Status
+    }// record MissionStatusRec
+    list MissionList  {
+      uint16 count [0,65535];
+      repeated MissionInfo missionInfo;
+    } // list MissionList 
+    record MissionInfo {
+      required uint16 MissionID one  = 1;
+      required JausID CreatorID = 2; // Identifier of destination to send
+        // the message
+    }// record MissionInfo
+    sequence MissionPlan  {
+      required MissionInfo missionInfo = 1;
+      required sequence Task  {
+        required sequence TaskData  {
+          required record TaskInfo {
+            required uint16 TaskID one  = 1;
+          } = 1;// record TaskInfo
+          required list JAUSMessages  {
+            uint16 count [0,65535];
+            repeated record MessageData {
+              required uint16 UID one  = 1;
+              required JausID DestinationID = 2; // Identifier of
+                // destination to send the message
+              required AppMessage JausMessage = 3; // JAUS message to be spooled.
+              required uint8 Blocking one {
+                 non_blocking = 0;
+                 blocking = 1;
+                 RESERVED = [2,255];
+                } = 4; // Blocking
+            }// record MessageData
+          } = 2; // list JAUSMessages 
+        } = 1; // sequence TaskData 
+        required list SubTasks  {
+          uint16 count [0,65535];
+          repeated record SubTaskIndex {
+            required uint16 ChildTaskIndex one  = 1; // Index into the MissionPlan
+              // List that points to a task making it a subtask of the
+              // encapsulating Task
+          }// record SubTaskIndex
+        } = 2; // list SubTasks 
+      } = 2; // sequence Task 
+    } // sequence MissionPlan 
+    record MissionInfo {
+      required uint16 MissionID one  = 1;
+      required JausID SourceID = 2; // Identifier of destination to send
+        // the message
+    }// record MissionInfo
+  }// types MissionSpoolerTypes
+  messages  {
+    command 0x0E00 SpoolMission {
+      description "This message is used to communicate missions to a Mission Spooler
+        service. The amount of data in one Spool Mission message is determined
+        by the receiving service's spooling preferences. For example, if a
+        service can handle ten (10) JAUS messages at a time, then the spooler
+        shall send a Spool Mission message with no more than ten (10) messages.
+        The Mission ID field shall be an ID that is unique to the system and
+        its time of execution to allow for spooling and manipulating multiple
+        current missions per system execution. The remaining fields define the
+        mission, where the mission structure is an N-ary tree defined by the
+        list called MissionPlan. Each element in the list is a node of the
+        n-ary tree, where each node is called a Task. A Task contains a list of
+        JAUS messages and/or subtasks that are identified by a list of indices
+        that point to tasks contained in the MissionPlan.";
+       SpoolMissionSeq spoolMission;
+    }
+    command 0x0E01 RunMission {
+      description "This message is used to begin execution of the mission with Mission ID.
+        If the mission ID, task ID, and message UID are not specified, then all
+        missions must begin execution starting with the first child tasks in
+        each mission. If a task ID and a message UID are specified, then
+        mission execution must begin at the specified task ID and message UID.";
+       RunMissionRec runMissionRec;
+    }
+    command 0x0E02 AbortMission {
+      description "This message is used to abort the mission with Mission ID.";
+       AbortMissionRec abortMissionRec;
+    }
+    command 0x0E03 PauseMission {
+      description "This message is used to pause the mission with the specified mission
+        ID, after the task with the specified Task ID has been executed. If the
+        mission ID and task ID are not specified, then it implies that all
+        missions that are in execution must be paused immediately. If the
+        mission ID is specified and the task ID is not specified, then it
+        implies that only the mission with the specified mission ID must be
+        paused immediately. Conversely, if the task ID is specified and the
+        mission ID is not specified, it implies that all missions that are in
+        execution must be paused after the tasks with the specified task ID has
+        been executed.";
+       PauseMissionRec pauseMissionRec;
+    }
+    command 0x0E04 ResumeMission {
+      description "This message is used to resume a paused mission from the point where
+        execution was paused.";
+       ResumeMissionRec resumeMissionRec;
+    }
+    command 0x0E05 RemoveMessages {
+      description "This message is used to remove any number of messages from an existing
+        mission and task with Mission ID and Task ID. The message(s) to be
+        removed are referenced by their Unique ID. The JAUS message
+        corresponding to each unique ID in the mission shall be removed. If a
+        message to be removed no longer exists in the mission, no action occurs
+        as this indicates that the JAUS message has already been removed (or
+        completed) from the mission. If the removal of a set of messages
+        results in an empty mission and/or task, then that mission and/or task
+        is also removed automatically.";
+       RemoveData removeData;
+    }
+    command 0x0E06 InsertMessages {
+      description "This message is used to insert any number of new messages into the
+        mission and task with the specified Mission ID and Task ID. Field #4 of
+        MissionAndTaskInfo determines if the messages are to be inserted before
+        or after the message with the specified UID in field #3 of
+        MissionAndTaskInfo.";
+       InsertData insertData;
+    }
+    command 0x0E07 RemoveMissionTask {
+      description "This message removes the task specified in field #2 from the mission.
+        Any child of the task to be removed can be promoted to be a new child
+        of the removed task's parent by specifying its task ID in the
+        RemoveTaskInfo list. Childern not being promoted - their task IDs are
+        not in the RemoveTaskInfo list - are also removed from the mission. If
+        the RemoveTaskInfo list is empty, the task specified in field #2,
+        including all its children, is removed.";
+       RemoveData removeData;
+    }
+    command 0x0E08 InsertMissionTask {
+      description "This message inserts a task before or after the task identified by the
+        ID provided in field #2 of MissionAndTaskInfo. Field #3 of
+        MissionAndTaskInfo identifies the new parent for the task specified in
+        field #2. If the new task has no children, the new task is the new
+        parent to the task specified in field #2. Otherwise, the new parent is
+        one of the new task's children, and must be specified in the message.";
+       InsertMission insertMission;
+    }
+    query 0x2E00 QuerySpoolingPreferences {
+      description "This message shall cause the receiving component to reply to the
+        requestor with the ReportSpoolingPreferences message. The spooling
+        component shall send this message to every component utilized in a
+        mission plan that is ready to be spooled. Spooling preferences indicate
+        how components want the commands spooled to them.";
+    }
+    query 0x2E01 QueryMissionStatus {
+      description "This message shall cause the receiving component to reply to the
+        requestor with the ReportMissionStatus message. The Query can be
+        narrowed to a particular Mission, Task, and/or Message.";
+       QueryMissionStatusRec queryMissionStatusRec;
+    }
+    query 0x2E02 QueryStoredMissions {
+      description "This message shall cause the receiving component to reply to the
+        requestor with a Code 4E02h: ReportStoredMissions message.";
+    }
+    query 0x2E03 QueryMissionPlan {
+      description "This message shall cause the receiving component to reply to the
+        requestor with a Code 4E03h: ReportMissionPlan message.";
+       QueryMissionPlanRec queryMissionPlanRec;
+    }
+    inform 0x4E00 ReportSpoolingPreferences {
+      description "This message is used to provide the receiver a response to a
+        QuerySpoolingPreferences message. This message indicates how components
+        want missions to be spooled to them. A discrete number of commands or a
+        desired distance worth of commands can be spooled. If the Spool Type is
+        set to Count, then the data field indicates how many commands to send
+        in each Spool Mission message. If the Spool Type is set to Distance,
+        then the data field indicates how many meters worth of commands to send
+        in each Spool Mission message. If the Spool Type is set to Time, then
+        the data field indicates how many seconds worth of commands to send in
+        each Spool Mission message.";
+       SpoolingPreferencesRec spoolingPreferencesRec;
+    }
+    inform 0x4E01 ReportMissionStatus {
+      description "This message is used to provide the receiver the status of a Mission,
+        Task, or Message. The Type field indicates whether the status refers to
+        a Mission, Task, or Message. The following fields indicate the specific
+        Mission, Task, or Message the status refers to.";
+       MissionStatusRec missionStatusRec;
+    }
+    inform 0x4E02 ReportStoredMissions {
+      description "This message is used to provide the receiver with a list of missions
+        stored in the Mission Spooler. The creator of the mission must always
+        be the client that sent the mission to the mission spooler. In other
+        words, if a client sends a mission to a mission spooler, which in turn
+        sends the mission to a second mission spooler, the creator of the
+        mission as seen by the second mission spooler will be its client, the
+        first mission spooler.";
+       MissionList missionList;
+    }
+    inform 0x4E03 ReportMissionPlan {
+      description "For the mission ID specified in the corresponding query message, this
+        message reports that part of the mission plan that remains to be
+        executed. That is, the portion of the mission plan that has already
+        been executed is not included. The reported mission plan reflects any
+        changes that have been made to the mission after the mission was
+        spooled. If the mission with the specified id has been executed to
+        completion, or it does not exist, then an empty MissionPlan is
+        reported.";
+       MissionPlan missionPlan;
+    }
+  }// messages 
+  events  {
+    event NextMessage {
+      description "Invoked by the runIteration transition action and occurs when the next
+        message in the mission is ready for processing. If the end of the
+        mission has been reached, this internal event will contain no data.";
+    }// event NextMessage
+    event MissionCompleted {
+      description "Invoked by the updateMission transition action and occurs when either a
+        ReportMissionStatus message or a events.CommandEvent message has been
+        received for every single message in the mission indicating that the
+        message has been executed to (successful or unsuccessful) completion.";
+    }// event MissionCompleted
+    event Timeout {
+      description "Occurs after the SetTimer action is called";
+    }// event Timeout
+  }// events 
+  protocol {
+    start Receiving.Ready.NotControlled.Available;
+    state_machine accessControl.events.transport.ReceiveFSM  {
+           // extending ReceiveFSM of base service (transport)
+      state Receiving  {
+             // redefine state in order to extend
+        initial state Ready  {
+               // redefine state in order to extend
+          initial state NotControlled  {
+                 // redefine state in order to extend
+            initial state Available  {
+                   // redefine state in order to extend
+              // Label B
+              accessControl.RequestControl (Message : msg  /* enveloped request control message */,
+                transportData : data  /* transport data */)  {
+
+                accessControl.ConfirmControl( 
+                  msg.src_id,
+                  INSUFFICIENT_AUTHORITY 
+                  ); // Send a confirm control message with the specified response
+                  // code to requesting client
+              }
+              // Label D1
+              accessControl.RequestControl (Message : msg  /* enveloped request control message */,
+                transportData : data  /* transport data */) 
+                next(Receiving.Ready.Controlled.Available.Init) {
+
+                accessControl.StoreAddress( msg.src_id ); // Store the address of
+                  // the client that sent the message that caused this action to
+                  // be executed
+                accessControl.SetAuthority( msg ); // Set the current authority
+                  // value of this service to the specified authority
+                accessControl.ResetTimer(); // Reset the timer
+                accessControl.ConfirmControl( 
+                  msg.src_id,
+                  CONTROL_ACCEPTED 
+                  ); // Send a confirm control message with the specified response
+                  // code to requesting client
+              }
+              // Label D2
+              accessControl.RequestControl (Message : msg  /* enveloped request control message */,
+                transportData : data  /* transport data */) 
+                next(Receiving.Ready.Controlled.Available.Pending) {
+
+                accessControl.StoreAddress( msg.src_id ); // Store the address of
+                  // the client that sent the message that caused this action to
+                  // be executed
+                accessControl.SetAuthority( msg ); // Set the current authority
+                  // value of this service to the specified authority
+                accessControl.ResetTimer(); // Reset the timer
+                accessControl.ConfirmControl( 
+                  msg.src_id,
+                  CONTROL_ACCEPTED 
+                  ); // Send a confirm control message with the specified response
+                  // code to requesting client
+              }
+              state Default  {
+
+                // Label P
+                QuerySpoolingPreferences (Message : msg  /* enveloped query spooling preferences message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportSpoolingPreferences( 
+                    msg.src_id
+                    ); // Send a report spooling preferences message
+                }
+                QueryMissionStatus (Message : msg  /* enveloped query mission status message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportMissionStatus( 
+                    msg.src_id
+                    ); // Send a report mission status message
+                }
+                QueryStoredMissions (Message : msg  /* enveloped query stored missions message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportStoredMissions( 
+                    msg.src_id
+                    ); // Send a report stored missions message
+                }
+                QueryMissionPlan (Message : msg  /* enveloped query mission plan message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportMissionPlan( 
+                    msg.src_id
+                    ); // Send a report stored missions message
+                }
+              } // state Default
+            } // initial state Available
+          } // initial state NotControlled
+          state Controlled  {
+                 // redefine state in order to extend
+            initial state Available  {
+                   // redefine state in order to extend
+              // Label H
+              accessControl.ReleaseControl (Message : msg  /* enveloped release control message */,
+                transportData : data  /* transport data */) 
+                next(Receiving.Ready.NotControlled.Available) {
+
+                pauseCurrentMissionExecution(); // Pause the execution of the
+                  // message that is currently being executed by the mission
+                  // spooler with the intent of continuing its execution when the
+                  // mission execution is resumed
+                events.transport.Send(
+                     'accessControl.RejectControl',
+                     'CONTROL_RELEASED',
+                     msg.src_id ); // Send a Reject Control message to the client
+                  // requesting release
+              }
+              accessControl.RequestControl (Message : msg  /* enveloped request control message */,
+                transportData : data  /* transport data */) 
+                next(Receiving.Ready.NotControlled.Available) {
+
+                events.transport.Send(
+                     'accessControl.RejectControlToController',
+                     'CONTROL_RELEASED',
+                     msg.src_id ); // Send a Reject Control message to the
+                  // controlling Client requesting release
+              }
+              initial state Init  {
+
+                // Label A
+                SpoolMission (Message : msg  /* enveloped spool mission message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Pending) {
+
+                  storeMission( msg ); // Store the mission
+                  storeAddress( msg.src_id ); // Store the address of the parent
+                    // mission spooler
+                }
+              } // initial state Init
+              state Pending  {
+
+                // Label E
+                RunMission (Message : msg  /* enveloped run mission message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Running) {
+
+                  runIteration( msg ); // Invoke the internal event called
+                    // NextMessage from the location specified by the RunMission
+                    // message
+                }
+                ResumeMission (Message : msg  /* enveloped resume mission message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Running) {
+
+                  runIteration( msg ); // Invoke the internal event called
+                    // NextMessage from the point where the mission was paused
+                }
+                // Label Q
+                AbortMisssion (Message : msg  /* enveloped abort mission message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Init) {
+
+                  clearMission( msg ); // Clear the mission
+                  ReportMissionStatusToParent( 
+                    msg.src_id,
+                    ABORTED 
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                MissionCompleted()
+                  next(Receiving.Ready.Controlled.Available.Init) {
+
+                  clearMission(); // Clear the mission
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+              } // state Pending
+              state Paused  {
+
+                // Label E
+                RunMission (Message : msg  /* enveloped run mission message */,
+                  transportData : data  /* transport data */) 
+                  pop() {
+
+                  runIteratioin( msg ); // Invoke the internal event called
+                    // NextMessage from the location specified by the RunMission
+                    // message
+                }
+                ResumeMission (Message : msg  /* enveloped resume mission message */,
+                  transportData : data  /* transport data */) 
+                  pop() {
+
+                  runIteratioin( msg ); // Invoke the internal event called
+                    // NextMessage from the point where the mission was paused
+                }
+                // Label O
+                RemoveMessages (Message : msg  /* enveloped remove messages message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                InsertMessages (Message : msg  /* enveloped replace messages message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                RemoveMissionTask (Message : msg  /* enveloped remove mission task message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                InsertMissionTask (Message : msg  /* enveloped insert mission task message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                ReportMissionStatus (Message : msg  /* enveloped report mission status message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                accessControl.events.CommandEvent (Message : msg  /* enveloped command event message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                // Label R
+                AbortMisssion (Message : msg  /* enveloped abort mission message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.NotAvailable.Aborting) {
+
+                  sendAbortMission( msg ); // Send the AbortMission message to all
+                    // other mission spoolers to which a part of the mission was
+                    // spooled. This action will require this service to acquire
+                    // control of the other mission spoolers.
+                }
+                // Label Q
+                AbortMisssion (Message : msg  /* enveloped abort mission message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Init) {
+
+                  clearMission( msg ); // Clear the mission
+                  ReportMissionStatusToParent( 
+                    msg.src_id,
+                    ABORTED 
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                MissionCompleted()
+                  next(Receiving.Ready.Controlled.Available.Init) {
+
+                  clearMission(); // Clear the mission
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+              } // state Paused
+              state Running  {
+
+                // Label I
+                PauseMisssion (Message : msg  /* enveloped pause mission message */,
+                  transportData : data  /* transport data */) 
+                  push(Receiving.Ready.Controlled.NotAvailable.Pausing) {
+
+                  pauseCurrentMessageExecution(); // Pause the execution of the
+                    // message that is currently being executed by the mission
+                    // spooler with the intent of continueing its execution when
+                    // the mission execution is resumed
+                  sendPauseMission(); // Send the PauseMission message to all other
+                    // mission spoolers to which a part of the mission was
+                    // spooled. This action will require this service to acquire
+                    // control of the other mission spoolers
+                }
+                aceessCtrl.RequestControl (Message : msg  /* enveloped request control message */,
+                  transportData : data  /* transport data */) 
+                  push(Receiving.Ready.Controlled.NotAvailable.Pausing) {
+
+                  pauseCurrentMessageExecution(); // Pause the execution of the
+                    // message that is currently being executed by the mission
+                    // spooler with the intent of continueing its execution when
+                    // the mission execution is resumed
+                  setRequestControlPending( msg ); // Store the RequestControl until
+                    // the service has finished transitioning to the Paused state
+                  sendPauseMission(); // Send the PauseMission message to all other
+                    // mission spoolers to which a part of the mission was
+                    // spooled. This action will require this service to acquire
+                    // control of the other mission spoolers
+                }
+                aceessCtrl.ReleaseControl (Message : msg  /* enveloped release control message */,
+                  transportData : data  /* transport data */) 
+                  push(Receiving.Ready.Controlled.NotAvailable.Pausing) {
+
+                  pauseCurrentMessageExecution(); // Pause the execution of the
+                    // message that is currently being executed by the mission
+                    // spooler with the intent of continueing its execution when
+                    // the mission execution is resumed
+                  setReleaseControlPending( msg ); // Store the ReleaseControl until
+                    // the service has finished transitioning to the Paused state
+                  sendPauseMission(); // Send the PauseMission message to all other
+                    // mission spoolers to which a part of the mission was
+                    // spooled. This action will require this service to acquire
+                    // control of the other mission spoolers
+                }
+                // Label J
+                NextMessage()
+                  [ ! isEndOfMission() && ! isBlocking() && ! isSpoolerPresent() ] {
+
+                  accessControl.events.CreateCommandEvent( 
+                    msg.src_id
+                    ); // Add the encapsulated command message to the input message
+                    // queue of this service so that it can be received and
+                    // processed by the extensions of this service (derived
+                    // services)
+                  runIteration( 'NextMessage' ); // Invoke the NextMessage internal
+                    // event on the next message to be executed in the mission
+                }
+                NextMessage()
+                  [ ! isEndOfMission() && ! isBlocking() && isSpoolerPresent() ] {
+
+                  SpoolMission( 
+                    msg.src_id
+                    ); // Send a SpoolMission message with as much of the remaining
+                    // mission that can be delegated to the Mission spooler that
+                    // is present on the next message's destination subsystem,
+                    // node or component. This action will require this service
+                    // to acquire control of the other mission spoolers
+                  runIteration( 'NextMessage' ); // Invoke the NextMessage internal
+                    // event on the next message to be executed in the mission
+                }
+                accessControl.events.CommandEvent (Message : msg  /* enveloped command event message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                ReportMissionStatus (Message : msg  /* enveloped report mission status message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                RemoveMessages (Message : msg  /* enveloped remove messages message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                InsertMessages (Message : msg  /* enveloped replace messages message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                RemoveMissionTask (Message : msg  /* enveloped remove mission task message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                InsertMissionTask (Message : msg  /* enveloped insert mission task message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                // Label K
+                NextMessage()
+                  [ ! isEndOfMission() && isBlocking() && ! isSpoolerPresent() ]
+                  next(Receiving.Ready.Controlled.Available.Blocked) {
+
+                  accessControl.events.CreateCommandEvent( 
+                    msg.src_id
+                    ); // Update the mission with the information specified by the
+                    // received message and invoke the missionCompleted internal
+                    // event if it is found that the entire mission has been
+                    // executed to completion
+                }
+                NextMessage()
+                  [ ! isEndOfMission() && isBlocking() && isSpoolerPresent() ]
+                  next(Receiving.Ready.Controlled.Available.Blocked) {
+
+                  SpoolMission( 
+                    msg.src_id
+                    ); // Send a SpoolMission message with as much of the remaining
+                    // mission that can be delegated to the Mission spooler that
+                    // is present on the next message's destination subsystem,
+                    // node or component. This action will require this service
+                    // to acquire control of the other mission spoolers
+                }
+                // Label V
+                PauseMisssion (Message : msg  /* enveloped pause mission message */,
+                  transportData : data  /* transport data */) 
+                  push(Receiving.Ready.Controlled.Available.Paused) {
+
+                  pauseCurrentMessageExecution( msg ); // Pause the execution of the
+                    // message that is currently being executed by the mission
+                    // spooler with the intent of continueing its execution when
+                    // the mission execution is resumed
+                  ReportMissionStatusToParent( 
+                    msg.src_id,
+                    PAUSED 
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                aceessCtrl.RequestControl (Message : msg  /* enveloped request control message */,
+                  transportData : data  /* transport data */) 
+                  push(Receiving.Ready.Controlled.Available.Paused) {
+
+                  accessControl.RejectControlToController( 
+                    msg.src_id,
+                    CONTROL_RELEASED 
+                    ); // Send a RejectControlToController message to parent client
+                  accessControl.storeAddress(); // Store the address of the parent
+                    // client
+                  accessControl.setAuthority(); // Set Authority
+                  accessControl.resetTimer(); // Reset Timer
+                  accessControl.ConfirmControl( 
+                    msg.src_id,
+                    CONTROL_ACCEPTED 
+                    ); // Send a ConfirmControl message to parent client
+                }
+                // Label X
+                MissionCompleted()
+                  next(Receiving.Ready.Controlled.Available.Init) {
+
+                  clearMission(); // Clear the mission
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+              } // state Running
+              state Blocked  {
+
+                // Label I
+                PauseMisssion (Message : msg  /* enveloped pause mission message */,
+                  transportData : data  /* transport data */) 
+                  push(Receiving.Ready.Controlled.NotAvailable.Pausing) {
+
+                  pauseCurrentMessageExecution( msg ); // Pause the execution of the
+                    // message that is currently being executed by the mission
+                    // spooler with the intent of continueing its execution when
+                    // the mission execution is resumed
+                  sendPauseMission(
+                       'PauseMission',
+                       msg.src_id ); // Send the PauseMission message to all other
+                    // mission spoolers to which a part of the mission was
+                    // spooled. This action will require this service to acquire
+                    // control of the other mission spoolers
+                }
+                aceessCtrl.RequestControl (Message : msg  /* enveloped request control message */,
+                  transportData : data  /* transport data */) 
+                  push(Receiving.Ready.Controlled.NotAvailable.Pausing) {
+
+                  setRequestControlPending( msg ); // Store the RequestControl until
+                    // the service has finished transitioning to the Paused state
+                }
+                // Label M
+                accessControl.events.CommandEvent (Message : msg  /* enveloped command event message */,
+                  transportData : data  /* transport data */)  {
+
+                }
+                ReportMissionStatus (Message : msg  /* enveloped report mission status message */,
+                  transportData : data  /* transport data */)  {
+
+                }
+                RemoveMessages (Message : msg  /* enveloped remove messages message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                InsertMessages (Message : msg  /* enveloped replace messages message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                RemoveMissionTask (Message : msg  /* enveloped remove mission task message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                InsertMissionTask (Message : msg  /* enveloped insert mission task message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                // Label N
+                accessControl.events.CommandEvent (Message : msg  /* enveloped command event message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Running) {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                  runIteration( 'NextMessage' ); // Invoke the NextMessage internal
+                    // event on the next message to be executed in the mission
+                }
+                ReportMissionStatus (Message : msg  /* enveloped report mission status message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Running) {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                  runIteration( 'NextMessage' ); // Invoke the NextMessage internal
+                    // event on the next message to be executed in the mission
+                }
+                // Label V
+                PauseMisssion (Message : msg  /* enveloped pause mission message */,
+                  transportData : data  /* transport data */) 
+                  push(Receiving.Ready.Controlled.Available.Paused) {
+
+                  pauseCurrentMessageExecution( msg ); // Pause the execution of the
+                    // message that is currently being executed by the mission
+                    // spooler with the intent of continueing its execution when
+                    // the mission execution is resumed
+                  ReportMissionStatusToParent( 
+                    msg.src_id,
+                    PAUSED 
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                aceessCtrl.RequestControl (Message : msg  /* enveloped request control message */,
+                  transportData : data  /* transport data */) 
+                  push(Receiving.Ready.Controlled.Available.Paused) {
+
+                  accessControl.RejectControlToController( 
+                    msg.src_id,
+                    CONTROL_RELEASED 
+                    ); // Send a RejectControlToController message to parent client
+                  accessControl.storeAddress(); // Store the address of the parent
+                    // client
+                  accessControl.setAuthority(); // Set Authority
+                  accessControl.resetTimer(); // Reset Timer
+                  accessControl.ConfirmControl( 
+                    msg.src_id,
+                    CONTROL_ACCEPTED 
+                    ); // Send a ConfirmControl message to parent client
+                }
+              } // state Blocked
+              state Default  {
+
+                // Label P
+                QuerySpoolingPreferences (Message : msg  /* enveloped query spooling preferences message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportSpoolingPreferences( 
+                    msg.src_id
+                    ); // Send a report spooling preferences message
+                }
+                QueryMissionStatus (Message : msg  /* enveloped query mission status message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportMissionStatus( 
+                    msg.src_id
+                    ); // Send a report mission status message
+                }
+                QueryStoredMissions (Message : msg  /* enveloped query stored missions message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportStoredMissions( 
+                    msg.src_id
+                    ); // Send a report stored missions message
+                }
+                QueryMissionPlan (Message : msg  /* enveloped query mission plan message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportMissionPlan( 
+                    msg.src_id
+                    ); // Send a report stored missions message
+                }
+              } // state Default
+            } // initial state Available
+            state NotAvailable  {
+                   // redefine state in order to extend
+              state Aborting  {
+
+                // Label Y
+                entry {
+
+                  SetTimer();                }
+                // Label C
+                ReportMissionStatus (Message : msg  /* enveloped report mission status message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Init) {
+
+                  clearMission(); // Clear the mission
+                  ReportMissionStatusToParent( 
+                    msg.src_id,
+                    ABORTED 
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                // Label T
+                ReportMissionStatus (Message : msg  /* enveloped report mission status message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                Timeout()
+                  [ ! isAbortComplete() ] {
+
+                  sendAbortMission( msg ); // Send the AbortMission message to all
+                    // other mission spoolers to which a part of the mission was
+                    // spooled. This action will require this service to acquire
+                    // control of the other mission spoolers.
+                }
+              } // state Aborting
+              initial state Pausing  {
+
+                // Label Y
+                entry {
+
+                  SetTimer();                }
+                // Label U
+                ReportMissionStatus (Message : msg  /* enveloped report mission status message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                }
+                accessControl.events.CommandEvent (Message : msg  /* enveloped command event message */,
+                  transportData : data  /* transport data */)  {
+
+                  updateMission( msg ); // Update the mission with the information
+                    // specified by the received message and invoke the
+                    // missionCompleted internal event if it is found that the
+                    // entire mission has been executed to completion
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                Timeout()
+                  [ ! isPauseComplete() ] {
+
+                  sendAbortMission( msg ); // Send the AbortMission message to all
+                    // other mission spoolers to which a part of the mission was
+                    // spooled. This action will require this service to acquire
+                    // control of the other mission spoolers.
+                }
+                // Label S
+                ReportMissionStatus (Message : msg  /* enveloped report mission status message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Paused) {
+
+                  ReportMissionStatusToParent( 
+                    msg.src_id,
+                    PAUSED 
+                    ); // Send a ReportMissionStatus message to parent client
+                  accessControl.RejectControlToController( 
+                    msg.src_id,
+                    CONTROL_RELEASED 
+                    ); // Send a RejectControlToController message to parent client
+                  accessControl.storeAddress(); // Store the address of the parent
+                    // client
+                  accessControl.setAuthority(); // Set Authority
+                  accessControl.resetTimer(); // Reset Timer
+                  accessControl.ConfirmControl( 
+                    msg.src_id,
+                    CONTROL_ACCEPTED 
+                    ); // Send a ConfirmControl message to parent client
+                  releaseRequestControlPending(); // Clear the RequestControl
+                    // request that was stored as a result of the action
+                    // setRequestControlPending
+                }
+                ReportMissionStatus (Message : msg  /* enveloped report mission status message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Paused) {
+
+                  ReportMissionStatusToParent( 
+                    msg.src_id,
+                    PAUSED 
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                // Label Z
+                ReportMissionStatus (Message : msg  /* enveloped report mission status message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.NotControlled.Available) {
+
+                  ReportMissionStatusToParent( 
+                    msg.src_id,
+                    PAUSED 
+                    ); // Send a ReportMissionStatus message to parent client
+                  accessControl.RejectControlToController( 
+                    msg.src_id,
+                    CONTROL_RELEASED 
+                    ); // Send a RejectControlToController message to parent client
+                  releaseReleaseControlPending(); // Clear the ReleaseControl
+                    // request that was stored as a result of the action
+                    // setReleaseControlPending
+                }
+              } // initial state Pausing
+              state Default  {
+
+                // Label F
+                AbortMisssion (Message : msg  /* enveloped abort mission message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.NotAvailable.Aborting) {
+
+                  sendAbortMission( msg ); // Send the AbortMission message to all
+                    // other mission spoolers to which a part of the mission was
+                    // spooled. This action will require this service to acquire
+                    // control of the other mission spoolers.
+                }
+                // Label G
+                AbortMisssion (Message : msg  /* enveloped abort mission message */,
+                  transportData : data  /* transport data */) 
+                  next(Receiving.Ready.Controlled.Available.Init) {
+
+                  clearMission(); // Clear the mission
+                  ReportMissionStatusToParent( 
+                    msg.src_id,
+                    ABORTED 
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                MissionCompleted()
+                  next(Receiving.Ready.Controlled.Available.Init) {
+
+                  clearMission(); // Clear the mission
+                  ReportMissionStatusToParent( 
+                    msg.src_id
+                    ); // Send a ReportMissionStatus message to parent client
+                }
+                // Label P
+                QuerySpoolingPreferences (Message : msg  /* enveloped query spooling preferences message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportSpoolingPreferences( 
+                    msg.src_id
+                    ); // Send a report spooling preferences message
+                }
+                QueryMissionStatus (Message : msg  /* enveloped query mission status message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportMissionStatus( 
+                    msg.src_id
+                    ); // Send a report mission status message
+                }
+                QueryStoredMissions (Message : msg  /* enveloped query stored missions message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportStoredMissions( 
+                    msg.src_id
+                    ); // Send a report stored missions message
+                }
+                QueryMissionPlan (Message : msg  /* enveloped query mission plan message */,
+                  transportData : data  /* transport data */)  {
+
+                  ReportMissionPlan( 
+                    msg.src_id
+                    ); // Send a report stored missions message
+                }
+              } // state Default
+            } // state NotAvailable
+          } // state Controlled
+        } // initial state Ready
+      } // state Receiving
+    } // state_machine accessControl.events.transport.ReceiveFSM 
+  }
+}// service MissionSpooler

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_set name="SS_InputSet" id="ImportTest:SS_DeclaredConstSetRef" version="1.0" xmlns="urn:jaus:jsidl_plus:0.11" >
+  <description xml:space="preserve"> 
+    This service set is part of the ImportTests. This set includes a ConstantSet reference.
+  </description>
+
+  <declared_const_set name="MySSConstants">
+    <declared_const_set_ref name="ConstantSet1" id="ImportTest:ConstantSet1" version="1.0" />
+  </declared_const_set>
+</service_set>

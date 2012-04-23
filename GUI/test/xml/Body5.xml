@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="TestSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">The set of services to be tested</description>
+  <service_def name="VariableLengthField1" id="urn:org.jts.test:VariableLengthField1" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+  	<description/>
+  	<assumptions/>
+  	<message_set>
+  		<input_set>
+  			<message_def name="MsgIn" is_command="true" message_id="0001">
+  				<description xml:space="default"/>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+  				<body name="Body5">
+  					<record name="Record5" optional="false">
+  						<variable_length_field name="VariableLengthField1" field_format="MJPEG" optional="false" interpretation="An 'unbounded' variable length field for MJPEG">
+  							<count_field field_type_unsigned="unsigned integer"/>
+  						</variable_length_field>
+  						<fixed_field name="Field1" field_type="byte" field_units="one" optional="false" interpretation="just a byte field"/>
+  						<fixed_field name="Field2" field_type="integer" field_units="meter" optional="false" interpretation="just an integer field"/>
+  						<fixed_field name="Field3" field_type="float" field_units="meter per second" optional="false" interpretation="just a float field"/>
+  						<fixed_field name="Field4" field_type="unsigned byte" field_units="meter per second               squared" optional="false" interpretation="just an unsigned byte field"/>
+  					</record>
+  				</body>
+  				<footer name="EmptyFooter"/>
+  			</message_def>
+  		</input_set>
+  		<output_set/>
+  	</message_set>
+  	<internal_events_set/>
+  	<protocol_behavior>
+  		<start state_machine_name="stateMachine" state_name="Ready"/>
+  		<state_machine name="stateMachine">
+  			<state name="Ready"/>
+  		</state_machine>
+  	</protocol_behavior>
+  </service_def>
+</ns1:service_set>

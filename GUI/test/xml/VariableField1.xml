@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="VariableField1" id="urn:org.jts.test:VariableField1" version="1.0"
+  xmlns="urn:jaus:jsidl:1.0">
+  <description/>
+  <assumptions/>
+  <message_set>
+    <input_set>
+      <message_def name="Message" is_command="true" message_id="0001">
+        <description xml:space="default"/>
+        <header name="EmptyHeader"/>
+        <body name="Body">
+          <record name="Record" optional="false">
+            <variable_field name="VariableField1" optional="false" interpretation="A variable field
+              of two types of type and units with value ranges for each type and units set">
+			  <type_and_units_field>
+				  <type_and_units_enum field_type="integer" field_units="degree" index="0">
+					<value_set offset_to_lower_limit="false">
+					  <value_range lower_limit="-273" lower_limit_type="inclusive" upper_limit="3000"
+						upper_limit_type="inclusive"/>
+					</value_set>
+				  </type_and_units_enum>
+				  <type_and_units_enum field_type="unsigned short integer" field_units="kelvin"
+					index="1">
+					<value_set offset_to_lower_limit="false">
+					  <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="4000"
+						upper_limit_type="inclusive"/>
+					</value_set>
+				  </type_and_units_enum>
+			  </type_and_units_field>
+            </variable_field>
+          </record>
+        </body>
+        <footer name="EmptyFooter"/>
+      </message_def>
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="Ready"/>
+    <state_machine name="FSM">
+      <state name="Ready"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

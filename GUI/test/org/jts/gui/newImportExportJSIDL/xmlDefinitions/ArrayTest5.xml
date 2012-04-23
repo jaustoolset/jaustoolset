@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<array xmlns="urn:jaus:jsidl:1.0" name="ArrayTest5" optional="false" >
+	++++VariableLengthStringTest1.xml++++
+	++++DimensionTest1.xml++++
+</array>

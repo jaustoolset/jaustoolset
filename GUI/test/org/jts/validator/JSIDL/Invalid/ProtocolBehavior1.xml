@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol_behavior is_stateless="false" xmlns="urn:jaus:jsidl:1.0">
+
+	<start state_machine_name="FSM_A" state_name="Init"/>
+	<start state_machine_name="FSM_B" state_name="Init"/>
+
+</protocol_behavior>

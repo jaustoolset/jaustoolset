@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest4" version="1.0">
+  <description>test for an exit action getting prepended to transition actions in the state with the exit</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMExitTest2" state_name="parent"/>
+    <state_machine name="FSMExitTest2">
+     <state name="parent" initial_state="B">
+      <state name="A">
+ 			<exit>
+ 				<send_action name="ExitAction">	
+ 				</send_action>
+ 			</exit>
+ 			<transition name = "T1">
+			<simple>
+				<end_state state="parent.B" />
+			</simple>
+			<action name="TransitionAction">
+			</action>
+			</transition>
+      </state>
+      <state name="B">
+		<transition name = "T2">
+			<simple>
+				<end_state state="parent.A" />
+			</simple>
+		</transition>
+      </state>
+     </state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

@@ -1,0 +1,34 @@
+  types Types {
+    record SkidSteerPlatformSpecificationsRec {
+      required int16 LeftTrackMaxVelocity one [-100, 100] = 1;
+      required int16 RightTrackMaxVelocity one [-100, 100] = 1;
+    }
+// #include include_test_1_1_1.jaus
+    variant PlatformSpecificSpecification {
+      uint8 vtag[1,2];
+      vtag 1: SkidSteerPlatformSpecificationsRec skidsteer;
+      vtag 2: AckermanPlatformSpecificationsRec ackerman;
+    }
+
+    record PlatformSpecificationsRec {
+      required string MobilityPlatformName[15] = 1;
+      optional uint16 Front one = 3;
+      optional uint16 Back one = 4;
+      optional uint16 Right one = 5;
+      optional uint16 Left one = 6;
+      optional uint16 Bottom one = 7;
+      optional uint16 Top one = 8;
+      optional uint16 Xcg one = 10;
+      optional uint16 Ycg one = 11;
+      optional uint16 Zcg one = 12;
+      optional uint16 WheelBase one = 13;
+      optional uint16 StaticPitchOver one = 14;
+      optional uint16 StaticRollOver one = 15;
+    }
+
+    sequence PlatformSpecificationsSeq {
+      required PlatformSpecificSpecification platformSpecifics = 1;
+      required PlatformSpecificationsRec platformSpec = 2;
+    }
+      
+  }

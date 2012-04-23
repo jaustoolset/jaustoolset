@@ -1,0 +1,6 @@
+VariantDir('Build', '.', duplicate=0)
+sources = []
+Import('env')
+lib = env.SharedLibrary('./lib/AccessControlService', sources, LIBS=['Common'])
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list name="List3" interpretation="A list in a list may not be optional" optional="true" xmlns="urn:jaus:jsidl:1.0">
+	<count_field field_type_unsigned="unsigned byte"/>
+	<list name="List2" interpretation="A record in a list may not be optional" optional="false" xmlns="urn:jaus:jsidl:1.0">
+		<count_field field_type_unsigned="unsigned byte"/>
+		<record name="subsystem_rec" interpretation="name,id pair" optional="false">
+			<fixed_field name="subsystem_id" field_type="unsigned byte" field_units="one" optional="false"/>
+		</record>
+	</list>
+</list>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_set xmlns="urn:jaus:jsidl_plus:0.11" name="SS_DeclaredTypesRecursive" id="ImportTest:SS_DeclaredTypesRecursive" version="1.0">
+  <description xml:space="preserve"> 
+    This service set is part of the ImportTests.
+
+    This service set is designed to test the ability of the system to properly parse a 
+    declared_type_set which contains a recursive reference to other declared_type_set_references. 
+  </description>
+
+  <declared_type_set name="declared_types">
+    <declared_type_set_ref name="DeclaredTypesTest_1" id="ImportTest:DeclaredTypesTest_1" version="1.0" /> 
+    <declared_type_set_ref name="DeclaredTypesTest_2" id="ImportTest:DeclaredTypesTest_2" version="1.0" />
+    
+    <record name="DeclaredRec" optional="false">
+      <declared_fixed_field name="MyFixedField" declared_type_ref="DeclaredTypesTest_2.DeclaredFixedField" optional="true"/>
+    </record>
+
+    <declared_list name="MyList" declared_type_ref="DeclaredTypesTest_1.DeclaredList" optional="true"/>  
+
+    <declared_variant name="MyOneVariant" declared_type_ref="DeclaredTypesTest_1.MyVariant"/>
+    
+    <declared_variant name="MyOtherVariant" declared_type_ref="DeclaredTypesTest_1.DeclaredTypesTest_3.DeclaredVariant"/>
+
+  </declared_type_set>
+
+</service_set>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_Footer" id="ImportTest:SD_Footer" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a footer entity with all levels of multiplicity and options.
+    The first message defines a footer with no optional parameters.
+    The second message defines a footer with an interpretation.
+    The third message defines a footer with a record entity.
+    The fourth message defines a footer with a list entity.
+    The fifth message defines a footer with a variant entity.
+    The sixth message defines a footer with a sequence entity.
+  </description>
+
+  <!-- 
+    element footer 
+    { 
+      attribute name { identifier },
+      attribute interpretation { text }?,
+      ( record | declared_record | 
+      \list | declared_list | 
+      variant | declared_variant | 
+      sequence | declared_sequence )?
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- Name only -->
+      <message_def name="Footer1" message_id="00C1" is_command="false">
+        <description>A message to test the footer element. Only footer name.</description>
+        <header name="Footer1"/>
+        <body name="Footer1"/>
+        <footer name="Footer1"/>
+      </message_def>
+
+      <!-- Name & Interpretation -->
+      <message_def name="Footer2" message_id="00C2" is_command="false">
+        <description>A message to test the footer element. Footer name and interpretation.</description>
+        <header name="Footer2"/>
+        <body name="Footer2"/>
+        <footer name="Footer2" interpretation="A footer interpretation"/>
+      </message_def>
+
+      <!-- Name & Record -->
+      <message_def name="Footer3" message_id="00C3" is_command="false">
+        <description>A message to test the footer element. Footer name and record entity.</description>
+        <header name="Footer3"/>
+        <body name="Footer3"/>
+        <footer name="Footer3" interpretation="A footer interpretation">
+          <record name="Footer3Rec" optional="false">
+            <fixed_field name="FixedField" field_type="byte" field_units="one" 
+              optional="false" interpretation="A simple fixed field to create a valid record."/>
+          </record>
+        </footer>
+      </message_def>
+
+      <!-- Name & List -->
+      <message_def name="Footer4" message_id="00C4" is_command="false">
+        <description>A message to test the footer element. Footer name and list entity.</description>
+        <header name="Footer4"/>
+        <body name="Footer4"/>
+        <footer name="Footer4">
+          <list name="Footer4_SimpleList" optional="false">
+            <count_field field_type_unsigned="unsigned byte"/>
+            <record name="Footer2Rec" optional="false">
+              <fixed_field name="FixedField" field_type="byte" field_units="one" 
+                optional="false" interpretation="A simple fixed field to create a valid record."/>
+            </record>
+          </list>
+        </footer>
+      </message_def>
+
+      <!-- Name & Variant -->
+      <message_def name="Footer5" message_id="00C5" is_command="false">
+        <description>A message to test the footer element. Footer name and variant entity.</description>
+        <header name="Footer5"/>
+        <body name="Footer5"/>
+        <footer name="Footer5">
+          <variant name="shape" optional="false">
+            <vtag_field field_type_unsigned="unsigned byte" min_count="0" max_count="2"/>
+            <record name="rectangle" optional="false">
+              <fixed_field name="length" field_type="byte" field_units="one" optional="false"/>
+              <fixed_field name="height" field_type="byte" field_units="one" optional="false"/>
+            </record>
+            <record name="square" optional="false">
+              <fixed_field name="side" field_type="byte" field_units="one" optional="false"/>
+            </record>
+            <record name="circle" optional="false">
+              <fixed_field name="radius" field_type="byte" field_units="one" optional="false"/>
+            </record>
+          </variant>
+        </footer>
+      </message_def>
+      
+      <!-- Name & List -->
+      <message_def name="Footer6" message_id="00C6" is_command="false">
+        <description>A message to test the footer element. Footer name and sequence entity.</description>
+        <header name="Footer6"/>
+        <body name="Footer6"/>
+        <footer name="Footer6">
+          <sequence name="GlobalPose" optional="false">
+            <list name="Position" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="PositionRec" optional="false">
+                <fixed_field name="LatitudeDegrees" field_type="float" field_units="degree" optional="false"/>
+              </record>
+            </list>
+            <list name="Orientation" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="OrientationRec" optional="false">
+                <fixed_field name="YawDegrees" field_type="float" field_units="degree" optional="false"/>
+              </record>
+            </list>
+          </sequence>
+        </footer>
+      </message_def>
+
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_Footer" state_name="init"/>
+    <state_machine name="SD_Footer">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

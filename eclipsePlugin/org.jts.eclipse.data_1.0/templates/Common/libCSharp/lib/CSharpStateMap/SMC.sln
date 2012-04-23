@@ -1,0 +1,25 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMC", "SMC.csproj", "{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		DebugNoTrace|Any CPU = DebugNoTrace|Any CPU
+		Release|Any CPU = Release|Any CPU
+		ReleaseNoTrace|Any CPU = ReleaseNoTrace|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.DebugNoTrace|Any CPU.ActiveCfg = DebugNoTrace|Any CPU
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.DebugNoTrace|Any CPU.Build.0 = DebugNoTrace|Any CPU
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.ReleaseNoTrace|Any CPU.ActiveCfg = ReleaseNoTrace|Any CPU
+		{FEEC0290-D600-4DD3-8E0C-EE6DC1EE9A79}.ReleaseNoTrace|Any CPU.Build.0 = ReleaseNoTrace|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_Push" id="ImportTest:SD_Push" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the push element with all levels of multiplicity.
+
+    The 1st push element has no optional elements.
+    The 2nd push element has all optional elements.
+    
+    Note: This file also provides full coverage of the end_state element.
+  </description>
+
+  <!-- 
+    element push 
+    {
+      attribute interpretation { text }?,
+      end_state, 
+      simple?
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_Push" state_name="Push1"/>
+    <state_machine name="SD_Push">
+
+      <!-- The 1st simple element has no optional elements -->
+      <state name="Push1">
+        <transition name="Push1">
+          <push>
+            <end_state state="Push2"/>
+          </push>
+        </transition>
+      </state>
+
+      <!-- The 2nd push element has all optional elements -->
+      <state name="Push2">
+        <transition name="Push1">
+          <push interpretation="A Push transition interpretation">
+            <end_state state="Push1" interpretation="An end_state interpretation"/>
+            <simple/>
+          </push>
+        </transition>
+      </state>
+      
+    </state_machine>
+  </protocol_behavior>
+</service_def>

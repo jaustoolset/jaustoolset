@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" xmlns:version_1_1="urn:jaus:jsidl:1.1" xmlns:plus="urn:jaus:jsidl:plus" name="Loopback2" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:1.0">
+	<description xml:space="preserve">A simple state machine for protocol testing</description>
+	<service_def name="LoopbackDef" id="urn:DeVivo:jaus_services:LoopbackDef" version="1.0">
+		<description>This service is used for JTS protocol testing.</description>
+		<assumptions>Messages may be delayed, lost or reordered.</assumptions>
+		<message_set>
+			<input_set>
+				<message_def name="FromStandbyToReadyMsg" message_id="0001" is_command="true">
+					<description xml:space="preserve">This message is used to cause the state machine to transistion from the Standby to the Ready state.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="FromReadyToReadySimpleMsg" message_id="0002" is_command="true">
+					<description xml:space="preserve">This message is used to cause the state machine to transistion from the default to the Standby state.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+				<message_def name="FromReadyToReadyInternalMsg" message_id="0003" is_command="true">
+					<description xml:space="preserve">This message is used to cause the state machine to transistion from the Ready to the Error state.</description>
+					<header name="JAUSApplicationLayerHeader">
+						<record name="HeaderRec" optional="false">
+							<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+						</record>
+					</header>
+					<body name="Body"/>
+					<footer name="Footer"/>
+				</message_def>
+			</input_set>
+      <output_set/>
+    </message_set>
+		<internal_events_set/>
+		<protocol_behavior is_stateless="false">
+			<start state_machine_name="LoopbackStateMachn" state_name="SsmStandbyState"/>
+			<state_machine name="LoopbackStateMachn">
+				<state name="SsmStandbyState" interpretation="The Standby State">
+					<transition name="FromStandbyToReadyMsg">
+            <simple>
+              <end_state state="SsmReadyState"/>
+            </simple>											
+						<action name="FromStandbyToReady" interpretation="Indicate transition to CPPUnit test">
+						</action>
+					</transition>
+				</state>
+				<state name="SsmReadyState" interpretation="The Ready State">
+          <entry>
+            <action name="EnteredReadyState"/>
+          </entry>
+          <exit>
+            <action name="ExitedReadyState"/>
+          </exit>								
+					<transition name="FromReadyToReadySimpleMsg">
+            <simple/>
+						<action name="FromReadyToReadySimpleAction" interpretation="Indicate transistion to CPPUnit test">
+						</action>
+					</transition>
+					<transition name="FromReadyToReadyInternalMsg">
+            <version_1_1:internal/>
+						<action name="FromReadyToReadyInternalAction" interpretation="Indicate transistion to CPPUnit test">
+						</action>
+					</transition>
+				</state>
+			</state_machine>
+		</protocol_behavior>
+  </service_def>
+</ns1:service_set>

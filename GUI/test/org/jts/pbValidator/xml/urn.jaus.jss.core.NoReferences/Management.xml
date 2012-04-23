@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="Management" id="urn:jaus:jss:core:Management" version="1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The Management Service provides a state machine for component life-cycle management to help clients understand how the component will react to commands and queries.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="Shutdown" message_id="0002" is_command="true">
+                <description xml:space="preserve">This message is used to cause the receiving component to free all of the resources allocated to its process by the system and then to shutdown.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="Standby" message_id="0003" is_command="true">
+                <description xml:space="preserve">This message is used to transition the receiving component to the standby state.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="Resume" message_id="0004" is_command="true">
+                <description xml:space="preserve">This message is used to transition the receiving component to the ready state.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="Reset" message_id="0005" is_command="true">
+                <description xml:space="preserve">This message is used to cause the receiving component to reinitialize.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetEmergency" message_id="0006" is_command="true">
+                <description xml:space="preserve">This message is used to alert the component to a safety critical situation. The component that sends the emergency command shall set the message priority to the safety critical priority range as defined by the Transport. Receive of the emergency command shall result in the component transitioning into the emergency state.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="SetEmergencyRec" optional="false">
+                        <fixed_field name="EmergencyCode" optional="false" field_units="one" field_type="unsigned short integer">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="1" enum_const="STOP"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ClearEmergency" message_id="0007" is_command="true">
+                <description xml:space="preserve">This message shall notify the receiving component that the current emergency condition is to be reset and that the component shall transition back to the Ready or Standby state, provided that all emergency conditions have been cleared. JAUS currently defines only one emergency condition, the "Stop" condition.  Future versions of this document could define other emergency conditions.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ClearEmergencyRec" optional="false">
+                        <fixed_field name="EmergencyCode" optional="false" field_units="one" field_type="unsigned short integer">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="1" enum_const="STOP"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryStatus" message_id="2002" is_command="false">
+                <description xml:space="preserve">This message is used by clients of this service to query the state of this service.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportStatus" message_id="4002" is_command="false">
+                <description xml:space="preserve">This message is used to report the current status of the sender of the message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportStatusRec" optional="false">
+                        <fixed_field name="Status" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="5" enum_const="EMERGENCY"/>
+                                <value_enum enum_index="0" enum_const="INITIALIZE"/>
+                                <value_enum enum_index="1" enum_const="READY"/>
+                                <value_enum enum_index="2" enum_const="STANDBY"/>
+                                <value_enum enum_index="3" enum_const="SHUTDOWN"/>
+                                <value_enum enum_index="4" enum_const="FAILURE"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Reserved" optional="false" field_units="one" field_type="unsigned integer"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set>
+        <event_def name="Initialized">
+            <description xml:space="preserve">An internally generated event that marks the completion of the initialization cycle.</description>
+            <header name="Header"/>
+            <body name="Body"/>
+            <footer name="Footer"/>
+        </event_def>
+        <event_def name="Failure">
+            <description xml:space="preserve">An internally generated event that marks forces the component to a failure state.</description>
+            <header name="Header"/>
+            <body name="Body"/>
+            <footer name="Footer"/>
+        </event_def>
+    </internal_events_set>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="Management.AccessControl.Events.Transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled.StateA.Init"/>
+        <start state_machine_name="Management.AccessControl.Events.Transport.SendFSM" state_name="Sending"/>
+        <state_machine name="Management.AccessControl.Events.Transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="StateA">
+                        <state name="StateA" initial_state="Init">
+                            <state name="Standby">
+                                <ns3:mxCell id="32" parent="31" style="state;" value="Standby; 
+ " vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="110.0" y="220.0" width="80.0" height="80.0"/>
+                                </ns3:mxCell>
+                            </state>
+                            <state name="Init">
+                                <entry>
+                                    <action name="initialize"/>
+                                </entry>
+                                <transition name="Initialized">
+                                    <simple>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Standby"/>
+                                    </simple>
+                                    <ns3:mxCell id="55" parent="31" source="33" target="32" style="simpleTransition;" value="Initialized /  ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <ns3:mxCell id="33" parent="31" style="state;" value="Init; 
+ entry: initialize(  ); 
+" vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="110.0" y="330.0" width="80.0" height="80.0"/>
+                                </ns3:mxCell>
+                            </state>
+                            <state name="Failure">
+                                <ns3:mxCell id="34" parent="31" style="state;" value="Failure; 
+ " vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="110.0" y="440.0" width="80.0" height="80.0"/>
+                                </ns3:mxCell>
+                            </state>
+                            <state name="Shutdown">
+                                <ns3:mxCell id="35" parent="31" style="state;" value="Shutdown; 
+ " vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="110.0" y="550.0" width="80.0" height="80.0"/>
+                                </ns3:mxCell>
+                            </state>
+                            <state name="Emergency">
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="ClearEmergency" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <guard condition=" isIDStored( transportData ) "/>
+                                    <pop/>
+                                    <action name="DeleteID">
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="56" parent="31" source="36" style="popTransition;" value="accessControl.events.transport.Receive( ClearEmergency msg, Receive.Body.ReceiveRec transportData )[ isIDStored( transportData ) ] / DeleteID( transportData  )" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry">
+                                            <ns3:mxPoint as="sourcePoint" x="40.0" y="0.0"/>
+                                            <ns3:mxPoint as="targetPoint" x="80.0" y="0.0"/>
+                                            <ns3:mxPoint as="offset" x="0.0" y="10.0"/>
+                                        </ns3:mxGeometry>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="SetAuthority" value="msg"/>
+                                    <ns2:internal/>
+                                    <ns3:mxCell id="57" parent="31" source="36" target="36" style="internalTransition;" value="accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / accessControl.events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.Timeout">
+                                    <ns2:internal/>
+                                    <ns3:mxCell id="57" parent="31" source="36" target="36" style="internalTransition;" value="accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / accessControl.events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="Failure">
+                                    <ns2:internal/>
+                                    <ns3:mxCell id="57" parent="31" source="36" target="36" style="internalTransition;" value="accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / accessControl.events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Shutdown" value="msg"/>
+                                    <ns2:internal/>
+                                    <ns3:mxCell id="57" parent="31" source="36" target="36" style="internalTransition;" value="accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / accessControl.events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Reset" value="msg"/>
+                                    <ns2:internal/>
+                                    <ns3:mxCell id="57" parent="31" source="36" target="36" style="internalTransition;" value="accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / accessControl.events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="RequestControl" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <ns2:internal/>
+                                    <action name="accessControl.events.transport.Send">
+                                        <argument value="'ConfirmControl'"/>
+                                        <argument value="'NOT_AVAILABLE'"/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="57" parent="31" source="36" target="36" style="internalTransition;" value="accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / accessControl.events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <ns3:mxCell id="36" parent="31" style="state;" value="Emergency; 
+ " vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="110.0" y="660.0" width="80.0" height="80.0"/>
+                                </ns3:mxCell>
+                            </state>
+                            <default_state>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="QueryStatus" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <ns2:internal/>
+                                    <action name="accessControl.events.transport.Send">
+                                        <argument value="'ReportStatus'"/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="63" parent="31" source="37" target="37" style="internalTransition;" value="accessControl.events.transport.Receive( QueryStatus msg, Receive.Body.ReceiveRec transportData ) / accessControl.events.transport.Send(  'ReportStatus'  , transportData  ) ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="SetEmergency" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <push>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Emergency"/>
+                                    </push>
+                                    <action name="StoreID">
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="64" parent="31" source="37" target="36" style="pushTransition;" value="accessControl.events.transport.Receive( SetEmergency msg, Receive.Body.ReceiveRec transportData ) / StoreID( transportData  ) ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="Failure">
+                                    <simple>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Failure"/>
+                                    </simple>
+                                    <ns3:mxCell id="65" parent="31" source="37" target="34" style="simpleTransition;" value="Failure /  ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <ns3:mxCell id="37" parent="31" style="defaultState;" value="default_state" vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="100.0" width="80.0" height="80.0"/>
+                                </ns3:mxCell>
+                            </default_state>
+                            <pseudo_start_state>
+                                <state>
+                                    <ns3:mxCell id="38" parent="31" style="pseudoStartState;" value="" vertex="1">
+                                        <ns3:mxGeometry as="geometry" x="70.0" y="290.0" width="20.0" height="20.0"/>
+                                    </ns3:mxCell>
+                                </state>
+                                <transition>
+                                    <ns3:mxCell id="39" parent="31" source="38" target="33" style="simpleTransition;" value="" edge="1">
+                                        <ns3:mxGeometry as="geometry" x="70.0" y="290.0" width="20.0" height="20.0"/>
+                                    </ns3:mxCell>
+                                </transition>
+                            </pseudo_start_state>
+                            <ns3:mxCell id="31" parent="27" style="state;" value="StateA; 
+ " vertex="1">
+                                <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                            </ns3:mxCell>
+                        </state>
+                        <pseudo_start_state>
+                            <state>
+                                <ns3:mxCell id="40" parent="27" style="pseudoStartState;" value="" vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                                </ns3:mxCell>
+                            </state>
+                            <transition>
+                                <ns3:mxCell id="41" parent="27" source="40" target="31" style="simpleTransition;" value="" edge="1">
+                                    <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                                </ns3:mxCell>
+                            </transition>
+                        </pseudo_start_state>
+                        <ns3:mxCell id="27" parent="14" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="NotControlled; 
+" vertex="1">
+                            <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                        </ns3:mxCell>
+                    </state>
+                    <state name="Controlled" initial_state="StateB">
+                        <state name="StateB" initial_state="Standby">
+                            <state name="Standby">
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Resume" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <guard condition=" isControllingClient( transportData ) "/>
+                                    <simple>
+                                        <end_state state="Receiving.Ready.Controlled.StateB.Ready"/>
+                                    </simple>
+                                    <ns3:mxCell id="66" parent="42" source="43" target="44" style="simpleTransition;" value="accessControl.events.transport.Receive( Resume msg, Receive.Body.ReceiveRec transportData )[ isControllingClient( transportData ) ] /  ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <ns3:mxCell id="43" parent="42" style="state;" value="Standby; 
+ " vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="110.0" y="220.0" width="80.0" height="80.0"/>
+                                </ns3:mxCell>
+                            </state>
+                            <state name="Ready">
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Standby" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <guard condition=" isControllingClient( transportData ) "/>
+                                    <simple>
+                                        <end_state state="Receiving.Ready.Controlled.StateB.Standby"/>
+                                    </simple>
+                                    <ns3:mxCell id="67" parent="42" source="44" target="43" style="simpleTransition;" value="accessControl.events.transport.Receive( Standby msg, Receive.Body.ReceiveRec transportData )[ isControllingClient( transportData ) ] /  ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <ns3:mxCell id="44" parent="42" style="state;" value="Ready; 
+ " vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="110.0" y="330.0" width="80.0" height="80.0"/>
+                                </ns3:mxCell>
+                            </state>
+                            <state name="Emergency">
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="ClearEmergency" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <guard condition=" isIDStored( transportData ) "/>
+                                    <pop/>
+                                    <action name="DeleteID">
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="68" parent="42" source="45" style="popTransition;" value="accessControl.events.transport.Receive( ClearEmergency msg, Receive.Body.ReceiveRec transportData )[ isIDStored( transportData ) ] / DeleteID( transportData  )" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry">
+                                            <ns3:mxPoint as="sourcePoint" x="40.0" y="0.0"/>
+                                            <ns3:mxPoint as="targetPoint" x="80.0" y="0.0"/>
+                                            <ns3:mxPoint as="offset" x="0.0" y="10.0"/>
+                                        </ns3:mxGeometry>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="RequestControl" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <ns2:internal/>
+                                    <action name="transport.Send">
+                                        <argument value="'ConfirmControl'"/>
+                                        <argument value="'NOT_AVAILABLE'"/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="69" parent="42" source="45" target="45" style="internalTransition;" value="accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="ReleaseControl" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <ns2:internal/>
+                                    <action name="transport.Send">
+                                        <argument value="'RejectControl'"/>
+                                        <argument value="'NOT_AVAILABLE'"/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="69" parent="42" source="45" target="45" style="internalTransition;" value="accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="SetAuthority" value="msg"/>
+                                    <ns2:internal/>
+                                    <ns3:mxCell id="69" parent="42" source="45" target="45" style="internalTransition;" value="accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.Timeout">
+                                    <ns2:internal/>
+                                    <ns3:mxCell id="69" parent="42" source="45" target="45" style="internalTransition;" value="accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="Failure">
+                                    <ns2:internal/>
+                                    <ns3:mxCell id="69" parent="42" source="45" target="45" style="internalTransition;" value="accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Shutdown" value="msg"/>
+                                    <ns2:internal/>
+                                    <ns3:mxCell id="69" parent="42" source="45" target="45" style="internalTransition;" value="accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Reset" value="msg"/>
+                                    <ns2:internal/>
+                                    <ns3:mxCell id="69" parent="42" source="45" target="45" style="internalTransition;" value="accessControl.events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;accessControl.events.transport.Receive( SetAuthority msg ) /  ;accessControl.Timeout /  ;Failure /  ;accessControl.events.transport.Receive( Shutdown msg ) /  ;accessControl.events.transport.Receive( Reset msg ) /  ;" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <ns3:mxCell id="45" parent="42" style="state;" value="Emergency; 
+ " vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="110.0" y="440.0" width="80.0" height="80.0"/>
+                                </ns3:mxCell>
+                            </state>
+                            <default_state>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="QueryStatus" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <ns2:internal/>
+                                    <action name="transport.Send">
+                                        <argument value="'ReportStatus'"/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="76" parent="42" source="46" target="46" style="internalTransition;" value="accessControl.events.transport.Receive( QueryStatus msg, Receive.Body.ReceiveRec transportData ) / transport.Send(  'ReportStatus'  , transportData  ) ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="SetEmergency" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <push>
+                                        <end_state state="Receiving.Ready.Controlled.StateB.Emergency"/>
+                                    </push>
+                                    <action name="StoreID">
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="77" parent="42" source="46" target="45" style="pushTransition;" value="accessControl.events.transport.Receive( SetEmergency msg, Receive.Body.ReceiveRec transportData ) / StoreID( transportData  ) ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="Failure">
+                                    <simple>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Failure"/>
+                                    </simple>
+                                    <action name="transport.Send">
+                                        <argument value="'RejectControl'"/>
+                                        <argument value="'CONTROL_RELEASED'"/>
+                                    </action>
+                                    <ns3:mxCell id="78" parent="42" source="46" target="34" style="simpleTransition;" value="Failure / transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'   ) ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Reset" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <guard condition=" isControllingClient(  transportData ) "/>
+                                    <simple>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Init"/>
+                                    </simple>
+                                    <action name="transport.Send">
+                                        <argument value="'RejectControl'"/>
+                                        <argument value="'CONTROL_RELEASED'"/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="79" parent="42" source="46" target="33" style="simpleTransition;" value="accessControl.events.transport.Receive( Reset msg, Receive.Body.ReceiveRec transportData )[ isControllingClient(  transportData ) ] / transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ) ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Shutdown" value="msg"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <guard condition=" isControllingClient(  transportData ) "/>
+                                    <simple>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Shutdown"/>
+                                    </simple>
+                                    <action name="transport.Send">
+                                        <argument value="'RejectControl'"/>
+                                        <argument value="'CONTROL_RELEASED'"/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                    <ns3:mxCell id="80" parent="42" source="46" target="35" style="simpleTransition;" value="accessControl.events.transport.Receive( Shutdown msg, Receive.Body.ReceiveRec transportData )[ isControllingClient(  transportData ) ] / transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ) ; 
+" edge="1">
+                                        <ns3:mxGeometry relative="1" as="geometry"/>
+                                    </ns3:mxCell>
+                                </transition>
+                                <ns3:mxCell id="46" parent="42" style="defaultState;" value="default_state" vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="100.0" width="80.0" height="80.0"/>
+                                </ns3:mxCell>
+                            </default_state>
+                            <pseudo_start_state>
+                                <state>
+                                    <ns3:mxCell id="47" parent="42" style="pseudoStartState;" value="" vertex="1">
+                                        <ns3:mxGeometry as="geometry" x="70.0" y="180.0" width="20.0" height="20.0"/>
+                                    </ns3:mxCell>
+                                </state>
+                                <transition>
+                                    <ns3:mxCell id="48" parent="42" source="47" target="43" style="simpleTransition;" value="" edge="1">
+                                        <ns3:mxGeometry as="geometry" x="70.0" y="180.0" width="20.0" height="20.0"/>
+                                    </ns3:mxCell>
+                                </transition>
+                            </pseudo_start_state>
+                            <ns3:mxCell id="42" parent="28" style="state;" value="StateB; 
+ " vertex="1">
+                                <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                            </ns3:mxCell>
+                        </state>
+                        <pseudo_start_state>
+                            <state>
+                                <ns3:mxCell id="49" parent="28" style="pseudoStartState;" value="" vertex="1">
+                                    <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                                </ns3:mxCell>
+                            </state>
+                            <transition>
+                                <ns3:mxCell id="50" parent="28" source="49" target="42" style="simpleTransition;" value="" edge="1">
+                                    <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                                </ns3:mxCell>
+                            </transition>
+                        </pseudo_start_state>
+                        <ns3:mxCell id="28" parent="14" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Controlled; 
+" vertex="1">
+                            <ns3:mxGeometry as="geometry" x="110.0" y="220.0" width="80.0" height="80.0"/>
+                        </ns3:mxCell>
+                    </state>
+                    <default_state>
+                        <ns3:mxCell id="29" parent="14" style="defaultState;strokeColor=#BC1212;fontColor=#BC1212;" value="default_state" vertex="1">
+                            <ns3:mxGeometry as="geometry" x="100.0" width="80.0" height="80.0"/>
+                        </ns3:mxCell>
+                    </default_state>
+                    <pseudo_start_state>
+                        <state>
+                            <ns3:mxCell id="51" parent="14" style="pseudoStartState;" value="" vertex="1">
+                                <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                            </ns3:mxCell>
+                        </state>
+                        <transition>
+                            <ns3:mxCell id="52" parent="14" source="51" target="27" style="simpleTransition;" value="" edge="1">
+                                <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                            </ns3:mxCell>
+                        </transition>
+                    </pseudo_start_state>
+                    <ns3:mxCell id="14" parent="3" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Ready; 
+" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                    </ns3:mxCell>
+                </state>
+                <pseudo_start_state>
+                    <state>
+                        <ns3:mxCell id="53" parent="3" style="pseudoStartState;" value="" vertex="1">
+                            <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                        </ns3:mxCell>
+                    </state>
+                    <transition>
+                        <ns3:mxCell id="54" parent="3" source="53" target="14" style="simpleTransition;" value="" edge="1">
+                            <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                        </ns3:mxCell>
+                    </transition>
+                </pseudo_start_state>
+                <ns3:mxCell id="3" parent="2" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Receiving; 
+" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="10" parent="2" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="11" parent="2" source="10" target="3" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="2" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = Management.AccessControl.Events.Transport.ReceiveFSM; 
+ isStateless = false; 
+" vertex="1">
+                <ns3:mxGeometry as="geometry" width="850.0" height="400.0"/>
+            </ns3:mxCell>
+        </state_machine>
+        <state_machine name="Management.AccessControl.Events.Transport.SendFSM">
+            <state name="Sending">
+                <ns3:mxCell id="6" parent="5" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Sending; 
+" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="12" parent="5" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="13" parent="5" source="12" target="6" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="5" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = Management.AccessControl.Events.Transport.SendFSM; 
+ isStateless = false; 
+" vertex="1">
+                <ns3:mxGeometry as="geometry" y="400.0" width="850.0" height="400.0"/>
+            </ns3:mxCell>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

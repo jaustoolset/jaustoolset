@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:GuardTest3"
+   name="GuardTest3" version="1.0">
+  <description xml:space="preserve">
+     Guard name must be a valid identifier
+  </description>
+  <assumptions/> 
+  <message_set>
+    <input_set>
+       <message_def name="Message1" message_id="0001" is_command="true">
+          <description xml:space="preserve">
+             A message
+          </description>
+          <header name="header"/>
+          <body name="body"/>
+          <footer name="footer"/>
+       </message_def>
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="Ready"/>
+    <state_machine name="FSM">
+      <state name="Ready">
+         <transition name="Message1">
+            <!-- guard condition is modified to invalid identifier programmatically -->
+            <guard condition="isTrue()"/>
+            <simple/>
+         </transition>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

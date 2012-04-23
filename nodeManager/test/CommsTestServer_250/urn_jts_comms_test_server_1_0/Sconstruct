@@ -1,0 +1,11 @@
+VariantDir('Build', 'src', duplicate=0)
+include = [ './' , 'include', 'include/InternalEvents', 'include/Messages']
+sources = ['Build/CommsTestServerFSM.cpp', 'Build/CommsTestServerFSM_sm.cpp', 'Build/CommsTestServerService.cpp', 'Build/Messages/CommsTestMsg.cpp', 'Build/Messages/QueryServices.cpp', 'Build/Messages/ReportServices.cpp']
+libpath = []
+Import('env')
+libenv=env.Clone()
+libenv['CPPPATH']=include+env['CPPPATH']
+SConscript([])
+lib = libenv.SharedLibrary('./lib/CommsTestServerService', sources, LIBS=['Common'])
+libenv.Install( libenv['INSTALL_LIB'], lib )
+libenv.Install( libenv['BINPATH'], lib )

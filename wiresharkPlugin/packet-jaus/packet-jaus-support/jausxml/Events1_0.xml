@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="Events" id="urn:jaus:jss:core:Events" version="1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">This service is used to set up event notifications. Since this service does not contain any messages and data on which events can be setup, it is useful only when derived by other services that contain messages and data on which events can be defined.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="transport" id="urn:jaus:jss:core:Transport" version="1.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="CreateEvent" message_id="01F0" is_command="true">
+                <description xml:space="preserve">This message is used to set up an event. Field 1 is a local request ID that the event provider returns in the Confirm or Reject message.  Field 2 is the Event Type, which allows the requester  to specify the type of event, where Periodic specifies that the event is a service connection request and should not be queued, in which case field 3 (Requested periodic rate) must be set to a non-zero value.  Event type of Every Change specifies that the corresponding Report message should be sent every time the data associated with that message changes. Field 4 contains the size of the Query message that is to specify the contents of the Report.  Field 5 contains the Query message (including its two byte header).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="CreateEventRec" optional="false">
+                        <fixed_field name="RequestID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="EventType" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="Periodic (SC)"/>
+                                <value_enum enum_index="1" enum_const="Every change"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="RequestedPeriodicRate" optional="false" field_type="unsigned short integer" field_units="hertz">
+                            <scale_range real_lower_limit="0" real_upper_limit="1092" integer_function="round"/>
+                        </fixed_field>
+                        <variable_length_field name="QueryMessage" optional="false" field_format="JAUS MESSAGE">
+                            <count_field min_count="2" max_count="2147483647" field_type_unsigned="unsigned integer"/>
+                        </variable_length_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="UpdateEvent" message_id="01F1" is_command="true">
+                <description xml:space="preserve">The Update Event message allows the requester to request a rate or change.  The format is the same as the Create Event, only with the addition of Event ID field to specify the event that needs updating.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="UpdateEventRec" optional="false">
+                        <fixed_field name="RequestID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="EventType" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="Periodic (SC)"/>
+                                <value_enum enum_index="1" enum_const="Every change"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="RequestedPeriodicRate" optional="false" field_type="unsigned short integer" field_units="hertz">
+                            <scale_range real_lower_limit="0" real_upper_limit="1092" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="EventID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        <variable_length_field name="QueryMessage" optional="false" field_format="JAUS MESSAGE">
+                            <count_field min_count="2" max_count="2147483647" field_type_unsigned="unsigned integer"/>
+                        </variable_length_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="CancelEvent" message_id="01F2" is_command="true">
+                <description xml:space="preserve">The Cancel Event message is used by the requester to cancel and/or request deletion of the specified event.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="CancelEventRec" optional="false">
+                        <fixed_field name="RequestID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="EventID" optional="false" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryEvents" message_id="21F0" is_command="false">
+                <description xml:space="preserve">The Query Events message is used to request detail on events. Queries can be made by message ID, event type or Event ID.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <variant name="QueryEventsVar" optional="false">
+                        <vtag_field min_count="0" max_count="3" field_type_unsigned="unsigned byte"/>
+                        <record name="MessageIDRec" optional="false">
+                            <fixed_field name="MessageCode" optional="false" field_type="unsigned short integer" field_units="one"/>
+                        </record>
+                        <record name="EventTypeRec" optional="false">
+                            <fixed_field name="EventType" optional="false" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="Periodic (SC)"/>
+                                    <value_enum enum_index="1" enum_const="Every change"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                        <record name="EventIDRec" optional="false">
+                            <fixed_field name="EventID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        </record>
+                        <record name="AllEventsRec" optional="false">
+                            <fixed_field name="AllEvents" optional="false" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="0" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </variant>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ConfirmEventRequest" message_id="01F3" is_command="false">
+                <description xml:space="preserve">The Confirm Event message is used to confirm an Event has been created, updated, or cancelled.  Field 1 represents the Request ID from the Create, Update, or Cancel message that initiated this message.  The Request ID's scope is local to the requesting client only.  Field 2, Event ID, is a globally unique ID that is established for the event. Field 3 is used to specify the closest rate that the service can provide if it cannot match the requested rate.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ConfirmEventRequestRec" optional="false">
+                        <fixed_field name="RequestID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="EventID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="ConfirmedPeriodicRate" optional="false" field_type="unsigned short integer" field_units="hertz">
+                            <scale_range real_lower_limit="0" real_upper_limit="1092" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="RejectEventRequest" message_id="01F4" is_command="false">
+                <description xml:space="preserve">The Reject Event Request message is used to reject an Event creation, update or cancellation. Field 2 represents the Request ID from the Create, Update, or Cancel message that initiated this message. The Request ID's scope is local to the requesting client only. Field 4, Event ID, is a globally unique ID that is established for the event.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="RejectEventRequestRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="RequestID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="ResponseCode" optional="true" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="1" enum_const="periodic events not supported"/>
+                                <value_enum enum_index="2" enum_const="change based events not supported"/>
+                                <value_enum enum_index="3" enum_const="connection refused"/>
+                                <value_enum enum_index="4" enum_const="invalid event setup"/>
+                                <value_enum enum_index="5" enum_const="message not supported"/>
+                                <value_enum enum_index="6" enum_const="error, invalid event ID for update event               request"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_length_string name="ErrorMessage" string_length="80" optional="true"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportEvents" message_id="41F0" is_command="false">
+                <description xml:space="preserve">This message is used to report the active event requests that match the requirements provided in the QueryEvents message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="EventList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <record name="ReportEventRec" optional="false">
+                            <fixed_field name="EventType" optional="false" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="Periodic (SC)"/>
+                                    <value_enum enum_index="1" enum_const="Every change"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="EventID" optional="false" field_type="unsigned byte" field_units="one"/>
+                            <variable_length_field name="QueryMessage" optional="false" field_format="JAUS MESSAGE">
+                                <count_field min_count="2" max_count="2147483647" field_type_unsigned="unsigned integer"/>
+                            </variable_length_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="Event" message_id="41F1" is_command="false">
+                <description xml:space="preserve">The Event message is sent when event is triggered. It includes the Event ID and a sequence number to allow the client to keep track of event processing.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="EventRec" optional="false">
+                        <fixed_field name="EventID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="SequenceNumber" optional="false" field_type="unsigned byte" field_units="one"/>
+                        <variable_length_field name="ReportMessage" optional="false" field_format="JAUS MESSAGE">
+                            <count_field min_count="2" max_count="2147483647" field_type_unsigned="unsigned integer"/>
+                        </variable_length_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set>
+        <event_def name="EventOccurred">
+            <description xml:space="preserve">Received when an event occurs.</description>
+            <header name="Header"/>
+            <body name="Body"/>
+            <footer name="Footer"/>
+        </event_def>
+        <event_def name="EventError">
+            <description xml:space="preserve">Received when an event error occurs.</description>
+            <header name="Header"/>
+            <body name="Body"/>
+            <footer name="Footer"/>
+        </event_def>
+    </internal_events_set>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="Events.Transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <start state_machine_name="Events.Transport.SendFSM" state_name="Sending"/>
+        <state_machine name="Events.Transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready">
+                    <transition name="transport.Receive">
+                        <parameter type="QueryEvents" value="msg"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                        <ns2:internal/>
+                        <action name="transport.Send" interpretation="Send Report Events message to the               component that sent the query">
+                            <argument value=" 'ReportEvents' "/>
+                            <argument value="msg"/>
+                            <argument value="transportData"/>
+                        </action>
+                    </transition>
+                    <transition name="transport.Receive">
+                        <parameter type="CreateEvent" value="msg"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                        <guard condition="isSupported(msg) &amp;&amp; ! eventExists(msg)" interpretation="True if parameters are supported and the event does not already exist."/>
+                        <ns2:internal/>
+                        <action name="createEvent" interpretation="create the event">
+                            <argument value="msg"/>
+                        </action>
+                        <action name="transport.Send" interpretation="Send Confirm Event Request               message">
+                            <argument value=" 'ConfirmEventRequest' "/>
+                            <argument value="msg"/>
+                            <argument value="transportData"/>
+                        </action>
+                    </transition>
+                    <transition name="transport.Receive">
+                        <parameter type="CreateEvent" value="msg"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                        <guard condition="isSupported(msg) &amp;&amp; eventExists(msg)" interpretation="True if parameters are supported and the event already exists."/>
+                        <ns2:internal/>
+                        <action name="updateEvent" interpretation="update the event">
+                            <argument value="msg"/>
+                        </action>
+                        <action name="transport.Send" interpretation="Send Confirm Event Request               message">
+                            <argument value=" 'ConfirmEventRequest' "/>
+                            <argument value="msg"/>
+                            <argument value="transportData"/>
+                        </action>
+                    </transition>
+                    <transition name="transport.Receive">
+                        <parameter type="CreateEvent" value="msg"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                        <guard condition="! isSupported(msg)" interpretation="True if parameters are not               supported."/>
+                        <ns2:internal/>
+                        <action name="transport.Send" interpretation="Send Reject Event Request message">
+                            <argument value=" 'RejectEventRequest' "/>
+                            <argument value="msg"/>
+                            <argument value="transportData"/>
+                        </action>
+                    </transition>
+                    <transition name="transport.Receive">
+                        <parameter type="UpdateEvent" value="msg"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                        <guard condition="isSupported(msg) &amp;&amp; eventExists(msg)" interpretation="True if parameters are supported and if the specified event exists"/>
+                        <ns2:internal/>
+                        <action name="updateEvent" interpretation="update the event">
+                            <argument value="msg"/>
+                        </action>
+                        <action name="transport.Send" interpretation="Send Confirm Event Request               message">
+                            <argument value=" 'ConfirmEventRequest' "/>
+                            <argument value="msg"/>
+                            <argument value="transportData"/>
+                        </action>
+                    </transition>
+                    <transition name="transport.Receive">
+                        <parameter type="UpdateEvent" value="msg"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                        <guard condition="! isSupported(msg) || ! eventExists(msg)"/>
+                        <ns2:internal/>
+                        <action name="transport.Send" interpretation="Send Reject Event Request message">
+                            <argument value=" 'RejectEventRequest' "/>
+                            <argument value="msg"/>
+                            <argument value="transportData"/>
+                        </action>
+                    </transition>
+                    <transition name="transport.Receive">
+                        <parameter type="CancelEvent" value="msg"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                        <guard condition="! eventExists(msg)"/>
+                        <ns2:internal/>
+                        <action name="transport.Send" interpretation="Send Reject Event Request message">
+                            <argument value=" 'RejectEventRequest' "/>
+                            <argument value="msg"/>
+                            <argument value="transportData"/>
+                        </action>
+                    </transition>
+                    <transition name="transport.Receive">
+                        <parameter type="CancelEvent" value="msg"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                        <guard condition="eventExists(msg)"/>
+                        <ns2:internal/>
+                        <action name="cancelEvent" interpretation="cancel the event">
+                            <argument value="msg"/>
+                        </action>
+                        <action name="transport.Send" interpretation="Send Confirm Event Request               message">
+                            <argument value=" 'ConfirmEventRequest' "/>
+                            <argument value="msg"/>
+                            <argument value="transportData"/>
+                        </action>
+                    </transition>
+                    <transition name="EventOccurred">
+                        <guard condition="eventExists()"/>
+                        <ns2:internal/>
+                        <action name="sendEvent" interpretation="send an event notification"/>
+                    </transition>
+                    <transition name="EventError">
+                        <guard condition="eventExists()"/>
+                        <ns2:internal/>
+                        <action name="sendRejectEventRequest" interpretation="Send Reject Event Request message"/>
+                    </transition>
+                </state>
+                <ns3:mxCell id="3" parent="2" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Receiving;" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="10" parent="2" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="11" parent="2" source="10" target="3" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="2" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = Events.Transport.ReceiveFSM; NEWLINE isStateless = false; NEWLINE" vertex="1">
+                <ns3:mxGeometry as="geometry" x="0.0" y="0.0" width="850.0" height="400.0"/>
+            </ns3:mxCell>
+        </state_machine>
+        <state_machine name="Events.Transport.SendFSM">
+            <state name="Sending">
+                <ns3:mxCell id="6" parent="5" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Sending;" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="12" parent="5" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="13" parent="5" source="12" target="6" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="5" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = Events.Transport.SendFSM; NEWLINE isStateless = false; NEWLINE" vertex="1">
+                <ns3:mxGeometry as="geometry" x="0.0" y="400.0" width="850.0" height="400.0"/>
+            </ns3:mxCell>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

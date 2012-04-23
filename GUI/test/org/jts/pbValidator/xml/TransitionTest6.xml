@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:TransitionTest6"
+   name="TransitionTest6" version="1.0">
+  <description xml:space="preserve">
+     Tests: Add a warning to this effect – “If a transition is being overridden, ensure that all guarded versions of the transition are overridden”
+     (This spec is the derived service with the erroneous overriding of a guard in the base service TransitionTest5 )
+  </description>
+  <assumptions/>
+   <references>
+      <inherits_from name="TransitionTest5" id="urn:jts:TransitionTest5" version="1.0"/>
+   </references>
+  <message_set>
+    <input_set>
+       <message_def name="Message1" message_id="0001" is_command="true">
+          <description xml:space="preserve">
+             A message
+          </description>
+          <header name="header"/>
+          <body name="body"/>
+          <footer name="footer"/>
+       </message_def>
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="Ready"/>
+    <state_machine name="FSM">
+      <state name="Ready">
+         <!-- not all base guard cases are handled here -->
+         <transition name="Message1">
+            <guard condition="isTrue() &amp;&amp; isPresent()"/>
+            <simple/>
+         </transition>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="ProtocolBehaviorTest1" id="urn:org.jts.test:ProtocolBehaviorTest1" version="1.0">
+	<message_set>
+		<input_set/>
+		<output_set/>
+	</message_set>
+	<internal_events_set/>
+	<protocol_behavior is_stateless="true">
+		<start state_machine_name="StateMachine" state_name="State"/>
+		<state_machine name="StateMachine">
+			<state name="State"/>
+		</state_machine>
+	</protocol_behavior>
+</service_def>

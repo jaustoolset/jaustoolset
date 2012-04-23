@@ -1,0 +1,727 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<service_def name="MissionSpooler" id="urn:jaus:jss:missionSpooler:MissionSpooler" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+  <description>The Mission Spooler Service is responsible for storing and spooling
+    missions. A mission is a set of SAE JAUS messages (e.g. Set Global Waypoint
+    [AS6009]) to be performed by one or more Services of one or more unmanned
+    systems. The mission structure is an N-ary tree, which allows for parallel,
+    sequential, iterative, and coordinated missions. Each mission has a unique
+    ID allowing for multiple missions. A mission is made up of tasks, which
+    contain JAUS messages, and/or children tasks. A JAUS message within a
+    mission plan can be blocking (synchronous) or non-blocking (asynchoronous).
+    The Mission Spooler shall not spool messages beyond a blocking SAE JAUS
+    message until the unmanned system has completed the action associated with
+    the blocking SAE JAUS message. Payload commands are a good example of where
+    blocking messages may be used. Some payloads can only perform their
+    functions when the unmanned system is stationary (e.g. soil sampling, video
+    image) while other payloads can perform their functions (e.g. start mine
+    flail) while in motion. The blocking flag ensures that no other messages
+    are spooled until the blocking message is complete. Since a mission spooler
+    may be a client of itself, one mission spooler can delegate a part of a
+    mission to another mission spooler.</description>
+  <assumptions>Messages may be delayed, lost or reordered. All the messages that make up
+    the mission are command messages belonging to services that inherit from
+    the Events service with service ID \"urn:jaus:jss:core:Events\" and version
+    \"1.1\", or any other backwards compatible version.</assumptions>
+  <references>
+    <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.1"/>
+    <client_of name="missionSpooler" id="urn:jaus:jss:missionSpooler:MissionSpooler" version="1.0"/>
+  </references>
+  <declared_type_set name="MissionSpoolerTypes">
+    <declared_type_set_ref name="missionSpooler" id="urn:jaus:jss:missionSpooler:MessageSet" version="1.0"/>
+    <variable_length_string name="AppMessage" optional="false">
+      <count_field min_count="0" max_count="4096" field_type_unsigned="unsigned integer"/>
+    </variable_length_string>
+    <fixed_field field_type="unsigned byte" name="AuthorityCode" field_units="one" optional="false">
+      <value_set offset_to_lower_limit="false">
+        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+      </value_set>
+    </fixed_field>
+    <fixed_field field_type="unsigned short integer" name="EmergencyCode" field_units="one" optional="false">
+      <value_set offset_to_lower_limit="false">
+        <value_enum enum_const="STOP" enum_index="1"/>
+      </value_set>
+    </fixed_field>
+    <bit_field name="TimeStamp" field_type_unsigned="unsigned integer" optional="false">
+      <sub_field name="Milliseconds">
+        <bit_range from_index="0" to_index="9"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="999" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+      <sub_field name="Seconds">
+        <bit_range from_index="10" to_index="15"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+      <sub_field name="Minutes">
+        <bit_range from_index="16" to_index="21"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+      <sub_field name="Hour">
+        <bit_range from_index="22" to_index="26"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="23" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+      <sub_field name="Day">
+        <bit_range from_index="27" to_index="31"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+    </bit_field>
+    <bit_field name="DateStamp" field_type_unsigned="unsigned short integer" optional="false">
+      <sub_field name="Day">
+        <bit_range from_index="0" to_index="4"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+      <sub_field name="Month">
+        <bit_range from_index="5" to_index="8"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="12" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+      <sub_field name="Year">
+        <bit_range from_index="9" to_index="15"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="127" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+    </bit_field>
+    <record name="TimeRec" optional="false" interpretation=" record TimeRec JausID">
+      <presence_vector field_type_unsigned="unsigned byte"/>
+      <declared_bit_field name="TimeStamp" declared_type_ref="TimeStamp" optional="true"/>
+      <declared_bit_field name="DateStamp" declared_type_ref="DateStamp" optional="true"/>
+    </record>
+    <bit_field name="JausID" field_type_unsigned="unsigned integer" optional="false">
+      <sub_field name="ComponentID">
+        <bit_range from_index="0" to_index="7"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+      <sub_field name="NodeID">
+        <bit_range from_index="8" to_index="15"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+      <sub_field name="SubsystemID">
+        <bit_range from_index="16" to_index="31"/>
+        <value_set offset_to_lower_limit="false">
+          <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+        </value_set>
+      </sub_field>
+    </bit_field>
+    <fixed_field field_type="unsigned short integer" name="ElementUID" field_units="one" optional="false"/>
+    <record name="ElementRec" optional="false" interpretation=" UID of the next (child) element in the list. The value is zero (0) if this is the last (tail) element. record ElementRec } types BasicTypes">
+      <declared_fixed_field name="ElementUID" declared_type_ref="ElementUID" optional="false"/>
+      <declared_fixed_field name="PreviousUID" declared_type_ref="ElementUID" optional="false"/>
+      <declared_fixed_field name="NextUID" declared_type_ref="ElementUID" optional="false"/>
+      <variable_format_field name="ElementData" optional="false" interpretation="variable_format_field ElementData">
+        <format_field>
+          <format_enum index="0" field_format="JAUS_MESSAGE"/>
+          <format_enum index="1" field_format="User_defined"/>
+        </format_field>
+        <count_field field_type_unsigned="unsigned short integer"/>
+      </variable_format_field>
+    </record>
+    <sequence name="SpoolMissionSeq" optional="false">
+      <declared_record name="missionInfo" declared_type_ref="MissionInfo" optional="false"/>
+      <list name="MissionPlan" optional="false">
+        <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+        <sequence name="Task" optional="false">
+          <sequence name="TaskData" optional="false">
+            <record name="TaskInfo" optional="false" interpretation="">
+              <fixed_field field_type="unsigned short integer" name="TaskID" optional="false" field_units="one"/>
+            </record>
+            <list name="JAUSMessages" optional="false">
+              <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+              <record name="MessageData" optional="false" interpretation=" Blocking record MessageData">
+                <fixed_field field_type="unsigned short integer" name="UID" optional="false" field_units="one"/>
+                <declared_bit_field name="DestinationID" declared_type_ref="JausID" optional="false"/>
+                <declared_variable_length_string name="JausMessage" declared_type_ref="AppMessage" optional="false"/>
+                <fixed_field field_type="unsigned byte" name="Blocking" optional="false" field_units="one">
+                  <value_set offset_to_lower_limit="false">
+                    <value_enum enum_const="non_blocking" enum_index="0"/>
+                    <value_enum enum_const="blocking" enum_index="1"/>
+                    <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                  </value_set>
+                </fixed_field>
+              </record>
+            </list>
+          </sequence>
+          <list name="SubTasks" optional="false">
+            <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+            <record name="SubTaskIndex" optional="false" interpretation=" Index into the MissionPlan List that points to a task making it a subtask of the encapsulating Task record SubTaskIndex">
+              <fixed_field field_type="unsigned short integer" name="ChildTaskIndex" optional="false" field_units="one"/>
+            </record>
+          </list>
+        </sequence>
+      </list>
+    </sequence>
+    <record name="MissionInfo" optional="false" interpretation=" Identifier of destination to send the message record MissionInfo">
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="false" field_units="one"/>
+      <declared_bit_field name="SourceID" declared_type_ref="JausID" optional="false"/>
+    </record>
+    <record name="RunMissionRec" optional="false" interpretation=" record RunMissionRec">
+      <presence_vector field_type_unsigned="unsigned byte"/>
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="true" field_units="one"/>
+      <fixed_field field_type="unsigned short integer" name="TaskID" optional="true" field_units="one"/>
+      <fixed_field field_type="unsigned short integer" name="MessageUID" optional="true" field_units="one"/>
+    </record>
+    <record name="AbortMissionRec" optional="false" interpretation=" record AbortMissionRec">
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="false" field_units="one"/>
+    </record>
+    <record name="PauseMissionRec" optional="false" interpretation=" record PauseMissionRec">
+      <presence_vector field_type_unsigned="unsigned byte"/>
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="true" field_units="one"/>
+      <fixed_field field_type="unsigned short integer" name="TaskID" optional="true" field_units="one"/>
+    </record>
+    <record name="ResumeMissionRec" optional="false" interpretation=" record ResumeMissionRec">
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="false" field_units="one"/>
+    </record>
+    <sequence name="RemoveData" optional="false">
+      <declared_record name="missionInfo" declared_type_ref="MissionInfo" optional="false"/>
+      <list name="MessageList" optional="false">
+        <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+        <record name="MessageInfo" optional="false" interpretation=" record MessageInfo">
+          <fixed_field field_type="unsigned short integer" name="UID" optional="false" field_units="one"/>
+        </record>
+      </list>
+    </sequence>
+    <record name="MissionInfo" optional="false" interpretation=" record MissionInfo">
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="false" field_units="one"/>
+      <fixed_field field_type="unsigned short integer" name="TaskID" optional="false" field_units="one"/>
+    </record>
+    <sequence name="InsertData" optional="false">
+      <declared_record name="missionAndTaskInfo" declared_type_ref="MissionAndTaskInfo" optional="false"/>
+      <list name="InsertMessageList" optional="false">
+        <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+        <record name="InsertMessageInfo" optional="false" interpretation=" Blocking record InsertMessageInfo">
+          <fixed_field field_type="unsigned short integer" name="UID" optional="false" field_units="one"/>
+          <declared_bit_field name="DestinationID" declared_type_ref="JausID" optional="false"/>
+          <declared_variable_length_string name="JausMessage" declared_type_ref="AppMessage" optional="false"/>
+          <fixed_field field_type="unsigned byte" name="Blocking" optional="false" field_units="one">
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_const="non_blocking" enum_index="0"/>
+              <value_enum enum_const="blocking" enum_index="1"/>
+              <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+            </value_set>
+          </fixed_field>
+        </record>
+      </list>
+    </sequence>
+    <record name="MissionAndTaskInfo" optional="false" interpretation=" Insert Location record MissionAndTaskInfo">
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="false" field_units="one"/>
+      <fixed_field field_type="unsigned short integer" name="TaskID" optional="false" field_units="one"/>
+      <fixed_field field_type="unsigned short integer" name="UID" optional="false" field_units="one"/>
+      <fixed_field field_type="unsigned byte" name="InsertLocation" optional="false" field_units="one">
+        <value_set offset_to_lower_limit="false">
+          <value_enum enum_const="insert_before_UID_in_field_3" enum_index="0"/>
+          <value_enum enum_const="insert_after_UID_in_field_3" enum_index="1"/>
+          <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+        </value_set>
+      </fixed_field>
+    </record>
+    <sequence name="RemoveData" optional="false">
+      <declared_record name="missionAndTaskInfo" declared_type_ref="MissionAndTaskInfo" optional="false"/>
+      <list name="RemoveTaskList" optional="false">
+        <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+        <record name="RemoveTaskInfo" optional="false" interpretation=" record RemoveTaskInfo">
+          <fixed_field field_type="unsigned short integer" name="TaskID" optional="false" field_units="one"/>
+        </record>
+      </list>
+    </sequence>
+    <record name="MissionAndTaskInfo" optional="false" interpretation=" record MissionAndTaskInfo">
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="false" field_units="one"/>
+      <fixed_field field_type="unsigned short integer" name="TaskID" optional="false" field_units="one"/>
+    </record>
+    <sequence name="InsertMission" optional="false">
+      <declared_record name="missionAndTaskInfo" declared_type_ref="MissionAndTaskInfo" optional="false"/>
+      <sequence name="Task" optional="false">
+        <sequence name="TaskData" optional="false">
+          <record name="TaskInfo" optional="false" interpretation="">
+            <fixed_field field_type="unsigned short integer" name="TaskID" optional="false" field_units="one"/>
+          </record>
+          <list name="TaskMessages" optional="false">
+            <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+            <record name="MessageData" optional="false" interpretation=" Blocking record MessageData">
+              <fixed_field field_type="unsigned short integer" name="UID" optional="false" field_units="one"/>
+              <declared_bit_field name="DestinationID" declared_type_ref="JausID" optional="false"/>
+              <declared_variable_length_string name="JausMessage" declared_type_ref="AppMessage" optional="false"/>
+              <fixed_field field_type="unsigned byte" name="Blocking" optional="false" field_units="one">
+                <value_set offset_to_lower_limit="false">
+                  <value_enum enum_const="non_blocking" enum_index="0"/>
+                  <value_enum enum_const="blocking" enum_index="1"/>
+                  <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                </value_set>
+              </fixed_field>
+            </record>
+          </list>
+        </sequence>
+        <list name="SubTasks" optional="false">
+          <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+          <record name="SubTaskIndex" optional="false" interpretation=" Index into the MissionTree that points at subtasks of this MissionTask record SubTaskIndex">
+            <fixed_field field_type="unsigned short integer" name="ChildTaskIndex" optional="false" field_units="one"/>
+          </record>
+        </list>
+      </sequence>
+    </sequence>
+    <record name="MissionAndTaskInfo" optional="false" interpretation=" record MissionAndTaskInfo">
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="false" field_units="one"/>
+      <fixed_field field_type="unsigned short integer" name="TaskID" optional="false" field_units="one"/>
+      <fixed_field field_type="unsigned byte" name="InsertLocation" optional="false" field_units="one">
+        <value_set offset_to_lower_limit="false">
+          <value_enum enum_const="Insert_before_task_ID_in_field_2" enum_index="0"/>
+          <value_enum enum_const="Insert_after_task_ID_in_field_2" enum_index="1"/>
+          <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+        </value_set>
+      </fixed_field>
+      <fixed_field field_type="unsigned short integer" name="NewParentTaskID" optional="false" field_units="one"/>
+    </record>
+    <record name="QueryMissionStatusRec" optional="false" interpretation=" record QueryMissionStatusRec">
+      <presence_vector field_type_unsigned="unsigned byte"/>
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="true" field_units="one"/>
+      <fixed_field field_type="unsigned short integer" name="TaskID" optional="true" field_units="one"/>
+      <fixed_field field_type="unsigned short integer" name="UID" optional="true" field_units="one"/>
+    </record>
+    <record name="QueryMissionPlanRec" optional="false" interpretation=" record QueryMissionPlanRec">
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="false" field_units="one"/>
+    </record>
+    <record name="SpoolingPreferencesRec" optional="false" interpretation=" record QueryMissionPlanRec record SpoolingPreferencesRec">
+      <variable_field name="Data" optional="false" interpretation="variant_field Data">
+        <type_and_units_field>
+          <type_and_units_enum index="0" field_type="unsigned short integer" name="numberOfSeconds" field_units="one"/>
+          <type_and_units_enum index="1" field_type="unsigned integer" name="distanceToCover" field_units="meter">
+            <scale_range real_lower_limit="0" real_upper_limit="35000" integer_function="round"/>
+          </type_and_units_enum>
+        </type_and_units_field>
+      </variable_field>
+    </record>
+    <record name="MissionStatusRec" optional="false" interpretation=" Secondary Status record MissionStatusRec">
+      <fixed_field field_type="unsigned byte" name="Type" optional="false" field_units="one">
+        <value_set offset_to_lower_limit="false">
+          <value_enum enum_const="Mission" enum_index="0"/>
+          <value_enum enum_const="Task" enum_index="1"/>
+          <value_enum enum_const="Message" enum_index="2"/>
+          <value_range lower_limit="3" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+        </value_set>
+      </fixed_field>
+      <fixed_field field_type="unsigned short integer" name="ID" optional="false" field_units="one"/>
+      <fixed_field field_type="unsigned byte" name="Status" optional="false" field_units="one">
+        <value_set offset_to_lower_limit="false">
+          <value_enum enum_const="Init" enum_index="0"/>
+          <value_enum enum_const="Running" enum_index="1"/>
+          <value_enum enum_const="Pausing" enum_index="2"/>
+          <value_enum enum_const="Paused" enum_index="3"/>
+          <value_enum enum_const="Aborting" enum_index="4"/>
+          <value_enum enum_const="Aborted" enum_index="5"/>
+          <value_enum enum_const="Blocked" enum_index="6"/>
+          <value_enum enum_const="Finished" enum_index="7"/>
+          <value_range lower_limit="8" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+        </value_set>
+      </fixed_field>
+      <fixed_field field_type="unsigned byte" name="SecondaryStatus" optional="false" field_units="one">
+        <value_set offset_to_lower_limit="false">
+          <value_enum enum_const="Non_error_Condition" enum_index="0"/>
+          <value_enum enum_const="Lost_Component_Control" enum_index="1"/>
+          <value_enum enum_const="Tolerance_Not_Met" enum_index="2"/>
+          <value_enum enum_const="Internal_Failure" enum_index="3"/>
+          <value_range lower_limit="4" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+        </value_set>
+      </fixed_field>
+    </record>
+    <list name="MissionList" optional="false">
+      <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+      <declared_record name="missionInfo" optional="false" declared_type_ref="MissionInfo"/>
+    </list>
+    <record name="MissionInfo" optional="false" interpretation=" Identifier of destination to send the message record MissionInfo">
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="false" field_units="one"/>
+      <declared_bit_field name="CreatorID" declared_type_ref="JausID" optional="false"/>
+    </record>
+    <sequence name="MissionPlan" optional="false">
+      <declared_record name="missionInfo" declared_type_ref="MissionInfo" optional="false"/>
+      <sequence name="Task" optional="false">
+        <sequence name="TaskData" optional="false">
+          <record name="TaskInfo" optional="false" interpretation="">
+            <fixed_field field_type="unsigned short integer" name="TaskID" optional="false" field_units="one"/>
+          </record>
+          <list name="JAUSMessages" optional="false">
+            <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+            <record name="MessageData" optional="false" interpretation=" Blocking record MessageData">
+              <fixed_field field_type="unsigned short integer" name="UID" optional="false" field_units="one"/>
+              <declared_bit_field name="DestinationID" declared_type_ref="JausID" optional="false"/>
+              <declared_variable_length_string name="JausMessage" declared_type_ref="AppMessage" optional="false"/>
+              <fixed_field field_type="unsigned byte" name="Blocking" optional="false" field_units="one">
+                <value_set offset_to_lower_limit="false">
+                  <value_enum enum_const="non_blocking" enum_index="0"/>
+                  <value_enum enum_const="blocking" enum_index="1"/>
+                  <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                </value_set>
+              </fixed_field>
+            </record>
+          </list>
+        </sequence>
+        <list name="SubTasks" optional="false">
+          <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+          <record name="SubTaskIndex" optional="false" interpretation=" Index into the MissionPlan List that points to a task making it a subtask of the encapsulating Task record SubTaskIndex">
+            <fixed_field field_type="unsigned short integer" name="ChildTaskIndex" optional="false" field_units="one"/>
+          </record>
+        </list>
+      </sequence>
+    </sequence>
+    <record name="MissionInfo" optional="false" interpretation=" Identifier of destination to send the message record MissionInfo">
+      <fixed_field field_type="unsigned short integer" name="MissionID" optional="false" field_units="one"/>
+      <declared_bit_field name="SourceID" declared_type_ref="JausID" optional="false"/>
+    </record>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <message_def name="SpoolMission" message_id="0E00" is_command="true">
+        <description>This message is used to communicate missions to a Mission Spooler
+        service. The amount of data in one Spool Mission message is determined
+        by the receiving service's spooling preferences. For example, if a
+        service can handle ten (10) JAUS messages at a time, then the spooler
+        shall send a Spool Mission message with no more than ten (10) messages.
+        The Mission ID field shall be an ID that is unique to the system and
+        its time of execution to allow for spooling and manipulating multiple
+        current missions per system execution. The remaining fields define the
+        mission, where the mission structure is an N-ary tree defined by the
+        list called MissionPlan. Each element in the list is a node of the
+        n-ary tree, where each node is called a Task. A Task contains a list of
+        JAUS messages and/or subtasks that are identified by a list of indices
+        that point to tasks contained in the MissionPlan.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_sequence name="spoolMission" optional="false" declared_type_ref="SpoolMissionSeq"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="RunMission" message_id="0E01" is_command="true">
+        <description>This message is used to begin execution of the mission with Mission ID.
+        If the mission ID, task ID, and message UID are not specified, then all
+        missions must begin execution starting with the first child tasks in
+        each mission. If a task ID and a message UID are specified, then
+        mission execution must begin at the specified task ID and message UID.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_record name="runMissionRec" optional="false" declared_type_ref="RunMissionRec"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="AbortMission" message_id="0E02" is_command="true">
+        <description>This message is used to abort the mission with Mission ID.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_record name="abortMissionRec" optional="false" declared_type_ref="AbortMissionRec"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="PauseMission" message_id="0E03" is_command="true">
+        <description>This message is used to pause the mission with the specified mission
+        ID, after the task with the specified Task ID has been executed. If the
+        mission ID and task ID are not specified, then it implies that all
+        missions that are in execution must be paused immediately. If the
+        mission ID is specified and the task ID is not specified, then it
+        implies that only the mission with the specified mission ID must be
+        paused immediately. Conversely, if the task ID is specified and the
+        mission ID is not specified, it implies that all missions that are in
+        execution must be paused after the tasks with the specified task ID has
+        been executed.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_record name="pauseMissionRec" optional="false" declared_type_ref="PauseMissionRec"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="ResumeMission" message_id="0E04" is_command="true">
+        <description>This message is used to resume a paused mission from the point where
+        execution was paused.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_record name="resumeMissionRec" optional="false" declared_type_ref="ResumeMissionRec"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="RemoveMessages" message_id="0E05" is_command="true">
+        <description>This message is used to remove any number of messages from an existing
+        mission and task with Mission ID and Task ID. The message(s) to be
+        removed are referenced by their Unique ID. The JAUS message
+        corresponding to each unique ID in the mission shall be removed. If a
+        message to be removed no longer exists in the mission, no action occurs
+        as this indicates that the JAUS message has already been removed (or
+        completed) from the mission. If the removal of a set of messages
+        results in an empty mission and/or task, then that mission and/or task
+        is also removed automatically.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_sequence name="removeData" optional="false" declared_type_ref="RemoveData"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="InsertMessages" message_id="0E06" is_command="true">
+        <description>This message is used to insert any number of new messages into the
+        mission and task with the specified Mission ID and Task ID. Field #4 of
+        MissionAndTaskInfo determines if the messages are to be inserted before
+        or after the message with the specified UID in field #3 of
+        MissionAndTaskInfo.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_sequence name="insertData" optional="false" declared_type_ref="InsertData"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="RemoveMissionTask" message_id="0E07" is_command="true">
+        <description>This message removes the task specified in field #2 from the mission.
+        Any child of the task to be removed can be promoted to be a new child
+        of the removed task's parent by specifying its task ID in the
+        RemoveTaskInfo list. Childern not being promoted - their task IDs are
+        not in the RemoveTaskInfo list - are also removed from the mission. If
+        the RemoveTaskInfo list is empty, the task specified in field #2,
+        including all its children, is removed.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_sequence name="removeData" optional="false" declared_type_ref="RemoveData"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="InsertMissionTask" message_id="0E08" is_command="true">
+        <description>This message inserts a task before or after the task identified by the
+        ID provided in field #2 of MissionAndTaskInfo. Field #3 of
+        MissionAndTaskInfo identifies the new parent for the task specified in
+        field #2. If the new task has no children, the new task is the new
+        parent to the task specified in field #2. Otherwise, the new parent is
+        one of the new task's children, and must be specified in the message.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_sequence name="insertMission" optional="false" declared_type_ref="InsertMission"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="QuerySpoolingPreferences" message_id="2E00" is_command="false">
+        <description>This message shall cause the receiving component to reply to the
+        requestor with the ReportSpoolingPreferences message. The spooling
+        component shall send this message to every component utilized in a
+        mission plan that is ready to be spooled. Spooling preferences indicate
+        how components want the commands spooled to them.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body"/>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="QueryMissionStatus" message_id="2E01" is_command="false">
+        <description>This message shall cause the receiving component to reply to the
+        requestor with the ReportMissionStatus message. The Query can be
+        narrowed to a particular Mission, Task, and/or Message.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_record name="queryMissionStatusRec" optional="false" declared_type_ref="QueryMissionStatusRec"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="QueryStoredMissions" message_id="2E02" is_command="false">
+        <description>This message shall cause the receiving component to reply to the
+        requestor with a Code 4E02h: ReportStoredMissions message.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body"/>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="QueryMissionPlan" message_id="2E03" is_command="false">
+        <description>This message shall cause the receiving component to reply to the
+        requestor with a Code 4E03h: ReportMissionPlan message.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_record name="queryMissionPlanRec" optional="false" declared_type_ref="QueryMissionPlanRec"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+    </input_set>
+    <output_set>
+      <message_def name="ReportSpoolingPreferences" message_id="4E00" is_command="false">
+        <description>This message is used to provide the receiver a response to a
+        QuerySpoolingPreferences message. This message indicates how components
+        want missions to be spooled to them. A discrete number of commands or a
+        desired distance worth of commands can be spooled. If the Spool Type is
+        set to Count, then the data field indicates how many commands to send
+        in each Spool Mission message. If the Spool Type is set to Distance,
+        then the data field indicates how many meters worth of commands to send
+        in each Spool Mission message. If the Spool Type is set to Time, then
+        the data field indicates how many seconds worth of commands to send in
+        each Spool Mission message.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_record name="spoolingPreferencesRec" optional="false" declared_type_ref="SpoolingPreferencesRec"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="ReportMissionStatus" message_id="4E01" is_command="false">
+        <description>This message is used to provide the receiver the status of a Mission,
+        Task, or Message. The Type field indicates whether the status refers to
+        a Mission, Task, or Message. The following fields indicate the specific
+        Mission, Task, or Message the status refers to.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_record name="missionStatusRec" optional="false" declared_type_ref="MissionStatusRec"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="ReportStoredMissions" message_id="4E02" is_command="false">
+        <description>This message is used to provide the receiver with a list of missions
+        stored in the Mission Spooler. The creator of the mission must always
+        be the client that sent the mission to the mission spooler. In other
+        words, if a client sends a mission to a mission spooler, which in turn
+        sends the mission to a second mission spooler, the creator of the
+        mission as seen by the second mission spooler will be its client, the
+        first mission spooler.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_list name="missionList" optional="false" declared_type_ref="MissionList"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+      <message_def name="ReportMissionPlan" message_id="4E03" is_command="false">
+        <description>For the mission ID specified in the corresponding query message, this
+        message reports that part of the mission plan that remains to be
+        executed. That is, the portion of the mission plan that has already
+        been executed is not included. The reported mission plan reflects any
+        changes that have been made to the mission after the mission was
+        spooled. If the mission with the specified id has been executed to
+        completion, or it does not exist, then an empty MissionPlan is
+        reported.</description>
+        <header name="header">
+          <record optional="false" name="HeaderRec">
+            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageID" interpretation="Two byte field to hold message ID"/>
+          </record>
+        </header>
+        <body name="body">
+          <declared_sequence name="missionPlan" optional="false" declared_type_ref="MissionPlan"/>
+        </body>
+        <footer name="footer"/>
+      </message_def>
+    </output_set>
+  </message_set>
+  <internal_events_set>
+    <event_def name="NextMessage">
+      <description>Invoked by the runIteration transition action and occurs when the next
+        message in the mission is ready for processing. If the end of the
+        mission has been reached, this internal event will contain no data.</description>
+      <header name="header"/>
+      <body name="body"/>
+      <footer name="footer"/>
+    </event_def>
+    <event_def name="MissionCompleted">
+      <description>Invoked by the updateMission transition action and occurs when either a
+        ReportMissionStatus message or a events.CommandEvent message has been
+        received for every single message in the mission indicating that the
+        message has been executed to (successful or unsuccessful) completion.</description>
+      <header name="header"/>
+      <body name="body"/>
+      <footer name="footer"/>
+    </event_def>
+    <event_def name="Timeout">
+      <description>Occurs after the SetTimer action is called</description>
+      <header name="header"/>
+      <body name="body"/>
+      <footer name="footer"/>
+    </event_def>
+  </internal_events_set>
+  <protocol_behavior>
+    <start state_name="Available" state_machine_name="Receiving.Ready.NotControlled"/>
+    <state_machine name="accessControl.events.transport.ReceiveFSM">
+      <state name="Receiving" interpretation=" redefine state in order to extend state Receiving">
+        <state name="Ready" interpretation=" redefine state in order to extend initial state Ready">
+          <state name="NotControlled" interpretation=" redefine state in order to extend initial state NotControlled">
+            <state name="Available" interpretation=" redefine state in order to extend Label B initial state Available">
+              <default_state interpretation=" Label P"/>
+            </state>
+          </state>
+          <state name="Controlled" interpretation=" redefine state in order to extend state Controlled">
+            <state name="Available" interpretation=" redefine state in order to extend Label H initial state Available">
+              <state name="Init" interpretation=" Label A initial state Init"/>
+              <state name="Pending" interpretation=" Label E state Pending"/>
+              <state name="Paused" interpretation=" Label E state Paused"/>
+              <state name="Running" interpretation=" Label I state Running"/>
+              <state name="Blocked" interpretation=" Label I state Blocked"/>
+              <default_state interpretation=" Label P"/>
+            </state>
+            <state name="NotAvailable" interpretation=" redefine state in order to extend state NotAvailable">
+              <state name="Aborting" interpretation=" Label Y state Aborting"/>
+              <state name="Pausing" interpretation=" Label Y initial state Pausing"/>
+              <default_state interpretation=" Label F"/>
+            </state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>
+

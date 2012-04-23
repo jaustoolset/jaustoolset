@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fixed_length_string name="subsystem_name" string_length="0" optional="false" xmlns="urn:jaus:jsidl:1.0">
+</fixed_length_string>

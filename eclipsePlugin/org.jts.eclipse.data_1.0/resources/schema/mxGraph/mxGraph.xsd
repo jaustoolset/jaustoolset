@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  mxGraph
+  
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:jaus:mxGraph:0.1" xmlns:ns1="urn:jaus:mxGraph:0.1">
+  <xs:element name="mxGraphModel">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:root"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="root">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ns1:mxCell"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mxCell">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="ns1:mxGeometry"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:unsignedInt"/>
+      <xs:attribute name="parent" type="xs:unsignedInt"/>
+      <xs:attribute name="source" type="xs:unsignedInt"/>
+      <xs:attribute name="target" type="xs:unsignedInt"/>
+      <xs:attribute name="style" use="required" type="xs:string"/>
+      <xs:attribute name="value" use="required" type="xs:string"/>
+      <xs:attribute name="edge" type="xs:unsignedInt"/>
+      <xs:attribute name="vertex" type="xs:unsignedInt"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mxGeometry">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:mxPoint"/>
+        <xs:element minOccurs="0" ref="ns1:mxRectangle"/>
+        <xs:element minOccurs="0" ref="ns1:Array"/>
+      </xs:sequence>
+      <xs:attribute name="relative" type="xs:unsignedInt"/>
+      <xs:attribute name="as" type="xs:string"/>
+      <xs:attribute name="x" type="xs:float"/>
+      <xs:attribute name="y" type="xs:float"/>
+      <xs:attribute name="width" type="xs:float"/>
+      <xs:attribute name="height" type="xs:float"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mxPoint">
+    <xs:complexType>
+      <xs:attribute name="as"/>
+      <xs:attribute name="x" use="required" type="xs:float"/>
+      <xs:attribute name="y" use="required" type="xs:float"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mxRectangle">
+    <xs:complexType>
+      <xs:attribute name="as"/>
+      <xs:attribute name="height" use="required" type="xs:float"/>
+      <xs:attribute name="width" use="required" type="xs:float"/>
+      <xs:attribute name="x" use="required" type="xs:float"/>
+      <xs:attribute name="y" use="required" type="xs:float"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Array">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ns1:mxPoint"/>
+      </xs:sequence>
+      <xs:attribute name="as"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

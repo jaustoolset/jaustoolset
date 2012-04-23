@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="GlobalPoseSensor" id="urn:jaus:jss:mobility:GlobalPoseSensor" version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description>The function of the Global Pose Sensor is to determine the global position and orientation of the platform.  
+    The Report Global Pose message provides the position and orientation of the platform.  The position of the platform 
+    is given in latitude, longitude, and elevation, in accordance with the WGS 84 standard.  Platform orientation is as 
+    defined in Section 4 of the JAUS Mobility Service Set Specification.</description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SetGlobalPose" declared_type_ref="mobility.commandClass.SetGlobalPose"/>
+      <declared_message_def name="SetGeomagneticProperty" declared_type_ref="mobility.commandClass.SetGeomagneticProperty"/>
+      <declared_message_def name="QueryGlobalPose" declared_type_ref="mobility.queryClass.QueryGlobalPose"/>
+      <declared_message_def name="QueryGeomagneticProperty" declared_type_ref="mobility.queryClass.QueryGeomagneticProperty"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportGlobalPose" declared_type_ref="mobility.informClass.ReportGlobalPose"/>
+      <declared_message_def name="ReportGeomagneticProperty" declared_type_ref="mobility.informClass.ReportGeomagneticProperty"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled"/>
+    <state_machine name="accessControl.events.transport.ReceiveFSM" 
+        interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled" interpretation="redefine state in order to extend">
+          <state name="NotControlled" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryGlobalPose" value="msg" interpretation="enveloped query global pose
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send" interpretation="Send a Report
+                    Global Pose message with the current global position">
+                    <argument value=" 'ReportGlobalPose' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryGeomagneticProperty" value="msg" interpretation="enveloped query 
+                    magnetic propery message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send" interpretation="Send a Report
+                    Geomagnetic Property message">
+                    <argument value=" 'ReportGeomagneticProperty' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+            </state>
+          <state name="Controlled" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryGlobalPose" value="msg" interpretation="enveloped query global pose
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send" interpretation="Send a Report
+                    Global Pose message with the current global position">
+                    <argument value=" 'ReportGlobalPose' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryGeomagneticProperty" value="msg" interpretation="enveloped query 
+                    magnetic propery message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send" interpretation="Send a Report
+                    Geomagnetic Property message">
+                    <argument value=" 'ReportGeomagneticProperty' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="SetGlobalPose" value="msg" interpretation="enveloped set global pose
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered 
+                    the transition is received from the client that is in control of this service."/>
+                  <simple/>
+                  <action name="updateGlobalPose" interpretation="Update the global pose for the component."/>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetGeomagneticProperty" value="msg" interpretation="enveloped set 
+                    geomagnetic property message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered 
+                    the transition is received from the client that is in control of this service."/>
+                  <simple/>
+                  <action name="updateGeomagneticProperty" interpretation="Update the location 
+                    specific magnetic variation for adjusting GPS heading."/>
+                </transition>
+              </default_state>
+         </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

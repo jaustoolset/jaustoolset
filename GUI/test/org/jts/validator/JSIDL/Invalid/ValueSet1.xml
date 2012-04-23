@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<value_set offset_to_lower_limit="false" xmlns="urn:jaus:jsidl:1.0">
+  <value_range lower_limit="0" upper_limit="9" lower_limit_type="inclusive" upper_limit_type="inclusive"/>
+  <value_enum enum_index="0" enum_const="’low priority’" interpretation="implies a low priority message."/>
+  <value_enum enum_index="9" enum_const="’medium priority’" interpretation="implies medium priority message."/>
+  <value_enum enum_index="9" enum_const="’high priority’" interpretation="implies a high priority message."/>
+</value_set>

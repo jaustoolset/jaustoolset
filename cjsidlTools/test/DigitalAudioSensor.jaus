@@ -1,0 +1,132 @@
+service DigitalAudioSensor (id="urn:jaus:jss:exp:aeodrs:DigitalAudioSensor", version="0.1") {
+	description "This AEODRS-specific service provides a capability to encode analog audio at the UGV into a digital audio stream and provide that stream to a client.";
+	assumptions "RTP transport for audio stream.";
+	
+	types DigitalAudioSensorTypes {
+		record SensorIDRec {
+			required uint16 SensorID one = 1;
+		}
+
+		bit_field uint16 AudioFormatMap {
+                     format_PCM[0:0] [0,1] one;
+                     format_RAW[1:1] [0,1] one;
+                     format_AU[2:2] [0,1] one;
+                     format_WAV[3:3] [0,1] one;
+                     format_MID[4:4] [0,1] one;
+		}
+		
+		enum uint8 AudioFormatSelector one {
+			RAW_FORMAT = 0;
+			PCM_FORMAT = 1;
+			AU_FORMAT = 2;
+			WAV_FORMAT = 3;
+			MID_FORMAT = 4;
+		}
+		
+		enum uint8 StreamControlAction one {
+			START = 0;
+			PAUSE = 1;
+			STOP = 2;
+		}
+		
+		bit_field uint8 AudioSampleMap {
+			sample_8[0:0] [0,1] one;
+			sample_10[1:1] [0,1] one;
+			sample_12[2:2] [0,1] one;
+			sample_14[3:3] [0,1] one;
+			sample_16[4:4] [0,1] one;
+			sample_20[5:5] [0,1] one;
+			sample_24[6:6] [0,1] one;
+			sample_32[7:7] [0,1] one;
+		}
+			
+		record SensorCapabilitiesRec {
+			required uint16 SensorID one = 1;
+			required uint16 maximumBitrate one [0.0,262144.0] = 2;
+			required uint16 minimumBitrate one [0.0,262144.0] = 3;
+			required AudioSampleMap sampleWidth = 4;
+			required AudioFormatMap formats = 5;
+		}
+		
+		record SensorConfigRec {
+			required uint16 SensorID one = 1;
+			required uint16 bitrate one = 2;
+			required uint8 sampleWidth one = 3;
+			required AudioFormatSelector format = 4;
+		}
+		
+		record EndpointRec {
+			required uint32 ipAddr one = 1;
+			required uint16 port one = 2;
+		}
+		record EndpointId {
+                     required uint16 sensorID one = 1;
+                }
+		sequence SensorEndpointRec {
+                     required EndpointId endpointId = 1;
+                     required EndpointRec endpoint = 2;
+		}
+		record SensorStreamControl {
+			required uint16 SensorID one = 1;
+			required StreamControlAction control = 2;
+		}
+		
+	}
+	
+	messages {
+		query 0xee01 QueryDigitalAudioSensorCapabilities {
+			description "This AEODRS-specific message enables a Sensor client to request a report of the capabilities of the DigitalAudioSensor.";
+			SensorIDRec sensor;
+		}
+		
+		inform 0xfe01 ReportDigitalAudioSensorCapabilities {
+			description "This AEODRS-specific message provides a Sensor client with a report of DigitalAudioSensor capabilities.";
+			SensorCapabilitiesRec capabilities;
+		}
+		
+		query 0xee02 QueryDigitalAudioSensorConfiguration {
+			description "This AEODRS-specific message enables a Sensor client to request the current configuration parameters of the DigitalAudioSensor specified.";
+			SensorIDRec sensor;
+		}
+		
+		inform 0xfe02 ReportDigitalAudioSensorConfiguration {
+			description "This AEODRS-specific message provides a Sensor client with the current configuration parameters of the DigitalAudioSensor.";
+			SensorConfigRec configuration;
+		}
+		
+		command 0xde02 SetDigitalAudioSensorConfiguration {
+			description "This AEODRS-specific message sets the configuration parameters for the specified DigitalAudioSensor.";
+			SensorConfigRec configuration;
+		}
+		
+		query 0xee03 QueryDigitalAudioSensorStreamEndpoint {
+			description "This AEODRS-specific message enables a Sensor  client to query the sensor to determine the current IP endpoint to which the Sensor will send / is sending the RTP audion stream associated with the specified Sensor ID.";
+			SensorIDRec sensor;
+		}
+		
+		inform 0xfe03 ReportDigitalAudioSensorStreamEndpoint {
+			description "This AEODRS-specific message provides the Sensor client with the client IP endpoint currently associated with the DigitalAudioSensor's specified Sensor ID.";
+			SensorEndpointRec endpoint;
+		}
+		
+		command 0xde03 SetDigitalAudioSensorStreamEndpoint {
+			description "This AEODRS-specific message enables the Sensor client to specify the client IP endpoint to which the DigitalAudioSensor's digital audio stream associated with the specified Sensor ID should be sent.";
+			SensorEndpointRec endpoint;
+		}
+		
+		command 0xde05 ControlDigitalAudioSensorStream {
+			description "This AEODRS-specific message enables a client to request the sensor to start, stop and pause the audio stream associated with the specified Sensor ID.";
+			SensorStreamControl control;
+		}
+	}
+	
+	events Event {
+	}
+	
+	protocol {
+		start fsm.Init;
+		state_machine fsm {
+			state Init{}
+		}
+	}
+}

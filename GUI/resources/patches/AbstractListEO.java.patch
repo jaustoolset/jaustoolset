@@ -1,0 +1,48 @@
+148c148,150
+<          items = filterDuplicates(items);
+---
+>          // JTS - allow duplicate items in lists, let validation check
+>          //items = filterDuplicates(items);
+>          // jts
+196c198,201
+<          if (contains(item)) return;
+---
+>     	  // JTS - allow duplicate items
+>          //if (contains(item)) return;
+>     	  // JTS
+> 
+228a234,258
+>    
+>    // JTS - used for list reordering removal instead of default because
+>    // list can now have multiple of the same items
+>    public void remove(int index)
+>    {
+> 	   if( index >= _items.size() )
+> 	   {
+> 		   return;
+> 	   }
+> 	   
+> 	   synchronized(this)
+> 	   {
+> 		   if (index >= 0)
+> 		   {
+> 			   ComplexEObject item = (ComplexEObject)_items.get(index);
+> 			   item.removeAppEventListener(DELETE, this);
+> 			   _items.remove(index);
+> 		   }
+> 	   }
+> 	   if(index >= 0)
+> 	   {
+> 		   fireIntervalRemoved(this, index, index);
+> 	   }
+>    }
+>    // jts
+555c585,586
+<    
+---
+> 
+>    /* JTS
+575c606
+<    }
+---
+>    }// jts*/

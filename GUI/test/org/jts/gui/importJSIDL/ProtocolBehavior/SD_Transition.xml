@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_Transition" id="ImportTest:SD_Transition" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the transition element with all levels of multiplicity.
+
+    The 1st transition has no optional elements and all multiplicity set to 0.
+    The 2nd transition has all optional elements and all multiplicity set to 1.
+    The 3rd transition has all multiplicity set to * (if applicable).
+    The 4th transition has a pop element.
+    The 5th transition has a push element.
+  </description>
+
+  <!-- 
+    element transition 
+    {
+      attribute name { identifier_ns },
+      attribute interpretation { text }?,
+      parameter*,
+      guard?,
+      (simple | push | pop),
+      (action | send_action)*
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_Transition" state_name="Transition1"/>
+    <state_machine name="SD_Transition">
+
+      <!-- The 1st transition has no optional elements and all multiplicity set to 0 -->
+      <state name="Transition1">
+        <transition name="Transition1">
+          <simple/>
+        </transition>
+      </state>
+
+      <!-- The 2nd transition has all optional elements and all multiplicity set to 1 -->
+      <state name="Transition2">
+        <transition name="Transition2" interpretation="A transition interpretation">
+          <parameter type="message_def" value="run"/>            
+          <guard condition="!Test(arg1, arg2) == true"/>   
+          <simple/>
+          <action name="Action"/>
+        </transition>
+      </state>
+      
+      <!-- The 3rd transition has all multiplicity set to * (if applicable) -->
+      <state name="Transition3">
+        <transition name="Transition3">
+          <parameter type="message_def" value="run"/>
+          <parameter type="boolean" value="true"/>
+          <guard condition="!Test(arg1, arg2) == true"/>
+          <simple/>
+          <action name="Action"/>
+          <send_action name="SendAction"/>
+        </transition>
+      </state>
+
+      <!-- The 4th transition has a pop element -->
+      <state name="Transition4">
+        <transition name="Transition1">
+          <pop/>
+        </transition>
+      </state>
+
+      <!-- The 5th transition has a push element -->
+      <state name="Transition5">
+        <transition name="Transition1">
+          <push>
+            <end_state state="Transition2"/>
+          </push>
+        </transition>
+      </state>
+
+    </state_machine>
+  </protocol_behavior>
+</service_def>

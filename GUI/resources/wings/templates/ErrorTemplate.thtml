@@ -1,0 +1,17 @@
+<h1>Application error</h1>
+<hr size="1" noshade="noshade">
+<p><strong>An unexpected error occured in the application.
+      Please retry loading this page or contact the administrator of this site. Apologies for the inconvenience.</strong></p>
+
+<h2>Developer information</h2>
+
+<p>wingS caught an uncaught exception inside the application.</p>
+
+<p><strong>Error message:</strong><object name="EXCEPTION_MESSAGE"></object>
+
+<p><strong>Stack trace:</strong></p>
+<p><div style="height:15em;overflow:auto;border:1px solid black"><object name="EXCEPTION_STACK_TRACE"></object></div></p>
+
+<hr size="1" noshade="noshade">
+<p align="right"><small><emph><object name="WINGS_VERSION"></object></emph></small></p>
+

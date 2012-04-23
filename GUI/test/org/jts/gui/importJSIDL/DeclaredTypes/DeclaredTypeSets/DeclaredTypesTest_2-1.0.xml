@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set name="DeclaredTypesTest_2" id="ImportTests:DeclaredTypesTest_2" version="1.0" xmlns="urn:jaus:jsidl_plus:0.11" >
+    <fixed_field name="DeclaredFixedField" field_type="byte" field_units="one" optional="false" />
+</declared_type_set>

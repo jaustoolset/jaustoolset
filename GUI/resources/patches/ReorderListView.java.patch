@@ -1,0 +1,48 @@
+128a129,132
+>       // JTS -- need start index of item dragged because of 
+>       // change to allow multiple of the same item in a list
+>       private int _currentItemIndex;
+>       // jts
+142a147,152
+>          
+>          // JTS -- estimate current index of dragged item
+>          Point pt = dtde.getLocation();
+>          _currentItemIndex = (int) Math.floor(pt.getY() / rowHeight);
+>          _currentItemIndex = Math.min(_currentItemIndex, _leo.getSize());
+>          // jts
+185a196,205
+> 						// JTS
+> 						// row height was only being initialized after a save occurred.  This led to faults
+> 						// when trying to reorder items in a list before a save occurred
+>                     	if( rowHeight == 0 && _leo.getItems() != null && _leo.getItems().size() > 0 )
+>                     	{
+>                             Component c = getCellRenderer().getListCellRendererComponent(ReorderListView.this,
+> 										_leo.get(0), 0, false, false);
+>                             rowHeight = c.getPreferredSize().getHeight();
+>                     	}
+> 						// jts
+195c215,219
+<                            int itemIndex = _leo.getItems().indexOf(item);
+---
+>                            // JTS
+>                            //int itemIndex = _leo.getItems().indexOf(item);
+>                            int itemIndex = _currentItemIndex;
+>                            // jts
+> 
+201c225
+< 
+---
+>                            
+205,206c229,237
+<                               _leo.remove(item);
+<                               _leo.add(spotIndex, item);
+---
+> 							  // JTS
+> 							  // make sure we are adding a value with a correct index
+> 							  if( spotIndex >= 0 )
+> 							  {
+> 								_leo.remove(itemIndex);
+> 								_leo.add(spotIndex, item);
+> 							  }
+> 							  // jts
+> 

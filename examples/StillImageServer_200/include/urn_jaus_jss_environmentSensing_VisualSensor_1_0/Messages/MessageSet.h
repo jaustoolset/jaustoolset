@@ -1,0 +1,32 @@
+#ifndef URN_JAUS_JSS_ENVIRONMENTSENSING_VISUALSENSOR_1_0_MESSAGESET
+#define URN_JAUS_JSS_ENVIRONMENTSENSING_VISUALSENSOR_1_0_MESSAGESET
+
+#include "CancelEvent.h"
+#include "ConfirmControl.h"
+#include "ConfirmEventRequest.h"
+#include "ConfirmSensorConfiguration.h"
+#include "CreateEvent.h"
+#include "Event.h"
+#include "QueryAuthority.h"
+#include "QueryControl.h"
+#include "QueryEvents.h"
+#include "QuerySensorGeometricProperties.h"
+#include "QueryTimeout.h"
+#include "QueryVisualSensorCapabilities.h"
+#include "QueryVisualSensorConfiguration.h"
+#include "RejectControl.h"
+#include "RejectEventRequest.h"
+#include "ReleaseControl.h"
+#include "ReportAuthority.h"
+#include "ReportControl.h"
+#include "ReportEvents.h"
+#include "ReportSensorGeometricProperties.h"
+#include "ReportTimeout.h"
+#include "ReportVisualSensorCapabilities.h"
+#include "ReportVisualSensorConfiguration.h"
+#include "RequestControl.h"
+#include "SetAuthority.h"
+#include "SetVisualSensorConfiguration.h"
+#include "UpdateEvent.h"
+
+#endif //URN_JAUS_JSS_ENVIRONMENTSENSING_VISUALSENSOR_1_0_MESSAGESET

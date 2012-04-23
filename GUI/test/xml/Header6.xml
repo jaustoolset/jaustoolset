@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="TestSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">The set of services to be tested</description>
+	<service_def name="Header6" id="urn:org.jts.test:Header6" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+  	<description/>
+  	<assumptions/>
+  	<message_set>
+  		<input_set>
+  			<message_def name="MsgIn" is_command="true" message_id="0001">
+  				<description xml:space="default"/>
+  				<header name="Header">
+  					<record name="Record4" optional="false">
+  						<variable_length_field name="VariableLengthField1" field_format="MJPEG" optional="false" interpretation="An 'unbounded' variable length field for MJPEG">
+  							<count_field field_type_unsigned="unsigned integer"/>
+  						</variable_length_field>
+  					</record>
+  				</header>
+  				<body name="EmptyBody"/>
+  				<footer name="EmptyFooter"/>
+  			</message_def>
+  		</input_set>
+  		<output_set/>
+  	</message_set>
+  	<internal_events_set/>
+  	<protocol_behavior>
+  		<start state_machine_name="stateMachine" state_name="Ready"/>
+  		<state_machine name="stateMachine">
+  			<state name="Ready"/>
+  		</state_machine>
+  	</protocol_behavior>
+  </service_def>
+</ns1:service_set>

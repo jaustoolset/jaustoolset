@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<header xmlns="urn:jaus:jsidl:1.0" name="HeaderTest3">
+	<declared_variant name="VariantTest1" declared_type_ref="unitTest.VariantTest1"/>
+</header>

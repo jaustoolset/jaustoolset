@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:ParameterTest1"
+   name="ParameterTest1" version="1.0">
+  <description xml:space="preserve">
+     Parameter type must be a string literal of type string or a namespaced name of a type defined inside the trigger message or internal event
+  </description>
+  <assumptions/> 
+  <message_set>
+    <input_set>
+       <message_def name="Message1" message_id="0001" is_command="true">
+          <description xml:space="preserve">
+             A message
+          </description>
+          <header name="header">
+             <record name="headerRec" optional="false">
+                <fixed_field name="Field1" field_type="byte" field_units="one" optional="false"/>
+             </record>
+          </header>
+          <body name="body"/>
+          <footer name="footer"/>
+       </message_def>
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="Ready"/>
+    <state_machine name="FSM">
+      <state name="Ready">
+         <transition name="Message1">
+            <!-- headerRec is defined in Message1  -->
+            <parameter type="Message1.header.headerRec" value="someRec"/>
+            <simple/>
+         </transition>
+         <transition name="Message1">
+            <!-- unknownRec is not defined in Message1  -->
+            <parameter type="Message1.body.unknownRec" value="someRec"/>
+            <simple/>
+         </transition>
+         <transition name="Message1">
+            <!-- someObject is undefined  -->
+            <parameter type="someObject" value="obj"/>
+            <simple/>
+         </transition>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

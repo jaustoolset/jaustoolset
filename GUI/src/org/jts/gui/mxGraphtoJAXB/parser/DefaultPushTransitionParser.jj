@@ -1,0 +1,175 @@
+/* Assumes guard condition is not present */
+
+
+options {
+  LOOKAHEAD = 1;
+  CHOICE_AMBIGUITY_CHECK = 2;
+  OTHER_AMBIGUITY_CHECK = 1;
+  STATIC = false;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  ERROR_REPORTING = true;
+  JAVA_UNICODE_ESCAPE = false;
+  UNICODE_INPUT = false;
+  IGNORE_CASE = false;
+  USER_TOKEN_MANAGER = false;
+  USER_CHAR_STREAM = false;
+  BUILD_PARSER = true;
+  BUILD_TOKEN_MANAGER = true;
+  SANITY_CHECK = true;
+  FORCE_LA_CHECK = false;
+}
+
+PARSER_BEGIN(DefaultPushTransitionParser)
+package org.jts.gui.mxGraphtoJAXB.parser;
+
+import org.jts.gui.mxGraphtoJAXB.mxDefaultPushTransition;
+import org.jts.gui.mxGraphtoJAXB.mxParameter;
+import org.jts.gui.mxGraphtoJAXB.mxAction;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Vector;
+
+/** Default Push transition element */
+public class DefaultPushTransitionParser {
+
+  /** Main entry point. */
+  public static void main(String args[]) throws ParseException {
+  String test = "trigger1;" +
+                      "trigger2() {endState};" +
+                      "trigger3()[]{endState};" + 
+                      "trigger4()[]/{endState};" + 
+                      "namespace.trigger5(type1 arg1)[]/action1(arg1){endState};" +
+                      "trigger6(type1 arg1, type2 arg2)[]/action1(arg1), action2(arg1, arg2){endState};" +
+                      "trigger7(type1 arg1, type2 '8')[]/action1('9'), action2('LIT', arg2){endState}; ";
+  InputStream stream = new ByteArrayInputStream( test.getBytes() );
+  
+  DefaultPushTransitionParser parser = new DefaultPushTransitionParser( stream );
+  Vector <mxDefaultPushTransition>defaultPushTransitions = parser.Input();
+  for(int ii=0; ii<defaultPushTransitions.size(); ii++)
+      System.out.println(defaultPushTransitions.get(ii));
+  }
+}
+
+PARSER_END(DefaultPushTransitionParser)
+
+SKIP :
+{
+  " "
+  | "\t"
+  | "\n"
+  | "\r"
+  | "\""
+}
+
+TOKEN :
+{
+    <ID: ["a"-"z","A"-"Z","_"] ( ["a"-"z","A"-"Z","_","0"-"9","."] )*>
+      |
+      <LITERAL: "\'" (~["\'"])* "\'">    
+      |
+    <NUM: ( ["0"-"9","."] )+>
+}
+
+/** Parses a default push transition */
+Vector Input() :
+{
+Vector <mxDefaultPushTransition>transitionList = new Vector<mxDefaultPushTransition>();
+String name = null;  
+Vector <mxParameter> paramList = new Vector<mxParameter>();
+Vector <mxAction> actionList = new Vector<mxAction>();
+String endState = null;
+}
+{      
+    ("[" "]")?  ("/" actionList = Actions() )?  ("{"  (endState=Identifier())?  "}")? ";"
+      {
+        transitionList.add( new mxDefaultPushTransition( null, null, actionList, null, endState) );
+		
+		actionList = new Vector<mxAction>();
+		endState = null;
+      }
+   (
+     ("[" "]")?  ("/" actionList = Actions() )?  ("{"(endState=Identifier())?  "}")? ";"
+      {
+        transitionList.add( new mxDefaultPushTransition( null, null, actionList, null, endState) );
+		
+		actionList = new Vector<mxAction>();
+		endState = null;
+      }
+   )* <EOF>
+    {
+      return transitionList;
+    }
+}
+  
+  
+/******** An action list *********/
+
+Vector Actions() :
+{
+Vector <mxAction>actionList = new Vector<mxAction>();
+String name = new String();  
+Vector args = null;  
+}
+{  
+   ( name=Identifier() "(" args = Arguments() ")"
+    {
+      mxAction action = new mxAction(name, args, mxAction.TYPE_TRANSITION);
+      actionList.add(action);     
+    } )?
+   ("," name=Identifier() "(" args = Arguments() ")"
+    {
+      mxAction action = new mxAction(name, args, mxAction.TYPE_TRANSITION);
+      actionList.add(action);
+    }  
+   )*
+    {
+      return actionList;
+    }
+}
+
+Vector Arguments() :
+{
+Vector <String>args = new Vector<String>();
+String str = null;
+}
+{
+   [ str = ArgValue() ]
+    { if( str != null ) args.add(str); }
+   (
+   "," str = ArgValue() 
+    { if( str != null ) args.add(str); }    
+   )*
+    {
+      return args;
+    }
+}
+
+String ArgValue() :
+{
+Token t;
+String s;
+}
+{
+   (t=<ID> | t=<LITERAL>)
+    {
+      return t.image;
+    }
+}
+
+
+/************ an identifier ***************/
+String Identifier() :
+{
+Token t;
+}
+{
+  t=<ID>
+  {
+     return t.image;
+   }
+}
+    
+
+         

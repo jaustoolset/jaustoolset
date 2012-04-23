@@ -1,0 +1,19 @@
+Import('env')
+
+sources = Split("""
+		AdditionServerServiceDefService.cs
+		AdditionServerServiceDef_additionServerFSM.cs
+		AdditionServerServiceDef_additionServerFSM_sm.cs
+		InternalEvents\InitToReadyEventDef.cs
+		Messages\QueryAddition.cs
+		Messages\ReportAddition.cs
+	""")
+
+libs = ['statemap', 'CSharpCommon' ]
+pathlibs = env.CLIRefs(libs)
+
+lib = env.CLILibrary('./lib/AdditionServerServiceDefService', sources, ASSEMBLYREFS=pathlibs)
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )
+env.AddToRefPaths(lib)
+Return('lib')

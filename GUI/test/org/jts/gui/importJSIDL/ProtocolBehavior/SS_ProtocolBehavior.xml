@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_set xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SS_ProtocolBehavior" id="ImportTest:SS_ProtocolBehavior" version="1.0">
+  <description xml:space="preserve"> 
+    This service set is part of the ImportTests.
+    This service set is developed to test the protocol_behavior element with full coverage of all multiplicity options.
+    This service set also contains full coverage of the start element and the state_machine element.
+    
+    The first service tests a single start state and one state_machine.
+    The second service tests the is_stateless attribute, multiple start states and multiple state_machines.
+  </description>
+
+  <!-- 
+    element protocol_behavior 
+    {
+      attribute is_stateless { xsd:boolean }?,
+      \start+,
+      state_machine+
+    }
+    
+    element start 
+    {
+      attribute state_machine_name { identifier_ns },  
+      attribute state_name { identifier_ns }, 
+      attribute interpretation { text }?
+    }
+    
+    element state_machine 
+    {
+      attribute name { identifier_ns },
+      attribute interpretation { text }?,
+      state+
+    }    
+  -->
+
+  <service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+    name="SS_ProtocolBehavior_1" id="ImportTest:SS_ProtocolBehavior_1" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service tests protocol_behavior with a single start state and one state_machine.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_ProtocolBehavior_1" state_name="init"/>
+      <state_machine name="SS_ProtocolBehavior_1">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+
+  <service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+    name="SS_ProtocolBehavior_2" id="ImportTest:SS_ProtocolBehavior_2" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service tests a protocol_behavior with the is_stateless attribute, multiple start states and multiple state_machines.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="true">
+      <start state_machine_name="SS_ProtocolBehavior_2" state_name="init" interpretation="A Start Element interpretation."/>
+      <start state_machine_name="SS_ProtocolBehavior_3" state_name="start_state"/>
+      <state_machine name="SS_ProtocolBehavior_2">
+        <state name="init"/>
+      </state_machine>
+      <state_machine name="SS_ProtocolBehavior_3" interpretation="This state_machine has multiple states">
+        <state name="start_state"/>
+        <state name="another_state"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>  
+
+</service_set>

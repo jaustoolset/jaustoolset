@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="PrimitiveDriver" id="urn:jaus:jss:mobility:PrimitiveDriver" version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description>The Primitive Driver allows for basic platform mobility.  This service does not imply any 
+    particular platform type such as tracked or wheeled, but describes mobility in six degrees of 
+    freedom using a percent of available effort in each direction.  Additionally, no power plant (gasoline, 
+    diesel, or battery) is implied and the service functions strictly in an open loop manner, i.e., a 
+    velocity is not commanded since that requires a speed sensor.  Note that the specific actuator 
+    commands are not defined by JAUS.</description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SetWrenchEffort" declared_type_ref="mobility.commandClass.SetWrenchEffort"/>
+      <declared_message_def name="QueryWrenchEffort" declared_type_ref="mobility.queryClass.QueryWrenchEffort"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportWrenchEffort" declared_type_ref="mobility.informClass.ReportWrenchEffort"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="management.accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled.StateA"/>
+    <state_machine name="management.accessControl.events.transport.ReceiveFSM" 
+        interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled" interpretation="redefine state in order to extend">
+          <state name="NotControlled" initial_state="StateA" interpretation="redefine state in order to extend">
+            <state name="StateA" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryWrenchEffort" value="msg" interpretation="enveloped query wrench effort
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Wrench Effort message">
+                    <argument value=" 'ReportWrenchEffort' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+             </state>
+            </state>
+          <state name="Controlled" initial_state="StateB" interpretation="redefine state in order to extend">
+            <state name="StateB" interpretation="redefine state in order to extend">
+              <state name="Ready">
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetWrenchEffort" value="msg" interpretation="enveloped set wrench
+                    effort message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered the 
+                    transition is received from the client that is in control of this service."/>
+                  <simple/>
+                  <action name="setWrenchEffort" interpretation="Set the wrench effort for the platform.">
+                    <argument value="msg"/>
+                  </action>
+                  </transition>
+              </state>
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryWrenchEffort" value="msg" interpretation="enveloped query wrench effort
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Wrench Effort message">
+                    <argument value=" 'ReportWrenchEffort' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+              </state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

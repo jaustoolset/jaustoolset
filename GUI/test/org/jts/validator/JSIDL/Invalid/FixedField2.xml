@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fixed_field name="orientationRms" field_type="unsigned integer" field_units="radian" 
+			 optional="true" interpretation="A RMS value indicating the validity; of the orientation data." xmlns="urn:jaus:jsidl:1.0">
+
+	<scale_range integer_function="round" real_lower_limit="-1.0" real_upper_limit="1.0" />
+
+	<value_set offset_to_lower_limit="false" xmlns="urn:jaus:jsidl:1.0">
+		<value_range lower_limit="0" upper_limit="9" lower_limit_type="inclusive" upper_limit_type="inclusive"/>
+  		<value_enum enum_index="0" enum_const="’low priority’" interpretation="implies a low priority message."/>
+  		<value_enum enum_index="5" enum_const="’medium priority’" interpretation="implies medium priority message."/>
+  		<value_enum enum_index="9" enum_const="’high priority’" interpretation="implies a high priority message."/>
+	</value_set>
+
+</fixed_field>

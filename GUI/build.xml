@@ -1,0 +1,682 @@
+
+<project name="JAUSToolset" default="run">
+	
+    <description>This is the JAUS Toolset. It is a project that contains tools such as code generation, document generation, etc. for JSIDL defined JAUS services.</description>
+	
+	<!-- project defines -->
+    <property name="project.name" value="JTS" />
+	<!-- build directories -->
+    <property name="build.dir" location="build" />
+    <property name="build.classes.dir" location="${build.dir}/classes" />
+	<!-- Source directories -->
+    <property name="src.dir" location="src" />
+    <property name="templates.dir" location="templates" />
+	<!-- Library directories -->
+    <property name="lib.basedir" location="lib" />
+    <property name="lib.dir" location="${lib.basedir}/runtime" />
+    <property name="lib.tools.dir" location="${lib.basedir}/tools" />
+    <property name="lib.jaxb.dir" value="${lib.basedir}/jaxb-ri-20091104/lib" />
+    <property name="lib.jaxb-plugin.dir" value="${lib.basedir}/jaxb-plugins" />
+    <property name="lib.javacc.dir" value="${lib.basedir}/javacc-4.2" />
+    <property name="lib.junit.dir" value="${lib.basedir}/junit" />
+    <property name="lib.smc.dir" value="${lib.basedir}/smc" />
+    <property name="lib.jargs.dir" value="${lib.basedir}/jargs-1.0" />
+    <property name="lib.jep.dir" value="${lib.basedir}/jep" />
+    <property name="lib.cobertura.dir" value="${lib.basedir}/cobertura" />
+    <property name="lib.cobertura.lib.dir" value="${lib.cobertura.dir}/lib" /> 
+    <property name="lib.saxon.dir" value="${lib.basedir}/saxon" />
+	<!-- Test directories -->
+    <property name="test.dir" location="test" />
+    <property name="test.src.dir" location="${test.dir}" />
+    <property name="test.classes.dir" location="${build.classes.dir}" />
+    <property name="test.junit.lib.dir" location="${lib.basedir}/junit" />
+    <property name="test.xmlunit.lib.dir" location="${lib.basedir}/xmlunit" />
+    <property name="test.reports.dir" location="test-reports" />
+	<!-- Main directories -->
+    <property name="main.class" value="com.u2d.view.swing.EntryPoint" />
+    <property name="code.gen.main.class" value="org.jts.codegenerator.CodeGenerator" />
+    <property name="doc.gen.main.class" value="org.jts.docGenerator.DocGeneratorCLI" />
+	<!-- Misc. directories -->
+    <property name="current.dir" location="./" />
+    <property name="hbprops" value="hibernate" />
+    <property name="reveng-pkgname" value="org.jmatter.app"  description="some default for the pkg name.." />
+    <property name="class.file" value="com.u2d.nfjs.Talk" />
+    <property name="dist.dir" location="dist" />
+    <property name="eclipse.dir" location="../eclipsePlugin"/>
+    <property name="codegen.dist.dir" location="${eclipse.dir}/org.jts.eclipse.ui" />
+    <property name="docgen.dist.dir" location="${eclipse.dir}/org.jts.eclipse.ui" />
+    <property name="db.dir" location="db" />
+    <property name="nodeManager.dir" location="../nodeManager" />
+    <property name="examples.dir" location="../examples" />
+    <property name="doc.dir" location="doc" />
+    <property name="promela.dir" location="../promelaCodeGenerator"/>
+    <property name="wiresharkPlugin.dir" location="../wiresharkPlugin/packet-jaus" />
+	<!-- Paths -->
+    <path id="dist.path.copy">
+        <fileset dir="${lib.dir}" includes="**/*.jar"  excludes="plugins/*.jar"/>
+        <fileset dir="${lib.jaxb.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jaxb-plugin.dir}" includes="*.jar"/>
+        <fileset dir="${lib.javacc.dir}" includes="*.jar"/>
+        <fileset dir="${lib.smc.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jargs.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jep.dir}" includes="*.jar"/>
+        <fileset dir="${lib.saxon.dir}" includes="*.jar"/>
+        <pathelement location="${build.classes.dir}" />
+    </path>
+    <path id="class.path">
+        <fileset dir="${lib.dir}" includes="**/*.jar"  excludes="plugins/*.jar"/>
+        <fileset dir="${lib.jaxb.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jaxb-plugin.dir}" includes="*.jar"/>
+        <fileset dir="${lib.junit.dir}" includes="*.jar"/>
+        <fileset dir="${lib.javacc.dir}" includes="*.jar"/>
+        <fileset dir="${lib.smc.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jargs.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jep.dir}" includes="*.jar"/>
+        <fileset dir="${lib.cobertura.dir}" includes="*.jar"/>
+        <fileset dir="${lib.cobertura.lib.dir}" includes="*.jar"/> 
+        <fileset dir="${lib.saxon.dir}" includes="*.jar"/>
+        <fileset dir="${promela.dir}/dist" includes="*.jar" />
+        <pathelement location="${build.classes.dir}" />
+    </path>
+    <path id="test.classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"  excludes="plugins/*.jar"/>
+        <fileset dir="${lib.jaxb.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jaxb-plugin.dir}" includes="*.jar"/>
+        <fileset dir="${lib.junit.dir}" includes="*.jar"/>
+        <fileset dir="${lib.javacc.dir}" includes="*.jar"/>
+        <fileset dir="${lib.smc.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jargs.dir}" includes="*.jar"/>
+        <fileset dir="${lib.jep.dir}" includes="*.jar"/>
+        <fileset dir="${lib.cobertura.dir}" includes="*.jar"/>
+        <fileset dir="${lib.cobertura.lib.dir}" includes="*.jar"/>
+        <fileset dir="${test.junit.lib.dir}" includes="**/*.jar" />
+        <fileset dir="${test.xmlunit.lib.dir}" includes="*.jar" />
+        <fileset dir="${promela.dir}/dist" includes="*.jar" />
+        <pathelement location="${build.classes.dir}" />
+        <pathelement location="${test.classes.dir}" />
+    </path>
+    <path id="libtools.path">
+	<!-- TaskDefs -->
+        <fileset dir="${lib.tools.dir}" includes="*.jar" />
+    </path>
+    <taskdef classpathref="class.path" resource="tasks.properties" />
+    <taskdef name="make-persistclasses" classname="com.u2d.tools.AntPersistClassesMaker" classpathref="libtools.path" />
+    <taskdef name="script-maker" classname="com.u2d.tools.ShellScriptMaker" classpathref="libtools.path" />
+    <taskdef name="xjc" classname="com.sun.tools.xjc.XJC2Task">
+        <classpath refid="class.path"/>
+    </taskdef>
+    <target name="init">
+        <tstamp />
+        <mkdir dir="${build.classes.dir}" />
+        <available property="keystore.exists" file="tempKeystore"/>
+    </target>
+    <target name="clean" description="Delete build and test-reports directories">
+        <delete dir="${build.dir}" />
+        <delete dir="${test.reports.dir}" />
+        <delete dir="${src.dir}/org/jts/docGenerator/indexFiles/binding" />
+        <delete dir="${src.dir}/org/jts/jsidl/binding" />
+        <delete dir="${src.dir}/org/jts/mxGraph/binding" />
+    </target>
+    <target name="clean-database" description="Delete database directory">
+        <echo>Cleaning database...</echo>
+        <delete dir="${db.dir}" />
+    </target>
+    <target name="backup-database">
+        <input message="Enter a backup directory name below and press enter, or just press enter to generate a name based on a timestamp.  OVERWRITES ANY EXISTING BACKUP DIRECTORY WITH SAME NAME:"
+               addproperty="backup-name" defaultvalue=""/>
+        <script language="groovy">
+            <classpath> <!-- get the Groovy jarfile -->
+                <fileset dir="${lib.dir}" includes="*.jar" />
+            </classpath>
+            import java.text.SimpleDateFormat
+            import org.apache.commons.io.FileUtils
+
+            project_dir = new File(project.getProperty("current.dir"))
+            db_dir = new File(project.getProperty("db.dir"))
+
+            if (db_dir.exists()) {
+                backup_dirname = project.getProperty("backup-name")
+
+                if (backup_dirname == "") {
+                    // get a timestamp and name the directory based on that.
+                    cal = Calendar.getInstance();
+                    backup_dirname = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(cal.getTime())
+                }
+
+                backup_base_dir = new File(project_dir, "db_backup")
+                backup_output_dir = new File(backup_base_dir, backup_dirname)
+
+                println "Database backed up to dir: " + backup_output_dir.getAbsolutePath()
+
+                // clean out the directory
+                if (!backup_output_dir.exists()) {
+                    backup_output_dir.mkdirs();
+                } else {
+                    // recursively deletes backup_output_dir and everything under it.
+                    FileUtils.deleteDirectory(backup_output_dir)
+                }
+
+                // copy files
+                FileUtils.copyDirectory(db_dir, backup_output_dir)
+
+            } else {
+                println "Cannot backup database - the database does not exist."
+            }
+
+        </script>
+    </target>
+    <target name="restore-database">
+        <input message="Enter the directory name to restore from below and press enter:"
+               addproperty="backup-name" defaultvalue=""/>
+        <script language="groovy">
+            <classpath> <!-- get the Groovy jarfile -->
+                <fileset dir="${lib.dir}" includes="*.jar" />
+            </classpath>
+            import org.apache.commons.io.FileUtils
+
+            backup_dirname = project.getProperty("backup-name");
+
+            if (backup_dirname != "") {
+                project_dir = new File(project.getProperty("current.dir"))
+                db_dir = new File(project.getProperty("db.dir"))
+
+                backup_base_dir = new File(project_dir, "db_backup")
+                backup_source_dir = new File(backup_base_dir, backup_dirname)
+
+                if (backup_source_dir.exists()) {
+                    println "Restoring database from dir: " + backup_source_dir.getAbsolutePath()
+
+                    // clean out existing database and copy files from backup into it
+                    if (!db_dir.exists()) {
+                        FileUtils.mkdirs(db_dir)
+                    } else {
+                        FileUtils.cleanDirectory(db_dir)
+                    }
+                    FileUtils.copyDirectory(backup_source_dir, db_dir)
+                } else {
+                    println "No backup exists at " + backup_dirname + ".  Run ant restore-database again with name of an existing backup directory."
+                }
+
+            } else {
+                println "A directory name is required to restore the database.  Run ant restore-database again."
+            }
+        </script>
+    </target>
+    <target name="keystore" unless="keystore.exists">
+        <genkey alias="unknown" storepass="public" keystore="tempKeystore" dname="CN=Anonymous Signature, OU=unknown, o=unknown, c=unknown" />
+    </target>
+    <target name="reveng-db" depends="init">
+        <java classname="com.u2d.persist.ReverseEngineer" classpathref="class.path" fork="true">
+            <arg line="${reveng-pkgname} resources/${hbprops}.properties" />
+        </java>
+		<!-- 
+		todo:
+		   run schema-update target afterwards
+		   revise jmatter to not necessitate the next step of producing and running the sql update script
+		 -->
+    </target>
+    <target name="bind" description="generate the Java content classes from the schema">
+        <echo message="Binding schema for JSIDL documentation..."/>
+        <xjc schema="resources\schema\indexFormat.xsd" destDir="${src.dir}" package="org.jts.docGenerator.indexFiles.binding" removeOldOutput="yes">
+            <produces dir="${src.dir}/org/jts/docGenerator/indexFiles/binding" />
+        </xjc>
+    </target>
+    <target name="bindJSIDLPlus" description="need to change from jsidl.binding to jsidl_plus.binding ">
+        <echo message="Creating JSIDL schema derived classes and interfaces..."/>
+        <xjc schema="resources/schema/JSIDL_Plus/jsidl_plus.xsd" destDir="${src.dir}" package="org.jts.jsidl.binding" removeOldOutput="yes">
+            <produces dir="${src.dir}/org/jts/jsidl/binding" />
+            <arg line="-Xcommons-lang"/>
+            <classpath refid="class.path"/>
+        </xjc>
+    </target>
+    <target name="bindmxGraph">
+        <echo message="Creating mxGraph schema derived classes and interfaces..."/>
+        <xjc schema="resources/schema/mxGraph/mxGraph.xsd" destDir="${src.dir}" package="org.jts.mxGraph.binding" removeOldOutput="yes">
+            <produces dir="${src.dir}/org/jts/mxGraph/binding" />
+            <arg line="-readOnly"/>
+            <classpath refid="class.path"/>
+        </xjc>
+    </target>
+    <target name="build-parsers">
+        <javacc target="${src.dir}/org/jts/validator/parsers/Gaurd.jj"
+				javacchome="${lib.javacc.dir}"/>
+
+        <javacc target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/StateMachineParser.jj"
+				javacchome="${lib.javacc.dir}"/>
+		
+        <javacc target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/StateParser.jj"
+				javacchome="${lib.javacc.dir}"/>
+		
+        <javacc	target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/ParameterParser.jj"
+				javacchome="${lib.javacc.dir}"/>
+	
+        <javacc	target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/InternalTransitionParser.jj"
+	                   javacchome="${lib.javacc.dir}"/>
+	  
+        <javacc	target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/SimpleTransitionParser.jj"
+				javacchome="${lib.javacc.dir}"/>
+		
+        <javacc	target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/PushTransitionParser.jj"
+				javacchome="${lib.javacc.dir}"/>
+		
+        <javacc	target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/PopTransitionParser.jj"
+				javacchome="${lib.javacc.dir}"/>
+	
+        <javacc	target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/DefaultSimpleTransitionParser.jj"
+	    javacchome="${lib.javacc.dir}"/>
+	  
+        <javacc	target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/DefaultInternalTransitionParser.jj"
+	    javacchome="${lib.javacc.dir}"/>
+	  
+        <javacc	target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/DefaultPushTransitionParser.jj"
+	    javacchome="${lib.javacc.dir}"/>
+	  
+        <javacc	target="${src.dir}/org/jts/gui/mxGraphtoJAXB/parser/DefaultPopTransitionParser.jj"
+	    javacchome="${lib.javacc.dir}"/>
+    </target>
+    <target name="compile-autoupdate" description="compile auto update code" depends="init">
+        <javac srcdir="${src.dir}"
+          includes="org/jts/gui/autoUpdateCode/**"
+          destdir="${build.classes.dir}"
+          classpathref="class.path"
+          listfiles="true"
+          target="1.5"
+          debug="on" deprecation="on" />
+        <java classname="org.jts.gui.autoUpdateCode.AllUpdates" classpathref="class.path" fork="true"/>
+    </target>
+    <target name="compile" description="compile code" depends="init, compile-autoupdate, build-parsers">
+        <javac srcdir="${src.dir}"
+			destdir="${build.classes.dir}"
+			classpathref="class.path"
+			listfiles="true"
+			target="1.5"
+			debug="on" deprecation="on" />
+		
+        <make-persistclasses template="${src.dir}/persistClasses.st"
+			target="${build.classes.dir}/persistClasses.xml"
+			classpathref="class.path">
+            <fileset dir="${src.dir}" includes="**/*.java" />
+        </make-persistclasses>
+	
+        <copy todir="${build.classes.dir}">
+            <fileset dir="resources" includes="images/*.gif,images/*.png,images/*.jpg" />
+            <fileset dir="resources" includes="model-metadata.properties" />
+            <fileset dir="resources" includes="styles.css" />
+            <fileset dir="resources/data" includes="*.xml,*.json" />	<!-- codes files -->
+	    <!--	<fileset dir="resources" includes="log4j.properties" /> -->
+            <fileset dir="${src.dir}" includes="**/*.xml,**/*.json,**/*.jasper,**/*.jfrm,**/*.properties,**/*.xsl,**/*.css,**/*.html" />
+            <fileset dir="${src.dir}" includes="**/*.gif,**/*.png" /><!-- any images referenced by jfree report xmls -->
+        </copy>
+		
+        <native2ascii encoding="UTF-8" src="resources" dest="${build.classes.dir}" includes="locale-metadata*.properties" />
+		
+        <copy file="resources/${hbprops}.properties" tofile="${build.classes.dir}/hibernate.properties" />
+    </target>
+    <target name="jar" depends="schema-export" />
+    <target name="jar-dist" depends="init, bind, bindJSIDLPlus, bindmxGraph, compile, jar-promela">
+        <pathconvert targetos="unix" property="mf.classpath" pathsep=" ">
+            <path refid="dist.path.copy" />
+            <map from="${current.dir}\" to=""/>
+        </pathconvert>
+        <mkdir dir="${dist.dir}"/>
+        <jar destfile="${dist.dir}/${project.name}.jar">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}"/>
+                <attribute name="Class-Path" value="${mf.classpath}"/>
+                <attribute name="X-COMMENT" value="Main-Class will be added automatically by build"/>
+            </manifest>
+            <fileset dir="${build.classes.dir}" includes="**/*" />
+        </jar>
+        <copy todir="${dist.dir}/db">
+            <fileset dir="${db.dir}" includes="**/*" />
+        </copy>
+        <copy todir="${dist.dir}/nodeManager">
+            <fileset dir="${nodeManager.dir}" includes="**/*" />
+        </copy>
+        <copy todir="${dist.dir}/examples">
+            <fileset dir="${examples.dir}" includes="**/*" />
+        </copy>
+        <copy todir="${dist.dir}">
+            <fileset dir="${doc.dir}" includes="*.pdf" />
+            <fileset dir="${doc.dir}" includes="License.txt" />
+        </copy>
+        <copy todir="${dist.dir}/wiresharkPlugin">
+            <fileset dir="${wiresharkPlugin.dir}" includes="*.dll" />
+            <fileset dir="${wiresharkPlugin.dir}" includes="packet-jaus-support/**" />
+        </copy>
+        <copy todir="${dist.dir}/lib">
+            <fileset dir="${lib.basedir}" includes="runtime/" />
+            <fileset dir="${lib.basedir}" includes="tools/" />
+            <fileset dir="${lib.basedir}" includes="jaxb-ri-20091104/lib/" />
+            <fileset dir="${lib.basedir}" includes="jaxb-plugins/" />
+            <fileset dir="${lib.basedir}" includes="javacc-4.2/" />
+            <fileset dir="${lib.basedir}" includes="smc/" />
+            <fileset dir="${lib.basedir}" includes="jargs-1.0/" />
+            <fileset dir="${lib.basedir}" includes="jep/" />
+            <fileset dir="${lib.basedir}" includes="saxon/" />
+        </copy>
+        <copy todir="${dist.dir}/templates">
+            <fileset dir="${templates.dir}" includes="**/*" />
+        </copy>
+        <copy todir="${dist.dir}/resources/schema">
+            <fileset dir="resources/schema"/>
+        </copy>
+        <copy todir="${dist.dir}/resources/xml">
+            <fileset dir="resources/xml"/>
+        </copy>
+        <copy todir="${dist.dir}/resources/docGenerator">
+            <fileset dir="resources/docGenerator"/>
+        </copy>
+        <copy todir="${dist.dir}/eclipsePlugin">
+          <fileset dir="${eclipse.dir}" includes="*.zip"/>
+        </copy>
+    </target>
+    <target name="run" description="run app">
+        <property name="tmpname" refid="class.path"/>
+        <echo message="Running JTS: classpath = ${tmpname}"/>
+        <java classname="${main.class}" classpath="${tmpname}"
+			fork="true" maxmemory="512m">
+			<!-- to test localization, uncomment this..
+			<sysproperty key="user.language" value="fr" />
+			-->
+            <sysproperty key="javax.xml.parsers.DocumentBuilderFactory"
+                               value="org.apache.xerces.jaxp.DocumentBuilderFactoryImpl"/>
+            <sysproperty key="javax.xml.transform.TransformerFactory"
+                               value="com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl"/>
+            <sysproperty key="javax.xml.parsers.SAXParserFactory"
+                               value="org.apache.xerces.jaxp.SAXParserFactoryImpl"/>
+            <sysproperty key="javax.xml.xpath.XPathFactory"
+                               value="com.sun.org.apache.xpath.internal.jaxp.XPathFactoryImpl"/>
+            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+        </java>
+    </target>
+    <!-- 
+	To run directly from the command prompt use (remove space between double dashes in command line options): 
+      java -cp .;build/classes;lib/jargs-1.0/jargs.jar;lib/smc/Smc.jar;lib/smc org.jts.codegenerator.CodeGenerator -i [input path] -o [output path] -n [component name] - -id [component id]
+      
+      If running from a cygwin console, use: java -classpath `cygpath -wp $CLASSPATH` [arguments]
+    -->
+    <target name="run-code-generator" description="runs the code generator only" depends="compile">
+        <java classname="${code.gen.main.class}" fork="true">
+            <classpath refid="class.path"/>
+            <arg line="-i testXML/jts_final_test/PalindromeSet.xml -o Demo/PalindromeSet1 -n PalindromeComponent --id 2"/>
+            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+        </java>
+        <java classname="${code.gen.main.class}" fork="true">
+            <classpath refid="class.path"/>
+            <arg line="-i testXML/jts_final_test/PalindromeSet.xml -o Demo/PalindromeSet2 -n PalindromeComponent --id 3"/>
+            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+        </java>
+        <java classname="${code.gen.main.class}" fork="true">
+            <classpath refid="class.path"/>
+            <arg line="-i testXML/jts_final_test/PalindromeSet.xml -o Demo/PalindromeSet2 -n PalindromeClientComponent --id 4"/>
+            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+        </java>
+    </target>
+    <target name="run-doc-generator" description="Run the 'command-line' document generator.">
+        <java classname="${doc.gen.main.class}" classpathref="class.path" fork="true" maxmemory="192m">
+            <arg line="${doc.generator.args}"/>
+            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+        </java>
+    </target>
+    <target name="create-run-script" description="Create a runnable shell script" depends="genhbm">
+        <script-maker classname="${main.class}"
+		              classpathref="class.path"
+		              maxmemory="192m" 
+		              outputFile="run" />
+    </target>
+    <target name="compile-promela">
+        <subant target="jar">
+            <fileset dir="${promela.dir}" includes="build.xml"/>
+        </subant>
+    </target>
+    <target name="jar-promela">
+        <subant target="jar-dist">
+            <fileset dir="${promela.dir}" includes="build.xml"/>
+        </subant>
+    </target>
+
+    <target name="compile-eclipse-plugin" description="" depends="jar-codegen, jar-docgen">
+        <subant target="jar">
+            <fileset dir="${eclipse.dir}/org.jts.eclipse/" includes="build.xml"/>
+        </subant>
+    </target>
+    <target name="schema-export" description="export schema to db" depends="compile-promela, clean, bind, bindJSIDLPlus, bindmxGraph, genhbm">
+        <antcall target="schema-x">
+            <param name="arg" value="export" />
+        </antcall>
+    </target>
+    <target name="schema-update" description="update db schema" depends="genhbm">
+        <antcall target="schema-x">
+            <param name="arg" value="update" />
+        </antcall>
+    </target>
+    <target name="schema-x">
+        <echo message="performing a schema ${arg}" />
+        <java fork="true" classpathref="class.path" failonerror="true"
+			   classname="com.u2d.persist.HibernatePersistor">
+            <arg value="${arg}" />
+            <arg value="${build.dir}" />
+        </java>
+    </target>
+    <target name="seed-database" depends="schema-export" description="exports schema and initializes database (default classbar + users and roles)">
+        <java fork="true" classpathref="class.path" classname="com.u2d.app.Application" />
+    </target>
+	<!-- 
+	TODO: (optional) to test .hbm.xml file generation for a single class file,
+	specify name of class file in the following property 'class.file' -->
+    <target name="hbmxml" depends="compile">
+        <java classname="com.u2d.persist.HBMMaker"
+			 classpathref="class.path" 
+			 fork="true" 
+			 dir="${build.classes.dir}">
+            <arg value="${class.file}" />
+        </java>
+    </target>
+    <target name="genhbm" description="generate hbm.xml files" depends="compile" >
+        <java classpathref="class.path" dir="${build.classes.dir}"
+			  fork="true" classname="com.u2d.persist.HBMGenerator" />
+    </target>
+    <target name="hbm-practice" description="run hbm practice tool" depends="genhbm">
+        <java classname="com.u2d.tools.HBMPracticeTool" classpathref="class.path"
+		 fork="true" maxmemory="128m" />
+    </target>
+    <target name="test-init" description="targets pertaining to junit testing">
+        <mkdir dir="${test.classes.dir}"/>
+        <mkdir dir="${test.reports.dir}"/>
+    </target>
+    <target name="compile-tests" depends="test-init,schema-export" description="compile tests">
+        <javac debug="on" deprecation="on"
+		  classpathref="test.classpath" destdir="${test.classes.dir}" srcdir="${test.src.dir}" excludes="atf/**" includeantruntime="false" />
+    </target>
+    <target name="instrument" description="Instrument existing classes for code coverage analysis" depends="test-init">
+        <cobertura-instrument datafile="${test.reports.dir}/cobertura.ser" todir="build/instrumented-classes">
+            <fileset dir="${test.classes.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+        </cobertura-instrument>
+    </target>
+    <target name="generate-importExportUnitTest-xml" description="runs the declared types generator">
+        <java classname="org.jts.gui.newImportExportJSIDL.GenerateDeclaredXML" fork="true">
+            <classpath refid="class.path"/>
+        </java>
+    </target>
+    <target name="unit-test" description="Execute unit tests" depends="compile-tests,generate-importExportUnitTest-xml">
+        <mkdir dir="${test.reports.dir}/rawOutput"/>
+		
+        <junit printsummary="true" failureproperty="junit.failure" fork="yes" maxmemory="1000m" forkmode="once">
+		<!--use this if you don't have a lot of memory
+		<junit printsummary="true" failureproperty="junit.failure" fork="yes" forkmode="perTest">
+		-->
+			<!--Use failureproperty instead of haltonfailure, because if we use
+				the former, we will get no detailed report about the failure.
+				If the test fails, the fail element below will still assure that
+				the Ant run will exit with error status.-->
+			
+            <sysproperty key="net.sourceforge.cobertura.datafile" file="${test.reports.dir}/cobertura.ser" />
+			
+            <classpath location="build/instrumented-classes"/>
+			<classpath refid="test.classpath"/>
+			
+            <batchtest todir="${test.reports.dir}/rawOutput">
+                <fileset dir="${test.dir}">
+                    <include name="**/*Test.java"/>
+					<exclude name="atf/**"/>
+                </fileset>
+                <formatter type="xml"/>
+            </batchtest>
+			
+			<!-- For single test comment batchtest and uncomment example below -->
+			<!--test name='com.admc.jamama.smtp.SMTPTest'/>
+			<formatter type="xml"/>
+			</test-->
+			
+			<!--You can use sysproperty elements to pass configuration settings
+				to your test classes, or to appplication classes they will run:
+			<sysproperty key="targetserver.test" value="mercedes"/> -->
+            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+        </junit>
+		
+        <junitreport todir="${test.reports.dir}/rawOutput">
+            <fileset dir="${test.reports.dir}/rawOutput"/>
+            <report todir="${test.reports.dir}"/>
+        </junitreport>
+		
+        <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
+    </target>
+    <target name="coverage-report" description="Generate code coverage report in html format" depends="clean, schema-export, compile-tests, instrument, unit-test">
+        <cobertura-report  datafile="${test.reports.dir}/cobertura.ser" srcdir="${src.dir}" destdir="${test.reports.dir}/cobertura"/>
+    </target>
+    <target name="coverage-report-test" description="Generate code coverage report in html format" >
+        <cobertura-report  datafile="${test.reports.dir}/cobertura.ser" srcdir="${src.dir}" destdir="${test.reports.dir}/cobertura"/>
+    </target>
+    <target name="doc" description="generate the javadocs from the content classes">
+        <mkdir dir="doc"/>
+        <mkdir dir="doc/jts"/>
+        <javadoc sourcepath="src" destdir="doc/jts" windowtitle="JAUS Tool Set">
+            <classpath refid="class.path"/>
+        </javadoc>
+    </target>
+    <target name="ATF" description="Run the automated testing framework, a python script for testing generated code">
+        <exec dir="test/atf" executable="python">
+            <arg line="JTSTEST.py"/>
+        </exec>
+    </target>
+    <target name="ultraviolet" description="Launch UltraViolet design tool, modeling viewing tool for GUI">
+        <ant antfile="lib/ultraviolet/build.xml" inheritAll="false" />
+    </target>
+
+    <target name="updateEclipsePlugin" description="Builds the JARs needed by the eclipse plugin" depends="jar-codegen, jar-docgen"/>
+
+    <target name="jar-codegen" description="Build a JAR containing the codegenerator package and its required tools." depends="init, bind, bindJSIDLPlus, bindmxGraph, compile">
+        <pathconvert targetos="unix" property="mf.classpath" pathsep=" ">
+            <path refid="dist.path.copy" />
+            <map from="${current.dir}\" to=""/>
+        </pathconvert>
+        <mkdir dir="${codegen.dist.dir}"/>
+        <jar destfile="${codegen.dist.dir}/CodeGen.jar">
+            <manifest>
+                <!--<attribute name="Main-Class" value="${main.class}"/>-->
+                <attribute name="Class-Path" value="${mf.classpath}"/>
+            </manifest>
+            <fileset dir="${current.dir}" excludes="**/test/,
+                                                    **/build/,
+                                                    **/codegen/,
+                                                    **/db*/,
+                                                    **/doc*/
+                                                    **/lib/,
+                                                    **/nbproject/,
+                                                    **/scripts/,
+                                                    **/src/ 
+                                                    **/New*,
+                                                    **/build.xml,
+                                                    **/test*.xml"/>
+            <fileset dir="${build.classes.dir}"         excludes="**/com/u2d/
+                                                        **/org/jts/docGenerator/,
+                                                        **/org/jts/deepDelete/,
+                                                        **/hibernate/**,
+                                                        **/*.xml,
+                                                        **/*properties,
+                                                        **/images/,
+                                                        **/*.json,
+                                                        **/org/jts/gui/JAXBtoJmatter/,
+                                                        **/org/jts/gui/JAXBtomxGraph/,
+                                                        **/org/jts/gui/autoUpdateCode/,
+                                                        **/org/jts/gui/codeGenerator/,
+                                                        **/org/jts/gui/deepDelete/,
+                                                        **/org/jts/gui/docGenerator/,
+                                                        **/org/jts/gui/exportJSIDL/,
+                                                        **/org/jts/gui/jmatterToJAXB/,
+                                                        **/org/jts/gui/mxGraphtoJAXB/,
+                                                        **/org/jts/gui/promelaCodeGenerator/,
+                                                        **/org/jts/gui/util/,
+                                                        **/org/jts/gui/*.java"/> <!--
+                                                        **/org/jts/gui/,
+                                                        **/org/jts/validator/,
+                                                        **/org/jts/newValidator/,-->
+        </jar>        
+
+    </target>
+
+    <target name="jar-docgen" description="Build a JAR containing the documentgenerator package and its required tools." depends="init, bind, bindJSIDLPlus, bindmxGraph, compile">
+        <pathconvert targetos="unix" property="mf.classpath" pathsep=" ">
+            <path refid="dist.path.copy" />
+            <map from="${current.dir}\" to=""/>
+        </pathconvert>
+        <mkdir dir="${docgen.dist.dir}"/>
+        <jar destfile="${docgen.dist.dir}/DocGen.jar">
+            <manifest>
+                <attribute name="Class-Path" value="${mf.classpath}"/>
+            </manifest>
+            <fileset dir="${build.classes.dir}" excludes="**/com/,
+                                                        **/org/jts/codegenerator/,
+                                                        **/org/jts/deepDelete/,
+                                                        **/org/jts/gui/JAXBtoJmatter/,
+                                                        **/org/jts/gui/JAXBtomxGraph/,
+                                                        **/org/jts/gui/autoUpdateCode/,
+                                                        **/org/jts/gui/codeGenerator/,
+                                                        **/org/jts/gui/deepDelete/,
+                                                        **/org/jts/gui/exportJSIDL/,
+                                                        **/org/jts/gui/jmatterToJAXB/,
+                                                        **/org/jts/gui/mxGraphtoJAXB/,
+                                                        **/org/jts/gui/promelaCodeGenerator/,
+                                                        **/org/jts/gui/util/,
+                                                        **/org/jts/gui/*.java,
+                                                        **/org/jts/validator/,
+                                                        **/hibernate/**,
+                                                        **/*.xml, 
+                                                        **/*properties,
+                                                        **/images/,
+                                                        **/*.json"/>
+        </jar>
+
+    </target>
+	
+	<target name="updateJTSDependancy" description="Copy code and document generator class files into the Eclipse JTSDependancy plug-in" depends="compile">
+	<pathconvert targetos="unix" property="mf.classpath" pathsep=" ">
+            <path refid="dist.path.copy" />
+            <map from="${current.dir}\" to=""/>
+        </pathconvert>
+		<copy todir="${eclipse.dir}/org.jts.eclipse.JTSGeneration">
+			<fileset dir="${build.classes.dir}" excludes="**/com/u2d/
+                                                        **/org/jts/deepDelete/,
+                                                        **/hibernate/**,
+                                                        **/*.xml,
+                                                        **/*properties,
+                                                        **/images/,
+                                                        **/*.json,
+                                                        **/org/jts/gui/JAXBtoJmatter/,
+                                                        **/org/jts/gui/JAXBtomxGraph/,
+                                                        **/org/jts/gui/autoUpdateCode/,
+                                                        **/org/jts/gui/codeGenerator/,
+                                                        **/org/jts/gui/deepDelete/,
+                                                        **/org/jts/gui/docGenerator/,
+                                                        **/org/jts/gui/exportJSIDL/,
+                                                        **/org/jts/gui/jmatterToJAXB/,
+                                                        **/org/jts/gui/mxGraphtoJAXB/,
+                                                        **/org/jts/gui/promelaCodeGenerator/,
+                                                        **/org/jts/gui/util/,
+                                                        **/org/jts/gui/*.java"/>
+		</copy>
+	</target>
+</project>

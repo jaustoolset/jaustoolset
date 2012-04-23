@@ -1,0 +1,6 @@
+VariantDir('Build', '.', duplicate=0)
+sources = ['Build/InternalEvents/MenuItemEntered.cpp', 'Build/ManagementOCUService.cpp', 'Build/ManagementOCU_ManagementOcuFSM.cpp', 'Build/ManagementOCU_ManagementOcuFSM_sm.cpp', 'Build/Messages/ClearEmergency.cpp', 'Build/Messages/ConfirmControl.cpp', 'Build/Messages/QueryStatus.cpp', 'Build/Messages/RejectControl.cpp', 'Build/Messages/ReleaseControl.cpp', 'Build/Messages/ReportControl.cpp', 'Build/Messages/ReportStatus.cpp', 'Build/Messages/RequestControl.cpp', 'Build/Messages/Resume.cpp', 'Build/Messages/SetEmergency.cpp', 'Build/Messages/Shutdown.cpp', 'Build/Messages/Standby.cpp']
+Import('env')
+lib = env.SharedLibrary('./lib/ManagementOCUService', sources, LIBS=['Common'])
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )

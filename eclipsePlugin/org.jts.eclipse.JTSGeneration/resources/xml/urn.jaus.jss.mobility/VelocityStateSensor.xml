@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="VelocityStateSensor" id="urn:jaus:jss:mobility:VelocityStateSensor" version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description>
+    The Velocity State Sensor has the responsibility of reporting the instantaneous velocity of the platform.  
+    The velocity state of a rigid body is defined as the set of parameters that are necessary to calculate 
+    he velocity of any point in that rigid body.  Six parameters are required to specify a velocity state of a 
+    rigid body in terms of some fixed reference coordinate system.  The first three parameters represent 
+    the velocity components of a point in the rigid body that is coincident with the origin of the fixed reference.  
+    The second three components represent the instantaneous angular velocity components.  It is possible 
+    to represent the six velocity state parameters as a screw, about which the rigid body is rotating and 
+    translating along at that instant.
+    
+    The reference frame for the velocity state sensor component is selected as a fixed coordinate system 
+    that at this instant is co-located with and aligned with the vehicle or system coordinate system.  Thus the 
+    message data ‘velocity x’, ‘velocity y’, and ‘velocity z’ represents the current velocity of the subsystem’s 
+    control point at this instant.  For example if ‘velocity x’ has a value of 3 m/sec and ‘velocity y’ and ‘velocity z’ 
+    are zero, then the vehicle is moving in the forward direction at a velocity of 3 m/sec.  The message data 
+    ‘omega x’, ‘omega y’, and ‘omega z’ represent the actual rate of change of orientation or angular velocity 
+    of the vehicle about its coordinate axes.
+  </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="QueryVelocityState" declared_type_ref="mobility.queryClass.QueryVelocityState"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportVelocityState" declared_type_ref="mobility.informClass.ReportVelocityState"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="events.transport.ReceiveFSM"
+      state_name="Receiving.Ready"/>
+    <state_machine name="events.transport.ReceiveFSM" 
+        interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="events.transport.Receive">
+                  <parameter type="QueryVelocityState" value="msg" interpretation="enveloped query velocity
+                    state message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="events.transport.Send" interpretation="Send a Report
+                    Velocity State message">
+                    <argument value=" 'ReportVelocityState' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

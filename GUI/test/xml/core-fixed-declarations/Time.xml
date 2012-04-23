@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="Time" id="urn:jaus:jss:core:Time" version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description>The Time Service allows clients to query and set the system time for the component.
+    Note that exclusive control is required to set the time, but is not required to query it. </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="core" id="urn:jaus:jss:core:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SetTime" declared_type_ref="core.commandClass.SetTime"/>
+      <declared_message_def name="QueryTime" declared_type_ref="core.queryClass.QueryTime"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportTime" declared_type_ref="core.informClass.ReportTime"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled"/>
+    <state_machine name="accessControl.events.transport.ReceiveFSM" interpretation="extending
+      ReceiveFSM of base       service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to
+        extend">
+        <state name="Ready" initial_state="NotControlled" interpretation="redefine state in order to
+          extend">
+          <state name="NotControlled" interpretation="redefine state in order to             extend">
+            <default_state>
+              <transition name="accessControl.events.transport.Receive">
+                <parameter type="QueryTime" value="msg" interpretation="enveloped query time
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                <simple/>
+                <action name="accessControl.events.transport.Send" interpretation="Send a Report
+                  Time message with the                   current time">
+                  <argument value=" 'ReportTime' "/>
+                  <argument value=" 'currentTime' "/>
+                  <argument value=" 'transportData' "/>
+                </action>
+              </transition>
+            </default_state>
+          </state>
+          <state name="Controlled" interpretation="redefine state in order to             extend">
+            <default_state>
+              <transition name="accessControl.events.transport.Receive">
+                <parameter type="QueryTime" value="msg" interpretation="enveloped query time
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                <simple/>
+                <action name="accessControl.events.transport.Send" interpretation="Send a Report
+                  Time message with the                   current time">
+                  <argument value=" 'ReportTime' "/>
+                  <argument value=" 'currentTime' "/>
+                  <argument value=" 'transportData' "/>
+                </action>
+              </transition>
+              <transition name="accessControl.events.transport.Receive">
+                <parameter type="SetTime" value="msg" interpretation="enveloped set time message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                <guard condition="isControllingClient( transportData )" interpretation="True if the message that
+                  triggered the transition is received from the client that is in control of this
+                  service"/>
+                <simple/>
+                <action name="setTime" interpretation="Set the time of this component to the
+                  specified                   time">
+                  <argument value="msg"/>
+                </action>
+              </transition>
+            </default_state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

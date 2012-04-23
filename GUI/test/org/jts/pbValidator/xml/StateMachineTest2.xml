@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:StateMachineTest2"
+   name="StateMachineTest2" version="1.0">
+  <description xml:space="preserve">
+     The state machine names must be valid identifiers
+  </description>
+  <assumptions/> 
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+     <!-- state machine names are modified to invalid identifiers programmatically -->
+    <start state_machine_name="FSM" state_name="Ready"/>
+    <state_machine name="FSM">
+      <state name="Ready"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

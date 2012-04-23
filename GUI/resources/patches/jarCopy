@@ -1,0 +1,6 @@
+cp ./jmatter-20090430/modules/ds-swing/dist/ds-swing.jar ../../lib/runtime/ds-swing.jar
+cp ./jmatter-20090430/modules/ds-wizard/dist/ds-wizard.jar ../../lib/runtime/ds-wizard.jar
+cp ./jmatter-20090430/modules/echovm/dist/echovm.jar ../../lib/runtime/echovm.jar
+cp ./jmatter-20090430/modules/swingvm/dist/swingvm.jar ../../lib/runtime/swingvm.jar
+cp ./jmatter-20090430/modules/wingsvm/dist/wingsvm.jar ../../lib/runtime/wingsvm.jar
+cp ./jmatter-20090430/jmatter/dist/jmatter.jar ../../lib/runtime/jmatter.jar

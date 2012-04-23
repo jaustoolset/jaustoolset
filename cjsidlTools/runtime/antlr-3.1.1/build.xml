@@ -1,0 +1,257 @@
+<!-- Contributed by Oliver Zeigermann
+     Modified by Jean Bovet
+     Modified by Matt Benson
+     Modified by Miguel Ping
+     Library dependency: install library http://jakarta.apache.org/bcel/ in $ANT_HOME/lib, or other supported 3rd-party lib option
+-->
+
+<project name="antlr3" default="build">
+    <property file="build.properties" />
+
+    <property name="build.dir" location="build" />
+    <property name="lib.dir" location="lib" />
+
+    <property name="build.classes" location="${build.dir}/classes" />
+    <property name="build.rtclasses" location="${build.dir}/rtclasses" />
+    <property name="build.tests" location="${build.dir}/tests" />
+    <property name="build.tests.xml" location="${build.tests}/xml" />
+    <property name="build.tests.reports" location="${build.tests}/reports" />
+    <property name="temp.dir" location="${java.io.tmpdir}/antlr3" />
+    <property name="includetests" value="org/antlr/test/Test*.java" />
+
+    <property name="src.dir" location="src" />
+    <property name="src.rt" location="runtime/Java/src" />
+    <property name="codegen.dir" location="codegen" />
+
+    <property name="tool.class"
+              location="${build.classes}/org/antlr/Tool.class" />
+
+    <property name="compile.debug" value="true" />
+    <property name="compile.debuglevel" value="lines,vars,source" />
+    <property name="compile.deprecation" value="false" />
+    <property name="compile.optimize" value="false" />
+
+    <path id="src.path">
+        <pathelement location="${src.dir}" />
+        <pathelement location="${codegen.dir}" />
+    </path>
+
+    <path id="rt.classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar" />
+    </path>
+
+    <path id="classpath">
+        <path refid="rt.classpath" />
+        <pathelement location="${build.rtclasses}" />
+    </path>
+
+    <condition property="bcel.available">
+        <available classname="org.apache.bcel.Constants" />
+    </condition>
+
+    <macrodef name="generate">
+      <attribute name="grammar" />
+      <sequential>
+          <antlr target="${codegen.dir}/@{grammar}">
+            <classpath refid="rt.classpath" />
+          </antlr>
+      </sequential>
+    </macrodef>
+
+    <presetdef name="myjavac">
+        <javac debug="${compile.debug}"
+               debuglevel="${compile.debuglevel}"
+               deprecation="${compile.deprecation}"
+               optimize="${compile.optimize}"
+               source="1.5" target="jsr14" />
+    </presetdef>
+
+    <target name="clean" description="Deletes all generated files">
+        <delete dir="${build.dir}" />
+        <delete dir="${codegen.dir}" />
+    </target>
+
+    <target name="generator-prepare">
+        <fail message="ANTLR 2.x is required; please install in ${lib.dir}.">
+          <condition>
+            <not>
+              <available classname="antlr.Tool" classpathref="rt.classpath" />
+            </not>
+          </condition>
+        </fail>
+        <mkdir dir="${codegen.dir}" />
+        <copy todir="${codegen.dir}" preservelastmodified="true">
+            <fileset dir="${src.dir}">
+                <include name="org/antlr/tool/antlr.g" />
+                <include name="org/antlr/tool/antlr.print.g" />
+                <include name="org/antlr/tool/assign.types.g" />
+                <include name="org/antlr/tool/buildnfa.g" />
+                <include name="org/antlr/tool/define.g" />
+                <include name="org/antlr/codegen/codegen.g" />
+            </fileset>
+            <flattenmapper />
+        </copy>
+
+        <!--
+            make sure we rebuild anybody who uses ANTLRTokenTypes
+            by deleting all target files younger than antlr.g:
+          -->
+        <delete>
+            <fileset dir="${codegen.dir}" excludes="*.g">
+                <not>
+                    <depend targetdir="${codegen.dir}">
+                        <mapper type="merge" to="antlr.g" />
+                    </depend>
+                </not>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="generator" depends="generator-prepare">
+        <generate grammar="antlr.g" />
+        <generate grammar="antlr.print.g" />
+        <generate grammar="assign.types.g" />
+        <generate grammar="buildnfa.g" />
+        <generate grammar="define.g" />
+        <generate grammar="codegen.g" />
+    </target>
+
+    <target name="compile-rt">
+        <fail message="Unable to locate stringtemplate lib; please install in ${lib.dir}.">
+          <condition>
+            <not>
+              <available classname="org.antlr.stringtemplate.StringTemplate"
+                         classpathref="rt.classpath" />
+            </not>
+          </condition>
+        </fail>
+        <mkdir dir="${build.rtclasses}" />
+        <myjavac srcdir="${src.rt}" destdir="${build.rtclasses}"
+                 classpathref="rt.classpath" />
+    </target>
+
+    <target name="compile" depends="generator,compile-rt">
+        <mkdir dir="${build.classes}" />
+        <myjavac destdir="${build.classes}" classpathref="classpath">
+            <src refid="src.path" />
+	    <exclude name="**/antlr/tool/ANTLRLexer.java" />
+	    <exclude name="**/antlr/tool/ANTLRParser.java" />
+	    <exclude name="**/antlr/tool/ANTLRTokenTypes.java" />
+	    <exclude name="**/antlr/tool/ANTLRTreePrinter.java" />
+	    <exclude name="**/antlr/tool/ANTLRTreePrinterTokenTypes.java" />
+	    <exclude name="**/antlr/tool/AssignTokenTypesWalker.java" />
+	    <exclude name="**/antlr/tool/AssignTokenTypesWalkerTokenTypes.java" />
+	    <exclude name="**/antlr/codegen/CodeGenTreeWalker.java" />
+	    <exclude name="**/antlr/codegen/CodeGenTreeWalkerTokenTypes.java" />
+	    <exclude name="**/antlr/tool/DefineGrammarItemsWalker.java" />
+	    <exclude name="**/antlr/tool/DefineGrammarItemsWalkerTokenTypes.java" />
+	    <exclude name="**/antlr/tool/TreeToNFAConverter.java" />
+	    <exclude name="**/antlr/tool/TreeToNFAConverterTokenTypes.java" />
+        </myjavac>
+    </target>
+
+    <target name="templates">
+        <copy todir="${build.classes}">
+            <fileset dir="${src.dir}" includes="**/*.stg,**/*.st,**/*.sti" />
+        </copy>
+    </target>
+
+    <target name="jarnames" depends="version">
+        <property name="antlr3.jar"
+                  location="${build.dir}/antlr${jar.version}.jar" />
+        <property name="antlr3.rt.jar"
+                  location="${build.dir}/antlr${jar.version}-runtime.jar" />
+    </target>
+
+    <target name="build-rt" depends="compile-rt,jarnames"
+            description="Creates the ANTLR3 runtime jar">
+        <jar jarfile="${antlr3.rt.jar}" index="true" filesonly="true">
+            <fileset file="LICENSE.txt" />
+            <fileset dir="${build.rtclasses}" />
+            <manifest>
+                <attribute name="Version" value="${version}" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="build" depends="compile,templates,jarnames"
+            description="Creates the ANTLR3 fullversion jar">
+        <jar jarfile="${antlr3.jar}" index="true" filesonly="true">
+            <fileset file="LICENSE.txt" />
+            <fileset dir="${build.classes}" excludes="org/antlr/test/**" />
+            <fileset dir="${build.rtclasses}" />
+            <manifest>
+                <attribute name="Version" value="${version}" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="build-all" depends="build,build-rt"
+            description="Creates the ANTLR3 fullversion and runtime jars" />
+
+    <target name="version" depends="version-bcel" unless="bcel.available">
+        <echo>Install bcel in the classpath to have automatic version in jar name</echo>
+        <property name="version" value="unknown 3.x build" />
+        <property name="jar.version" value="" />
+    </target>
+
+    <target name="version-bcel" if="bcel.available">
+
+        <condition property="enc" value="ISO-8859-1" else="${file.encoding}">
+            <!-- ironically, the AntVersion condition would tell us what
+                 we need to know, so we use its absence to indicate
+                 an Ant version prior to 1.7.0: -->
+            <available classname="org.apache.tools.ant.taskdefs.condition.AntVersion" />
+        </condition>
+
+        <loadproperties srcfile="${tool.class}" encoding="${enc}">
+            <filterchain>
+                <classconstants/>
+                <prefixlines prefix="Tool." />
+            </filterchain>
+        </loadproperties>
+
+        <property name="version" value="${Tool.VERSION}" />
+        <property name="jar.version" value="-${version}" />
+    </target>
+
+    <target name="rebuild" depends="clean,build" />
+    <target name="rebuild-rt" depends="clean,build-rt" />
+    <target name="rebuild-all" depends="clean,build-all" />
+
+    <target name="run-tests" depends="compile">
+        <mkdir dir="${build.tests.xml}" />
+        <mkdir dir="${temp.dir}" />
+        <delete>
+            <fileset dir="${build.tests.xml}" />
+        </delete>
+        <junit printsummary="withOutAndErr" showoutput="true"
+               fork="true" forkmode="once" failureproperty="testfailure"
+               tempdir="${temp.dir}">
+            <formatter type="xml" />
+            <formatter type="plain" />
+            <classpath>
+                <pathelement path="${build.classes}" />
+                <path refid="classpath" />
+                <pathelement path="${antlr2.jar}" />
+            </classpath>
+            <test if="testcase" name="${testcase}" todir="${build.tests.xml}" />
+            <batchtest todir="${build.tests.xml}" unless="testcase">
+                <fileset dir="${src.dir}" includes="${includetests}" />
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="run-reports">
+        <mkdir dir="${build.tests.reports}" />
+        <junitreport todir="${build.tests.reports}">
+            <fileset dir="${build.tests.xml}" includes="TEST-*.xml" />
+            <report format="frames" todir="${build.tests.reports}" />
+        </junitreport>
+    </target>
+
+    <target name="test" description="Run tests" depends="run-tests,run-reports">
+        <fail if="testfailure">Tests failed</fail>
+    </target>
+
+</project>

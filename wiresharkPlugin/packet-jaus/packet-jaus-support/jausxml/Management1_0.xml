@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="Management" id="urn:jaus:jss:core:Management" version="1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The Management Service provides a state machine for component life-cycle management to help clients understand how the component will react to commands and queries.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="Shutdown" message_id="0002" is_command="true">
+                <description xml:space="preserve">This message is used to cause the receiving component to free all of the resources allocated to its process by the system and then to shutdown.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="Standby" message_id="0003" is_command="true">
+                <description xml:space="preserve">This message is used to transition the receiving component to the standby state.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="Resume" message_id="0004" is_command="true">
+                <description xml:space="preserve">This message is used to transition the receiving component to the ready state.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="Reset" message_id="0005" is_command="true">
+                <description xml:space="preserve">This message is used to cause the receiving component to reinitialize.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetEmergency" message_id="0006" is_command="true">
+                <description xml:space="preserve">This message is used to alert the component to a safety critical situation. The component that sends the emergency command shall set the message priority to the safety critical priority range as defined by the Transport. Receive of the emergency command shall result in the component transitioning into the emergency state.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="SetEmergencyRec" optional="false">
+                        <fixed_field name="EmergencyCode" optional="false" field_type="unsigned short integer" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="1" enum_const="STOP"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ClearEmergency" message_id="0007" is_command="true">
+                <description xml:space="preserve">This message shall notify the receiving component that the current emergency condition is to be reset and that the component shall transition back to the Ready or Standby state, provided that all emergency conditions have been cleared. JAUS currently defines only one emergency condition, the "Stop" condition.  Future versions of this document could define other emergency conditions.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ClearEmergencyRec" optional="false">
+                        <fixed_field name="EmergencyCode" optional="false" field_type="unsigned short integer" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="1" enum_const="STOP"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryStatus" message_id="2002" is_command="false">
+                <description xml:space="preserve">This message is used by clients of this service to query the state of this service.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportStatus" message_id="4002" is_command="false">
+                <description xml:space="preserve">This message is used to report the current status of the sender of the message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportStatusRec" optional="false">
+                        <fixed_field name="Status" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="5" enum_const="EMERGENCY"/>
+                                <value_enum enum_index="0" enum_const="INITIALIZE"/>
+                                <value_enum enum_index="1" enum_const="READY"/>
+                                <value_enum enum_index="2" enum_const="STANDBY"/>
+                                <value_enum enum_index="3" enum_const="SHUTDOWN"/>
+                                <value_enum enum_index="4" enum_const="FAILURE"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Reserved" optional="false" field_type="unsigned integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set>
+        <event_def name="Initialized">
+            <description xml:space="preserve">An internally generated event that marks the completion of the initialization cycle.</description>
+            <header name="Header"/>
+            <body name="Body"/>
+            <footer name="Footer"/>
+        </event_def>
+        <event_def name="Failure">
+            <description xml:space="preserve">An internally generated event that marks forces the component to a failure state.</description>
+            <header name="Header"/>
+            <body name="Body"/>
+            <footer name="Footer"/>
+        </event_def>
+    </internal_events_set>
+    <protocol_behavior>
+        <start state_machine_name="Management.AccessControl.Events.Transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled.StateA.Init"/>
+        <start state_machine_name="Management.AccessControl.Events.Transport.SendFSM" state_name="Sending"/>
+        <state_machine name="Management.AccessControl.Events.Transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="StateA">
+                        <state name="StateA" initial_state="Init">
+                            <state name="Standby"/>
+                            <state name="Init">
+                                <entry>
+                                    <action name="initialize" interpretation="Re-initialize the component's state                     machines."/>
+                                </entry>
+                                <transition name="Initialized">
+                                    <simple>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Standby"/>
+                                    </simple>
+                                </transition>
+                            </state>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency">
+                                <transition name="accessControl.events.transport.Receive" interpretation="If                   multiple emergency conditions exist, then all conditions that have been set must                   be specifically cleared before the component can transition out of the emergency                   state.">
+                                    <parameter type="ClearEmergency" value="msg" interpretation="enveloped clear                     emergency                     message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isIDStored( transportData )" interpretation="True if the sender                     of                     the message that triggered the transition is in the list                     of clients that have set an                     emergency condition."/>
+                                    <pop/>
+                                    <action name="DeleteID" interpretation="Remove the sender of the message that                     caused                     this action from the list of clients that have an                     emergency condition.">
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="SetAuthority" value="msg" interpretation="enveloped                     set authority message"/>
+                                    <ns2:internal/>
+                                </transition>
+                                <transition name="accessControl.Timeout">
+                                    <ns2:internal/>
+                                </transition>
+                                <transition name="Failure">
+                                    <ns2:internal/>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Shutdown" value="msg" interpretation="enveloped shutdown message"/>
+                                    <ns2:internal/>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Reset" value="msg" interpretation="enveloped reset message"/>
+                                    <ns2:internal/>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="RequestControl" value="msg" interpretation="enveloped request                     control message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <ns2:internal/>
+                                    <action name="accessControl.events.transport.Send" interpretation="Send a confirm                     component control                     message with the specified response code">
+                                        <argument value=" 'ConfirmControl' "/>
+                                        <argument value=" 'NOT_AVAILABLE' "/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                            </state>
+                            <default_state>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="QueryStatus" value="msg" interpretation="enveloped query status                     message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <ns2:internal/>
+                                    <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Status message with the                     current status">
+                                        <argument value=" 'ReportStatus' "/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="SetEmergency" value="msg" interpretation="enveloped set emergency                     message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <push>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Emergency"/>
+                                    </push>
+                                    <action name="StoreID" interpretation="Add the sender of the message that caused                     this                     action to the list of clients that have an emergency                     condition.">
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                                <transition name="Failure">
+                                    <simple>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Failure"/>
+                                    </simple>
+                                </transition>
+                            </default_state>
+                        </state>
+                        <ns3:mxCell id="27" parent="14" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="NotControlled;" vertex="1">
+                            <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                        </ns3:mxCell>
+                    </state>
+                    <state name="Controlled" initial_state="StateB">
+                        <state name="StateB" initial_state="Standby">
+                            <state name="Standby">
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Resume" value="msg" interpretation="enveloped resume message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="enveloped                     resume                     message"/>
+                                    <guard condition="isControllingClient( transportData )" interpretation="True if                     the                     message that triggered the transition is received from                     the client that is in control                     of this service"/>
+                                    <simple>
+                                        <end_state state="Receiving.Ready.Controlled.StateB.Ready"/>
+                                    </simple>
+                                </transition>
+                            </state>
+                            <state name="Ready">
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Standby" value="msg" interpretation="enveloped standby message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="enveloped                     resume                     message"/>
+                                    <guard condition="isControllingClient( transportData )" interpretation="True if                     the                     message that triggered the transition is received from                     the client that is in control                     of this service"/>
+                                    <simple>
+                                        <end_state state="Receiving.Ready.Controlled.StateB.Standby"/>
+                                    </simple>
+                                </transition>
+                            </state>
+                            <state name="Emergency">
+                                <transition name="accessControl.events.transport.Receive" interpretation="If                   multiple emergency conditions exist, then all conditions that have been set must                   be specifically cleared before the component can transition out of the emergency                   state.">
+                                    <parameter type="ClearEmergency" value="msg" interpretation="enveloped clear                     emergency                     message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isIDStored( transportData )" interpretation="True if the sender                     of                     the message that triggered the transition is in the list                     of clients that have set an                     emergency condition."/>
+                                    <pop/>
+                                    <action name="DeleteID" interpretation="Remove the sender of the message that                     caused                     this action from the list of clients that have an                     emergency                     condition.">
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="RequestControl" value="msg" interpretation="enveloped request                     control message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <ns2:internal/>
+                                    <action name="transport.Send" interpretation="Send a confirm component control                     message with the specified response code">
+                                        <argument value=" 'ConfirmControl' "/>
+                                        <argument value=" 'NOT_AVAILABLE' "/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="ReleaseControl" value="msg" interpretation="enveloped request                     control message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <ns2:internal/>
+                                    <action name="transport.Send" interpretation="Send a reject control                     message with the specified response code">
+                                        <argument value=" 'RejectControl' "/>
+                                        <argument value=" 'NOT_AVAILABLE' "/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="SetAuthority" value="msg" interpretation="enveloped                     set authority message"/>
+                                    <ns2:internal/>
+                                </transition>
+                                <transition name="accessControl.Timeout">
+                                    <ns2:internal/>
+                                </transition>
+                                <transition name="Failure">
+                                    <ns2:internal/>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Shutdown" value="msg" interpretation="enveloped shutdown message"/>
+                                    <ns2:internal/>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Reset" value="msg" interpretation="enveloped reset message"/>
+                                    <ns2:internal/>
+                                </transition>
+                            </state>
+                            <default_state>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="QueryStatus" value="msg" interpretation="enveloped query status                     message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <ns2:internal/>
+                                    <action name="transport.Send" interpretation="Send a Report Status message with                     the                     current status">
+                                        <argument value=" 'ReportStatus' "/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="SetEmergency" value="msg" interpretation="enveloped set emergency                     message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <push>
+                                        <end_state state="Receiving.Ready.Controlled.StateB.Emergency"/>
+                                    </push>
+                                    <action name="StoreID" interpretation="Add the sender of the message that caused                     this                     action to the list of clients that have an emergency                     condition.">
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                                <transition name="Failure">
+                                    <simple>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Failure"/>
+                                    </simple>
+                                    <action name="transport.Send" interpretation="Send a Reject Control message to the                     client that is currently controlling this service.">
+                                        <argument value=" 'RejectControl' "/>
+                                        <argument value=" 'CONTROL_RELEASED' "/>
+                                    </action>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Reset" value="msg" interpretation="enveloped reset message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <guard condition="isControllingClient(  transportData )" interpretation="True if                     the                     message that triggered the transition is received from                     the client that is in control                     of this service"/>
+                                    <simple>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Init"/>
+                                    </simple>
+                                    <action name="transport.Send" interpretation="Send a Reject Control message to the                     client that is currently controlling this service.">
+                                        <argument value=" 'RejectControl' "/>
+                                        <argument value=" 'CONTROL_RELEASED' "/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                                <transition name="accessControl.events.transport.Receive">
+                                    <parameter type="Shutdown" value="msg" interpretation="enveloped shutdown message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                                    <guard condition="isControllingClient(  transportData )" interpretation="True if                     the                     message that triggered the transition is received from                     the client that is in control                     of this service"/>
+                                    <simple>
+                                        <end_state state="Receiving.Ready.NotControlled.StateA.Shutdown"/>
+                                    </simple>
+                                    <action name="transport.Send" interpretation="Send a Reject Control message to the                     client that is currently controlling this service.">
+                                        <argument value=" 'RejectControl' "/>
+                                        <argument value=" 'CONTROL_RELEASED' "/>
+                                        <argument value="transportData"/>
+                                    </action>
+                                </transition>
+                            </default_state>
+                        </state>
+                        <ns3:mxCell id="28" parent="14" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Controlled;" vertex="1">
+                            <ns3:mxGeometry as="geometry" x="110.0" y="220.0" width="80.0" height="80.0"/>
+                        </ns3:mxCell>
+                    </state>
+                    <default_state>
+                        <ns3:mxCell id="29" parent="14" style="defaultState;strokeColor=#BC1212;fontColor=#BC1212;" value="default_state" vertex="1">
+                            <ns3:mxGeometry as="geometry" x="100.0" y="0.0" width="80.0" height="80.0"/>
+                        </ns3:mxCell>
+                    </default_state>
+                    <ns3:mxCell id="14" parent="3" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Ready;" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                    </ns3:mxCell>
+                </state>
+                <ns3:mxCell id="3" parent="2" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Receiving;" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="10" parent="2" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="11" parent="2" source="10" target="3" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="2" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = Management.AccessControl.Events.Transport.ReceiveFSM; NEWLINE isStateless = false; NEWLINE" vertex="1">
+                <ns3:mxGeometry as="geometry" x="0.0" y="0.0" width="850.0" height="400.0"/>
+            </ns3:mxCell>
+        </state_machine>
+        <state_machine name="Management.AccessControl.Events.Transport.SendFSM">
+            <state name="Sending">
+                <ns3:mxCell id="6" parent="5" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Sending;" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="12" parent="5" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="13" parent="5" source="12" target="6" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="5" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = Management.AccessControl.Events.Transport.SendFSM; NEWLINE isStateless = false; NEWLINE" vertex="1">
+                <ns3:mxGeometry as="geometry" x="0.0" y="400.0" width="850.0" height="400.0"/>
+            </ns3:mxCell>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

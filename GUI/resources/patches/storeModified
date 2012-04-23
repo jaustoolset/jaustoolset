@@ -1,0 +1,25 @@
+#!/bin/bash
+cp ./jmatter-20090430/jmatter/src/com/u2d/model/AbstractComplexEObject.java ./AbstractComplexEObject.java.modified
+cp ./jmatter-20090430/jmatter/src/com/u2d/model/AbstractListEO.java ./AbstractListEO.java.modified
+
+cp ./jmatter-20090430/jmatter/src/com/u2d/list/CriteriaListEO.java ./CriteriaListEO.java.modified
+cp ./jmatter-20090430/jmatter/src/com/u2d/list/RelationalList.java ./RelationalList.java.modified
+
+cp ./jmatter-20090430/jmatter/src/com/u2d/field/Association.java ./Association.java.modified
+cp ./jmatter-20090430/jmatter/src/com/u2d/field/AssociationStrategy.java ./AssociationStrategy.java.modified
+cp ./jmatter-20090430/jmatter/src/com/u2d/field/DynaAssociationStrategy.java ./DynaAssociationStrategy.java.modified
+cp ./jmatter-20090430/jmatter/src/com/u2d/field/BasicAssociationStrategy.java ./BasicAssociationStrategy.java.modified
+
+cp ./jmatter-20090430/jmatter/src/com/u2d/element/Command.java ./Command.java.modified
+
+cp ./jmatter-20090430/modules/swingvm/src/com/u2d/view/swing/AppFrame.java ./AppFrame.java.modified
+cp ./jmatter-20090430/modules/swingvm/src/com/u2d/view/swing/EntryPoint.java ./EntryPoint.java.modified
+
+cp ./jmatter-20090430/modules/swingvm/src/com/u2d/view/swing/list/ReorderListView.java ./ReorderListView.java.modified
+cp ./jmatter-20090430/modules/swingvm/src/com/u2d/view/swing/list/EditableListView.java ./EditableListView.java.modified
+
+cp ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/GradientPanel.java ./GradientPanel.java.modified
+cp ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/SeeThruTree.java ./SeeThruTree.java.modified
+cp ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/SeeThruList.java ./SeeThruList.java.modified
+cp ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/SeeThruTable.java ./SeeThruTable.java.modified
+cp ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/GridList.java ./GridList.java.modified

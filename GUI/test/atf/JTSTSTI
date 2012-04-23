@@ -1,0 +1,8 @@
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/X11R6/bin:/cygdrive/c/Python26/Scripts:/cygdrive/c/apache-ant-1.7.1/bin:$PATH
+export PATH
+MANPATH=/usr/local/man:/usr/share/man:/usr/man:$MANPATH
+export MANPATH
+INFOPATH=/usr/local/info:/usr/share/info:/usr/info:$INFOPATH
+export INFOPATH
+ANT_HOME=/cygdrive/c/apache-ant-1.7.1
+export ANT_HOME

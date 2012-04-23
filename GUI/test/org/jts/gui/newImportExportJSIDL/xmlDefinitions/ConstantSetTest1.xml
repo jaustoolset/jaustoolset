@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<declared_const_set xmlns="urn:jaus:jsidl:1.0" id="urn:org.jts.test:Parent" version="1.0" name="ConstantSetTest1" >
+	++++ConstantTest1.xml++++
+</declared_const_set>

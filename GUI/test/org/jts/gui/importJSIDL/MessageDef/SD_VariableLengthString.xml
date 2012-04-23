@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_VariableLengthString" id="ImportTest:SD_VariableLengthString" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a variable_length_string entity with all levels of multiplicity and options.
+
+    The 1st message_def contains a variable_length_string with all optional items missing.
+    The 2nd message_def contains a variable_length_string with all optional elements (and sub-elements).
+  </description>
+
+  <!-- 
+    element variable_length_string 
+    {
+      attribute name { identifier }, 
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,  
+      count_field 
+    }
+    
+    element count_field 
+    { 
+      attribute_field_type_unsigned, 
+      attribute min_count { identifier_ns | xsd:unsignedInt }?,
+      attribute max_count{ identifier_ns | xsd:unsignedInt }?,
+      attribute interpretation { text }?
+    }    
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, variable_length_string -->
+      <message_def name="VariableLengthString1" message_id="0161" is_command="false">
+        <description>
+          The 1st message_def contains a variable_length_string with all optional items missing.
+        </description>
+        <header name="VariableLengthString"/>
+        <body name="VariableLengthString1">
+          <record name="VariableLengthString1Rec" optional="false">
+            <variable_length_string name="some_string" optional="true">
+              <count_field field_type_unsigned="unsigned byte"/>
+            </variable_length_string>
+          </record>
+          </body>
+          <footer name="VariableLengthString"/>
+      </message_def>
+
+      <!-- All optional elements, variable_length_string -->
+      <message_def name="VariableLengthString2" message_id="0162" is_command="false">
+        <description>
+          The 2nd message_def contains a variable_length_string with all optional elements (and sub-elements).
+        </description>
+        <header name="VariableLengthString"/>
+        <body name="VariableLengthString2">
+          <record name="VariableLengthString2Rec" optional="false">
+            <variable_length_string name="some_other_string" optional="true" interpretation="Some variable_length_string interpretation.">
+              <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="1024" interpretation="This is some count field" />
+            </variable_length_string>
+          </record>
+        </body>
+        <footer name="VariableLengthString"/>
+      </message_def>
+
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_VariableLengthString" state_name="init"/>
+    <state_machine name="SD_VariableLengthString">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest7" version="1.0">
+  <description>changing end state names in states and default states with multiple nested states</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMTransitionTest7" state_name="A"/>
+    <state_machine name="FSMTransitionTest7">
+    	<state name="A" initial_state="B">
+			<transition name="T1">
+				<guard condition="g1()"/>
+				<simple>
+					<end_state state="C"/>
+				</simple>
+			</transition>
+			<default_transition>
+				<guard condition="g2()"/>
+				<simple>
+					<end_state state="C"/>
+				</simple>
+			</default_transition>
+			<state name="B">
+				<transition name="T1">
+					<guard condition="g3()"/>
+					<simple>
+						<end_state state="A"/>
+					</simple>
+				</transition>
+				<default_transition>
+					<guard condition="g4()"/>
+					<simple>
+						<end_state state="A"/>
+					</simple>
+				</default_transition>
+				<default_state>
+					<transition name="T1">
+						<guard condition="g5()"/>
+						<simple>
+							<end_state state="A"/>
+						</simple>
+					</transition>
+					<default_transition>
+						<guard condition="g6()"/>
+						<simple>
+							<end_state state="A"/>
+						</simple>
+					</default_transition>
+				</default_state>
+			</state>
+			<state name="C">
+				<transition name="T1">
+					<guard condition="g7()"/>
+					<simple>
+						<end_state state="B"/>
+					</simple>
+				</transition>
+				<default_transition>
+					<guard condition="g8()"/>
+					<simple>
+						<end_state state="B"/>
+					</simple>
+				</default_transition>
+				<default_state>
+					<transition name="T1">
+						<guard condition="g9()"/>
+						<simple>
+							<end_state state="B"/>
+						</simple>
+					</transition>
+					<default_transition>
+						<guard condition="g10()"/>
+						<simple>
+							<end_state state="B"/>
+						</simple>
+					</default_transition>
+				</default_state>
+			</state>
+			<default_state>
+				<transition name="T1">
+					<guard condition="g11()"/>
+					<simple>
+						<end_state state="B"/>
+					</simple>
+				</transition>
+				<default_transition>
+					<guard condition="g12()"/>
+					<simple>
+						<end_state state="B"/>
+					</simple>
+				</default_transition>
+			</default_state>
+		</state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

@@ -1,0 +1,157 @@
+options {
+  LOOKAHEAD = 1;
+  CHOICE_AMBIGUITY_CHECK = 2;
+  OTHER_AMBIGUITY_CHECK = 1;
+  STATIC = false;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  ERROR_REPORTING = true;
+  JAVA_UNICODE_ESCAPE = false;
+  UNICODE_INPUT = false;
+  IGNORE_CASE = false;
+  USER_TOKEN_MANAGER = false;
+  USER_CHAR_STREAM = false;
+  BUILD_PARSER = true;
+  BUILD_TOKEN_MANAGER = true;
+  SANITY_CHECK = true;
+  FORCE_LA_CHECK = false;
+}
+
+PARSER_BEGIN(StateParser)
+package org.jts.gui.mxGraphtoJAXB.parser;
+
+import org.jts.gui.mxGraphtoJAXB.mxAction;
+import org.jts.gui.mxGraphtoJAXB.mxState;
+import java.io.ByteArrayInputStream;
+import java.util.Vector;
+
+/** state element */
+public class StateParser {
+
+public String name = null;
+public Vector <mxAction>entryActionList = new Vector();
+public Vector <mxAction>exitActionList = new Vector();
+public String interpretation = null;  // currently not parsed
+
+  /** Main entry point. */
+  public static void main(String args[]) throws ParseException {
+  
+    String test = "stateName entry: init(); exit: finalize(); entry: action1(arg1); exit: action2(arg1, arg2 ); exit: action3( '5' ); entry: action4( arg1, arg2, arg3 ); exit: action5( '5', arg2, 'STR_LIT ~!@#$%^&*()_+=' )";
+    ByteArrayInputStream stream = new ByteArrayInputStream( test.getBytes() );
+    
+    StateParser parser = new StateParser( stream );
+    parser.Input();
+    System.out.println(parser.name);
+    for(int ii=0; ii<parser.entryActionList.size(); ii++) 
+      System.out.println( parser.entryActionList.get(ii) );
+    for(int ii=0; ii<parser.exitActionList.size(); ii++) 
+      System.out.println( parser.exitActionList.get(ii) );  
+  }
+}
+
+PARSER_END(StateParser)
+
+SKIP :
+{
+  " "
+  | "\t"
+  | "\n"
+  | "\r"
+  | ";"
+  | "\""
+}
+
+TOKEN :
+{
+    <ENTRY: "entry">
+      |
+    <EXIT: "exit">
+      |
+    <ID: ["a"-"z","A"-"Z","_","\'"] ( ["a"-"z","A"-"Z","_","0"-"9",".","\'"] )*>
+      |
+    <LITERAL: "\'" (~["\'"])* "\'">    
+      |
+    <NUM: ( ["0"-"9"] )+> 
+}
+
+/** Parses a state */
+void Input() :
+{
+String actionName = null;          
+Vector args = null;  
+}
+{      
+   name=Value()
+  {
+  }
+  (
+    <ENTRY> ":" actionName=Value() "(" args = Arguments() ")"
+      {
+        mxAction mxaction = new mxAction();
+        mxaction.name = actionName;
+        mxaction.mxargs = args;
+        mxaction.type = new String(mxAction.TYPE_ENTRY);
+        entryActionList.add(mxaction);
+      }
+    |
+    <EXIT> ":" actionName=Value() "(" args = Arguments() ")"
+      {
+      mxaction = new mxAction();
+      mxaction.name = actionName;
+      mxaction.mxargs = args;
+      mxaction.type = new String(mxAction.TYPE_EXIT);
+      exitActionList.add(mxaction);
+      }
+    )*
+    {
+    }
+}
+
+Vector Arguments() :
+{
+  Vector <String>args = new Vector<String>();
+  String str = null;
+}
+{
+   [ str = ArgValue() ]
+       { 
+        if( str != null ) args.add(str); 
+       }
+   (
+     "," str = ArgValue() 
+       { 
+        if( str != null ) args.add(str); 
+       }    
+   )*
+{
+return args;
+}
+}
+
+String ArgValue() :
+{
+Token t;
+String s;
+}
+{
+    (t=<ID> | t=<LITERAL>)
+     {
+      return t.image;
+     }
+}
+      
+      
+/** A value */
+String Value() :
+{
+Token t;
+String s;
+}
+{
+  t=<ID>
+  {
+     return t.image;
+   }
+}
+         

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<body xmlns="urn:jaus:jsidl:1.0" name="BodyTest2">
+	<declared_list name="ListTest1" declared_type_ref="unitTest.ListTest1"/>
+</body>

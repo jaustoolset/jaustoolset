@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record name="Record17" optional="false" interpretation="A variable format field in a record may be optional" xmlns="urn:jaus:jsidl:1.0">
+	<presence_vector field_type_unsigned="unsigned byte"/>
+	<variable_format_field name="video_frames" optional="true" xmlns="urn:jaus:jsidl:1.0">
+		<format_field>
+			<format_enum index="0" field_format="MJPEG"/>
+		</format_field>
+		<count_field field_type_unsigned="unsigned short integer"/>
+	</variable_format_field>
+</record>

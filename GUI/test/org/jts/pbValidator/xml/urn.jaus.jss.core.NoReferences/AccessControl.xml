@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="AccessControl" id="urn:jaus:jss:core:AccessControl" version="1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The Access Control service offers a basic interface for acquiring preemptable exclusive control to one or more related services that utilize this function. Once the exclusive control is established, the related services shall only execute commands originating from the controlling component. The authority code parameter of this service is used for preemption and is to be set equal to that of its controlling client. This service always grants control to the highest authority client that is requesting exclusive control. Commands from all other clients are ignored unless from a client with higher authority. This service maintains two values, a default value and a current value of a field called authority code. The default value is the value that the service is pre-configured with. Access is provided to clients based on the value of their authority code in comparison to the current value of this service.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="RequestControl" message_id="000D" is_command="true">
+                <description xml:space="preserve">This message is used to request interruptible control of the receiving component.  Once control is established, the receiving component shall only execute commands from the sending component.  The authority code parameter is to be set equal to that of the sending component.  The receiving component must always accept the control of the highest authority component that is requesting uninterruptible control.  Commands from all other components are ignored unless from a component with higher authority.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="RequestControlRec" optional="false">
+                        <fixed_field name="AuthorityCode" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReleaseControl" message_id="000E" is_command="true">
+                <description xml:space="preserve">This message is used to relinquish uninterruptible control of the receiving component.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryControl" message_id="200D" is_command="false">
+                <description xml:space="preserve">This message is used by clients to query the current control state of this service.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryAuthority" message_id="2001" is_command="false">
+                <description xml:space="preserve">This message is used by clients to query the current value of the authority code of this service.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetAuthority" message_id="0001" is_command="true">
+                <description xml:space="preserve">This message shall set the command authority of the receiving component.  The authority bits range in value from 0 to 255 with 255 being the highest.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="authorityRec" optional="false">
+                        <fixed_field name="AuthorityCode" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryTimeout" message_id="2003" is_command="false">
+                <description xml:space="preserve">This message is used by clients of this service to query the timeout period of this service.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportControl" message_id="400D" is_command="false">
+                <description xml:space="preserve">This message is used to report the current state of control of this service.  If the serivce is in the Controlled state, this message reports the ID of the controlling component. The ID fields shall be set to zero (0) if this service is in the NotControlled state..</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportControlRec" optional="false">
+                        <fixed_field name="SubsystemID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                        <fixed_field name="NodeID" optional="false" field_units="one" field_type="unsigned byte"/>
+                        <fixed_field name="ComponentID" optional="false" field_units="one" field_type="unsigned byte"/>
+                        <fixed_field name="AuthorityCode" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="RejectControl" message_id="0010" is_command="false">
+                <description xml:space="preserve">The Reject Control message is used to notify a component that control has been released (response code = 0), or a request to release control could not be processed (response code = 1).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="RejectControlRec" optional="false">
+                        <fixed_field name="ResponseCode" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="CONTROL_RELEASED"/>
+                                <value_enum enum_index="1" enum_const="NOT_AVAILABLE"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ConfirmControl" message_id="000F" is_command="false">
+                <description xml:space="preserve">The Confirm Control message is used to notify a component that it accepts control from that component (or not).  When control has been granted, response code of 0, the component under control will only execute messages from the controlling component until control is released or interrupted.  When the requesting component has lower authority than the current controlling entity, the response will be 2.  For components not supporting interruptible control, or if the component is engaged in other operations that would prevent this service from performing its actions to grant control, the response code value of 1 can be used.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ConfirmControlRec" optional="false">
+                        <fixed_field name="ResponseCode" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="CONTROL_ACCEPTED"/>
+                                <value_enum enum_index="1" enum_const="NOT_AVAILABLE"/>
+                                <value_enum enum_index="2" enum_const="INSUFFICIENT_AUTHORITY"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportAuthority" message_id="4001" is_command="false">
+                <description xml:space="preserve">This message is used to report the current command authority.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportAuthorityRec" optional="false">
+                        <fixed_field name="AuthorityCode" optional="false" field_units="one" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportTimeout" message_id="4003" is_command="false">
+                <description xml:space="preserve">This message is used to report the timeout period of this message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportTimoutRec" optional="false">
+                        <fixed_field name="Timeout" optional="false" field_units="second" field_type="unsigned byte">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="TIMEOUT_FEATURE _DISABLED"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set>
+        <event_def name="Timeout">
+            <description xml:space="preserve">Occurs when access is not re-acquired periodically</description>
+            <header name="Header"/>
+            <body name="Body"/>
+            <footer name="Footer"/>
+        </event_def>
+    </internal_events_set>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="AccessControl.Events.Transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="AccessControl.Events.Transport.SendFSM" state_name="Sending"/>
+        <state_machine name="AccessControl.Events.Transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled">
+                        <entry>
+                            <action name="init"/>
+                        </entry>
+                        <transition name="events.transport.Receive">
+                            <parameter type="RequestControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" ! isControlAvailable() "/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'ConfirmControl'"/>
+                                <argument value="'NOT_AVAILABLE'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="88" parent="14" source="81" target="81" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isDefaultAuthorityGreater(msg) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="RequestControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" isDefaultAuthorityGreater(msg) "/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'ConfirmControl'"/>
+                                <argument value="'INSUFFICIENT_AUTHORITY'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="88" parent="14" source="81" target="81" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isDefaultAuthorityGreater(msg) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="ReleaseControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'RejectControl'"/>
+                                <argument value="'CONTROL_RELEASED'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="88" parent="14" source="81" target="81" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isDefaultAuthorityGreater(msg) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'ReportControl'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="88" parent="14" source="81" target="81" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isDefaultAuthorityGreater(msg) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="RequestControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" ! isDefaultAuthorityGreater(msg) &amp;&amp;                 isControlAvailable() "/>
+                            <simple>
+                                <end_state state="Receiving.Ready.Controlled"/>
+                            </simple>
+                            <action name="StoreAddress">
+                                <argument value="transportData"/>
+                            </action>
+                            <action name="SetAuthority">
+                                <argument value="msg"/>
+                            </action>
+                            <action name="ResetTimer"/>
+                            <action name="events.transport.Send">
+                                <argument value="'ConfirmControl'"/>
+                                <argument value="'CONTROL_ACCEPTED'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="89" parent="14" source="81" target="82" style="simpleTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isDefaultAuthorityGreater(msg) &amp;&amp;                 isControlAvailable() ] / StoreAddress( transportData  ), SetAuthority( msg  ), ResetTimer(  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ; 
+" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <ns3:mxCell id="81" parent="14" style="state;" value="NotControlled; 
+ entry: init(  ); 
+" vertex="1">
+                            <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                        </ns3:mxCell>
+                    </state>
+                    <state name="Controlled">
+                        <transition name="events.transport.Receive">
+                            <parameter type="RequestControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" ! isControlAvailable() "/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'ConfirmControl'"/>
+                                <argument value="'NOT_AVAILABLE'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="93" parent="14" source="82" target="82" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( SetAuthority msg, Receive.Body.ReceiveRec transportData )[ isAuthorityValid(msg) &amp;&amp; isControllingClient( transportData )                 &amp;&amp; isControlAvailable() ] / SetAuthority( msg  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ), StoreAddress( transportData  ), SetAuthority( msg  ), ResetTimer(  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient( transportData ) ] / ResetTimer(  ), SetAuthority( msg  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="SetAuthority" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" isAuthorityValid(msg) &amp;&amp; isControllingClient( transportData )                 &amp;&amp; isControlAvailable() "/>
+                            <ns2:internal/>
+                            <action name="SetAuthority">
+                                <argument value="msg"/>
+                            </action>
+                            <ns3:mxCell id="93" parent="14" source="82" target="82" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( SetAuthority msg, Receive.Body.ReceiveRec transportData )[ isAuthorityValid(msg) &amp;&amp; isControllingClient( transportData )                 &amp;&amp; isControlAvailable() ] / SetAuthority( msg  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ), StoreAddress( transportData  ), SetAuthority( msg  ), ResetTimer(  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient( transportData ) ] / ResetTimer(  ), SetAuthority( msg  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="RequestControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) "/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'RejectControl'"/>
+                                <argument value="'CONTROL_RELEASED'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <action name="StoreAddress">
+                                <argument value="transportData"/>
+                            </action>
+                            <action name="SetAuthority">
+                                <argument value="msg"/>
+                            </action>
+                            <action name="ResetTimer"/>
+                            <action name="events.transport.Send">
+                                <argument value="'ConfirmControl'"/>
+                                <argument value="'CONTROL_ACCEPTED'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="93" parent="14" source="82" target="82" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( SetAuthority msg, Receive.Body.ReceiveRec transportData )[ isAuthorityValid(msg) &amp;&amp; isControllingClient( transportData )                 &amp;&amp; isControlAvailable() ] / SetAuthority( msg  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ), StoreAddress( transportData  ), SetAuthority( msg  ), ResetTimer(  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient( transportData ) ] / ResetTimer(  ), SetAuthority( msg  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="RequestControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" ! isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) "/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'ConfirmControl'"/>
+                                <argument value="'INSUFFICIENT_AUTHORITY'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="93" parent="14" source="82" target="82" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( SetAuthority msg, Receive.Body.ReceiveRec transportData )[ isAuthorityValid(msg) &amp;&amp; isControllingClient( transportData )                 &amp;&amp; isControlAvailable() ] / SetAuthority( msg  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ), StoreAddress( transportData  ), SetAuthority( msg  ), ResetTimer(  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient( transportData ) ] / ResetTimer(  ), SetAuthority( msg  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="RequestControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" ! isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient( transportData ) "/>
+                            <ns2:internal/>
+                            <action name="ResetTimer"/>
+                            <action name="SetAuthority">
+                                <argument value="msg"/>
+                            </action>
+                            <action name="events.transport.Send">
+                                <argument value="'ConfirmControl'"/>
+                                <argument value="'CONTROL_ACCEPTED'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="93" parent="14" source="82" target="82" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( SetAuthority msg, Receive.Body.ReceiveRec transportData )[ isAuthorityValid(msg) &amp;&amp; isControllingClient( transportData )                 &amp;&amp; isControlAvailable() ] / SetAuthority( msg  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ), StoreAddress( transportData  ), SetAuthority( msg  ), ResetTimer(  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient( transportData ) ] / ResetTimer(  ), SetAuthority( msg  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'ReportControl'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="93" parent="14" source="82" target="82" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( SetAuthority msg, Receive.Body.ReceiveRec transportData )[ isAuthorityValid(msg) &amp;&amp; isControllingClient( transportData )                 &amp;&amp; isControlAvailable() ] / SetAuthority( msg  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ), StoreAddress( transportData  ), SetAuthority( msg  ), ResetTimer(  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient( transportData ) ] / ResetTimer(  ), SetAuthority( msg  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="ReleaseControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" ! isControlAvailable() "/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'RejectControl'"/>
+                                <argument value="'NOT_AVAILABLE'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="93" parent="14" source="82" target="82" style="internalTransition;" value="events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'ConfirmControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;events.transport.Receive( SetAuthority msg, Receive.Body.ReceiveRec transportData )[ isAuthorityValid(msg) &amp;&amp; isControllingClient( transportData )                 &amp;&amp; isControlAvailable() ] / SetAuthority( msg  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ), StoreAddress( transportData  ), SetAuthority( msg  ), ResetTimer(  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isCurrentAuthorityLess(msg) &amp;&amp; !                 isControllingClient( transportData ) ] / events.transport.Send(  'ConfirmControl'  ,  'INSUFFICIENT_AUTHORITY'  , transportData  ) ;events.transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ ! isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient( transportData ) ] / ResetTimer(  ), SetAuthority( msg  ), events.transport.Send(  'ConfirmControl'  ,  'CONTROL_ACCEPTED'  , transportData  ) ;events.transport.Receive( QueryControl msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportControl'  , transportData  ) ;events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData )[ ! isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'NOT_AVAILABLE'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="ReleaseControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" isControllingClient( transportData ) &amp;&amp; isControlAvailable() "/>
+                            <simple>
+                                <end_state state="Receiving.Ready.NotControlled"/>
+                            </simple>
+                            <action name="events.transport.Send">
+                                <argument value="'RejectControl'"/>
+                                <argument value="'CONTROL_RELEASED'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="100" parent="14" source="82" target="81" style="simpleTransition;" value="events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData )[ isControllingClient( transportData ) &amp;&amp; isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ) ;transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient(transportData) ] / transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED' , transportData  ) ;Timeout[ isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'   ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="transport.Receive">
+                            <parameter type="RequestControl" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <guard condition=" isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient(transportData) "/>
+                            <simple>
+                                <end_state state="Receiving.Ready.NotControlled"/>
+                            </simple>
+                            <action name="transport.Send">
+                                <argument value="'RejectControl'"/>
+                                <argument value="'CONTROL_RELEASED'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="100" parent="14" source="82" target="81" style="simpleTransition;" value="events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData )[ isControllingClient( transportData ) &amp;&amp; isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ) ;transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient(transportData) ] / transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED' , transportData  ) ;Timeout[ isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'   ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="Timeout">
+                            <guard condition=" isControlAvailable() "/>
+                            <simple>
+                                <end_state state="Receiving.Ready.NotControlled"/>
+                            </simple>
+                            <action name="events.transport.Send">
+                                <argument value="'RejectControl'"/>
+                                <argument value="'CONTROL_RELEASED'"/>
+                            </action>
+                            <ns3:mxCell id="100" parent="14" source="82" target="81" style="simpleTransition;" value="events.transport.Receive( ReleaseControl msg, Receive.Body.ReceiveRec transportData )[ isControllingClient( transportData ) &amp;&amp; isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'  , transportData  ) ;transport.Receive( RequestControl msg, Receive.Body.ReceiveRec transportData )[ isDefaultAuthorityGreater(msg) &amp;&amp;                 isControllingClient(transportData) ] / transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED' , transportData  ) ;Timeout[ isControlAvailable() ] / events.transport.Send(  'RejectControl'  ,  'CONTROL_RELEASED'   ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <ns3:mxCell id="82" parent="14" style="state;" value="Controlled; 
+ " vertex="1">
+                            <ns3:mxGeometry as="geometry" x="110.0" y="220.0" width="80.0" height="80.0"/>
+                        </ns3:mxCell>
+                    </state>
+                    <default_state>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryAuthority" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'ReportAuthority'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="103" parent="14" source="83" target="83" style="internalTransition;" value="events.transport.Receive( QueryAuthority msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportAuthority'  , transportData  ) ;events.transport.Receive( QueryTimeout msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportTimeout'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryTimeout" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <ns2:internal/>
+                            <action name="events.transport.Send">
+                                <argument value="'ReportTimeout'"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <ns3:mxCell id="103" parent="14" source="83" target="83" style="internalTransition;" value="events.transport.Receive( QueryAuthority msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportAuthority'  , transportData  ) ;events.transport.Receive( QueryTimeout msg, Receive.Body.ReceiveRec transportData ) / events.transport.Send(  'ReportTimeout'  , transportData  ) ;" edge="1">
+                                <ns3:mxGeometry relative="1" as="geometry"/>
+                            </ns3:mxCell>
+                        </transition>
+                        <ns3:mxCell id="83" parent="14" style="defaultState;" value="default_state" vertex="1">
+                            <ns3:mxGeometry as="geometry" x="100.0" width="80.0" height="80.0"/>
+                        </ns3:mxCell>
+                    </default_state>
+                    <pseudo_start_state>
+                        <state>
+                            <ns3:mxCell id="84" parent="14" style="pseudoStartState;" value="" vertex="1">
+                                <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                            </ns3:mxCell>
+                        </state>
+                        <transition>
+                            <ns3:mxCell id="85" parent="14" source="84" target="81" style="simpleTransition;" value="" edge="1">
+                                <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                            </ns3:mxCell>
+                        </transition>
+                    </pseudo_start_state>
+                    <ns3:mxCell id="14" parent="3" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Ready; 
+" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                    </ns3:mxCell>
+                </state>
+                <pseudo_start_state>
+                    <state>
+                        <ns3:mxCell id="86" parent="3" style="pseudoStartState;" value="" vertex="1">
+                            <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                        </ns3:mxCell>
+                    </state>
+                    <transition>
+                        <ns3:mxCell id="87" parent="3" source="86" target="14" style="simpleTransition;" value="" edge="1">
+                            <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                        </ns3:mxCell>
+                    </transition>
+                </pseudo_start_state>
+                <ns3:mxCell id="3" parent="2" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Receiving; 
+" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="10" parent="2" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="11" parent="2" source="10" target="3" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="2" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = AccessControl.Events.Transport.ReceiveFSM; 
+ isStateless = false; 
+" vertex="1">
+                <ns3:mxGeometry as="geometry" width="850.0" height="400.0"/>
+            </ns3:mxCell>
+        </state_machine>
+        <state_machine name="AccessControl.Events.Transport.SendFSM">
+            <state name="Sending">
+                <ns3:mxCell id="6" parent="5" style="state;strokeColor=#BC1212;fontColor=#BC1212;" value="Sending; 
+" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="110.0" y="110.0" width="80.0" height="80.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="12" parent="5" style="pseudoStartState;fillColor=#BC1212;strokeColor=#BC1212;fontColor=#BC1212;" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="13" parent="5" source="12" target="6" style="simpleTransition;strokeColor=#BC1212;fontColor=#BC1212;" value="" edge="1">
+                        <ns3:mxGeometry as="geometry" x="70.0" y="70.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="5" parent="1" style="finiteStateMachine;strokeColor=#BC1212;fontColor=#BC1212;" value="name = AccessControl.Events.Transport.SendFSM; 
+ isStateless = false; 
+" vertex="1">
+                <ns3:mxGeometry as="geometry" y="400.0" width="850.0" height="400.0"/>
+            </ns3:mxCell>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fixed_field name="orientation Rms" field_type="unsigned integer" field_units="radian" 
+			 optional="true" interpretation="A RMS value indicating the validity; of the orientation data." xmlns="urn:jaus:jsidl:1.0">
+  <scale_range integer_function="round" real_lower_limit="-1.0" real_upper_limit="1.0" />
+</fixed_field>

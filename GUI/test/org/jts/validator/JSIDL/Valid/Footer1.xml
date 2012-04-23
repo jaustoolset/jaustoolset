@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<footer name="JAUSApplicationLayerFooter" xmlns="urn:jaus:jsidl:1.0">
+  <record name="FooterRec" optional="false">
+    <fixed_field name="sequenceNum" field_type="unsigned short integer" field_units="one"
+      optional="false" interpretation="A two byte field to hold the sequence number of a message"/>
+  </record>
+</footer>

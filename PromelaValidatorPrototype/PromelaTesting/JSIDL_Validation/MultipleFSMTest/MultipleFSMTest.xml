@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="ProtocolBehaviorServiceDef" id="urn.jts.ProtocolBehaviorTest" version="1.1" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references/>
+    <message_set>
+        <input_set>
+            <message_def name="Message1" message_id="5050" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+            <message_def name="UnsignedTestMsg" message_id="5005" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="UnsignedBody">
+                    <record name="UnsignedRec" optional="false">
+                        <fixed_field name="UnsignedByte" optional="false" field_units="bar" field_type="unsigned byte"/>
+                        <fixed_field name="UnsignedShort" optional="false" field_units="bar" field_type="unsigned short integer"/>
+                        <fixed_field name="UnsignedInt" optional="false" field_units="bar" field_type="unsigned integer"/>
+                        <fixed_field name="UnsignedLong" optional="false" field_units="bar" field_type="unsigned long integer"/>
+                    </record>
+                </body>
+                <footer name="EmptyFooter"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="UnsignedResponseMessage" message_id="5011" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="UnsignedBody">
+                    <record name="UnsignedRec" optional="false">
+                        <fixed_field name="UnsignedByte" optional="false" field_units="bar" field_type="unsigned byte"/>
+                        <fixed_field name="UnsignedShort" optional="false" field_units="bar" field_type="unsigned short integer"/>
+                        <fixed_field name="UnsignedInt" optional="false" field_units="bar" field_type="unsigned integer"/>
+                        <fixed_field name="UnsignedLong" optional="false" field_units="bar" field_type="unsigned long integer"/>
+                    </record>
+                </body>
+                <footer name="EmptyFooter"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set>
+        <event_def name="TestEvent">
+            <description xml:space="preserve"></description>
+            <header name="JTS_DefaultHeader">
+                <record name="DefaultHeaderRec" optional="false">
+                    <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                </record>
+            </header>
+            <body name="EmptyBody"/>
+            <footer name="EmptyFooter"/>
+        </event_def>
+    </internal_events_set>
+    <protocol_behavior is_stateless="true">
+        <start state_machine_name="ProtocolMessagesFSM" state_name="ReceivingMessages"/>
+        <start state_machine_name="ProtocolInternalEventsFSM" state_name="ReceivingEvents"/>
+        <state_machine name="ProtocolMessagesFSM">
+            <state name="ReceivingMessages">
+                <transition name="Message1">
+                    <ns2:internal/>
+                    <action name="printMessage"/>
+                </transition>
+            </state>
+        </state_machine>
+        <state_machine name="ProtocolInternalEventsFSM">
+            <state name="ReceivingEvents">
+                <transition name="TestEvent">
+                    <ns2:internal/>
+                    <action name="printTestEvent"/>
+                </transition>
+            </state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

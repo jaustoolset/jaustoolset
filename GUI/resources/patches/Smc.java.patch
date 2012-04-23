@@ -1,0 +1,21 @@
+567a568
+>                     // JTS
+572c573,574
+<                             _headerDirectory + File.separator;
+---
+>                             //_headerDirectory + File.separator;
+>                             _headerDirectory + "/";
+573a576
+>                     // jts
+869c872
+<                             if (File.separatorChar != '/')
+---
+>                              if (File.separatorChar != '/')
+875,877c878,880
+<                                 //fileName =
+<                                     //fileName.replaceAll(
+<                                     //    "/", File.separator);
+---
+>                                 fileName =
+>                                     fileName.replaceAll(
+>                                         "/", File.separator);

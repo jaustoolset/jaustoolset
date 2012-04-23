@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="GlobalPoseMessageSet" version="3.2" id="urn:jaus:sensors:GlobalPoseMessageSet">
+  <message_def name="ReportGlobalPose" message_id="4402" is_command="true">
+    <description>
+      The Report Global Pose message provides the position and attitude of
+      the platform. The position of the platform is given in latitude, longitude,
+      and elevation, in accordance with the WGS 84 standard.
+    </description>
+    <header name="JAUSLegacyHeader">
+      <record name="JAUSLegacyHeaderRec" optional="false">
+        <bit_field name="MessageProperties" field_type_unsigned="unsigned short integer" optional="false">
+          <sub_field name="MessagePriority">
+            <bit_range from_index="0" to_index="3"/>
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_index="6" enum_const="DefaultPriority"/>
+              <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="11" upper_limit_type="inclusive" interpretation="Normal Priority Range"/>
+              <value_range lower_limit="12" lower_limit_type="inclusive" upper_limit="15" upper_limit_type="inclusive" interpretation="Safety Critical Range"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="AckNak">
+            <bit_range from_index="4" to_index="6"/>
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_index="0" enum_const="None"/>
+              <value_enum enum_index="1" enum_const="RequestAckNak"/>
+              <value_enum enum_index="2" enum_const="NakResponse"/>
+              <value_enum enum_index="3" enum_const="AckResponse"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="ServiceConnectionFlag">
+            <bit_range from_index="6" to_index="6"/>
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_index="0" enum_const="NotServiceConnection"/>
+              <value_enum enum_index="1" enum_const="ServiceConnection"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="UserDefinedMessageFlag">
+            <bit_range from_index="7" to_index="7"/>
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_index="0" enum_const="JAUS"/>
+              <value_enum enum_index="1" enum_const="Experimental"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="Version">
+            <bit_range from_index="8" to_index="13"/>
+            <value_set offset_to_lower_limit="false">
+              <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="63" upper_limit_type="inclusive"/>
+              <value_enum enum_index="0" enum_const="Version2_0"/>
+              <value_enum enum_index="1" enum_const="Version3_0OrVersion3_1"/>
+              <value_enum enum_index="2" enum_const="Version3_2"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="Reserved">
+            <bit_range from_index="14" to_index="15"/>
+            <value_set offset_to_lower_limit="false">
+              <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="0" upper_limit_type="inclusive"/>
+            </value_set>
+          </sub_field>
+        </bit_field>
+        <fixed_field name="CommandCode" field_type="unsigned short integer"
+          field_units="one" interpretation="Command code" optional="false"/>
+        <fixed_field name="DestInstanceID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Instance ID where a value of 0xFF represents all instances." optional="false"/>
+        <fixed_field name="DestComponentID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Component ID where a value of 0xFF represents all components." optional="false"/>
+        <fixed_field name="DestNodeID" field_type="unsigned byte" field_units="one"
+          interpretation="Destination Node ID where a value of 0xFF represents all nodes." optional="false"/>
+        <fixed_field name="DestSubsystemID" field_type="unsigned short integer"
+          field_units="one" interpretation="Destination Subsystem ID, where a value of 0xFFFF represents all subsystems" optional="false"/>
+        <fixed_field name="SrcInstanceID" field_type="unsigned byte" field_units="one"
+          interpretation="Source Instance ID" optional="false"/>
+        <fixed_field name="SrcComponentID" field_type="unsigned byte" field_units="one"
+          interpretation="Source Component ID" optional="false"/>
+        <fixed_field name="SrcNodeID" field_type="unsigned byte" field_units="one"
+          interpretation="Source Node ID" optional="true"/>
+        <fixed_field name="SrcSubsystemID" field_type="unsigned short integer" field_units="one"
+          interpretation="Source Subsystem ID" optional="true"/>
+        <bit_field name="DataControl" field_type_unsigned="unsigned short integer" optional="false">
+          <sub_field name="DataSize" interpretation="size of the message body portion">
+            <bit_range from_index="0" to_index="11" interpretation="Size for up to 4080 bytes of data per transaction.
+              The range for the bytes of data in the body of this message is 0 to 4080.  the 12 bits provides for a range of 0 to 4095, but given the 16 byte JAUS header, 4080 is the maximum valid value."/>
+            <value_set offset_to_lower_limit="false">
+              <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="4080" upper_limit_type="inclusive"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="DataFlags" interpretation="Used to control single/multi packet transactions">
+            <bit_range from_index="12" to_index="15"/>
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_index="0" enum_const="SinglePacketStream"/>
+              <value_enum enum_index="1" enum_const="FirstDataMultiPacketStream"/>
+              <value_enum enum_index="2" enum_const="NormalDataPacket"/>
+              <value_enum enum_index="3" enum_const="RetransmitDataPacket"/>
+              <value_enum enum_index="4" enum_const="LargeDataPacket"/>              
+            </value_set>
+          </sub_field>
+        </bit_field>
+      </record>
+    </header>
+    <body name="ReportGlobalPoseBody">
+      <record name="ReportGlobalPoseRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned short integer"/>
+        <fixed_field name="Latitude" field_type="unsigned integer" field_units="degree"
+          interpretation="Latitude (WGS 84)" optional="true">
+          <scale_range integer_function="round" real_lower_limit="-90"
+            real_upper_limit="90"/>
+        </fixed_field>
+        <fixed_field name="Longitude" field_type="unsigned integer" field_units="degree"
+          interpretation="Longitude (WGS 84)" optional="true">
+          <scale_range integer_function="round" real_lower_limit="-180"
+            real_upper_limit="180"/>
+        </fixed_field>
+        <fixed_field name="Elevation" field_type="unsigned integer" field_units="meter"
+          interpretation="Elevation" optional="true">
+          <scale_range integer_function="round" real_lower_limit="-10000"
+            real_upper_limit="35000" />
+        </fixed_field>
+        <fixed_field name="PositionRMS" field_type="unsigned integer" field_units="meter" optional="true"
+          interpretation="A RMS value indicating the validity; of the position data.">
+          <scale_range integer_function="round" real_lower_limit="0"
+            real_upper_limit="100"/>
+        </fixed_field>
+        <fixed_field name="Roll" field_type="unsigned short integer" field_units="radian" optional="true">
+          <scale_range integer_function="round" real_lower_limit="-PI"
+            real_upper_limit="PI"/>
+        </fixed_field>
+        <fixed_field name="Pitch" field_type="unsigned short integer" field_units="radian" optional="true">
+          <scale_range integer_function="round" real_lower_limit="-PI"
+            real_upper_limit="PI"/>
+        </fixed_field>
+        <fixed_field name="Yaw" field_type="unsigned short integer" field_units="radian" optional="true">
+          <scale_range integer_function="round" real_lower_limit="-PI"
+            real_upper_limit="PI"/>
+        </fixed_field>
+        <fixed_field name="AttitudeRms" field_type="unsigned short integer" field_units="radian"
+          optional="true"
+          interpretation="A RMS value indicating the validity of the Roll/Pitch/Yaw data.">
+          <scale_range integer_function="round" real_lower_limit="0"
+            real_upper_limit="PI"/>
+        </fixed_field>
+        <bit_field name="TimeStamp" field_type_unsigned="unsigned integer" optional="false">
+          <sub_field name="Milliseconds">
+            <bit_range from_index="0" to_index="9"/>
+            <value_set offset_to_lower_limit="false">
+              <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="999"
+                upper_limit_type="inclusive"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="Seconds">
+            <bit_range from_index="10" to_index="15"/>
+            <value_set offset_to_lower_limit="false">
+              <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+                upper_limit_type="inclusive"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="Minutes">
+            <bit_range from_index="16" to_index="21"/>
+            <value_set offset_to_lower_limit="false">
+              <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+                upper_limit_type="inclusive"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="Hour">
+            <bit_range from_index="22" to_index="26"/>
+            <value_set offset_to_lower_limit="false">
+              <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="23"
+                upper_limit_type="inclusive"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="Day">
+            <bit_range from_index="27" to_index="31"/>
+            <value_set offset_to_lower_limit="false">
+              <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+                upper_limit_type="inclusive"/>
+            </value_set>
+          </sub_field>
+        </bit_field>
+      </record>
+    </body>
+    <footer name="EmptyFooter"/>
+  </message_def>
+</declared_type_set>

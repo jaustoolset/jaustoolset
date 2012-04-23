@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="UnsignedServiceDef" id="urn.jts.TestingUnsigned" version="1.1" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve">none</assumptions>
+    <references/>
+    <message_set>
+        <input_set>
+            <message_def name="UnsignedTestMsg" message_id="5005" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="UnsignedBody">
+                    <record name="UnsignedRec" optional="false">
+                        <fixed_field name="UnsignedByte" optional="false" field_units="bar" field_type="unsigned byte"/>
+                        <fixed_field name="UnsignedShort" optional="false" field_units="bar" field_type="unsigned short integer"/>
+                        <fixed_field name="UnsignedInt" optional="false" field_units="bar" field_type="unsigned integer"/>
+                        <fixed_field name="UnsignedLong" optional="false" field_units="bar" field_type="unsigned long integer"/>
+                    </record>
+                </body>
+                <footer name="EmptyFooter"/>
+            </message_def>
+        </input_set>
+        <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="UnsignedTest" state_name="State0"/>
+        <state_machine name="UnsignedTest">
+            <state name="State0">
+                <transition name="UnsignedTestMsg">
+                    <ns2:internal/>
+                    <action name="printResults"/>
+                    <ns3:mxCell id="6" parent="2" source="4" target="4" style="internalTransition" value="UnsignedTestMsg()/printResults()" edge="1">
+                        <ns3:mxGeometry relative="1" as="geometry" width="100.0" height="100.0">
+                            <ns3:mxPoint as="sourcePoint" x="610.0" y="330.0"/>
+                            <ns3:mxPoint as="targetPoint" x="710.0" y="230.0"/>
+                        </ns3:mxGeometry>
+                    </ns3:mxCell>
+                </transition>
+                <ns3:mxCell id="4" parent="2" style="state" value="State0" vertex="1">
+                    <ns3:mxGeometry as="geometry" x="340.0" y="300.0" width="160.0" height="120.0"/>
+                </ns3:mxCell>
+            </state>
+            <pseudo_start_state>
+                <state>
+                    <ns3:mxCell id="3" parent="2" style="pseudoStartState" value="" vertex="1">
+                        <ns3:mxGeometry as="geometry" x="400.0" y="130.0" width="20.0" height="20.0"/>
+                    </ns3:mxCell>
+                </state>
+                <transition>
+                    <ns3:mxCell id="5" parent="2" source="3" target="4" style="simpleTransition" value="" edge="1">
+                        <ns3:mxGeometry relative="1" as="geometry" width="100.0" height="100.0">
+                            <ns3:mxPoint as="sourcePoint" x="590.0" y="210.0"/>
+                            <ns3:mxPoint as="targetPoint" x="690.0" y="110.0"/>
+                        </ns3:mxGeometry>
+                    </ns3:mxCell>
+                </transition>
+            </pseudo_start_state>
+            <ns3:mxCell id="2" parent="1" style="finiteStateMachine" value="name = UnsignedTest; 
+ isStateless = false; 
+" vertex="1">
+                <ns3:mxGeometry as="geometry" x="50.0" y="30.0" width="790.0" height="570.0"/>
+            </ns3:mxCell>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

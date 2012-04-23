@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="urn:jaus:jsidl:1.0">
+	<action name="initialize" interpretation="call the initialize internal event"/>
+	<action name="initialize2" interpretation="call the initialize internal event"/>
+	<send_action name="One"/>
+	<send_action name="One"/>
+	<send_action name="One"/>
+</entry>

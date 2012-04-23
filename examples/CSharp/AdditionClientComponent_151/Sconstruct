@@ -1,0 +1,109 @@
+import os
+if ('JTS_COMMON_PATH' in os.environ):
+	common_dir = os.environ['JTS_COMMON_PATH']
+else:
+	print 'Must define JTS_COMMON_PATH before building'
+	exit(-1)
+
+
+VariantDir('Build', 'src', duplicate=0)
+include = [ '#.', common_dir + '/include']
+libpath = ['#lib', '#./lib/lib', common_dir + '/libCSharp/lib', common_dir + '/lib', './bin/']
+
+
+# Generate the environment
+###############################################
+	
+env = Environment (
+	tools = [ 'default', 'mscs', 'msvs', 'mcs'], #mcs = mono, mscs/msvs = win32
+	toolpath = ['.'],
+	ENV=os.environ,
+	MSVS_IGNORE_IDE_PATHS=1
+	)
+env.Append( CPPPATH = include)
+env.Append( LIBPATH = libpath)
+env.Append( INSTALL_LIB = '#./lib')
+env.Append( BINPATH = '#./bin')
+
+
+# Copy the framework to the local ./lib directory
+# in advance of actual compilation
+##################################################
+
+if not os.path.exists('bin'):
+	Execute( Mkdir('bin') )
+if not os.path.isfile('bin/statemap.dll'):
+	Execute( Copy( 'bin/statemap.dll', common_dir + '/libCSharp/lib/statemap.dll' ))
+	
+	
+
+# Platform specific info, primarily for the C++ library
+###############################################
+swigflag = []
+if env['PLATFORM'] == 'cygwin':
+	print 'scons: Building for CYGWIN...'
+	env.Append( CCFLAGS = ['-D__CYGWIN__' ] )
+	env.Append( LINKFLAGS = ['-Wl,--enable-auto-import'] )
+
+elif os.name == 'nt':
+	print 'scons: Building for Windows...'
+	env.Append( CCFLAGS = ['-DWIN32', '-DWINDOWS', '/MD', '/EHsc','-D_CRT_SECURE_NO_DEPRECATE'])
+	env.Append( CSCFLAGS = ['/nowarn:0168,0105'])	
+	env.Append( LINKFLAGS = ['/MANIFEST', '/DEFAULTLIB:"WSock32.Lib"'] )
+	swigflag = ['-DWIN32', '-DWINDOWS', '/MD', '/clr']
+	
+elif env['PLATFORM'] == 'darwin':
+	env.Append( LINKFLAGS = ['-lpthread'] )
+	env.Append( CPPFLAGS = ['-g', '-Wno-write-strings'])
+	env.Append( CCFLAGS = ['-D__MAC__'] )
+
+elif os.name == 'posix':
+	env.Append( LINKFLAGS = ['-lpthread', '-lrt'] )
+	env.Append( CPPFLAGS = ['-g', '-Wno-write-strings'])
+	env.Replace(CC = 'g++')
+	swigflag = ['-fPIC']
+
+# Install and build Build C++ and SWIG libraries.
+###############################################
+
+# The C++ and C# libraries
+Export('env')
+SConscript([common_dir + '/Sconstruct', common_dir + '/libCSharp/libCommon_CSharp/framework/1_0/Sconstruct'])
+
+# The Swig libraries
+env.Append(CPPPATH = [common_dir + '/include', common_dir + '/include/Transport', common_dir + '/include/InternalEvents', common_dir + '/include/Messages'])
+
+S1_lib = env.SharedLibrary(target = './bin/JuniorAPI', source = [common_dir + '/libCSharp/lib/wrappers/JuniorAPI_wrap.cxx'], LIBS=['Common'], CCFLAGS = swigflag)
+S2_lib =env.SharedLibrary(target = './bin/JausAddressModule', source = [common_dir + '/libCSharp/lib/wrappers/JausAddress_wrap.cxx'], LIBS=['Common'], CCFLAGS = swigflag)
+S3_lib = env.SharedLibrary(target = './bin/AddressModule', source =[common_dir + '/libCSharp/lib/wrappers/Address_wrap.cxx'], LIBS=['Common'], CCFLAGS = swigflag)
+
+# Copy statemap library and add it to the reference pat
+statemap = env.Install('#./bin', common_dir + '/libCSharp/lib/statemap.dll')
+env.AddToRefPaths(statemap)
+
+
+# Build
+###############################################
+
+sources = Split("""
+	src\AdditionClientComponent.cs
+	src\main.cs
+	""")
+
+build_first = SConscript(['src\urn_jaus_example_addition_client_1_0\Sconscript'])
+	
+libs = ['statemap', 'CSharpCommon' , 'AdditionClientServiceDefService']
+pathlibs = env.CLIRefs(libs)
+
+prog = env.CLIProgram('./bin/AdditionClientComponent', sources, ASSEMBLYREFS=pathlibs)
+env.Depends(prog, build_first )
+
+
+# One more Windows hoop to jump through.  Since we are using the shared
+# C runtime, we need to include a manifest in our exe.
+# Add a post-build step to embed the manifest using mt.exe
+# The number at the end of the line indicates the file type (1: EXE; 2:DLL).
+if os.name == "nt":
+   env.AddPostAction(S1_lib, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;2')
+   env.AddPostAction(S2_lib, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;2')
+   env.AddPostAction(S3_lib, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;2')

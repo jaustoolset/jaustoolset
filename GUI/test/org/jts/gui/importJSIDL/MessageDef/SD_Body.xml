@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_Body" id="ImportTest:SD_Body" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a body entity with all levels of multiplicity and options.
+    The first message defines a body with no optional parameters.
+    The second message defines a body with an interpretation.
+    The third message defines a body with a record entity.
+    The fourth message defines a body with a list entity.
+    The fifth message defines a body with a variant entity.
+    The sixth message defines a body with a sequence entity.
+  </description>
+
+  <!-- 
+    element body 
+    { 
+      attribute name { identifier },
+      attribute interpretation { text }?,
+      ( record | declared_record | 
+      \list | declared_list | 
+      variant | declared_variant | 
+      sequence | declared_sequence )?
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- Name only -->
+      <message_def name="Body1" message_id="00B1" is_command="false">
+        <description>A message to test the body element. Only body name.</description>
+        <header name="Body1"/>
+        <body name="Body1"/>
+        <footer name="Body1"/>
+      </message_def>
+
+      <!-- Name & Interpretation -->
+      <message_def name="Body2" message_id="00B2" is_command="false">
+        <description>A message to test the body element. Body name and interpretation.</description>
+        <header name="Body2"/>
+        <body name="Body2" interpretation="A body interpretation"/>
+        <footer name="Body2"/>
+      </message_def>
+
+      <!-- Name & Record -->
+      <message_def name="Body3" message_id="00B3" is_command="false">
+        <description>A message to test the body element. Body name and record entity.</description>
+        <header name="Body3"/>
+        <body name="Body3" interpretation="A body interpretation">
+          <record name="Body3Rec" optional="false">
+            <fixed_field name="FixedField" field_type="byte" field_units="one" 
+              optional="false" interpretation="A simple fixed field to create a valid record."/>
+          </record>
+        </body>
+        <footer name="Body3"/>
+      </message_def>
+
+      <!-- Name & List -->
+      <message_def name="Body4" message_id="00B4" is_command="false">
+        <description>A message to test the body element. Body name and list entity.</description>
+        <header name="Body4"/>
+        <body name="Body4">
+          <list name="Body4_SimpleList" optional="false">
+            <count_field field_type_unsigned="unsigned byte"/>
+            <record name="Body2Rec" optional="false">
+              <fixed_field name="FixedField" field_type="byte" field_units="one" 
+                optional="false" interpretation="A simple fixed field to create a valid record."/>
+            </record>
+          </list>
+        </body>
+        <footer name="Body4"/>
+      </message_def>
+
+      <!-- Name & Variant -->
+      <message_def name="Body5" message_id="00B5" is_command="false">
+        <description>A message to test the body element. Body name and variant entity.</description>
+        <header name="Body5"/>
+        <body name="Body5">
+          <variant name="shape" optional="false">
+            <vtag_field field_type_unsigned="unsigned byte" min_count="0" max_count="2"/>
+            <record name="rectangle" optional="false">
+              <fixed_field name="length" field_type="byte" field_units="one" optional="false"/>
+              <fixed_field name="height" field_type="byte" field_units="one" optional="false"/>
+            </record>
+            <record name="square" optional="false">
+              <fixed_field name="side" field_type="byte" field_units="one" optional="false"/>
+            </record>
+            <record name="circle" optional="false">
+              <fixed_field name="radius" field_type="byte" field_units="one" optional="false"/>
+            </record>
+          </variant>
+        </body>
+        <footer name="Body5"/>
+      </message_def>
+      
+      <!-- Name & Sequence -->
+      <message_def name="Body6" message_id="00B6" is_command="false">
+        <description>A message to test the body element. Body name and sequence entity.</description>
+        <header name="Body6"/>
+        <body name="Body6">
+          <sequence name="GlobalPose" optional="false">
+            <list name="Position" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="PositionRec" optional="false">
+                <fixed_field name="LatitudeDegrees" field_type="float" field_units="degree" optional="false"/>
+              </record>
+            </list>
+            <list name="Orientation" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="OrientationRec" optional="false">
+                <fixed_field name="YawDegrees" field_type="float" field_units="degree" optional="false"/>
+              </record>
+            </list>
+          </sequence>
+        </body>
+        <footer name="Body6"/>
+      </message_def>
+
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_Body" state_name="init"/>
+    <state_machine name="SD_Body">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<array xmlns="urn:jaus:jsidl:1.0" name="ArrayTest3" optional="false" >
+	<declared_bit_field name="BitFieldTest1" declared_type_ref="unitTest.BitFieldTest1"/>
+	++++DimensionTest1.xml++++
+</array>

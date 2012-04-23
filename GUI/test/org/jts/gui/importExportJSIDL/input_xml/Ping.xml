@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_set version="1.0" id="urn:jts:PingServiceSet" name="PingServiceSet" xmlns="urn:jaus:jsidl:1.0">
+  <description xmlns="urn:jaus:jsidl:1.0">The Ping Service Set includes both the Ping Server and Ping Client service.</description>
+  <service_def version="1.0" id="urn:jts:PingServer" name="PingServer" xmlns="urn:jaus:jsidl:1.0">
+        <description xml:space="preserve">This service listens for QueryHeartbeatPulse messages and replies with a ReportHeartbeatPulse message.</description>
+        <assumptions xml:space="preserve"></assumptions>
+        <message_set>
+            <input_set>
+                <message_def is_command="false" message_id="2202" name="QueryHeartbeatPulse">
+                    <description xml:space="preserve">This message shall be used to query for a heartbeat pulse.</description>
+                    <header name="JausApplicationHeader">
+                        <record optional="false" name="AppHeaderRec">
+                            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageId"/>
+                        </record>
+                    </header>
+                    <body name="Body"/>
+                    <footer name="Footer"/>
+                </message_def>
+            </input_set>
+            <output_set>
+                <message_def is_command="false" message_id="4202" name="ReportHeartbeatPulse">
+                    <description xml:space="preserve">This message notifies the receiver that the sender is alive.</description>
+                    <header name="JausApplicationHeader">
+                        <record optional="false" name="AppHeaderRec">
+                            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageId"/>
+                        </record>
+                    </header>
+                    <body name="Body"/>
+                    <footer name="Footer"/>
+                </message_def>
+            </output_set>
+        </message_set>
+        <internal_events_set/>
+        <protocol_behavior is_stateless="false">
+            <start state_name="Ready" state_machine_name="PingServer"/>
+            <state_machine name="PingServer">
+                <state name="Ready">
+                    <entry/>
+                    <exit/>
+                    <transition name="processQueryHeartbeatPulse">
+                      <internal/>
+                        <action interpretation="" name="sendReportHeartbeatPulse"/>
+                    </transition>
+                </state>
+            </state_machine>
+        </protocol_behavior>
+    </service_def>
+  <service_def version="1.0" id="urn:jts:PingClient" name="PingClient" xmlns="urn:jaus:jsidl:1.0">
+        <description xml:space="preserve">This service broadcasts a QueryHeartbeatPulse message on start-up, then displays a message on the screen when it receives a ReportHeartbeatPulse message in response.</description>
+        <assumptions xml:space="preserve"></assumptions>
+        <message_set>
+            <input_set>
+                <message_def is_command="false" message_id="4202" name="ReportHeartbeatPulse">
+                    <description xml:space="preserve">This message notifies the receiver that the sender is alive.</description>
+                    <header name="JausApplicationHeader">
+                        <record optional="false" name="AppHeaderRec">
+                            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageId"/>
+                        </record>
+                    </header>
+                    <body name="Body"/>
+                    <footer name="Footer"/>
+                </message_def>
+            </input_set>
+            <output_set>
+                <message_def is_command="false" message_id="2202" name="QueryHeartbeatPulse">
+                    <description xml:space="preserve">This message shall be used to query for a heartbeat pulse.</description>
+                    <header name="JausApplicationHeader">
+                        <record optional="false" name="AppHeaderRec">
+                            <fixed_field field_type="unsigned short integer" field_units="one" optional="false" name="MessageId"/>
+                        </record>
+                    </header>
+                    <body name="Body"/>
+                    <footer name="Footer"/>
+                    </message_def>
+            </output_set>
+        </message_set>
+        <internal_events_set/>
+        <protocol_behavior is_stateless="false">
+            <start state_name="Ready" state_machine_name="PingClient"/>
+            <state_machine name="PingClient">
+                <state name="Ready">
+                    <entry>
+                        <action interpretation="" name="broadcastQueryHeartbeatPulse"/>
+                    </entry>
+                    <exit/>
+                    <transition name="processReportHeartbeatPulse">
+                      <internal/>
+                        <action interpretation="" name="printToScreen"/>
+                    </transition>
+                </state>
+            </state_machine>
+        </protocol_behavior>
+    </service_def>
+</service_set>

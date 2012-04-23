@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="TestSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">The set of services to be tested</description>
+  <service_def name="Record9" id="urn:org.jts.test:Record1" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+  	<description/>
+  	<assumptions/>
+  	<message_set>
+  		<input_set>
+  			<message_def name="MsgIn" is_command="true" message_id="0001">
+  				<description xml:space="default"/>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+  				<body name="Body9">
+  					<record name="Record9" optional="false" interpretation="A record containing a single             field">
+  						<presence_vector field_type_unsigned="unsigned byte"/>
+  						<fixed_field name="Field1" field_type="byte" field_units="one" optional="true" interpretation="just a byte field"/>
+  						<variable_length_field name="VariableLengthField1" field_format="MJPEG" optional="true" interpretation="An 'unbounded' variable length field for MJPEG">
+  							<count_field field_type_unsigned="unsigned integer"/>
+  						</variable_length_field>
+  						<array name="Array1" optional="true">
+  							<fixed_field name="Element1" optional="false" field_type="byte" field_units="one"/>
+  							<dimension name="dim1" size="10"/>
+  						</array>
+  						<bit_field name="BitField1" optional="true" field_type_unsigned="unsigned byte">
+  							<sub_field name="Subfield1">
+  								<bit_range from_index="0" to_index="0"/>
+  								<value_set offset_to_lower_limit="false">
+  									<value_enum enum_index="0" enum_const="FALSE"/>
+  									<value_enum enum_index="1" enum_const="TRUE"/>
+  								</value_set>
+  							</sub_field>
+  						</bit_field>
+  						<fixed_length_string name="FixedLengthString1" optional="true" string_length="15"/>
+  						<variable_field name="VariableField1" optional="true">
+  							<type_and_units_field>
+  								<type_and_units_enum name="Enum1" field_type="unsigned byte" field_units="one" index="0"/>
+  								<type_and_units_enum name="Enum2" field_type="unsigned byte" field_units="meter" index="1"/>
+  							</type_and_units_field>
+  						</variable_field>
+  						<variable_length_string name="VariableLengthString1" optional="true">
+  							<count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="1000"/>
+  						</variable_length_string>
+  						<variable_format_field name="VariableFormatField1" optional="true">
+  							<format_field>
+  								<format_enum field_format="JPEG" index="0"/>
+  								<format_enum field_format="BMP" index="1"/>
+  							</format_field>
+  							<count_field field_type_unsigned="unsigned integer"/>
+  						</variable_format_field>
+  					</record>
+  				</body>
+  				<footer name="EmptyFooter"/>
+  			</message_def>
+  		</input_set>
+  		<output_set/>
+  	</message_set>
+  	<internal_events_set/>
+  	<protocol_behavior>
+  		<start state_machine_name="stateMachine" state_name="Ready"/>
+  		<state_machine name="stateMachine">
+  			<state name="Ready"/>
+  		</state_machine>
+  	</protocol_behavior>
+  </service_def>
+</ns1:service_set>

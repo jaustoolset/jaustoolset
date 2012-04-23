@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list name="subsystyem_list" interpretation="list of subsystems in the system" xmlns="urn:jaus:jsidl:1.0">
+  <record name="subsystem_rec" interpretation="name,id pair">
+    <fixed_field name="subsystem_id" field_type="unsigned byte" field_units="one" optional="false"/>
+    <fixed_length_string name="subsystem_name" string_length="80" optional="false"/>
+  </record>
+</list>

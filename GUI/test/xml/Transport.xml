@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../jsidl11/jaus_service_interface_definition_language.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" id="urn:jaus:jss:core:Transport"
+  name="Transport" version="1.0">
+  <description xml:space="preserve">
+    The transport service provides an abstraction of the JAUS transport layer. It models an abstract bi-directional communication channel (input queue and output queue) whose primary function is to provide the capability to send messages to a single destination endpoint or all endpoints in the system, and to receive a message from any source endpoint. It also provides the capability to prioritize the delivery of sent messages. 
+    This service establishes a communication endpoint whose address is defined by a triple {SubsystemID, NodeID, ComponentID}.
+  </description>
+  <assumptions> Messages may be delayed, lost or reordered. </assumptions>
+  <message_set>
+    <input_set>
+      <message_def name="Send" is_command="true" message_id="01">
+        <description xml:space="preserve">
+        The Send message is used by a client of this service to hand over the payload data that it needs to send to a specified destination endpoint via the transport layer. Upon receipt, this service prepares the message for delivery (marshals the message) as specified by the transport layer specification and attempts to deliver the message to the destination endpoint.
+      </description>
+        <header/>
+        <body>
+          <record name="SendRec" optional="false">
+            <presence_vector field_type_unsigned="unsigned byte"/>
+            <fixed_field name="DestSubsystemID" field_type="unsigned short integer"
+              field_units="one" interpretation="Destination Subsystem ID" optional="false"/>
+            <fixed_field name="DestNodeID" field_type="unsigned byte" field_units="one"
+              interpretation="Destination Node ID" optional="false"/>
+            <fixed_field name="DestComponentID" field_type="unsigned byte" field_units="one"
+              interpretation="Destination Component ID" optional="false"/>
+            <fixed_field name="SrcSubsystemID" field_type="unsigned short integer" field_units="one"
+              interpretation="Source Subsystem ID" optional="true"/>
+            <fixed_field name="SrcNodeID" field_type="unsigned byte" field_units="one"
+              interpretation="Source Node ID" optional="true"/>
+            <fixed_field name="SrcComponentID" field_type="unsigned byte" field_units="one"
+              interpretation="Destination Component ID" optional="false"/>
+            <fixed_field name="Priority" field_type="byte" field_units="one" optional="true"
+              interpretation="Priority level of this message. If not specified, the default priority
+              level is used.">
+              <value_set offset_to_lower_limit="false">
+                <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="11"
+                  upper_limit_type="inclusive" interpretation="Normal priority range"/>
+                <value_range lower_limit="12" lower_limit_type="inclusive" upper_limit="15"
+                  upper_limit_type="inclusive" interpretation="Safety critical priority range"/>
+                <value_enum enum_index="0" enum_const="LOW PRIORITY"/>
+                <value_enum enum_index="6" enum_const="DEFAULT PRIORITY"/>
+                <value_enum enum_index="11" enum_const="HIGH PRIORITY"/>
+                <value_enum enum_index="12" enum_const="LOWEST PRIORITY SAFETY CRITICAL"/>
+                <value_enum enum_index="15" enum_const="HIGHEST PRIORITY SAFETY CRITICAL"/>
+              </value_set>
+            </fixed_field>
+            <variable_length_field name="MessagePayload" field_format="JAUS MESSAGE"
+              optional="false" interpretation="Message payload.">
+              <count_field field_type_unsigned="unsigned long integer" min_count="2"/>
+            </variable_length_field>
+          </record>
+        </body>
+        <footer/>
+      </message_def>
+      <message_def name="BroadcastSend" is_command="true" message_id="01">
+        <description xml:space="preserve">
+          The Broadcast Send message is the same as the Send message except that it sends the payload provided by the client of this service to all endpoints in the system. 
+        </description>
+        <header/>
+        <body>
+          <record name="BroadcastSendRec" optional="false">
+            <presence_vector field_type_unsigned="unsigned byte"/>
+            <fixed_field name="SrcComponentID" field_type="unsigned byte" field_units="one"
+              interpretation="Destination Component ID" optional="false"/>
+            <fixed_field name="Priority" field_type="byte" field_units="one" optional="true"
+              interpretation="Priority level of this message. If not specified, the default priority
+              level is used.">
+              <value_set offset_to_lower_limit="false">
+                <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="11"
+                  upper_limit_type="inclusive" interpretation="Normal priority range"/>
+                <value_range lower_limit="12" lower_limit_type="inclusive" upper_limit="15"
+                  upper_limit_type="inclusive" interpretation="Safety critical priority range"/>
+                <value_enum enum_index="0" enum_const="LOW PRIORITY"/>
+                <value_enum enum_index="6" enum_const="DEFAULT PRIORITY"/>
+                <value_enum enum_index="11" enum_const="HIGH PRIORITY"/>
+                <value_enum enum_index="12" enum_const="LOWEST PRIORITY SAFETY CRITICAL"/>
+                <value_enum enum_index="15" enum_const="HIGHEST PRIORITY SAFETY CRITICAL"/>
+              </value_set>
+            </fixed_field>
+            <variable_length_field name="MessagePayload" field_format="JAUS MESSAGE"
+              optional="false" interpretation="Message payload.">
+              <count_field field_type_unsigned="unsigned long integer" min_count="2"/>
+            </variable_length_field>
+          </record>
+        </body>
+        <footer/>
+      </message_def>
+    </input_set>
+    <output_set>
+      <message_def name="Receive" is_command="false" message_id="0000">
+        <description xml:space="preserve">
+        The Receive message is used by this service to hand over the data that was sent by another service to an endpoint established by this service.
+      </description>
+        <header/>
+        <body>
+          <record name="ReceiveRec" optional="false" interpretation="transport data">
+            <fixed_field name="SrcSubsystemID" field_type="unsigned short integer" field_units="one"
+              interpretation="Source Subsystem ID" optional="true"/>
+            <fixed_field name="SrcNodeID" field_type="unsigned byte" field_units="one"
+              interpretation="Source Node ID" optional="true"/>
+            <fixed_field name="SrcComponentID" field_type="unsigned byte" field_units="one"
+              interpretation="Destination Component ID" optional="false"/>
+            <variable_length_field name="MessagePayload" field_format="JAUS MESSAGE"
+              optional="false" interpretation="message payload">
+              <count_field field_type_unsigned="unsigned long integer" min_count="2"/>
+            </variable_length_field>
+          </record>
+        </body>
+        <footer/>
+      </message_def>
+    </output_set>
+  </message_set>
+  <internal_events_set>
+    <event_def name="Dequeue">
+      <description xml:space="preserve">
+        The Dequeue event is received when the incoming queue that this service models becomes non-empty (i.e. has a message at the head of the queue). Upon receipt of this message, the message at the head of the queue is removed from the queue and prepared for delivery (unmarshalled) as specified by the Receive output message and to a service located at the endpoint established by this service. 
+      </description>
+      <header/>
+      <body/>
+      <footer/>
+    </event_def>
+  </internal_events_set>
+  <protocol_behavior>
+    <start state_machine_name="Transport" state_name="Ready"/>
+    <state_machine name="Transport">
+      <state name="Ready">
+        <transition name="Send">
+          <parameter type="Send" variable="msg"/>
+          <simple/>
+          <action name="Enqueue" interpretation="Convert the destination address into an unsigned
+            integer such that the ComponentID maps to the least significant byte, NodeID to the next
+            least significant byte and SubsystemID maps onto the remaining two bytes of the integer.
+            Package the message as specified by the transport layer specification and send it to its
+            destination as per the specified priority.">
+            <argument value="msg"/>
+          </action>
+        </transition>
+        <transition name="BroadcastSend">
+          <parameter type="BroadcastSend" variable="msg"/>
+          <simple/>
+          <action name="Broadcastenqueue" interpretation="Package the message as specified by the
+            transport layer specification and send it to all endpoints in the system.">
+            <argument value="msg"/>
+          </action>
+        </transition>
+        <transition name="Dequeue">
+          <simple/>
+          <action name="Receive" interpretation="Dequeue the message from the input message queue,
+            package it in a Receive message and send the Receive message to the specified
+            destination endpoint."/>
+        </transition>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

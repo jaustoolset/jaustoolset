@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_ClientRef_SelfRef" id="ImportTest:SD_ClientRef_SelfRef" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service def has a client self reference. 
+  </description>
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <references>
+    <client_of name="SD_ClientRef_SelfRef" id="ImportTest:SD_ClientRef_SelfRef" version="1.0"/>
+  </references>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_ClientRef_SelfRef" state_name="init"/>
+    <state_machine name="SD_ClientRef_SelfRef">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../jsidl/jaus_service_interface_definition_language.rnc" type="compact"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" name="CommandClass"
+  id="urn:jaus:jss:mobility:MessageSet:CommandClass" version="0.6">
+  <declared_type_set_ref name="basicTypes" id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.0"/>
+  <declared_type_set_ref name="mobilityTypes" id="urn:jaus:jss:mobility:MessageSet:BasicTypes" version="0.6"/>
+  <message_def name="SetGlobalPose" message_id="0402" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set the global pose values.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+       <declared_record name="GlobalPoseRec" declared_type_ref="mobilityTypes.GlobalPoseRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetLocalPose" message_id="0403" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set the local pose values.  This message specifies the platform&apos;s position 
+      and orientation with respect to the local cordinate frame.  This allows a client to redefine the 
+      origin of the local coordinate frame.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="LocalPoseRec" declared_type_ref="mobilityTypes.LocalPoseRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetWrenchEffort" message_id="0405" is_command="true">
+    <description xml:space="preserve">
+      This message is used to provide open-loop mobility control in the vehicle coordinate frame.  The command 
+      consists of a six element propulsive wrench and a six element resistive wrench.  The six elements of 
+      each wrench break down into three linear elements and three rotational elements, which are mapped to 
+      the three axis orthogonal coordinate frame of the vehicle.  All elements of the Wrench message are not 
+      necessarily applicable to a particular platform.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="WrenchEffortRec" declared_type_ref="mobilityTypes.WrenchEffortRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetGlobalVector" message_id="0407" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set the driving vector based on the global coordinate system.  Field #2 
+      sets the desired speed of the platform.  The desired heading angle is set in field #4 and is defined 
+      in a right hand sense about the Z axis of the global coordinate system (the Z axis points downward) 
+      where North is defined as zero degrees.  Field #3 sets the desired Altitude in accordance with the WGS 84
+      standard.  The desired roll angle is set in field #5 and is also defined in a right hand sense about the X 
+      axis of the global coordinate system.  The desired pitch angle is set in field #6 in a right hand sense about the Y axis.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="GlobalVectorRec" declared_type_ref="mobilityTypes.GlobalVectorRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetLocalVector" message_id="0408" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set the driving vector based on the local coordinate system.  
+      Field #2 sets the desired speed of the platform.  The desired heading angle is set in 
+      field #4 and is defined in a right hand sense about the Z axis of the local coordinate 
+      system (the Z axis points downward) where zero degrees defines a heading that is parallel 
+      to the X axis of the local coordinate system.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="LocalVectorRec" declared_type_ref="mobilityTypes.LocalVectorRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetTravelSpeed" message_id="040A" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set the desired travel speed.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="TravelSpeedRec" declared_type_ref="mobilityTypes.TravelSpeedRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetGlobalWaypoint" message_id="040C" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set waypoint data based on the global coordinate system.  A global 
+      waypoint can have up to six fields to describe it completely.  The waypoint is defined in the 
+      global coordinate system using the latitude, longitude, and altitude, fields.  The desired orientation 
+      of the platform at the waypoint is defined using the roll, pitch, and yaw fields.  Only fields 1-3 (presence 
+      vector, latitude, and longitude) are required for each waypoint.  Field #4 sets the desired Altitude in 
+      accordance with the WGS 84 standard.  The presence vector is used to specify if the remaining fields, 
+      i.e., altitude, roll, pitch, and yaw, are used to further describe the waypoint and the desired 
+      orientation at that point.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="GlobalWaypointRec" declared_type_ref="mobilityTypes.GlobalWaypointRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def> 
+  <message_def name="SetLocalWaypoint" message_id="040D" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set waypoint data based on the local coordinate system.  A local waypoint 
+      can have up to six fields to describe it completely.  The waypoint is defined in a local coordinate 
+      system using the X, Y, and Z fields.  The desired orientation of the platform at the waypoint is 
+      defined using the roll, pitch, and yaw fields.  Only fields 1-3 (presence vector, X, and Y) are required 
+      for each waypoint.  The presence vector is used to specify if the remaining fields, i.e., Z, roll, pitch, 
+      and yaw, are used to further describe each waypoint and the desired orientation at that point.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="LocalWaypointRec" declared_type_ref="mobilityTypes.LocalWaypointRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def> 
+  <message_def name="SetGlobalPathSegment" message_id="040F" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set the path segment data based on the global coordinate system.  A global 
+      path segment is defined in this message using three points, P0, P1 and P2 and a weighting factor.  
+      For the first path segment, i.e. the first element in a list of path segments, P0 is assumed to be the 
+      current location of the platform as defined by Report Global Pose.  For each successive path segments,
+      i.e. where the path segment number is greater than zero, P0 is equal to the previous path segment&apos;s P2.  
+      Therefore, for each message, only P1, P2, and a weighting factor must be set in order to define a path 
+      segment.  Each point is defined in the Global Coordinate System by setting its Latitude, Longitude and 
+      Altitude, as specified by the WGS 84 standard.  Both the Latitude and Longitude are required fields, 
+      but the Altitude field is optional. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="GlobalPathSegmentRec" declared_type_ref="mobilityTypes.GlobalPathSegmentRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>   
+  <message_def name="SetLocalPathSegment" message_id="0410" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set the path segment data based on the local coordinate system.  A local 
+      path segment is defined in this message using three points, P0, P1 and P2 and a weighting factor.  
+      For the first path segment, i.e. the first element in a list of path segments, P0 is assumed to be the 
+      current location of the platform as defined by Report Local Pose.  For each successive path segments, 
+      i.e. where the path segment number is greater than zero, P0 is equal to the previous path segment&apos;s P2.  
+      Therefore, for each message, only P1, P2, and a weighting factor must be set in order to define a path 
+      segment.  Each point is defined in the Local Coordinate System by setting its X, Y, and Z.  Both the X and Y 
+      are required fields, but the Z field is optional.  
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="LocalPathSegmentRec" declared_type_ref="mobilityTypes.LocalPathSegmentRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>     
+  <message_def name="SetGeomagneticProperty" message_id="0412" is_command="true">
+    <description xml:space="preserve">
+      This message is used to set the location specific magnetic variation for adjusting the GPS heading.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="GeomagneticPropertyRec" declared_type_ref="mobilityTypes.GeomagneticPropertyRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetVelocityCommand" message_id="0415" is_command="true">
+    <description xml:space="preserve">
+      This message is used to command the linear velocity and rotational rate of the platform.  
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="VelocityCommandRec" declared_type_ref="mobilityTypes.VelocityCommandRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetAccelerationLimit" message_id="0416" is_command="true">
+    <description xml:space="preserve">
+      This message is used to command the linear and rotational acceleration limits of the platform.  
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <declared_record name="AccelerationLimitRec" declared_type_ref="mobilityTypes.AccelerationLimitRec" optional="false"/>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="SetElement" message_id="041A" is_command="true">
+    <description xml:space="preserve">
+      This message is used to add, insert or replace one or more elements in a list.  Each element is uniquely 
+      identified by the UID, and the sequence within the list is specified by the previous (parent) and next (child) 
+      elements.  This message can also be used to update an existing element.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <sequence name="SetElementSeq" optional="false">
+        <record name="RequestIDRec" optional="false">
+          <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+            interpretation="ID of the request.  This ID will be returned in the response message."/>
+        </record>
+        <list name="ElementList" optional="false">
+          <count_field field_type_unsigned="unsigned byte"/>
+          <declared_record name="ElementRec" declared_type_ref="mobilityTypes.ElementRec" optional="false"/>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>   
+  <message_def name="DeleteElement" message_id="041B" is_command="true">
+    <description xml:space="preserve">
+      This message is used to delete one or more elements from a list.  Each element is uniquely identified by the UID.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <sequence name="DeleteElementSeq" optional="false">
+        <record name="RequestIDRec" optional="false">
+          <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+            interpretation="ID of the request.  This ID will be returned in the response message."/>
+        </record>
+        <list name="DeleteElementList" optional="false">
+          <count_field field_type_unsigned="unsigned byte"/>
+          <record name="DeleteElementRec" optional="false">
+            <declared_fixed_field name="ElementUID" declared_type_ref="mobilityTypes.ElementUID" optional="false"
+               interpretation="UID of the element to be deleted, where a value of 65535 represents all element in the list."/>
+          </record>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def> 
+  <message_def name="ConfirmElementRequest" message_id="041C" is_command="false">
+    <description xml:space="preserve">
+      This message is used to confirm successful operation on an element list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+        <record name="RequestIDRec" optional="false">
+          <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+            interpretation="ID of the request that generated this confirmation message."/>
+        </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="RejectElementRequest" message_id="041D" is_command="false">
+    <description xml:space="preserve">
+      This message is used to reject an operation on an element list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="RejectElementRec" optional="false">
+        <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+        interpretation="ID of the request that generated this confirmation message."/>
+        <fixed_field name="ResponseCode" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="ID of the request that generated this confirmation message.">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="1" enum_const="Invalid element ID"/>            
+            <value_enum enum_index="2" enum_const="Invalid previous element"/>
+            <value_enum enum_index="3" enum_const="Invalid next element"/>
+            <value_enum enum_index="4" enum_const="Unsupported element type"/>
+            <value_enum enum_index="5" enum_const="Element ID not found"/>
+            <value_enum enum_index="6" enum_const="Out of memory"/>
+            <value_enum enum_index="7" enum_const="Unspecified error"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def> 
+  <message_def name="ExecuteList" message_id="041E" is_command="false">
+    <description xml:space="preserve">
+      This message is used to begin execution of a sequential list of motion commands.  Field #2 
+      sets the desired speed of the platform.  The starting element UID can also be specified, 
+      where a value of zero (0) indicates the first (head) element in the list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ExecuteListRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <declared_fixed_field name="Speed" declared_type_ref="mobilityTypes.Speed" optional="false"/> 
+        <declared_fixed_field name="ElementUID" declared_type_ref="mobilityTypes.ElementUID" optional="true"
+          interpretation="Element UID of the starting element.  A value of zero (0) indicates the first (head) element of the list."/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+</declared_type_set>

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<value_enum enum_index="0" enum_const="’low priority’" interpretation="implies a low priority message." xmlns="urn:jaus:jsidl:1.0"/>

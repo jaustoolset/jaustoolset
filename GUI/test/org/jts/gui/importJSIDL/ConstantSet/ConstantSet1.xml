@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_const_set name="ConstantSet1" id="ImportTest:ConstantSet1" version="1.0" xmlns="urn:jaus:jsidl_plus:0.11">
+  <declared_const_set_ref name="ConstantSet2" id="ImportTest:ConstantSet2" version="1.0" />
+  
+  <const_def name="PI" const_type="long float" const_value="3.14159265358979323846" field_units="one" interpretation="ratio of any circle's circumference to its diameter"/>
+</declared_const_set>

@@ -1,0 +1,48 @@
+Import('env')
+
+sources = Split("""
+		AccessControlService.cs
+		AccessControl_ReceiveFSM.cs
+		AccessControl_ReceiveFSM_sm.cs
+		AccessControl_SendFSM.cs
+		AccessControl_SendFSM_sm.cs
+		InternalEvents\BroadcastGlobal.cs
+		InternalEvents\BroadcastLocal.cs
+		InternalEvents\CommandCompleted.cs
+		InternalEvents\CommandExpired.cs
+		InternalEvents\EventError.cs
+		InternalEvents\EventOccurred.cs
+		InternalEvents\Timeout.cs
+		Messages\CancelEvent.cs
+		Messages\CommandEvent.cs
+		Messages\ConfirmControl.cs
+		Messages\ConfirmEventRequest.cs
+		Messages\CreateCommandEvent.cs
+		Messages\CreateEvent.cs
+		Messages\Event.cs
+		Messages\QueryAuthority.cs
+		Messages\QueryControl.cs
+		Messages\QueryEvents.cs
+		Messages\QueryEventTimeout.cs
+		Messages\QueryTimeout.cs
+		Messages\RejectControl.cs
+		Messages\RejectEventRequest.cs
+		Messages\ReleaseControl.cs
+		Messages\ReportAuthority.cs
+		Messages\ReportControl.cs
+		Messages\ReportEvents.cs
+		Messages\ReportEventTimeout.cs
+		Messages\ReportTimeout.cs
+		Messages\RequestControl.cs
+		Messages\SetAuthority.cs
+		Messages\UpdateEvent.cs
+	""")
+
+libs = ['statemap', 'CSharpCommon' , 'EventsService', 'TransportService']
+pathlibs = env.CLIRefs(libs)
+
+lib = env.CLILibrary('./lib/AccessControlService', sources, ASSEMBLYREFS=pathlibs)
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )
+env.AddToRefPaths(lib)
+Return('lib')

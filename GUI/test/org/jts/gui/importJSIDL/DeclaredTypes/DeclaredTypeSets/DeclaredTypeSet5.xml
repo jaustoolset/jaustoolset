@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set name="DeclaredTypeSet5" id="ImportTests:DeclaredTypeSet5" version="1.0" xmlns="urn:jaus:jsidl_plus:0.11" >
+    <declared_type_set_ref name="BasicTypes" id="BasicTypes" version="1.0" />
+    
+    <message_def name="Shutdown" message_id="0002" is_command="true">
+        <description xml:space="preserve"> 
+            This message is used to cause the receiving component to free all of the resources allocated to its process by the system and then to shutdown. 
+        </description>
+        <declared_header name="AppHeader" declared_type_ref="BasicTypes.JAUSApplicationLayerHeader"/>
+        <body name="Body"/>
+        <footer name="Footer"/>
+    </message_def>
+    <message_def name="Standby" message_id="0003" is_command="true">
+        <description xml:space="preserve"> 
+            This message is used to transition the receiving component to the standby state. 
+        </description>
+        <declared_header name="AppHeader" declared_type_ref="BasicTypes.JAUSApplicationLayerHeader"/>
+        <body name="Body"/>
+        <footer name="Footer"/>
+    </message_def>
+    <message_def name="Resume" message_id="0004" is_command="true">
+        <description xml:space="preserve"> 
+            This message is used to transition the receiving component to the ready state. 
+        </description>
+        <declared_header name="AppHeader" declared_type_ref="BasicTypes.JAUSApplicationLayerHeader"/>
+        <body name="Body"/>
+        <footer name="Footer"/>
+    </message_def>
+</declared_type_set>

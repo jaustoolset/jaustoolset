@@ -1,0 +1,712 @@
+# JAUS Service Interface Definition Language (JSIDLv1.0)
+#
+default namespace = "urn:jaus:jsidl:1.0"
+
+start = service_def | declared_type_set | declared_const_set
+
+service_def =
+  element service_def {
+    attribute name { identifier },
+    attribute id { xsd:anyURI },
+    attribute version { version_num },
+    description,
+    assumptions,
+    references?,
+    declared_const_set?,
+    declared_type_set?,
+    message_set,
+    internal_event_set,
+    protocol_behavior
+  }
+
+description =
+  element description {
+    attribute xml:space { "default" | "preserve" }?, text
+  }
+  
+assumptions = 
+  element assumptions {
+    attribute xml:space { "default" | "preserve" }?, text
+  }
+
+references = 
+   element references {
+     inherits_from? , client_of*
+   }
+  
+inherits_from = 
+  element inherits_from {
+    attribute name { identifier },
+  attribute id { xsd:anyURI },
+  attribute version { version_num_ref },
+  attribute interpretation { text }?
+  }
+  
+client_of = 
+  element client_of {
+    attribute name { identifier },
+  attribute id { xsd:anyURI },
+  attribute version { version_num_ref },
+  attribute interpretation { text }?
+  }
+
+  
+  #==================== declared constants ===========================
+
+declared_const_set =
+   element declared_const_set {
+      attribute name { identifier },
+      ( attribute id { xsd:anyURI },
+      attribute version { version_num } )?,
+      declared_const_set_ref*,
+      const_def*
+   }
+   
+declared_const_set_ref =
+  element declared_const_set_ref {
+   attribute name { identifier },
+   attribute id { xsd:anyURI },
+   attribute version { version_num } 
+}
+
+const_def =
+   element const_def {
+      attribute name { identifier },
+      attribute_field_units, 
+      attribute const_type {
+         "byte" | "short integer" | "integer" | "long integer" 
+       | "unsigned byte" | "unsigned short integer" 
+       | "unsigned integer" | "unsigned long integer" 
+       | "float" | "long float" | "string" },
+      attribute const_value { xsd:string },
+      attribute interpretation { text }?
+   }
+
+#==================== declared data types ===========================
+declared_type_set = 
+  element declared_type_set {
+    attribute name { identifier },
+    ( attribute id { xsd:anyURI },
+      attribute version { version_num } )?,
+      declared_const_set_ref*,
+      declared_type_set_ref*,
+    ( message_def | header | body | footer | 
+      array | record | \list | variant| sequence | 
+      fixed_field | variable_field | bit_field |fixed_length_string | 
+      variable_length_string | variable_length_field |variable_format_field | 
+      declared_message_def | declared_event_def | declared_header | declared_body | declared_footer | 
+      declared_list | declared_sequence | declared_variant | declared_record | declared_array | 
+      declared_fixed_field | declared_variable_field | declared_bit_field | declared_fixed_length_string | 
+      declared_variable_length_string | declared_variable_length_field | declared_variable_format_field )*
+  }
+
+declared_type_set_ref =
+  element declared_type_set_ref {
+   attribute name { identifier },
+   attribute id { xsd:anyURI },
+   attribute version { version_num } 
+}
+
+attribute_declared_type = 
+  attribute name { identifier },
+  attribute declared_type_ref { identifier_ns }?,
+  attribute interpretation { text }?
+   
+declared_message_def =
+   element declared_message_def {
+      attribute_declared_type
+   }
+   
+declared_event_def =
+   element declared_event_def {
+      attribute_declared_type
+   }
+   
+declared_header =
+   element declared_header {
+      attribute_declared_type
+   }
+   
+declared_body =
+   element declared_body {
+      attribute_declared_type
+   }
+   
+declared_footer =
+   element declared_footer {
+      attribute_declared_type
+   }
+
+declared_variant =
+   element declared_variant {
+      attribute_declared_type
+   }
+
+declared_sequence = 
+   element declared_sequence {
+      attribute_declared_type,
+      attribute optional { xsd:boolean }
+   }
+   
+declared_record = 
+  element declared_record {
+    attribute_declared_type,
+    attribute optional { xsd:boolean }
+  }
+
+declared_list = 
+  element declared_list {
+    attribute_declared_type,
+    attribute optional { xsd:boolean }
+  }
+  
+declared_array = 
+  element declared_array {
+    attribute_declared_type, 
+    attribute optional { xsd:boolean }
+  }
+
+declared_fixed_field = 
+  element declared_fixed_field {
+    attribute_declared_type, 
+  attribute optional { xsd:boolean }
+  }
+  
+declared_variable_field = 
+  element declared_variable_field {
+    attribute_declared_type, 
+    attribute optional { xsd:boolean }
+  }
+  
+declared_bit_field = 
+  element declared_bit_field {
+    attribute_declared_type, 
+    attribute optional { xsd:boolean }
+  }
+  
+declared_fixed_length_string = 
+  element declared_fixed_length_string {
+    attribute_declared_type, 
+    attribute optional { xsd:boolean }
+  }
+  
+declared_variable_length_string = 
+  element declared_variable_length_string {
+    attribute_declared_type, 
+    attribute optional { xsd:boolean }
+  }
+  
+declared_variable_length_field = 
+  element declared_variable_length_field {
+    attribute_declared_type, 
+    attribute optional { xsd:boolean }
+  }
+
+declared_variable_format_field = 
+  element declared_variable_format_field {
+    attribute_declared_type, 
+    attribute optional { xsd:boolean }
+  }
+  
+#==================== message definition =========================
+
+message_set =
+   element message_set {
+      attribute interpretation { text }?,
+      input_set, output_set
+   }
+   
+input_set = 
+  element input_set {
+    attribute interpretation { text }?,
+    (message_def | declared_message_def)*
+  }
+
+output_set = 
+  element output_set {
+    attribute interpretation { text }?,
+    (message_def | declared_message_def)*
+  }
+  
+internal_event_set = 
+  element internal_events_set {
+    attribute interpretation { text }?,
+    (event_def | declared_event_def)*
+  }
+ 
+message_def =
+   element message_def {
+      attribute name { identifier },
+      attribute message_id { xsd:hexBinary },
+      attribute is_command { xsd:boolean },
+      element description {  attribute xml:space { "default" | "preserve" }?, text },
+      (header | declared_header),
+      (body | declared_body),
+      (footer | declared_footer)
+   }
+   
+event_def =
+   element event_def {
+      attribute name { identifier },
+      element description {  attribute xml:space { "default" | "preserve" }?, text },
+      (header | declared_header),
+      (body | declared_body),
+      (footer | declared_footer)
+   }
+
+header = 
+   element header { 
+     attribute name { identifier },
+     attribute interpretation { text }?,
+      ( record | declared_record | 
+       \list | declared_list | 
+       variant | declared_variant | 
+       sequence | declared_sequence )?
+   }
+
+body = 
+   element body { 
+     attribute name { identifier },
+     attribute interpretation { text }?,
+      ( record | declared_record | 
+       \list | declared_list | 
+       variant | declared_variant | 
+       sequence | declared_sequence )?
+   }
+   
+footer = 
+   element footer { 
+     attribute name { identifier },
+     attribute interpretation { text }?,
+      ( record | declared_record | 
+       \list | declared_list | 
+       variant | declared_variant | 
+       sequence | declared_sequence )?
+   }
+
+array =
+   element array {
+      attribute name { identifier },
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,
+      ( fixed_field | variable_field |bit_field |
+       fixed_length_string | variable_length_string|
+       variable_length_field |variable_format_field | 
+       declared_fixed_field |declared_variable_field | 
+       declared_bit_field | declared_fixed_length_string | 
+       declared_variable_length_string | declared_variable_length_field | 
+       declared_variable_format_field ),
+      element dimension {
+         attribute name { identifier },
+         attribute size { identifier_ns | xsd:unsignedInt },
+         attribute interpretation { text }?
+      }+
+   }  
+
+record =
+   element record {
+      attribute name { identifier }, 
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,
+      presence_vector?,
+      ( array | fixed_field | variable_field | bit_field |  
+        fixed_length_string | variable_length_string |
+        variable_length_field |variable_format_field | 
+        declared_array | declared_fixed_field |declared_variable_field | 
+       declared_bit_field | declared_fixed_length_string | 
+       declared_variable_length_string | declared_variable_length_field | 
+       declared_variable_format_field )+
+   }
+   
+\list = 
+   element list { 
+      attribute name { identifier },
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,
+      count_field,
+      ( record | declared_record |
+         \list | declared_list |
+         variant | declared_variant |
+         sequence | declared_sequence )
+   }
+
+variant = 
+   element variant { 
+      attribute name { identifier },
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,
+      vtag_field,
+      ( record | declared_record |
+         \list | declared_list |
+         variant | declared_variant |
+         sequence | declared_sequence )*
+   }
+
+sequence = 
+   element sequence { 
+      attribute name { identifier },
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,
+      presence_vector?,
+      ( record | declared_record |
+         \list | declared_list |
+         variant | declared_variant |
+         sequence | declared_sequence )+
+   }
+
+fixed_field =
+   element fixed_field {
+      attribute name { identifier }, attribute_field_type, attribute_field_units, 
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,  
+      (scale_range | value_set)? 
+   }
+
+variable_field = 
+    element variable_field {
+        attribute name { identifier }, 
+        attribute optional {xsd:boolean },
+        attribute interpretation { text }?,  
+        element type_and_units_field {
+            type_and_units_enum+ 
+        }    
+    }
+    
+bit_field =
+   element bit_field {
+      attribute name { identifier }, 
+      attribute_field_type_unsigned,  
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,  
+      sub_field+
+   }    
+ 
+fixed_length_string =
+   element fixed_length_string {
+      attribute name { identifier }, 
+      attribute string_length { identifier_ns | xsd:unsignedInt }, 
+      attribute optional {xsd:boolean }, 
+      attribute interpretation { text }?
+   }
+   
+variable_length_string =
+   element variable_length_string {
+      attribute name { identifier }, 
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,  
+      count_field 
+   }
+
+variable_length_field =
+   element variable_length_field {
+      attribute name { identifier },
+      attribute_field_format,
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,  
+      count_field 
+   }   
+
+variable_format_field = 
+   element variable_format_field {
+      attribute name { identifier }, 
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?, 
+      format_field, 
+      count_field
+   }
+
+count_field = 
+   element count_field { 
+      attribute_field_type_unsigned, 
+     attribute min_count { identifier_ns | xsd:unsignedInt }?,
+     attribute max_count{ identifier_ns | xsd:unsignedInt }?,
+     attribute interpretation { text }?
+   }
+   
+vtag_field = 
+   element vtag_field { 
+      attribute_field_type_unsigned, 
+     attribute min_count { identifier_ns | xsd:unsignedInt }?,
+     attribute max_count{ identifier_ns | xsd:unsignedInt }?,
+     attribute interpretation { text }?
+   }
+   
+sub_field = 
+   element sub_field {
+      attribute name { identifier }, bit_range, value_set,
+      attribute interpretation { text }?
+   }   
+   
+format_field = 
+   element format_field { 
+      format_enum+ 
+   }
+
+presence_vector = 
+   element presence_vector {
+      attribute_field_type_unsigned
+   }
+
+attribute_field_type = 
+   attribute field_type { 
+      "byte"| "short integer" | "integer" | "long integer" 
+      | "unsigned byte" | "unsigned short integer" 
+      | "unsigned integer" | "unsigned long integer" 
+      | "float" | "long float" 
+   }
+   
+attribute_field_type_unsigned =    
+   attribute field_type_unsigned { 
+       "unsigned byte" 
+       | "unsigned short integer" 
+       | "unsigned integer" 
+       | "unsigned long integer" 
+   }
+
+attribute_field_units = 
+   attribute field_units { 
+# base units
+
+"meter" | "kilogram" |
+ # unit of time
+ "second" | 
+ "ampere"| "kelvin" | "mole" | "candela" | 
+
+# derived units
+
+"square meter" | "cubic meter" |"meter per second" |"meter per second squared" | 
+"reciprocal meter" | "kilogram per cubic meter" | "cubic meter per kilogram" | 
+"ampere per square meter" |"ampere per meter" | "mole per cubic meter" | 
+"candela per square meter" | "one" |
+
+# derived units with special names and symbols
+
+"radian" | "steradian" | "hertz" | "newton" | "pascal" | "joule" | "watt" |
+"coulomb" | "volt" | "farad" | "ohm" | "siemens" | "weber" | "tesla" | "henry" |
+"degree Celsius" | "lumen" | "lux" | "becquerel" | "sievert" | "katal" | 
+"pascal second" | "newton meter" | "newton per meter" | "radian per second" |
+"radian per second squared" | "watt per square meter" | "joule per kelvin" |
+"joule per kilogram" | "kelvin" | "joule per kilogram" | "watt per meter kelvin" |
+"joule per cubic meter" | "volt per meter" | "coulomb per cubic meter" |
+"coulomb per square meter" | "farad per meter" | "henry per meter" |
+"joule per mole" | "joule per mole kelvin" | "coulomb per kilogram" |
+"gray per second" | "watt per square meter steradian" | "katal per cubic meter" |
+
+# Non-SI units accepted for use with the International System
+
+# units of time
+"minute" | "hour" | "day" | 
+"degree" | "minute" | 
+# unit of angle measurement
+"second" | 
+"liter" | "metric ton" |
+"neper" | "bel" | "nautical mile" | "knot" | "are" | "hectare" | "bar" | "ångstro" |
+"barn" | "curie" | "roentgen" | "rad" | "rem" 
+   }
+   
+type_and_units_enum = 
+   element type_and_units_enum {
+     attribute index { xsd:unsignedByte },
+     attribute_field_type, 
+     attribute_field_units, 
+     (value_set | scale_range)? 
+   }     
+   
+attribute_field_format = 
+   attribute field_format { 
+      "AU" | "BMP" | "JPEG" | "MJPEG" | "MPEG-1" | "MPEG-2"
+     | "MP2" | "MP3" | "MP4" | "RAW" | "WAV" | "JAUS MESSAGE" 
+     | "XML" | "RNC" | "RNG" | "XSD" | text
+   }
+
+format_enum = 
+    element format_enum { 
+       attribute index { xsd:unsignedByte },
+       attribute_field_format
+   }
+
+value_set = 
+   element value_set {
+      attribute offset_to_lower_limit { xsd:boolean },
+      (value_range | value_enum)+
+   }
+
+bit_range = 
+   element bit_range {
+      attribute from_index { xsd:unsignedByte },
+      attribute to_index { xsd:unsignedByte }, 
+      attribute interpretation { text }?
+   }
+
+scale_range = 
+   element scale_range {
+      attribute real_lower_limit { text },
+      attribute real_upper_limit { text },
+      attribute integer_function { "floor" |"round" | "ceiling" },         
+      attribute interpretation { text }?
+   }
+
+value_range = 
+   element value_range {
+      attribute lower_limit { text }, 
+      attribute lower_limit_type { "inclusive" | "exclusive" },
+      attribute upper_limit { text }, 
+      attribute upper_limit_type { "inclusive" |"exclusive" },
+      attribute interpretation { text }?
+   }
+
+value_enum = 
+   element value_enum {
+      attribute enum_index { xsd:long },
+      attribute enum_const { xsd:string }, 
+      attribute interpretation { text }?
+   }
+
+
+protocol_behavior =
+  element protocol_behavior {
+    attribute is_stateless { xsd:boolean }?,
+    \start+,
+    state_machine+
+  }
+  
+\start = 
+  element start {
+    attribute state_machine_name { identifier_ns },  
+    attribute state_name { identifier_ns }, 
+    attribute interpretation { text }?
+  }
+   
+state_machine = 
+   element state_machine {
+     attribute name { identifier_ns },
+     attribute interpretation { text }?,
+     state+
+   }
+   
+state = 
+   element state {
+     attribute name { identifier_ns },
+     attribute initial_state {identifier}?,
+     attribute interpretation { text }?,
+     entry?,
+     exit?,
+     transition*, 
+     default_transition?, 
+     state*,
+     default_state?
+   }
+   
+default_state = 
+  element default_state {
+     attribute interpretation { text }?,
+     transition*,
+     default_transition? 
+  }
+
+default_transition =   
+  element default_transition { 
+    attribute interpretation { text }?,
+    guard?,
+    (simple | push | pop),
+    (action | send_action)* 
+  }
+
+entry = 
+  element entry {
+    attribute interpretation { text }?,
+    (action | send_action)* 
+  }
+
+exit = 
+  element exit {
+    attribute interpretation { text }?,
+    (action | send_action)* 
+  }
+
+transition =
+  element transition {
+    attribute name { identifier_ns },
+    attribute interpretation { text }?,
+    parameter*,
+    guard?,
+    (simple | push | pop),
+    (action | send_action)*
+ }
+   
+simple = 
+  element simple {
+    attribute interpretation { text }?, 
+    end_state?
+  }
+
+push = 
+  element push {
+    attribute interpretation { text }?,
+    end_state, 
+    simple?
+  }
+
+pop = 
+  element pop {
+    attribute transition { identifier }?,
+    attribute interpretation { text }?, 
+    argument*
+  }
+
+argument = 
+  element argument {
+    attribute value { text },  
+    attribute interpretation { text }?
+  }
+
+guard = 
+  element guard {
+    attribute condition { text }, 
+    attribute interpretation { text }? 
+  }
+
+end_state = 
+  element end_state {
+    attribute state { identifier_ns }, 
+    attribute interpretation { text }? 
+  }
+
+parameter = 
+  element parameter {
+    attribute type { identifier_ns }, 
+    attribute value { text },
+    attribute interpretation { text }?  
+  }
+  
+action = 
+  element action {
+    attribute name { identifier_ns },
+    attribute interpretation { text }?,
+    argument*
+  }
+
+send_action = 
+  element send_action {
+    attribute name { identifier_ns },
+    attribute interpretation { text }?,
+    argument*
+  }
+  
+  # An identifier is a sequence of letters and digits. The first character
+# must be a letter or the underscore character _. Upper and lower 
+# case letters are different, and identifiers may have any length.
+
+identifier |= xsd:string { pattern="[a-zA-Z_][a-zA-Z_0-9]*" }
+ 
+# namespaced identifier ( identifier(.identifier)* )
+ 
+identifier_ns |= xsd:string { pattern="[a-zA-Z_][a-zA-Z_0-9.]*" }
+
+# M.N, where M and N are positive integers. 
+
+version_num |= xsd:string { pattern="(0|[1-9]([0-9]*))\.(0|[1-9]([0-9]*))" }
+
+# A valid version number M.N or *.* or combination of both.
+
+version_num_ref |= xsd:string { pattern = "((0|\*|[1-9]([0-9]*)))\.((0|\*|[1-9]([0-9]*)))" } 

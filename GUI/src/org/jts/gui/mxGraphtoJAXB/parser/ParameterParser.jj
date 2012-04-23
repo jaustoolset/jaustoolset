@@ -1,0 +1,113 @@
+options {
+  LOOKAHEAD = 1;
+  CHOICE_AMBIGUITY_CHECK = 2;
+  OTHER_AMBIGUITY_CHECK = 1;
+  STATIC = false;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  ERROR_REPORTING = true;
+  JAVA_UNICODE_ESCAPE = false;
+  UNICODE_INPUT = false;
+  IGNORE_CASE = false;
+  USER_TOKEN_MANAGER = false;
+  USER_CHAR_STREAM = false;
+  BUILD_PARSER = true;
+  BUILD_TOKEN_MANAGER = true;
+  SANITY_CHECK = true;
+  FORCE_LA_CHECK = false;
+}
+
+PARSER_BEGIN(ParameterParser)
+package org.jts.gui.mxGraphtoJAXB.parser;
+
+import org.jts.gui.mxGraphtoJAXB.mxParameter;
+import java.io.ByteArrayInputStream;
+import java.util.Vector;
+
+/** parameter element */
+public class ParameterParser {
+
+  /** Main entry point. */
+  public static void main(String args[]) throws ParseException {
+  
+  String test = "type value, Integer 5, Object obj, String str, ReportError errMsg, accessControl.ReportError errMsg";
+  ByteArrayInputStream stream = new ByteArrayInputStream( test.getBytes() );
+  
+  ParameterParser parser = new ParameterParser( stream );
+  Vector <mxParameter>params = parser.Input();
+  for(int ii=0; ii<params.size(); ii++)
+      System.out.println(params.get(ii));
+  }
+}
+
+PARSER_END(ParameterParser)
+
+SKIP :
+{
+  " "
+  | "\t"
+  | "\n"
+  | "\r"
+}
+
+TOKEN :
+{
+    <ID: ["a"-"z","A"-"Z","_"] ( ["a"-"z","A"-"Z","_","0"-"9","."] )*>
+      |
+    <LITERAL: "\'" (~["\'"])* "\'">    
+      |  
+    <NUM: ( ["0"-"9","."] )+> 
+}
+
+/** Parses a parameter */
+Vector Input() :
+{
+Vector <mxParameter>paramList = new Vector();
+String type = null;  
+String value = null;  
+}
+{  
+    type=Type() value=Value()
+      {
+        mxParameter param = new mxParameter(type, value);
+        paramList.add(param);
+      }
+    (
+  "," type=Type() value=Value() 
+      {
+        param = new mxParameter(type, value);
+        paramList.add(param);
+      }
+  )*
+    {
+       return paramList;      
+    }
+}
+
+/** A type */
+String Type() :
+{
+Token t;
+String s;
+}
+{
+  ( t=<ID> | t=<EOF> )
+  {
+     return t.image;
+   }
+}
+    
+/** A value */
+String Value() :
+{
+Token t;
+String s;
+}
+{
+( t=<ID> | t=<LITERAL> | t=<EOF> )
+  {
+  return t.image;
+  }
+  }    
+         

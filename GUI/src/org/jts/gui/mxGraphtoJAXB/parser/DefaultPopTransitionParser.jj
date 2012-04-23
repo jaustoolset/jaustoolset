@@ -1,0 +1,181 @@
+/* Assumes guard condition is not present */
+
+
+options {
+  LOOKAHEAD = 1;
+  CHOICE_AMBIGUITY_CHECK = 2;
+  OTHER_AMBIGUITY_CHECK = 1;
+  STATIC = false;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  ERROR_REPORTING = true;
+  JAVA_UNICODE_ESCAPE = false;
+  UNICODE_INPUT = false;
+  IGNORE_CASE = false;
+  USER_TOKEN_MANAGER = false;
+  USER_CHAR_STREAM = false;
+  BUILD_PARSER = true;
+  BUILD_TOKEN_MANAGER = true;
+  SANITY_CHECK = true;
+  FORCE_LA_CHECK = false;
+}
+
+PARSER_BEGIN(DefaultPopTransitionParser)
+package org.jts.gui.mxGraphtoJAXB.parser;
+
+import org.jts.gui.mxGraphtoJAXB.mxDefaultPopTransition;
+import org.jts.gui.mxGraphtoJAXB.mxParameter;
+import org.jts.gui.mxGraphtoJAXB.mxAction;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Vector;
+
+/** simple transition element */
+public class DefaultPopTransitionParser {
+
+  /** Main entry point. */
+  public static void main(String args[]) throws ParseException {
+  String test = "trigger1;" +
+                      "trigger2() {};" +
+                      "trigger3()[]{endTransition()};" + 
+                      "trigger4()[]/{endTransition(arg1)};" + 
+                      "namespace.trigger5(type1 arg1)[]/action1(arg1){endTransition('6')};" +
+                      "trigger6(type1 arg1, type2 arg2)[]/action1(arg1), action2(arg1, arg2){endTransition(arg1, arg2)};" +
+                      "trigger7(type1 arg1, type2 '8')[]/action1('9'), action2('LIT', arg2){endTransition('6', arg2)}; ";
+  InputStream stream = new ByteArrayInputStream( test.getBytes() );
+  
+  DefaultPopTransitionParser parser = new DefaultPopTransitionParser( stream );
+  Vector <mxDefaultPopTransition>defaultPopTransitions = parser.Input();
+  for(int ii=0; ii<defaultPopTransitions.size(); ii++)
+      System.out.println(defaultPopTransitions.get(ii));
+  }
+}
+
+PARSER_END(DefaultPopTransitionParser)
+
+SKIP :
+{
+  " "
+  | "\t"
+  | "\n"
+  | "\r"
+  | "\""
+}
+
+TOKEN :
+{
+    <ID: ["a"-"z","A"-"Z","_"] ( ["a"-"z","A"-"Z","_","0"-"9","."] )*>
+      |
+    <LITERAL: "\'" (~["\'"])* "\'">    
+      |
+    <NUM: ( ["0"-"9","."] )+>
+}
+
+/** Parses a default pop transition */
+Vector Input() :
+{
+Vector <mxDefaultPopTransition>transitionList = new Vector<mxDefaultPopTransition>();
+String name = null;  
+        Vector <mxParameter> paramList = new Vector<mxParameter>();
+          Vector <mxAction> actionList = new Vector<mxAction>();
+            Vector <mxAction> endTransition = new Vector<mxAction>();
+}
+{      
+    ("[" "]")?  ("/" actionList = Actions() )?  ("{"endTransition=Actions()"}")? ";"
+      {
+          mxAction et = null;
+          if( endTransition.size() > 0 )
+            et = endTransition.get(0);
+          transitionList.add( new mxDefaultPopTransition( null, null, actionList, et) );
+		  
+		  actionList = new Vector<mxAction>();
+		  endTransition = new Vector<mxAction>();
+      }
+   (
+     ("[" "]")?  ("/" actionList = Actions() )?  ("{"endTransition=Actions()"}")? ";"
+      {
+        et = null;
+        if( endTransition.size() > 0 )
+          et = endTransition.get(0);      
+        transitionList.add( new mxDefaultPopTransition( null, null, actionList, et) );
+		
+		  actionList = new Vector<mxAction>();
+		  endTransition = new Vector<mxAction>();
+      }
+   )* <EOF>
+    {
+      return transitionList;
+    }
+}
+  
+  
+/******** An action list *********/
+
+Vector Actions() :
+{
+     Vector <mxAction>actionList = new Vector<mxAction>();
+String name = new String();  
+Vector args = null;  
+}
+{  
+   ( name=Identifier() "(" args = Arguments() ")"
+    {
+      mxAction action = new mxAction(name, args, mxAction.TYPE_TRANSITION);
+      actionList.add(action);     
+    } )?
+   ("," name=Identifier() "(" args = Arguments() ")"
+    {
+      mxAction action = new mxAction(name, args, mxAction.TYPE_TRANSITION);
+      actionList.add(action);
+    }  
+   )*
+    {
+      return actionList;
+    }
+}
+
+Vector Arguments() :
+{
+       Vector <String>args = new Vector<String>();
+String str = null;
+}
+{
+   [ str = ArgValue() ]
+    { if( str != null ) args.add(str); }
+   (
+   "," str = ArgValue() 
+    { if( str != null ) args.add(str); }    
+   )*
+    {
+      return args;
+    }
+}
+
+String ArgValue() :
+{
+Token t;
+String s;
+}
+{
+   (t=<ID> | t=<LITERAL>)
+    {
+      return t.image;
+    }
+}
+
+
+/************ an identifier ***************/
+String Identifier() :
+{
+Token t;
+}
+{
+  t=<ID>
+  {
+     return t.image;
+   }
+}
+    
+
+         

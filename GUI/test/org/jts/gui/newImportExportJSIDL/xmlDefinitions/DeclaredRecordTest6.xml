@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<record xmlns="urn:jaus:jsidl:1.0" name="RecordTest6" optional="false">
+	<declared_variable_length_string name="VariableLengthStringTest1" declared_type_ref="unitTest.VariableLengthStringTest1"/>
+</record>

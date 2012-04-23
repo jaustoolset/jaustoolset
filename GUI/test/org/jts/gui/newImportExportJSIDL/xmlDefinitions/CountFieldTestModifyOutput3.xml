@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<count_field xmlns="urn:jaus:jsidl:1.0" min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>

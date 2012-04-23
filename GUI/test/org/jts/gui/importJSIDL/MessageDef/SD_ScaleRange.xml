@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_ScaleRange" id="ImportTest:SD_ScaleRange" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a scale_range entity with all levels of multiplicity and options.
+
+    The 1st message_def contains a scale_range with all optional items missing.
+    The 2nd message_def contains a scale_range with an interpretation.
+  </description>
+
+  <!-- 
+    element scale_range 
+    {
+      attribute real_lower_limit { text },
+      attribute real_upper_limit { text },
+      attribute integer_function { "floor" |"round" | "ceiling" },         
+      attribute interpretation { text }?
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, fixed_field -->
+      <message_def name="ScaleRange1" message_id="0121" is_command="false">
+        <description>
+          The 1st message_def contains a scale_range with all optional items missing.
+        </description>
+        <header name="ScaleRange"/>
+        <body name="ScaleRange1">
+          <record name="ScaleRange1Rec" optional="false">
+            <fixed_field name="ScaleRange1" field_type="byte" field_units="one" optional="false">
+              <scale_range integer_function="round" real_lower_limit="-10000.0" real_upper_limit="10000.0"/>
+            </fixed_field>
+          </record>
+          </body>
+          <footer name="ScaleRange"/>
+      </message_def>
+
+      <!-- fixed_field with interpretation and scale_range -->
+      <message_def name="ScaleRange2" message_id="0122" is_command="false">
+        <description>
+          The 2nd message_def contains a scale_range with an interpretation.          
+        </description>
+        <header name="ScaleRange"/>
+        <body name="ScaleRange2">
+          <record name="ScaleRange2Rec" optional="false" interpretation="A fixed_field Interpretation">
+            <fixed_field name="ScaleRange2" field_type="byte" field_units="one" optional="false">
+              <scale_range integer_function="round" real_lower_limit="-1.0" real_upper_limit="1.0" interpretation="This is a scale_range interpretation"/>
+            </fixed_field>
+          </record>
+        </body>
+        <footer name="ScaleRange"/>
+      </message_def>
+      
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_ScaleRange" state_name="init"/>
+    <state_machine name="SD_ScaleRange">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

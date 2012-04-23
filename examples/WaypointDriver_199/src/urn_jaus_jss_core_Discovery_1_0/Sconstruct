@@ -1,0 +1,6 @@
+VariantDir('Build', '.', duplicate=0)
+sources = ['Build/DiscoveryService.cpp', 'Build/Discovery_ReceiveFSM.cpp', 'Build/Discovery_ReceiveFSM_sm.cpp', 'Build/Discovery_SendFSM.cpp', 'Build/Discovery_SendFSM_sm.cpp', 'Build/InternalEvents/BroadcastGlobal.cpp', 'Build/InternalEvents/BroadcastLocal.cpp', 'Build/InternalEvents/EventError.cpp', 'Build/InternalEvents/EventOccurred.cpp', 'Build/Messages/CancelEvent.cpp', 'Build/Messages/ConfirmEventRequest.cpp', 'Build/Messages/CreateEvent.cpp', 'Build/Messages/Event.cpp', 'Build/Messages/QueryConfiguration.cpp', 'Build/Messages/QueryEvents.cpp', 'Build/Messages/QueryIdentification.cpp', 'Build/Messages/QueryServices.cpp', 'Build/Messages/QuerySubsystemList.cpp', 'Build/Messages/RegisterServices.cpp', 'Build/Messages/RejectEventRequest.cpp', 'Build/Messages/ReportConfiguration.cpp', 'Build/Messages/ReportEvents.cpp', 'Build/Messages/ReportIdentification.cpp', 'Build/Messages/ReportServices.cpp', 'Build/Messages/ReportSubsystemList.cpp', 'Build/Messages/UpdateEvent.cpp']
+Import('env')
+lib = env.Library('./lib/DiscoveryService', sources, LIBS=['Common', 'EventsService', 'TransportService'])
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )

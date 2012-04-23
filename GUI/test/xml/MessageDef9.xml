@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="Record3" id="urn:org.jts.test:Record3" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+	<description/>
+	<assumptions/>
+	<message_set>
+		<input_set>
+			<message_def name="Message9" is_command="true" message_id="0001">
+				<description xml:space="default"/>
+				<header name="EmptyHeader"/>
+				<body name="Body3">
+					<record name="Record3" optional="false" interpretation="# a record with an ordered set of             fields, some of which are optional">
+						<presence_vector field_type_unsigned="unsigned byte"/>
+						<fixed_field name="Field1" field_type="byte" field_units="one" optional="false" interpretation="just a byte field"/>
+						<fixed_field name="Field2" field_type="integer" field_units="meter" optional="true" interpretation="just an integer field"/>
+						<fixed_field name="Field3" field_type="float" field_units="meter per second" optional="false" interpretation="just a float field"/>
+						<fixed_field name="Field4" field_type="unsigned byte" field_units="meter per second               squared" optional="true" interpretation="just an unsigned byte field"/>
+					</record>
+				</body>
+				<footer name="EmptyFooter"/>
+			</message_def>
+		</input_set>
+		<output_set/>
+	</message_set>
+	<internal_events_set/>
+	<protocol_behavior>
+		<start state_machine_name="FSM" state_name="Ready"/>
+		<state_machine name="FSM">
+			<state name="Ready"/>
+		</state_machine>
+	</protocol_behavior>
+</service_def>

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+cp ../styles.css ./jmatter-20090430/jmatter/resources/styles.css
+
+patch ./AbstractComplexEObject.java.original -i ./AbstractComplexEObject.java.patch -o ./jmatter-20090430/jmatter/src/com/u2d/model/AbstractComplexEObject.java
+patch ./AbstractListEO.java.original -i ./AbstractListEO.java.patch -o ./jmatter-20090430/jmatter/src/com/u2d/model/AbstractListEO.java
+
+patch ./CriteriaListEO.java.original -i ./CriteriaListEO.java.patch -o ./jmatter-20090430/jmatter/src/com/u2d/list/CriteriaListEO.java
+patch ./RelationalList.java.original -i ./RelationalList.java.patch -o ./jmatter-20090430/jmatter/src/com/u2d/list/RelationalList.java
+
+patch ./Association.java.original -i ./Association.java.patch -o ./jmatter-20090430/jmatter/src/com/u2d/field/Association.java
+patch ./AssociationStrategy.java.original -i ./AssociationStrategy.java.patch -o ./jmatter-20090430/jmatter/src/com/u2d/field/AssociationStrategy.java
+patch ./DynaAssociationStrategy.java.original -i ./DynaAssociationStrategy.java.patch -o ./jmatter-20090430/jmatter/src/com/u2d/field/DynaAssociationStrategy.java
+patch ./BasicAssociationStrategy.java.original -i ./BasicAssociationStrategy.java.patch -o ./jmatter-20090430/jmatter/src/com/u2d/field/BasicAssociationStrategy.java
+
+patch ./Command.java.original -i ./Command.java.patch -o ./jmatter-20090430/jmatter/src/com/u2d/element/Command.java
+
+patch ./AppFrame.java.original -i ./AppFrame.java.patch -o ./jmatter-20090430/modules/swingvm/src/com/u2d/view/swing/AppFrame.java
+patch ./EntryPoint.java.original -i ./EntryPoint.java.patch -o ./jmatter-20090430/modules/swingvm/src/com/u2d/view/swing/EntryPoint.java
+
+patch ./ReorderListView.java.original -i ./ReorderListView.java.patch -o ./jmatter-20090430/modules/swingvm/src/com/u2d/view/swing/list/ReorderListView.java
+patch ./EditableListView.java.original -i ./EditableListView.java.patch -o ./jmatter-20090430/modules/swingvm/src/com/u2d/view/swing/list/EditableListView.java
+
+patch ./GradientPanel.java.original -i ./GradientPanel.java.patch -o ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/GradientPanel.java
+patch ./SeeThruTree.java.original -i ./SeeThruTree.java.patch -o ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/SeeThruTree.java
+patch ./SeeThruList.java.original -i ./SeeThruList.java.patch -o ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/SeeThruList.java
+patch ./SeeThruTable.java.original -i ./SeeThruTable.java.patch -o ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/SeeThruTable.java
+patch ./GridList.java.original -i ./GridList.java.patch -o ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/GridList.java

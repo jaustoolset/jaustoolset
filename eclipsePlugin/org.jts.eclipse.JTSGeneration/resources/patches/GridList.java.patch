@@ -1,0 +1,14 @@
+3a4,6
+> 
+> import com.u2d.css4swing.style.ComponentStyle;
+> 
+20c23,29
+<    public GridList() { }
+---
+>    public GridList()
+>    {
+> 	   // JTS
+> 	   ComponentStyle.addClass(this, "grid-list");
+> 	   // jts
+>    }
+>    

@@ -1,0 +1,6 @@
+VariantDir('Build', '.', duplicate=0)
+sources = ['Build/Messages/QueryHeartbeatPulse.cpp', 'Build/Messages/ReportHeartbeatPulse.cpp', 'Build/PingClientService.cpp', 'Build/PingClient_PingClientFSM.cpp', 'Build/PingClient_PingClientFSM_sm.cpp']
+Import('env')
+lib = env.SharedLibrary('./lib/PingClientService', sources, LIBS=['Common'])
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )

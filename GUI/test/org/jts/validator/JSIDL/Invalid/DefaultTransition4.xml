@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<default_transition xmlns="urn:jaus:jsidl:1.0">
+	<guard condition="isSystemReady() &amp;&amp; isServerState('StateAShutdown')"/>
+
+	<action name="printServerState" interpretation="print state reported in the report status message">
+	</action>
+
+	<action name="print">
+		<argument value="'completed step 22...'"></argument>
+	</action>
+
+	<send_action name="message">
+		<argument value="'completed step 22...'"></argument>
+	</send_action>
+</default_transition>

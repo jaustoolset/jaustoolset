@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="MessageServiceDef" id="urn.jts.MessageTest" version="1.1" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references/>
+    <message_set>
+        <input_set>
+            <message_def name="UnsignedTestMsg" message_id="5005" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="UnsignedBody">
+                    <record name="UnsignedRec" optional="false">
+                        <fixed_field name="UnsignedByte" optional="false" field_units="bar" field_type="unsigned byte"/>
+                        <fixed_field name="UnsignedShort" optional="false" field_units="bar" field_type="unsigned short integer"/>
+                        <fixed_field name="UnsignedInt" optional="false" field_units="bar" field_type="unsigned integer"/>
+                        <fixed_field name="UnsignedLong" optional="false" field_units="bar" field_type="unsigned long integer"/>
+                    </record>
+                </body>
+                <footer name="EmptyFooter"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="UnsignedResponseMessage" message_id="5011" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="UnsignedBody">
+                    <record name="UnsignedRec" optional="false">
+                        <fixed_field name="UnsignedByte" optional="false" field_units="bar" field_type="unsigned byte"/>
+                        <fixed_field name="UnsignedShort" optional="false" field_units="bar" field_type="unsigned short integer"/>
+                        <fixed_field name="UnsignedInt" optional="false" field_units="bar" field_type="unsigned integer"/>
+                        <fixed_field name="UnsignedLong" optional="false" field_units="bar" field_type="unsigned long integer"/>
+                    </record>
+                </body>
+                <footer name="EmptyFooter"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="true">
+        <start state_machine_name="MessageTest" state_name="State4"/>
+        <state_machine name="MessageTest">
+            <state name="State4">
+                <transition name="UnsignedTestMsg">
+                    <ns2:internal/>
+                    <action name="sendResponse"/>
+                    <action name="printData"/>
+                </transition>
+            </state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

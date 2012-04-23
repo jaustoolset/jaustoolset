@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inherits_from name="generic_driver" id="urn:jaus:specific_driver" version="a1.1" xmlns="urn:jaus:jsidl:1.0">
+</inherits_from>

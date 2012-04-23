@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_set xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SS_OutputSet" id="ImportTest:SS_OutputSet" version="1.0">
+  <description xml:space="preserve"> 
+    This service set is part of the ImportTests.
+    This set includes three services, one with all option items 
+    missing, one with a single message_def and one with mutiple message_defs
+  </description>
+
+  <!-- 
+    element output_set 
+    {
+    attribute interpretation { text }?,
+    (message_def | declared_message_def)*
+    }
+   -->
+
+  <service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+    name="SS_OutputSet_1" id="ImportTest:SS_OutputSet_1" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service tests an output_set with all optional parameters missing.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <!-- No Interpretation, No Messages -->
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_OutputSet_1" state_name="init"/>
+      <state_machine name="SS_OutputSet_1">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+
+  <service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+    name="SS_OutputSet_2" id="ImportTest:SS_OutputSet_2" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service tests an output_set with an interpretation and one message_def.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <!-- Interpretation, One Message -->
+      <output_set interpretation="This is the interpretation of an output set.">
+        <message_def name="Message1" message_id="0001" is_command="true">
+          <description>A command message.</description>
+          <header name="Message1"/>
+          <body name="Message1"/>
+          <footer name="Message1"/>
+        </message_def>
+      </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_OutputSet_2" state_name="init"/>
+      <state_machine name="SS_OutputSet_2">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>  
+
+  <service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+    name="SS_OutputSet_3" id="ImportTest:SS_OutputSet_3" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service tests an output_set with an interpretation and multiple message_defs.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <!-- Interpretation, Multiple Messages -->
+      <output_set interpretation="This is the interpretation of a second output set.">
+        <message_def name="Message1" message_id="0001" is_command="true">
+          <description>A command message.</description>
+          <header name="Message1"/>
+          <body name="Message1"/>
+          <footer name="Message1"/>
+        </message_def>
+        <message_def name="Message2" message_id="0002" is_command="true">
+          <description>A command message.</description>
+          <header name="Message2"/>
+          <body name="Message2"/>
+          <footer name="Message2"/>
+        </message_def>
+      </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_OutputSet_3" state_name="init"/>
+      <state_machine name="SS_OutputSet_3">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+
+</service_set>

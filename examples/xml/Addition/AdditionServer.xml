@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?oxygen RNGSchema="../../../GUI/resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def version="1.0" id="urn_jaus_example_addition_server"
+	name="AdditionServerServiceDef" xmlns="urn:jaus:jsidl:1.0" xmlns:version_1_1="urn:jaus:jsidl:1.1">
+	<description xml:space="preserve">Service to provide an addition server</description>
+	<assumptions xml:space="preserve"/>
+	<references/>
+	<message_set>
+		<input_set>
+			<message_def is_command="false" message_id="F010"
+				name="QueryAddition">
+				<description xml:space="preserve">This message sends two numbers to be added</description>
+				<header name="Header">
+					<record optional="false" name="HeaderRecord">
+						<fixed_field field_units="one"
+							field_type="unsigned short integer"
+							optional="false" name="MessageIDHeader"/>
+					</record>
+				</header>
+				<body name="AdditionInputBody">
+					<record optional="false" name="AdditionInput">
+						<fixed_field field_units="one"
+							field_type="unsigned integer"
+							optional="false" name="A1"/>
+						<fixed_field field_units="one"
+							field_type="unsigned integer"
+							optional="false" name="A2"/>
+					</record>
+				</body>
+				<footer name="EmptyFooter"/>
+			</message_def>
+		</input_set>
+		<output_set>
+			<message_def is_command="false" message_id="F011"
+				name="ReportAddition">
+				<description xml:space="preserve">Reports the result of adding two numbers</description>
+				<header name="Header">
+					<record optional="false" name="HeaderRecord">
+						<fixed_field field_units="one"
+							field_type="unsigned short integer"
+							optional="false" name="MessageIDHeader"/>
+					</record>
+				</header>
+				<body name="AdditionOutputBody">
+					<record optional="false" name="AdditionOutput">
+						<fixed_field field_units="one"
+							field_type="unsigned integer"
+							optional="false" name="AdditionResult"/>
+					</record>
+				</body>
+				<footer name="EmptyFooter"/>
+			</message_def>
+		</output_set>
+	</message_set>
+	<internal_events_set>
+		<event_def name="InitToReadyEventDef">
+			<description xml:space="preserve">Triggers a transition from Init to Ready</description>
+			<header name="EmptyHeader"/>
+			<body name="EmptyBody"/>
+			<footer name="EmptyFooter"/>
+		</event_def>
+	</internal_events_set>
+	<protocol_behavior is_stateless="true">
+		<start state_name="Init"
+			state_machine_name="additionServerFSM"/>
+		<state_machine name="additionServerFSM">
+			<state name="Init">
+				<entry>
+					<action name="fsmStarted"/>
+				</entry>
+				<transition name="InitToReadyEventDef">
+					<simple>
+						<end_state state="Ready"/>
+					</simple>
+					<action name="serverInitialized"/>
+				</transition>
+			</state>
+			<state name="Ready">
+				<transition name="QueryAddition">
+					<parameter value="msg" type="QueryAddition"/>
+					<parameter value="sender" type="unsigned int"/>
+					<simple>
+						<end_state state="Ready"/>
+					</simple>
+					<action name="sendReportAddition">
+						<argument value="msg"/>
+						<argument value="sender"/>
+					</action>
+				</transition>
+			</state>
+		</state_machine>
+	</protocol_behavior>
+</service_def>

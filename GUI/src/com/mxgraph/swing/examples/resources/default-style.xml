@@ -1,0 +1,131 @@
+<mxStylesheet>
+  <include name="/com/mxgraph/swing/examples/resources/basic-style.xml"/>
+  <add as="defaultVertex" extend="defaultVertex">
+    <add as="strokeColor" value="#000000"/>
+    <add as="fillColor" value="#E8EEF7"/>
+  </add>
+  <add as="defaultEdge" extend="defaultEdge">
+    <add as="labelBackgroundColor" value="white"/>
+    <add as="rounded" value="1"/>
+    <add as="edgeStyle">mxEdgeStyle.ElbowConnector</add>
+  </add>
+  <add as="entity" extend="defaultEdge">
+    <add as="edgeStyle">mxEdgeStyle.EntityRelation</add>
+  </add>
+  <add as="vertical" extend="defaultEdge">
+    <add as="elbow" value="vertical"/>
+    <add as="fontSize" value="16"/>
+  </add>
+  <add as="straight" extend="defaultVertex">
+    <add as="shape" value="connector"/>
+    <add as="endArrow" value="classic"/>
+  </add>
+  <add as="arrow" extend="defaultVertex">
+    <add as="shape" value="arrow"/>
+  </add>
+  <add as="swimlane" extend="defaultVertex">
+    <add as="shape" value="swimlane"/>
+    <add as="fontSize" value="12"/>
+    <add as="fontStyle" value="1"/>
+    <add as="startSize" value="23"/>
+  </add>
+  <add as="group" extend="defaultVertex">
+    <add as="verticalAlign" value="top"/>
+    <add as="dashed" value="1"/>
+    <add as="opacity" value="50"/>
+  </add>
+  <add as="ellipse" extend="defaultVertex">
+    <add as="shape" value="ellipse"/>
+    <add as="perimeter">mxPerimeter.EllipsePerimeter</add>
+  </add>
+  <add as="rhombus" extend="defaultVertex">
+    <add as="shape" value="rhombus"/>
+    <add as="perimeter">mxPerimeter.RhombusPerimeter</add>
+  </add>
+  <add as="triangle" extend="defaultVertex">
+    <add as="shape" value="triangle"/>
+    <add as="perimeter">mxPerimeter.TrianglePerimeter</add>
+  </add>
+  <add as="line" extend="defaultVertex">
+    <add as="shape" value="line"/>
+    <add as="strokeWidth" value="4"/>
+    <add as="labelBackgroundColor" value="white"/>
+    <add as="verticalAlign" value="top"/>
+    <add as="spacingTop" value="8"/>
+  </add>
+  <add as="image" extend="defaultVertex">
+    <add as="shape" value="image"/>
+    <add as="labelBackgroundColor" value="white"/>
+    <add as="verticalLabelPosition" value="bottom"/>
+    <add as="verticalAlign" value="top"/>
+  </add>
+  <add as="roundImage" extend="image">
+    <add as="perimeter">mxPerimeter.EllipsePerimeter</add>
+  </add>
+  <add as="rhombusImage" extend="image">
+    <add as="perimeter">mxPerimeter.RhombusPerimeter</add>
+  </add>
+  <!-- JTS -->
+  <add as="finiteStateMachine">
+    <add as="shape" value="rectangle"/>
+    <add as="perimeter">mxPerimeter.RectanglePerimeter</add>
+    <add as="strokeColor" value="black"/>
+    <add as="strokeWidth" value="5"/>
+    <add as="fillColor" value="white"/>
+    <add as="shadow" value="true"/>
+    <add as="verticalAlign" value="top"/>
+    <add as="fontSize" value="18"/>
+  </add>
+  <add as="pseudoStartState">
+    <add as="shape" value="circle"/>
+    <add as="perimeter">mxPerimeter.EllipsePerimeter</add>
+    <add as="strokeColor" value="black"/>
+    <add as="fillColor" value="black"/>
+    <add as="shadow" value="true"/>
+  </add>
+  <add as="state">
+    <add as="shape" value="rectangle"/>
+    <add as="perimeter">mxPerimeter.RectanglePerimeter</add>
+    <add as="strokeColor" value="black"/>
+    <add as="fillColor" value="white"/>
+    <add as="shadow" value="true"/>
+    <add as="rounded" value="1"/>
+    <add as="verticalAlign" value="top"/>
+    <add as="fontSize" value="18"/>
+  </add>
+  <add as="defaultState">
+    <add as="shape" value="rectangle"/>
+    <add as="perimeter">mxPerimeter.RectanglePerimeter</add>
+    <add as="strokeColor" value="black"/>
+    <add as="fillColor" value="white"/>
+    <add as="shadow" value="true"/>
+    <add as="rounded" value="1"/>
+    <add as="dashed" value="true"/>
+    <add as="verticalAlign" value="top"/>
+    <add as="fontSize" value="18"/>
+  </add>
+  <add as="internalTransition" extend="vertical">
+    <add as="endArrow" value="open"/>
+  </add>
+  <add as="simpleTransition" extend="vertical"> </add>
+  <add as="defaultSimpleTransition" extend="simpleTransition">
+    <add as="dashed" value="true"/>
+  </add>
+  <add as="pushTransition" extend="vertical">
+    <add as="startArrow" value="rectangle"/>
+  </add>
+  <add as="defaultPushTransition" extend="pushTransition">
+    <add as="dashed" value="true"/>
+  </add>
+  <add as="popTransition" extend="vertical">
+    <add as="endArrow" value="oval"/>
+  </add>
+  <add as="defaultInternalTransition" extend="vertical">
+    <add as="endArrow" value="open"/>
+    <add as="dashed" value="true"/>
+  </add>
+  <add as="defaultPopTransition" extend="popTransition">
+    <add as="dashed" value="true"/>
+  </add>
+  <!-- jts -->
+</mxStylesheet>

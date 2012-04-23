@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<record xmlns="urn:jaus:jsidl:1.0" name="RecordTestInterpretation1" optional="false" interpretation="a">
+	<declared_fixed_field name="FixedFieldTest1" declared_type_ref="unitTest.FixedFieldTest1"/>
+</record>

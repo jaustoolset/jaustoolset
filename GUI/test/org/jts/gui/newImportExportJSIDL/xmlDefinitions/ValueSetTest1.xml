@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<value_set xmlns="urn:jaus:jsidl:1.0" offset_to_lower_limit="true">
+    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="floor" upper_limit_type="inclusive"/>
+   ++++ValueEnumTest1.xml++++
+</value_set>

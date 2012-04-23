@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest6" version="1.0">
+  <description>simple transition with multiple actions</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMActionTest1" state_name="Ready"/>
+    <state_machine name="FSMActionTest1">
+		<state name="Ready">
+			<transition name = "trs">
+				<simple>
+					<end_state state="Ready" />
+				</simple>
+				<action name="Reject_Request">
+				</action>
+ 				<send_action name="Exit">					
+ 				</send_action>
+			</transition>
+		</state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

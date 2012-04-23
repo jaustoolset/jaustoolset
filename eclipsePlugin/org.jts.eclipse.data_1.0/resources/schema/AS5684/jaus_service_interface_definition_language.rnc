@@ -1,0 +1,56 @@
+# JAUS Service Interface Definition Language (JSIDLv1.0)
+#
+
+default namespace = "urn:jaus:jsidl:1.0"
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes" 
+
+include "protocol_behavior.rnc"
+include "message_set.rnc"
+
+start |= service_def
+
+service_def =
+  element service_def {
+    attribute name { identifier },
+    attribute id { xsd:anyURI },
+    attribute version { version_num },
+    description,
+    assumptions,
+    references?,
+    declared_const_set?,
+    declared_type_set?,
+    message_set,
+    internal_event_set,
+    protocol_behavior
+  }
+
+description =
+  element description {
+    attribute xml:space { "default" | "preserve" }?, text
+  }
+  
+assumptions = 
+  element assumptions {
+    attribute xml:space { "default" | "preserve" }?, text
+  }
+
+references = 
+   element references {
+     inherits_from? , client_of*
+   }
+  
+inherits_from = 
+  element inherits_from {
+  ref_attr
+  }
+  
+client_of = 
+  element client_of {
+  ref_attr
+  }
+
+ref_attr = 
+  attribute name { identifier },
+  attribute id { xsd:anyURI },
+  attribute version { version_num_ref },
+  attribute interpretation { text }?

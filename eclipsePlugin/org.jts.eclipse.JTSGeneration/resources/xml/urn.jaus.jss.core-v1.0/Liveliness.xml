@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" name="Liveliness" id="urn:jaus:jss:core:Liveliness"
+  version="1.0">
+  <description>This service provides a means to maintain connection liveliness between communicating
+    components.</description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="core" id="urn:jaus:jss:core:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="QueryHeartbeatPulse"
+        declared_type_ref="core.queryClass.QueryHeartbeatPulse"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportHeartbeatPulse"
+        declared_type_ref="core.informClass.ReportHeartbeatPulse"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior is_stateless="false">
+    <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+    <state_machine name="events.transport.ReceiveFSM" interpretation="extending ReceiveFSM of base
+      service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to
+        extend">
+        <state name="Ready" interpretation="redefine state in order to extend">
+          <default_state>
+            <transition name="transport.Receive">
+              <parameter type="QueryHeartbeatPulse" value="msg"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+              <simple/>
+              <action name="transport.Send" interpretation="Send a Report Heartbeat pulse
+                to querying client">
+                <argument value=" 'ReportHeartbeatPulse' "/>
+                <argument value="transportData"/>
+              </action>
+            </transition>
+          </default_state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

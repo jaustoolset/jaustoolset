@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:jaus:jsidl:plus" xmlns:version_1_1="urn:jaus:jsidl:1.1" xmlns:plus="urn:jaus:jsidl:plus" xmlns:ns1="urn:jaus:jsidl:1.0">
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+  <xs:import namespace="urn:jaus:jsidl:1.0" schemaLocation="jsidl_plus.xsd"/>
+  <xs:import namespace="urn:jaus:jsidl:1.1" schemaLocation="version_1_1.xsd"/>
+  <xs:element name="service_set">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:description"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:declared_const_set"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:declared_type_set"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:service_def"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="id" use="required" type="xs:anyURI"/>
+      <xs:attribute name="version" use="required" type="ns1:version_num"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mxCell">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="plus:mxGeometry"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:unsignedInt"/>
+      <xs:attribute name="parent" type="xs:unsignedInt"/>
+      <xs:attribute name="source" type="xs:unsignedInt"/>
+      <xs:attribute name="target" type="xs:unsignedInt"/>
+      <xs:attribute name="style" use="required" type="xs:string"/>
+      <xs:attribute name="value" use="required" type="xs:string"/>
+      <xs:attribute name="edge" type="xs:unsignedInt"/>
+      <xs:attribute name="vertex" type="xs:unsignedInt"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mxGeometry">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="plus:mxPoint"/>
+        <xs:element minOccurs="0" ref="plus:mxRectangle"/>
+        <xs:element minOccurs="0" ref="plus:mxArray"/>
+      </xs:sequence>
+      <xs:attribute name="relative" type="xs:unsignedInt"/>
+      <xs:attribute name="as" type="xs:string"/>
+      <xs:attribute name="x" type="xs:float"/>
+      <xs:attribute name="y" type="xs:float"/>
+      <xs:attribute name="width" type="xs:float"/>
+      <xs:attribute name="height" type="xs:float"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mxPoint">
+    <xs:complexType>
+      <xs:attribute name="as"/>
+      <xs:attribute name="x" use="required" type="xs:float"/>
+      <xs:attribute name="y" use="required" type="xs:float"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mxRectangle">
+    <xs:complexType>
+      <xs:attribute name="as"/>
+      <xs:attribute name="height" use="required" type="xs:float"/>
+      <xs:attribute name="width" use="required" type="xs:float"/>
+      <xs:attribute name="x" use="required" type="xs:float"/>
+      <xs:attribute name="y" use="required" type="xs:float"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mxArray">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="plus:mxPoint"/>
+      </xs:sequence>
+      <xs:attribute name="as"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

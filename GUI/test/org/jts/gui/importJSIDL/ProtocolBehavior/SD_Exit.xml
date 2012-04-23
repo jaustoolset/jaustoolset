@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_Exit" id="ImportTest:SD_Exit" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the entry element with all levels of multiplicity.
+
+    The 1st state has no optional elements and all multiplicity set to 0.
+    The 2nd state has all optional elements and all multiplicity set to 1.
+    The 3rd state has all multiplicity set to *.
+  </description>
+
+  <!-- 
+    element exit 
+    {
+      attribute interpretation { text }?,
+      (action | send_action)* 
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    
+    <start state_machine_name="SD_Exit" state_name="Exit1"/>
+    <state_machine name="SD_Exit">
+      <!-- The 1st state has no optional elements and all multiplicity set to 0 -->
+      <state name="Exit1">
+        <exit/>
+      </state>
+
+      <!-- The 2nd state has all optional elements and all multiplicity set to 1 -->
+      <state name="Exit2">
+        <exit interpretation="An entry interpretation" >
+          <action name="initialize"/>
+        </exit>
+      </state>
+      
+      <!-- The 3rd state has all multiplicity set to * -->
+      <state name="Exit3">
+        <exit>
+          <action name="standby"/>
+          <send_action name="One"/>
+          <send_action name="Two"/>
+        </exit>
+      </state>
+      
+    </state_machine>
+  </protocol_behavior>
+</service_def>

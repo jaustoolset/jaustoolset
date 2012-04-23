@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<footer xmlns="urn:jaus:jsidl:1.0" name="FooterTest4">
+	<declared_sequence name="SequenceTest1" declared_type_ref="unitTest.SequenceTest1"/>
+</footer>

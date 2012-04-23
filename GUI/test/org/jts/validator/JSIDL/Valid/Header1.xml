@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<header name="JAUSApplicationLayerHeader" xmlns="urn:jaus:jsidl:1.0">
+  <record name="HeaderRec" optional="false">
+    <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+      optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+  </record>
+</header>

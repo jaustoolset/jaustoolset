@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../../../../resources/schema/JSIDL_Plus/jsidl_plus.rnc" type="compact"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:plus" id="urn:jts:PseudoStartStateTest1"
+   name="PseudoStartStateTest1" version="1.0">
+  <description xml:space="preserve">
+     Tests "Pseudo start states must point to states only and not default_states or any other element type"
+  </description>
+  <assumptions/> 
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+   <protocol_behavior is_stateless="false">
+      <start state_machine_name="FSM" state_name="Ready.default_state"/>
+      <state_machine name="FSM">
+         <state name="Ready">
+            <default_state>
+               <ns1:mxCell id="9" parent="3" style="defaultState" value="default_state" vertex="1">
+                  <ns1:mxGeometry as="geometry" x="170.0" y="110.0" width="160.0" height="120.0"/>
+               </ns1:mxCell>
+            </default_state>
+            <ns1:mxCell id="3" parent="2" style="state" value="Ready" vertex="1">
+               <ns1:mxGeometry as="geometry" x="120.0" y="120.0" width="410.0" height="360.0"/>
+            </ns1:mxCell>
+         </state>
+         <pseudo_start_state>
+            <state>
+               <ns1:mxCell id="5" parent="2" style="pseudoStartState;" value="" vertex="1">
+                  <ns1:mxGeometry as="geometry" x="80.0" y="80.0" width="20.0" height="20.0"/>
+               </ns1:mxCell>
+            </state>
+            <transition>
+               <!-- target = "9" =  default state -->
+               <ns1:mxCell id="6" parent="2" source="5" target="9" style="simpleTransition;" value="" edge="1">
+                  <ns1:mxGeometry as="geometry" x="80.0" y="80.0" width="20.0" height="20.0"/>
+               </ns1:mxCell>
+            </transition>
+         </pseudo_start_state>
+         <ns1:mxCell id="2" parent="1" style="finiteStateMachine;finiteStateMachine" value="name = TestServ.TestServ.FSM;   isStateless = false;  " vertex="1">
+            <ns1:mxGeometry as="geometry" x="220.0" y="90.0" width="600.0" height="550.0"/>
+         </ns1:mxCell>
+      </state_machine>
+   </protocol_behavior>
+</service_def>

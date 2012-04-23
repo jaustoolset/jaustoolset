@@ -1,0 +1,46 @@
+
+# Set-up build location and paths
+VariantDir('Build', 'src', duplicate=0)
+
+# Create the build environment, borrowing from parent
+import os
+Import('env')
+libenv=env.Clone()
+libenv.Append( CCFLAGS = ['-DTIXML_USE_STL'])
+
+# Here's where the good stuff starts...
+sources = [
+    'Build/InternalEvents/InternalEventHandler.cpp', 
+    'Build/Service.cpp', 
+    'Build/SimpleThread.cpp', 
+    'Build/EventReceiver.cpp',
+    'Build/Transport/Address.cpp', 
+    'Build/Transport/JausAddress.cpp', 
+    'Build/Transport/JausTransport.cpp', 
+    'Build/jFixedLengthString.cpp',
+    'Build/Transport/JuniorAPI.cpp',
+    'Build/Transport/JrSockets.cpp',
+    'Build/Transport/JuniorMgr.cpp',
+    'Build/Transport/JuniorRTE.cpp',
+    'Build/Transport/OS.cpp',
+    'Build/Transport/JrLogger.cpp',
+    'Build/Transport/XmlConfig.cpp',
+    'Build/Transport/JUDPTransport.cpp',
+    'Build/Transport/JUDPTransportLB.cpp',
+    'Build/Transport/JSerial.cpp',
+    'Build/Transport/ChecksumCRC.cpp',
+    'Build/Transport/TCPConnection.cpp',
+    'Build/Transport/JTCPTransport.cpp',
+    'Build/Transport/tinyxml/tinyxml.cpp',
+    'Build/Transport/tinyxml/tinyxmlerror.cpp',
+    'Build/Transport/tinyxml/tinyxmlparser.cpp',
+    'Build/InternalEvents/Send_1_0.cpp',
+    'Build/InternalEvents/Receive_1_0.cpp',
+    'Build/InternalEvents/Send_1_1.cpp',
+    'Build/InternalEvents/Receive_1_1.cpp'    
+]
+
+# Build the library
+lib = libenv.SharedLibrary('./lib/Common', sources, LIBS=[])
+libenv.Install( libenv['INSTALL_LIB'], lib )
+libenv.Install( env['BINPATH'], lib )

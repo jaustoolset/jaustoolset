@@ -1,0 +1,9 @@
+{
+  "item-type": "com.u2d.generated.PrimitiveTypeUnsigned",
+  "items": [
+  { "caption": "unsigned byte", "code": "unsigned byte" },
+  { "caption": "unsigned short integer", "code": "unsigned short integer" },
+  { "caption": "unsigned integer", "code": "unsigned integer" },
+  { "caption": "unsigned long integer", "code": "unsigned long integer" }
+  ]
+}

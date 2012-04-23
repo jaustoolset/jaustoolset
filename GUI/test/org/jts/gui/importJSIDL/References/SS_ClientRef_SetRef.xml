@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_set xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SS_ClientRef_SetRef" id="ImportTest:SS_ClientRef_SetRef" version="1.0">
+  <description xml:space="preserve"> 
+    This service set was created to test the import function of the JTS GUI.
+    This service set contains three services. The first service contains two 
+    client_of references to the second and third services.
+  </description>
+
+  <service_def name="SS_ClientRef_SetRef_1" id="ImportTest:SS_ClientRef_SetRef_1" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service includes two client_of references to services in the same set.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <references>
+      <client_of name="SS_ClientRef_SetRef_2" id="ImportTest:SS_ClientRef_SetRef_2" version="1.0"/>
+      <client_of name="SS_ClientRef_SetRef_3" id="ImportTest:SS_ClientRef_SetRef_3" version="1.0"/>
+    </references>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_ClientRef_SetRef_1" state_name="init"/>
+      <state_machine name="SS_ClientRef_SetRef_1">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  
+  <service_def name="SS_ClientRef_SetRef_2" id="ImportTest:SS_ClientRef_SetRef_2" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      It is used as a client_of for another service in this set.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_ClientRef_SetRef_2" state_name="init"/>
+      <state_machine name="SS_ClientRef_SetRef_2">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+  
+  <service_def name="SS_ClientRef_SetRef_3" id="ImportTest:SS_ClientRef_SetRef_3" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      It is used as a client_of for another service in this set.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="SS_ClientRef_SetRef_3" state_name="init"/>
+      <state_machine name="SS_ClientRef_SetRef_3">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+
+</service_set>

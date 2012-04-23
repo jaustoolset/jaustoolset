@@ -1,0 +1,235 @@
+/* Assumes guard condition is not present */
+
+
+options {
+  LOOKAHEAD = 1;
+  CHOICE_AMBIGUITY_CHECK = 2;
+  OTHER_AMBIGUITY_CHECK = 1;
+  STATIC = false;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  ERROR_REPORTING = true;
+  JAVA_UNICODE_ESCAPE = false;
+  UNICODE_INPUT = false;
+  IGNORE_CASE = false;
+  USER_TOKEN_MANAGER = false;
+  USER_CHAR_STREAM = false;
+  BUILD_PARSER = true;
+  BUILD_TOKEN_MANAGER = true;
+  SANITY_CHECK = true;
+  FORCE_LA_CHECK = false;
+}
+
+PARSER_BEGIN(PopTransitionParser)
+package org.jts.gui.mxGraphtoJAXB.parser;
+
+import org.jts.gui.mxGraphtoJAXB.mxPopTransition;
+import org.jts.gui.mxGraphtoJAXB.mxParameter;
+import org.jts.gui.mxGraphtoJAXB.mxAction;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Vector;
+
+/** simple transition element */
+public class PopTransitionParser {
+
+  /** Main entry point. */
+  public static void main(String args[]) throws ParseException {
+  String test = "trigger1;" +
+                      "trigger2() {};" +
+                      "trigger3()[]{endTransition()};" + 
+                      "trigger4()[]/{endTransition(arg1)};" + 
+                      "namespace.trigger5(type1 arg1)[]/action1(arg1){endTransition('6')};" +
+                      "trigger6(type1 arg1, type2 arg2)[]/action1(arg1), action2(arg1, arg2){endTransition(arg1, arg2)};" +
+                      "trigger7(type1 arg1, type2 '8')[]/action1('9'), action2('LIT', arg2){endTransition('6', arg2)}; ";
+  InputStream stream = new ByteArrayInputStream( test.getBytes() );
+  
+  PopTransitionParser parser = new PopTransitionParser( stream );
+  Vector <mxPopTransition>popTransitions = parser.Input();
+  for(int ii=0; ii<popTransitions.size(); ii++)
+      System.out.println(popTransitions.get(ii));
+  }
+}
+
+PARSER_END(PopTransitionParser)
+
+SKIP :
+{
+  " "
+  | "\t"
+  | "\n"
+  | "\r"
+  | "\""
+}
+
+TOKEN :
+{
+    <UNSIGNED: "unsigned">  
+      |
+    <ID: ["a"-"z","A"-"Z","_"] ( ["a"-"z","A"-"Z","_","0"-"9","."] )*>
+      |
+    <LITERAL: "\'" (~["\'"])* "\'">    
+      |
+    <NUM: ( ["0"-"9","."] )+>
+}
+
+/** Parses a pop transition */
+Vector Input() :
+{
+      Vector <mxPopTransition>transitionList = new Vector<mxPopTransition>();
+String name = null;  
+        Vector <mxParameter> paramList = new Vector<mxParameter>();
+          Vector <mxAction> actionList = new Vector<mxAction>();
+            Vector <mxAction> endTransition = new Vector<mxAction>();
+}
+{      
+    name=Identifier()  ("(" paramList = Parameters() ")")?  ("[" "]")?  ("/" actionList = Actions() )?  ("{"endTransition=Actions()"}")? ";"
+      {
+          mxAction et = null;
+          if( endTransition.size() > 0 )
+            et = endTransition.get(0);
+          transitionList.add( new mxPopTransition( name, null, paramList, null, actionList, et) );
+		  
+		  paramList = new Vector<mxParameter>();
+		  actionList = new Vector<mxAction>();
+		  endTransition = new Vector<mxAction>();
+      }
+   (
+     name=Identifier()  ("(" paramList = Parameters() ")")?  ("[" "]")?  ("/" actionList = Actions() )?  ("{"endTransition=Actions()"}")? ";"
+      {
+        et = null;
+        if( endTransition.size() > 0 )
+          et = endTransition.get(0);      
+        transitionList.add( new mxPopTransition( name, null, paramList, null, actionList, et) );
+		
+		  paramList = new Vector<mxParameter>();
+		  actionList = new Vector<mxAction>();
+		  endTransition = new Vector<mxAction>();
+      }
+   )* <EOF>
+    {
+      return transitionList;
+    }
+}
+  
+/***** A parameter list ******/
+Vector Parameters() :
+{
+     Vector <mxParameter>paramList = new Vector<mxParameter>();
+  String type = null;  
+  String value = null;  
+}
+{  
+    (type=ParamType() value=ParamValue())?
+      {
+        if( type != null && value != null ) 
+          paramList.add( new mxParameter(type, value) );
+      }
+   (
+     "," type=ParamType() value=ParamValue() 
+     {
+       if( type != null && value != null ) 
+         paramList.add( new mxParameter(type, value) );
+     }
+   )*
+    {
+      return paramList;      
+    }
+}
+
+String ParamType() :
+{
+Token u= null;
+Token t;    
+}
+{
+   (u=<UNSIGNED>)? t=<ID>
+    {
+       if( u != null ) 
+         return u.image+" "+t.image;
+       else
+         return t.image;
+    }
+}
+
+String ParamValue() :
+{
+Token t;
+}
+{
+   ( t=<ID> | t=<LITERAL>  )
+    {
+      return t.image;
+    }
+}   
+  
+/******** An action list *********/
+
+Vector Actions() :
+{
+     Vector <mxAction>actionList = new Vector<mxAction>();
+String name = new String();  
+Vector args = null;  
+}
+{  
+   ( name=Identifier() "(" args = Arguments() ")"
+    {
+      mxAction action = new mxAction(name, args, mxAction.TYPE_TRANSITION);
+      actionList.add(action);     
+    } )?
+   ("," name=Identifier() "(" args = Arguments() ")"
+    {
+      mxAction action = new mxAction(name, args, mxAction.TYPE_TRANSITION);
+      actionList.add(action);
+    }  
+   )*
+    {
+      return actionList;
+    }
+}
+
+Vector Arguments() :
+{
+       Vector <String>args = new Vector<String>();
+String str = null;
+}
+{
+   [ str = ArgValue() ]
+    { if( str != null ) args.add(str); }
+   (
+   "," str = ArgValue() 
+    { if( str != null ) args.add(str); }    
+   )*
+    {
+      return args;
+    }
+}
+
+String ArgValue() :
+{
+Token t;
+String s;
+}
+{
+   (t=<ID> | t=<LITERAL>)
+    {
+      return t.image;
+    }
+}
+
+
+/************ an identifier ***************/
+String Identifier() :
+{
+Token t;
+}
+{
+  t=<ID>
+  {
+     return t.image;
+   }
+}
+    
+
+         

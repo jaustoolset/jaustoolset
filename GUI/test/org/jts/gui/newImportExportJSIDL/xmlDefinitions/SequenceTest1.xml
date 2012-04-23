@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sequence xmlns="urn:jaus:jsidl:1.0" name="SequenceTest1" optional="false">
+	++++RecordTest1.xml++++
+</sequence>

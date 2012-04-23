@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set name="BasicTypes" id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.0"
+  xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <header name="JAUSApplicationLayerHeader">
+    <record name="HeaderRec" optional="false">
+      <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+        optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+    </record>
+  </header>
+  <fixed_field name="AuthorityCode" field_type="unsigned byte" field_units="one" optional="false">
+    <value_set offset_to_lower_limit="false">
+      <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="255"
+        upper_limit_type="inclusive"/>
+    </value_set>
+  </fixed_field>
+  <fixed_field name="EmergencyCode" field_type="unsigned short integer" field_units="one"
+    optional="false">
+    <value_set offset_to_lower_limit="false">
+      <value_enum enum_index="1" enum_const="STOP"/>
+    </value_set>
+  </fixed_field>
+  <!-- TimeStamp -->
+  <bit_field name="TimeStamp" field_type_unsigned="unsigned integer" optional="false">
+    <sub_field name="Milliseconds">
+      <bit_range from_index="0" to_index="9"/>
+      <value_set offset_to_lower_limit="false">
+        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="999"
+          upper_limit_type="inclusive"/>
+      </value_set>
+    </sub_field>
+    <sub_field name="Seconds">
+      <bit_range from_index="10" to_index="15"/>
+      <value_set offset_to_lower_limit="false">
+        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+          upper_limit_type="inclusive"/>
+      </value_set>
+    </sub_field>
+    <sub_field name="Minutes">
+      <bit_range from_index="16" to_index="21"/>
+      <value_set offset_to_lower_limit="false">
+        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+          upper_limit_type="inclusive"/>
+      </value_set>
+    </sub_field>
+    <sub_field name="Hour">
+      <bit_range from_index="22" to_index="26"/>
+      <value_set offset_to_lower_limit="false">
+        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="23"
+          upper_limit_type="inclusive"/>
+      </value_set>
+    </sub_field>
+    <sub_field name="Day">
+      <bit_range from_index="27" to_index="31"/>
+      <value_set offset_to_lower_limit="false">
+        <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+          upper_limit_type="inclusive"/>
+      </value_set>
+    </sub_field>
+  </bit_field>
+  <!-- DateStamp -->
+  <bit_field name="DateStamp" field_type_unsigned="unsigned short integer" optional="false">
+    <sub_field name="Day">
+      <bit_range from_index="0" to_index="4"/>
+      <value_set offset_to_lower_limit="false">
+        <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+          upper_limit_type="inclusive"/>
+      </value_set>
+    </sub_field>
+    <sub_field name="Month">
+      <bit_range from_index="5" to_index="8"/>
+      <value_set offset_to_lower_limit="false">
+        <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="12"
+          upper_limit_type="inclusive"/>
+      </value_set>
+    </sub_field>
+    <sub_field name="Year">
+      <bit_range from_index="9" to_index="15"/>
+      <value_set offset_to_lower_limit="false">
+        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="127"
+          upper_limit_type="inclusive" interpretation="Where 0 is 2000, 1 is 2001, etc."/>
+      </value_set>
+    </sub_field>
+  </bit_field>
+  <record name="TimeRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned byte"/>
+    <declared_bit_field declared_type_ref="TimeStamp" optional="true" name="TimeStamp"/>
+    <declared_bit_field declared_type_ref="DateStamp" optional="true" name="DateStamp"/>
+  </record>
+</declared_type_set>

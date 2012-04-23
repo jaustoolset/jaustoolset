@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="LocalPoseSensor" id="urn:jaus:jss:mobility:LocalPoseSensor" version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description>The function of the Local Pose Sensor is to determine the local position and orientation of the platform.  
+    The Report Local Pose message provides the position and orientation of the platform relative to a local reference 
+    frame.  The origin of the local reference frame may be altered using the Set Local Pose message, which sets the 
+    current position and orientation of the platform to the specified values.  Platform orientation is defined in 
+    Section 4 of the JAUS Mobility Service Set Specification.</description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SetLocalPose" declared_type_ref="mobility.commandClass.SetLocalPose"/>
+      <declared_message_def name="QueryLocalPose" declared_type_ref="mobility.queryClass.QueryLocalPose"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportLocalPose" declared_type_ref="mobility.informClass.ReportLocalPose"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled"/>
+    <state_machine name="accessControl.events.transport.ReceiveFSM" 
+        interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled" interpretation="redefine state in order to extend">
+          <state name="NotControlled" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryLocalPose" value="msg" interpretation="enveloped query local pose
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send" interpretation="Send a Report
+                    Local Pose message with the current local position">
+                    <argument value=" 'ReportLocalPose' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+            </state>
+          <state name="Controlled" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryLocalPose" value="msg" interpretation="enveloped query local pose
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send" interpretation="Send a Report
+                    Local Pose message with the current local position">
+                    <argument value=" 'ReportLocalPose' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="SetLocalPose" value="msg" interpretation="enveloped set local pose
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered 
+                    the transition is received from the client that is in control of this service."/>
+                  <simple/>
+                  <action name="updateLocalPose" interpretation="Update the local pose for the component."/>
+                </transition>
+              </default_state>
+         </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<message_def xmlns="urn:jaus:jsidl:1.0" name="MessageDefTestNonUnique" is_command="true" message_id="0004">
+	<description xml:space="preserve"> An empty message definition </description>
+</message_def>

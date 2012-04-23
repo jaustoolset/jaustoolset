@@ -1,0 +1,21 @@
+{
+  "item-type": "com.u2d.generated.DataFormat",
+  "items": [
+  { "caption": "AU" , "code": "AU" },
+  { "caption": "BMP" , "code": "BMP" },
+  { "caption": "JPEG" , "code": "JPEG" },
+  { "caption": "MJPEG" , "code": "MJPEG" },
+  { "caption": "MJPEG-1" , "code": "MJPEG-1" },
+  { "caption": "MJPEG-2" , "code": "MJPEG-2" },
+  { "caption": "MP2" , "code": "MP2" },
+  { "caption": "MP3" , "code": "MP3" },
+  { "caption": "MP4" , "code": "MP4" },
+  { "caption": "RAW" , "code": "RAW" },
+  { "caption": "WAV" , "code": "WAV" },
+  { "caption": "JAUS MESSAGE" , "code": "JAUS MESSAGE" },
+  { "caption": "XML" , "code": "XML" },
+  { "caption": "RNC" , "code": "RNC" },
+  { "caption": "RNG" , "code": "RNG" },
+  { "caption": "XSD" , "code": "XSD" }
+  ]
+}

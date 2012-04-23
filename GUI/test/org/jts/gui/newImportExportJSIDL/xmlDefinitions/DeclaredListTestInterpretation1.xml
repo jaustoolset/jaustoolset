@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<list xmlns="urn:jaus:jsidl:1.0" name="ListTestInterpretation1" optional="false" interpretation="a">
+	++++CountFieldTest1.xml++++
+	<declared_record name="RecordTest1" declared_type_ref="unitTest.RecordTest1"/>
+</list>

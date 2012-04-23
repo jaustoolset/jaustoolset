@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="org.jts.eclipse.ui" default="updateEclipsePlugin" basedir=".">
+    <description>Builds, tests, and runs the project PromelaCodeGenerator.</description>
+    <property name="project.name" value="PromelaCodeGenerator" />
+	<!-- build directories -->
+
+    <property name="build.dir" location="build" />
+    <property name="build.classes.dir" location="${build.dir}/classes" />
+    <property name="src.dir" location="src" />
+    <property name="srcgen.dir" location="src-gen" />
+    <property name="current.dir" location="./" />
+    <property name="lib.basedir" location="../../GUI/lib" />
+    <property name="jts.lib.basedir" location="../../GUI/lib" />
+    <property name="lib.dir" location="${lib.basedir}/runtime" />
+    <property name="lib.emf.dir" location="${lib.basedir}/runtime" />
+    <property name="lib.tools.dir" location="${lib.basedir}/tools" />
+    <property name="lib.jaxb.dir" value="${lib.basedir}/jaxb-ri-20091104/lib" />
+    <property name="lib.jaxb-plugin.dir" value="${lib.basedir}/jaxb-plugins" />
+    <property name="main.class" value="org.jts.protocolvalidator.Main" />
+    <property name="jts.dir" location="../../GUI" />
+    <property name="jts.jar.dir" location="${jts.dir}/lib/runtime" />
+	<property environment="env"/>
+	<property name="eclipse.home" value="C:\eclipse\"/>
+    	<!--     	<property name="eclipse.home" value="${env.ECLIPSE_HOME}"/>  -->
+    	
+    <path id="class.path">
+        <fileset dir="${eclipse.home}/plugins" includes="org.antlr.runtime_3.0.1.v200803061811.jar"/>
+        <fileset dir="${jts.lib.basedir}/runtime" includes="**/*.jar" />
+        <fileset dir="${lib.jaxb.dir}" includes="**/*.jar"/>
+        <fileset dir="${lib.jaxb-plugin.dir}" includes="*.jar"/>
+        <fileset dir="${eclipse.home}/plugins" includes="**/*.jar"/>
+        <pathelement location="${build.classes.dir}" />
+    </path>
+
+    <target name="init">
+        <tstamp />
+        <mkdir dir="${build.classes.dir}" />
+        <available property="keystore.exists" file="tempKeystore"/>
+    </target>
+
+    <target name="updateEclipsePlugin" description="Builds the JARs needed by the eclipse plugin" depends="jar-codegen, jar-docgen, update-resources"/>
+	
+	<target name="update-resources" description="updates resources from JTS" depends="jar-codegen, jar-docgen">
+		<mkdir dir="resources"/>
+		<mkdir dir="templates"/>
+		<copy todir="../org.jts.eclipse.data_1.0/templates">
+            <fileset dir="${jts.dir}/templates" includes="**/*" />
+        </copy>
+        <copy todir="../org.jts.eclipse.data_1.0/resources/schema">
+            <fileset dir="${jts.dir}/resources/schema"/>
+        </copy>
+        <copy todir="../org.jts.eclipse.data_1.0/resources/xml">
+            <fileset dir="${jts.dir}/resources/xml"/>
+        </copy>
+        <copy todir="../org.jts.eclipse.data_1.0/resources/docGenerator">
+            <fileset dir="${jts.dir}/resources/docGenerator"/>
+        </copy>
+ 
+	</target>
+    <target name="clean" description="Delete build and test-reports directories">
+        <delete dir="${build.dir}" />
+        <delete dir="${lib.basedir}" />
+        <delete dir="templates" />
+        <delete dir="resources" />
+    </target>
+
+	<target name="update-jts-libs" description="updates libraries from JTS" depends="">
+		<mkdir dir="lib"/>
+		<mkdir dir="${lib.basedir}/runtime"/>
+		<mkdir dir="${lib.basedir}/tools"/>
+		<mkdir dir="${lib.basedir}/jaxb-ri-20091104/lib/"/>
+		<mkdir dir="${lib.basedir}/jaxb-plugins"/>
+		<mkdir dir="${lib.basedir}/javacc-4.2"/>
+		<mkdir dir="${lib.basedir}/smc"/>
+		<mkdir dir="${lib.basedir}/jargs-1.0"/>
+		<mkdir dir="${lib.basedir}/jep"/>
+		<mkdir dir="${lib.basedir}/saxon"/>
+        <copy todir="${lib.basedir}">
+            <fileset dir="${jts.lib.basedir}" includes="runtime/" />
+            <fileset dir="${jts.lib.basedir}" includes="tools/" />
+            <fileset dir="${jts.lib.basedir}" includes="jaxb-ri-20091104/lib/" />
+            <fileset dir="${jts.lib.basedir}" includes="jaxb-plugins/" />
+            <fileset dir="${jts.lib.basedir}" includes="javacc-4.2/" />
+            <fileset dir="${jts.lib.basedir}" includes="smc/" />
+            <fileset dir="${jts.lib.basedir}" includes="jargs-1.0/" />
+            <fileset dir="${jts.lib.basedir}" includes="jep/" />
+            <fileset dir="${jts.lib.basedir}" includes="saxon/" />
+        </copy>
+	</target>
+    <target name="jar-codegen">
+        <subant target="jar-codegen">
+            <fileset dir="${jts.dir}" includes="build.xml"/>
+        </subant>
+    </target>
+    <target name="jar-docgen">
+        <subant target="jar-docgen">
+            <fileset dir="${jts.dir}" includes="build.xml"/>
+        </subant>
+    </target>
+	
+	<target name="updateJTSConversion">
+		<unzip src="${build.dir}/CjsidlEclipse.zip" dest="${jts.jar.dir}"/>
+	    <copy todir="${jts.jar.dir}">
+	        <fileset dir="${eclipse.home}/plugins" includes="
+	        	org.eclipse.xtext_1.0.2.v201102150722.jar,
+	        	org.eclipse.emf.ecore.xmi_2.5.0.v20100521-1846.jar,
+	        	org.eclipse.emf.ecore_2.6.1.v20100914-1218.jar,
+	        	org.eclipse.emf.common_2.6.0.v20100914-1218.jar,
+	        	org.eclipse.xtext.util_1.0.2.v201102150722.jar,
+	        	com.google.collect_0.8.0.v201102150722.jar,
+	        	com.google.inject_2.0.0.v201003051000.jar,
+	        	org.antlr.runtime_3.0.0.v200803061811.jar,
+	        	org.eclipse.emf.mwe.core_1.0.2.v201102150556.jar,
+	        	org.apache.commons.cli_1.0.0.v20080604-1500.jar,
+	        	org.eclipse.emf.mwe2.runtime_1.0.2.v201102150556.jar,
+	        	org.eclipse.emf.mwe.utils_1.0.2.v201102150556.jar,
+	        	org.eclipse.xtext.generator_1.0.2.v201102150722.jar,
+	        	org.eclipse.xtend_1.0.1.v201008251147.jar,
+	        	com.ibm.icu_4.2.1.v20100412.jar,
+	        	org.eclipse.xpand_1.0.1.v201008251147.jar,
+	        	org.eclipse.xtend.typesystem.emf_1.0.1.v201008251147.jar,
+	        	org.eclipse.emf.codegen.ecore_2.6.1.v20100914-1218.jar,
+	        	org.eclipse.emf.codegen_2.6.0.v20100914-1218.jar,
+	        	de.itemis.xtext.antlr_1.0.1.v201008261834.jar,
+	        	org.apache.commons.logging_1.1.1.v201005080502.jar,
+	        	org.eclipse.emf.mwe2.launch_1.0.2.v201102151014.jar,
+	        	org.eclipse.emf.mwe2.language_1.0.2.v201102151014.jar,
+	        	org.eclipse.xtext.common.types_1.0.2.v201102150722.jar,
+	        	org.eclipse.xtext.xtend_1.0.2.v201102150722.jar,
+	        	org.junit_4.8.1.v4_8_1_v20100427-1100\junit.jar,
+	        	org.hamcrest.core_1.1.0.v20090501071000.jar,
+	        	org.apache.commons.lang_2.4.0.v201005080502.jar,
+	        	org.apache.log4j_1.2.15.v201005080500.jar        	
+				" />
+	    </copy>
+
+	</target>
+	
+	<!-- the following don't work due to dependency issues
+	
+    <target name="compile" description="compile plugin" depends="init, bindJSIDLPlus">
+	    <javac srcdir="${srcgen.dir}:${src.dir}"
+			destdir="${build.classes.dir}"
+			classpathref="class.path"
+			listfiles="true"
+			target="1.5"
+			debug="on" debuglevel="lines,vars,source" deprecation="on" />
+    </target>
+    <target name="compile-src-gen" description="compile plugin" depends="init, bindJSIDLPlus, compile">
+	    <javac srcdir="${srcgen.dir}"
+			destdir="${build.classes.dir}"
+			classpathref="class.path"
+			listfiles="true"
+			target="1.5"
+			debug="on" debuglevel="lines,vars,source" deprecation="on" />
+    </target>
+
+    <target name="jar" depends="init, bindJSIDLPlus, compile">
+        <pathconvert targetos="unix" property="mf.classpath" pathsep=" ">
+            <path refid="dist.path.copy" />
+            <map from="${current.dir}\" to=""/>
+        </pathconvert>
+        <mkdir dir="${lib.dir}"/>
+        <manifest file="build/manifest.mf">
+                <attribute name="Main-Class" value="${main.class}"/>
+        </manifest>
+        <jar destfile="dist/${project.name}.jar" manifest="build/manifest.mf">
+             <fileset dir="${build.classes.dir}" includes="**/*" />
+        </jar>
+    </target>
+	 <path id="gen.classpath">
+			<fileset dir="${eclipse.home}" includes="**/*.jar"/>
+			<pathelement location="src"/>
+		</path>
+	 
+	<target name="gen">
+	<echo message="${eclipse.home}"/>
+			<java classname="org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher" classpathref="gen.classpath" fork="false">
+				<arg value="${src.dir}/org.jts.eclipse/GenerateCjsidl.mwe2"/>
+			</java>
+	</target> -->
+    <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar-with-manifest:    JAR building (if you are using a manifest)
+      -do-jar-without-manifest: JAR building (if you are not using a manifest)
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="PromelaCodeGenerator-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
+
+    -->
+</project>

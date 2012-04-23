@@ -1,0 +1,1685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  JAUS Service Interface Definition Language - Plus (JSIDL+v0.11)
+  
+-->
+<!--
+  JSIDL+ only adds to JSIDL and does not modify or remove anything that already exists in JSIDL
+  additions are the following:
+  1. service_set element
+  2. In state and default_state, default_transition's multiplicity has been changed from ? to * to include the case of multiple guarded default transitions
+  3. Added internal_transition. 
+      Semantics: While a self transition is considered to be a change of state, an internal transition is not. 
+                        In a self transition, the source state and the target state are the same. In this case, all entry and exit actions are invoked, and a change of state is said to occur.
+                        In an internal transition, there is no target state. In this case, events can trigger actions on the transition, but no entry or exit actions are invoked, and no change of state will occur.
+  4. Added mxCell element and sub-elements
+  5. changed parameter's type from identifier_ns to param_type to include primitive unsigned types
+  6. added a name attribute to type_and_units_enum
+  7. added the missing "optional" attribute to declared_variant
+  
+-->
+<grammar xmlns:version_1_1="urn:jaus:jsidl:1.1" xmlns:plus="urn:jaus:jsidl:plus" ns="urn:jaus:jsidl:1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <choice>
+      <ref name="service_set"/>
+      <ref name="service_def"/>
+      <ref name="declared_type_set"/>
+      <ref name="declared_const_set"/>
+    </choice>
+  </start>
+  <define name="service_set">
+    <element name="plus:service_set">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="id">
+        <data type="anyURI"/>
+      </attribute>
+      <attribute name="version">
+        <ref name="version_num"/>
+      </attribute>
+      <ref name="description"/>
+      <zeroOrMore>
+        <ref name="declared_const_set"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="declared_type_set"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="service_def"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="service_def">
+    <element name="service_def">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="id">
+        <data type="anyURI"/>
+      </attribute>
+      <attribute name="version">
+        <ref name="version_num"/>
+      </attribute>
+      <ref name="description"/>
+      <ref name="assumptions"/>
+      <optional>
+        <ref name="references"/>
+      </optional>
+      <optional>
+        <ref name="declared_const_set"/>
+      </optional>
+      <optional>
+        <ref name="declared_type_set"/>
+      </optional>
+      <ref name="message_set"/>
+      <ref name="internal_event_set"/>
+      <ref name="protocol_behavior"/>
+    </element>
+  </define>
+  <define name="description">
+    <element name="description">
+      <optional>
+        <attribute name="xml:space">
+          <choice>
+            <value>default</value>
+            <value>preserve</value>
+          </choice>
+        </attribute>
+      </optional>
+      <text/>
+    </element>
+  </define>
+  <define name="assumptions">
+    <element name="assumptions">
+      <optional>
+        <attribute name="xml:space">
+          <choice>
+            <value>default</value>
+            <value>preserve</value>
+          </choice>
+        </attribute>
+      </optional>
+      <text/>
+    </element>
+  </define>
+  <define name="references">
+    <element name="references">
+      <optional>
+        <ref name="inherits_from"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="client_of"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="inherits_from">
+    <element name="inherits_from">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="id">
+        <data type="anyURI"/>
+      </attribute>
+      <attribute name="version">
+        <ref name="version_num_ref"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="client_of">
+    <element name="client_of">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="id">
+        <data type="anyURI"/>
+      </attribute>
+      <attribute name="version">
+        <ref name="version_num_ref"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <!-- ==================== declared constants =========================== -->
+  <define name="declared_const_set">
+    <element name="declared_const_set">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <optional>
+        <attribute name="id">
+          <data type="anyURI"/>
+        </attribute>
+        <attribute name="version">
+          <ref name="version_num"/>
+        </attribute>
+      </optional>
+      <zeroOrMore>
+        <ref name="declared_const_set_ref"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="const_def"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="declared_const_set_ref">
+    <element name="declared_const_set_ref">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="id">
+        <data type="anyURI"/>
+      </attribute>
+      <attribute name="version">
+        <ref name="version_num"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="const_def">
+    <element name="const_def">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <ref name="attribute_field_units"/>
+      <attribute name="const_type">
+        <choice>
+          <value>byte</value>
+          <value>short integer</value>
+          <value>integer</value>
+          <value>long integer</value>
+          <value>unsigned byte</value>
+          <value>unsigned short integer</value>
+          <value>unsigned integer</value>
+          <value>unsigned long integer</value>
+          <value>float</value>
+          <value>long float</value>
+          <value>string</value>
+        </choice>
+      </attribute>
+      <attribute name="const_value">
+        <data type="string"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <!-- ==================== declared data types =========================== -->
+  <define name="declared_type_set">
+    <element name="declared_type_set">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <optional>
+        <attribute name="id">
+          <data type="anyURI"/>
+        </attribute>
+        <attribute name="version">
+          <ref name="version_num"/>
+        </attribute>
+      </optional>
+      <zeroOrMore>
+        <ref name="declared_const_set_ref"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="declared_type_set_ref"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <choice>
+          <ref name="message_def"/>
+          <ref name="header"/>
+          <ref name="body"/>
+          <ref name="footer"/>
+          <ref name="array"/>
+          <ref name="record"/>
+          <ref name="list"/>
+          <ref name="variant"/>
+          <ref name="sequence"/>
+          <ref name="fixed_field"/>
+          <ref name="variable_field"/>
+          <ref name="bit_field"/>
+          <ref name="fixed_length_string"/>
+          <ref name="variable_length_string"/>
+          <ref name="variable_length_field"/>
+          <ref name="variable_format_field"/>
+          <ref name="declared_message_def"/>
+          <ref name="declared_event_def"/>
+          <ref name="declared_header"/>
+          <ref name="declared_body"/>
+          <ref name="declared_footer"/>
+          <ref name="declared_list"/>
+          <ref name="declared_sequence"/>
+          <ref name="declared_variant"/>
+          <ref name="declared_record"/>
+          <ref name="declared_array"/>
+          <ref name="declared_fixed_field"/>
+          <ref name="declared_variable_field"/>
+          <ref name="declared_bit_field"/>
+          <ref name="declared_fixed_length_string"/>
+          <ref name="declared_variable_length_string"/>
+          <ref name="declared_variable_length_field"/>
+          <ref name="declared_variable_format_field"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="declared_type_set_ref">
+    <element name="declared_type_set_ref">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="id">
+        <data type="anyURI"/>
+      </attribute>
+      <attribute name="version">
+        <ref name="version_num"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="attribute_declared_type">
+    <attribute name="name">
+      <ref name="identifier"/>
+    </attribute>
+    <optional>
+      <attribute name="declared_type_ref">
+        <ref name="identifier_ns"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="interpretation"/>
+    </optional>
+  </define>
+  <define name="declared_message_def">
+    <element name="declared_message_def">
+      <ref name="attribute_declared_type"/>
+    </element>
+  </define>
+  <define name="declared_event_def">
+    <element name="declared_event_def">
+      <ref name="attribute_declared_type"/>
+    </element>
+  </define>
+  <define name="declared_header">
+    <element name="declared_header">
+      <ref name="attribute_declared_type"/>
+    </element>
+  </define>
+  <define name="declared_body">
+    <element name="declared_body">
+      <ref name="attribute_declared_type"/>
+    </element>
+  </define>
+  <define name="declared_footer">
+    <element name="declared_footer">
+      <ref name="attribute_declared_type"/>
+    </element>
+  </define>
+  <define name="declared_variant">
+    <element name="declared_variant">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_sequence">
+    <element name="declared_sequence">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_record">
+    <element name="declared_record">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_list">
+    <element name="declared_list">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_array">
+    <element name="declared_array">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_fixed_field">
+    <element name="declared_fixed_field">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_variable_field">
+    <element name="declared_variable_field">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_bit_field">
+    <element name="declared_bit_field">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_fixed_length_string">
+    <element name="declared_fixed_length_string">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_variable_length_string">
+    <element name="declared_variable_length_string">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_variable_length_field">
+    <element name="declared_variable_length_field">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="declared_variable_format_field">
+    <element name="declared_variable_format_field">
+      <ref name="attribute_declared_type"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+    </element>
+  </define>
+  <!-- ==================== message definition ========================= -->
+  <define name="message_set">
+    <element name="message_set">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <ref name="input_set"/>
+      <ref name="output_set"/>
+    </element>
+  </define>
+  <define name="input_set">
+    <element name="input_set">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <ref name="message_def"/>
+          <ref name="declared_message_def"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="output_set">
+    <element name="output_set">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <ref name="message_def"/>
+          <ref name="declared_message_def"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="internal_event_set">
+    <element name="internal_events_set">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <ref name="event_def"/>
+          <ref name="declared_event_def"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="message_def">
+    <element name="message_def">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="message_id">
+        <data type="hexBinary"/>
+      </attribute>
+      <attribute name="is_command">
+        <data type="boolean"/>
+      </attribute>
+      <element name="description">
+        <optional>
+          <attribute name="xml:space">
+            <choice>
+              <value>default</value>
+              <value>preserve</value>
+            </choice>
+          </attribute>
+        </optional>
+        <text/>
+      </element>
+      <choice>
+        <ref name="header"/>
+        <ref name="declared_header"/>
+      </choice>
+      <choice>
+        <ref name="body"/>
+        <ref name="declared_body"/>
+      </choice>
+      <choice>
+        <ref name="footer"/>
+        <ref name="declared_footer"/>
+      </choice>
+    </element>
+  </define>
+  <define name="event_def">
+    <element name="event_def">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <element name="description">
+        <optional>
+          <attribute name="xml:space">
+            <choice>
+              <value>default</value>
+              <value>preserve</value>
+            </choice>
+          </attribute>
+        </optional>
+        <text/>
+      </element>
+      <choice>
+        <ref name="header"/>
+        <ref name="declared_header"/>
+      </choice>
+      <choice>
+        <ref name="body"/>
+        <ref name="declared_body"/>
+      </choice>
+      <choice>
+        <ref name="footer"/>
+        <ref name="declared_footer"/>
+      </choice>
+    </element>
+  </define>
+  <define name="header">
+    <element name="header">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <optional>
+        <choice>
+          <ref name="record"/>
+          <ref name="declared_record"/>
+          <ref name="list"/>
+          <ref name="declared_list"/>
+          <ref name="variant"/>
+          <ref name="declared_variant"/>
+          <ref name="sequence"/>
+          <ref name="declared_sequence"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+  <define name="body">
+    <element name="body">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <optional>
+        <choice>
+          <ref name="record"/>
+          <ref name="declared_record"/>
+          <ref name="list"/>
+          <ref name="declared_list"/>
+          <ref name="variant"/>
+          <ref name="declared_variant"/>
+          <ref name="sequence"/>
+          <ref name="declared_sequence"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+  <define name="footer">
+    <element name="footer">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <optional>
+        <choice>
+          <ref name="record"/>
+          <ref name="declared_record"/>
+          <ref name="list"/>
+          <ref name="declared_list"/>
+          <ref name="variant"/>
+          <ref name="declared_variant"/>
+          <ref name="sequence"/>
+          <ref name="declared_sequence"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+  <define name="array">
+    <element name="array">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <choice>
+        <ref name="fixed_field"/>
+        <ref name="variable_field"/>
+        <ref name="bit_field"/>
+        <ref name="fixed_length_string"/>
+        <ref name="variable_length_string"/>
+        <ref name="variable_length_field"/>
+        <ref name="variable_format_field"/>
+        <ref name="declared_fixed_field"/>
+        <ref name="declared_variable_field"/>
+        <ref name="declared_bit_field"/>
+        <ref name="declared_fixed_length_string"/>
+        <ref name="declared_variable_length_string"/>
+        <ref name="declared_variable_length_field"/>
+        <ref name="declared_variable_format_field"/>
+      </choice>
+      <oneOrMore>
+        <element name="dimension">
+          <attribute name="name">
+            <ref name="identifier"/>
+          </attribute>
+          <attribute name="size">
+            <choice>
+              <ref name="identifier_ns"/>
+              <data type="unsignedInt"/>
+            </choice>
+          </attribute>
+          <optional>
+            <attribute name="interpretation"/>
+          </optional>
+        </element>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="record">
+    <element name="record">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <optional>
+        <ref name="presence_vector"/>
+      </optional>
+      <oneOrMore>
+        <choice>
+          <ref name="array"/>
+          <ref name="fixed_field"/>
+          <ref name="variable_field"/>
+          <ref name="bit_field"/>
+          <ref name="fixed_length_string"/>
+          <ref name="variable_length_string"/>
+          <ref name="variable_length_field"/>
+          <ref name="variable_format_field"/>
+          <ref name="declared_array"/>
+          <ref name="declared_fixed_field"/>
+          <ref name="declared_variable_field"/>
+          <ref name="declared_bit_field"/>
+          <ref name="declared_fixed_length_string"/>
+          <ref name="declared_variable_length_string"/>
+          <ref name="declared_variable_length_field"/>
+          <ref name="declared_variable_format_field"/>
+        </choice>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="list">
+    <element name="list">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <ref name="count_field"/>
+      <choice>
+        <ref name="record"/>
+        <ref name="declared_record"/>
+        <ref name="list"/>
+        <ref name="declared_list"/>
+        <ref name="variant"/>
+        <ref name="declared_variant"/>
+        <ref name="sequence"/>
+        <ref name="declared_sequence"/>
+      </choice>
+    </element>
+  </define>
+  <define name="variant">
+    <element name="variant">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <ref name="vtag_field"/>
+      <zeroOrMore>
+        <choice>
+          <ref name="record"/>
+          <ref name="declared_record"/>
+          <ref name="list"/>
+          <ref name="declared_list"/>
+          <ref name="variant"/>
+          <ref name="declared_variant"/>
+          <ref name="sequence"/>
+          <ref name="declared_sequence"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="sequence">
+    <element name="sequence">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <optional>
+        <ref name="presence_vector"/>
+      </optional>
+      <oneOrMore>
+        <choice>
+          <ref name="record"/>
+          <ref name="declared_record"/>
+          <ref name="list"/>
+          <ref name="declared_list"/>
+          <ref name="variant"/>
+          <ref name="declared_variant"/>
+          <ref name="sequence"/>
+          <ref name="declared_sequence"/>
+        </choice>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="fixed_field">
+    <element name="fixed_field">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <ref name="attribute_field_type"/>
+      <ref name="attribute_field_units"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <optional>
+        <choice>
+          <ref name="scale_range"/>
+          <ref name="value_set"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+  <define name="variable_field">
+    <element name="variable_field">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <element name="type_and_units_field">
+        <oneOrMore>
+          <ref name="type_and_units_enum"/>
+        </oneOrMore>
+      </element>
+    </element>
+  </define>
+  <define name="bit_field">
+    <element name="bit_field">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <ref name="attribute_field_type_unsigned"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <oneOrMore>
+        <ref name="sub_field"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="fixed_length_string">
+    <element name="fixed_length_string">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="string_length">
+        <choice>
+          <ref name="identifier_ns"/>
+          <data type="unsignedInt"/>
+        </choice>
+      </attribute>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="variable_length_string">
+    <element name="variable_length_string">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <ref name="count_field"/>
+    </element>
+  </define>
+  <define name="variable_length_field">
+    <element name="variable_length_field">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <ref name="attribute_field_format"/>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <ref name="count_field"/>
+    </element>
+  </define>
+  <define name="variable_format_field">
+    <element name="variable_format_field">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="optional">
+        <data type="boolean"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <ref name="format_field"/>
+      <ref name="count_field"/>
+    </element>
+  </define>
+  <define name="count_field">
+    <element name="count_field">
+      <ref name="attribute_field_type_unsigned"/>
+      <optional>
+        <attribute name="min_count">
+          <choice>
+            <ref name="identifier_ns"/>
+            <data type="unsignedInt"/>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="max_count">
+          <choice>
+            <ref name="identifier_ns"/>
+            <data type="unsignedInt"/>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="vtag_field">
+    <element name="vtag_field">
+      <ref name="attribute_field_type_unsigned"/>
+      <optional>
+        <attribute name="min_count">
+          <choice>
+            <ref name="identifier_ns"/>
+            <data type="unsignedInt"/>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="max_count">
+          <choice>
+            <ref name="identifier_ns"/>
+            <data type="unsignedInt"/>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="sub_field">
+    <element name="sub_field">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <ref name="bit_range"/>
+      <ref name="value_set"/>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="format_field">
+    <element name="format_field">
+      <oneOrMore>
+        <ref name="format_enum"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="presence_vector">
+    <element name="presence_vector">
+      <ref name="attribute_field_type_unsigned"/>
+    </element>
+  </define>
+  <define name="attribute_field_type">
+    <attribute name="field_type">
+      <choice>
+        <value>byte</value>
+        <value>short integer</value>
+        <value>integer</value>
+        <value>long integer</value>
+        <value>unsigned byte</value>
+        <value>unsigned short integer</value>
+        <value>unsigned integer</value>
+        <value>unsigned long integer</value>
+        <value>float</value>
+        <value>long float</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="attribute_field_type_unsigned">
+    <attribute name="field_type_unsigned">
+      <choice>
+        <value>unsigned byte</value>
+        <value>unsigned short integer</value>
+        <value>unsigned integer</value>
+        <value>unsigned long integer</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="attribute_field_units">
+    <attribute name="field_units">
+      <choice>
+        <!-- base units -->
+        <value>meter</value>
+        <value>kilogram</value>
+        <!-- unit of time -->
+        <value>second</value>
+        <value>ampere</value>
+        <value>kelvin</value>
+        <value>mole</value>
+        <value>candela</value>
+        <!-- derived units -->
+        <value>square meter</value>
+        <value>cubic meter</value>
+        <value>meter per second</value>
+        <value>meter per second squared</value>
+        <value>reciprocal meter</value>
+        <value>kilogram per cubic meter</value>
+        <value>cubic meter per kilogram</value>
+        <value>ampere per square meter</value>
+        <value>ampere per meter</value>
+        <value>mole per cubic meter</value>
+        <value>candela per square meter</value>
+        <value>one</value>
+        <!-- derived units with special names and symbols -->
+        <value>radian</value>
+        <value>steradian</value>
+        <value>hertz</value>
+        <value>newton</value>
+        <value>pascal</value>
+        <value>joule</value>
+        <value>watt</value>
+        <value>coulomb</value>
+        <value>volt</value>
+        <value>farad</value>
+        <value>ohm</value>
+        <value>siemens</value>
+        <value>weber</value>
+        <value>tesla</value>
+        <value>henry</value>
+        <value>degree Celsius</value>
+        <value>lumen</value>
+        <value>lux</value>
+        <value>becquerel</value>
+        <value>sievert</value>
+        <value>katal</value>
+        <value>pascal second</value>
+        <value>newton meter</value>
+        <value>newton per meter</value>
+        <value>radian per second</value>
+        <value>radian per second squared</value>
+        <value>watt per square meter</value>
+        <value>joule per kelvin</value>
+        <value>joule per kilogram</value>
+        <value>kelvin</value>
+        <value>joule per kilogram</value>
+        <value>watt per meter kelvin</value>
+        <value>joule per cubic meter</value>
+        <value>volt per meter</value>
+        <value>coulomb per cubic meter</value>
+        <value>coulomb per square meter</value>
+        <value>farad per meter</value>
+        <value>henry per meter</value>
+        <value>joule per mole</value>
+        <value>joule per mole kelvin</value>
+        <value>coulomb per kilogram</value>
+        <value>gray per second</value>
+        <value>watt per square meter steradian</value>
+        <value>katal per cubic meter</value>
+        <!-- Non-SI units accepted for use with the International System -->
+        <!-- units of time -->
+        <value>minute</value>
+        <value>hour</value>
+        <value>day</value>
+        <value>degree</value>
+        <value>minute</value>
+        <!-- unit of angle measurement -->
+        <value>second</value>
+        <value>liter</value>
+        <value>metric ton</value>
+        <value>neper</value>
+        <value>bel</value>
+        <value>nautical mile</value>
+        <value>knot</value>
+        <value>are</value>
+        <value>hectare</value>
+        <value>bar</value>
+        <value>�ngstro</value>
+        <value>barn</value>
+        <value>curie</value>
+        <value>roentgen</value>
+        <value>rad</value>
+        <value>rem</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="type_and_units_enum">
+    <element name="type_and_units_enum">
+      <attribute name="name">
+        <ref name="identifier"/>
+      </attribute>
+      <attribute name="index">
+        <data type="unsignedByte"/>
+      </attribute>
+      <ref name="attribute_field_type"/>
+      <ref name="attribute_field_units"/>
+      <optional>
+        <choice>
+          <ref name="value_set"/>
+          <ref name="scale_range"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+  <define name="attribute_field_format">
+    <attribute name="field_format">
+      <choice>
+        <value>AU</value>
+        <value>BMP</value>
+        <value>JPEG</value>
+        <value>MJPEG</value>
+        <value>MPEG-1</value>
+        <value>MPEG-2</value>
+        <value>MP2</value>
+        <value>MP3</value>
+        <value>MP4</value>
+        <value>RAW</value>
+        <value>WAV</value>
+        <value>JAUS MESSAGE</value>
+        <value>XML</value>
+        <value>RNC</value>
+        <value>RNG</value>
+        <value>XSD</value>
+        <text/>
+      </choice>
+    </attribute>
+  </define>
+  <define name="format_enum">
+    <element name="format_enum">
+      <attribute name="index">
+        <data type="unsignedByte"/>
+      </attribute>
+      <ref name="attribute_field_format"/>
+    </element>
+  </define>
+  <define name="value_set">
+    <element name="value_set">
+      <attribute name="offset_to_lower_limit">
+        <data type="boolean"/>
+      </attribute>
+      <oneOrMore>
+        <choice>
+          <ref name="value_range"/>
+          <ref name="value_enum"/>
+        </choice>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="bit_range">
+    <element name="bit_range">
+      <attribute name="from_index">
+        <data type="unsignedByte"/>
+      </attribute>
+      <attribute name="to_index">
+        <data type="unsignedByte"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="scale_range">
+    <element name="scale_range">
+      <attribute name="real_lower_limit"/>
+      <attribute name="real_upper_limit"/>
+      <attribute name="integer_function">
+        <choice>
+          <value>floor</value>
+          <value>round</value>
+          <value>ceiling</value>
+        </choice>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="value_range">
+    <element name="value_range">
+      <attribute name="lower_limit"/>
+      <attribute name="lower_limit_type">
+        <choice>
+          <value>inclusive</value>
+          <value>exclusive</value>
+        </choice>
+      </attribute>
+      <attribute name="upper_limit"/>
+      <attribute name="upper_limit_type">
+        <choice>
+          <value>inclusive</value>
+          <value>exclusive</value>
+        </choice>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="value_enum">
+    <element name="value_enum">
+      <attribute name="enum_index">
+        <data type="long"/>
+      </attribute>
+      <attribute name="enum_const">
+        <data type="string"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="protocol_behavior">
+    <element name="protocol_behavior">
+      <optional>
+        <attribute name="is_stateless">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <oneOrMore>
+        <ref name="start"/>
+      </oneOrMore>
+      <oneOrMore>
+        <ref name="state_machine"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="start">
+    <element name="start">
+      <attribute name="state_machine_name">
+        <ref name="identifier_ns"/>
+      </attribute>
+      <attribute name="state_name">
+        <ref name="identifier_ns"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="state_machine">
+    <element name="state_machine">
+      <attribute name="name">
+        <ref name="identifier_ns"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <oneOrMore>
+        <ref name="state"/>
+      </oneOrMore>
+      <optional>
+        <ref name="pseudo_start_state"/>
+      </optional>
+      <optional>
+        <ref name="mxCell"/>
+      </optional>
+    </element>
+  </define>
+  <define name="state">
+    <element name="state">
+      <attribute name="name">
+        <ref name="identifier_ns"/>
+      </attribute>
+      <optional>
+        <attribute name="initial_state">
+          <ref name="identifier"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <optional>
+        <ref name="entry"/>
+      </optional>
+      <optional>
+        <ref name="exit"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="transition"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="default_transition"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="state"/>
+      </zeroOrMore>
+      <optional>
+        <ref name="default_state"/>
+      </optional>
+      <optional>
+        <ref name="pseudo_start_state"/>
+      </optional>
+      <optional>
+        <ref name="mxCell"/>
+      </optional>
+    </element>
+  </define>
+  <define name="pseudo_start_state">
+    <element name="pseudo_start_state">
+      <optional>
+        <element name="state">
+          <ref name="mxCell"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="transition">
+          <ref name="mxCell"/>
+        </element>
+      </optional>
+    </element>
+  </define>
+  <define name="default_state">
+    <element name="default_state">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="transition"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="default_transition"/>
+      </zeroOrMore>
+      <optional>
+        <ref name="mxCell"/>
+      </optional>
+    </element>
+  </define>
+  <define name="default_transition">
+    <element name="default_transition">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <optional>
+        <ref name="guard"/>
+      </optional>
+      <choice>
+        <ref name="internal"/>
+        <ref name="simple"/>
+        <ref name="push"/>
+        <ref name="pop"/>
+      </choice>
+      <zeroOrMore>
+        <choice>
+          <ref name="action"/>
+          <ref name="send_action"/>
+        </choice>
+      </zeroOrMore>
+      <optional>
+        <ref name="mxCell"/>
+      </optional>
+    </element>
+  </define>
+  <define name="entry">
+    <element name="entry">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <ref name="action"/>
+          <ref name="send_action"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="exit">
+    <element name="exit">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <ref name="action"/>
+          <ref name="send_action"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="transition">
+    <element name="transition">
+      <attribute name="name">
+        <ref name="identifier_ns"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="parameter"/>
+      </zeroOrMore>
+      <optional>
+        <ref name="guard"/>
+      </optional>
+      <choice>
+        <ref name="internal"/>
+        <ref name="simple"/>
+        <ref name="push"/>
+        <ref name="pop"/>
+      </choice>
+      <zeroOrMore>
+        <choice>
+          <ref name="action"/>
+          <ref name="send_action"/>
+        </choice>
+      </zeroOrMore>
+      <optional>
+        <ref name="mxCell"/>
+      </optional>
+    </element>
+  </define>
+  <define name="internal">
+    <element name="version_1_1:internal">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="simple">
+    <element name="simple">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <optional>
+        <ref name="end_state"/>
+      </optional>
+    </element>
+  </define>
+  <define name="push">
+    <element name="push">
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <ref name="end_state"/>
+      <optional>
+        <ref name="simple"/>
+      </optional>
+    </element>
+  </define>
+  <define name="pop">
+    <element name="pop">
+      <optional>
+        <attribute name="transition">
+          <ref name="identifier"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="argument"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="argument">
+    <element name="argument">
+      <attribute name="value"/>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="guard">
+    <element name="guard">
+      <attribute name="condition"/>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="end_state">
+    <element name="end_state">
+      <attribute name="state">
+        <ref name="identifier_ns"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="parameter">
+    <element name="parameter">
+      <attribute name="type">
+        <ref name="param_type"/>
+      </attribute>
+      <attribute name="value"/>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+    </element>
+  </define>
+  <define name="action">
+    <element name="action">
+      <attribute name="name">
+        <ref name="identifier_ns"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="argument"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="send_action">
+    <element name="send_action">
+      <attribute name="name">
+        <ref name="identifier_ns"/>
+      </attribute>
+      <optional>
+        <attribute name="interpretation"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="argument"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="mxCell">
+    <element name="plus:mxCell">
+      <attribute name="id">
+        <data type="unsignedInt"/>
+      </attribute>
+      <optional>
+        <attribute name="parent">
+          <data type="unsignedInt"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="source">
+          <data type="unsignedInt"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="target">
+          <data type="unsignedInt"/>
+        </attribute>
+      </optional>
+      <attribute name="style">
+        <data type="string"/>
+      </attribute>
+      <attribute name="value">
+        <data type="string"/>
+      </attribute>
+      <optional>
+        <!-- remember value is already contained in the encapsulating element -->
+        <attribute name="edge">
+          <data type="unsignedInt"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="vertex">
+          <data type="unsignedInt"/>
+        </attribute>
+      </optional>
+      <optional>
+        <ref name="mxGeometry"/>
+      </optional>
+    </element>
+  </define>
+  <define name="mxGeometry">
+    <element name="plus:mxGeometry">
+      <optional>
+        <attribute name="relative">
+          <data type="unsignedInt"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="as">
+          <data type="string"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="x">
+          <data type="float"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="y">
+          <data type="float"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="width">
+          <data type="float"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="height">
+          <data type="float"/>
+        </attribute>
+      </optional>
+      <zeroOrMore>
+        <ref name="mxPoint"/>
+      </zeroOrMore>
+      <optional>
+        <ref name="mxRectangle"/>
+      </optional>
+      <optional>
+        <ref name="mxArray"/>
+      </optional>
+    </element>
+  </define>
+  <define name="mxPoint">
+    <element name="plus:mxPoint">
+      <optional>
+        <attribute name="as">
+          <choice>
+            <value>sourcePoint</value>
+            <value>targetPoint</value>
+            <value>offset</value>
+            <text/>
+          </choice>
+        </attribute>
+      </optional>
+      <attribute name="x">
+        <data type="float"/>
+      </attribute>
+      <attribute name="y">
+        <data type="float"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="mxRectangle">
+    <element name="plus:mxRectangle">
+      <optional>
+        <attribute name="as">
+          <choice>
+            <value>alternateBounds</value>
+            <text/>
+          </choice>
+        </attribute>
+      </optional>
+      <attribute name="height">
+        <data type="float"/>
+      </attribute>
+      <attribute name="width">
+        <data type="float"/>
+      </attribute>
+      <attribute name="x">
+        <data type="float"/>
+      </attribute>
+      <attribute name="y">
+        <data type="float"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="mxArray">
+    <element name="plus:mxArray">
+      <optional>
+        <attribute name="as">
+          <choice>
+            <value>points</value>
+            <text/>
+          </choice>
+        </attribute>
+      </optional>
+      <oneOrMore>
+        <ref name="mxPoint"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <!--
+    An identifier is a sequence of letters and digits. The first character
+    must be a letter or the underscore character _. Upper and lower 
+    case letters are different, and identifiers may have any length.
+  -->
+  <define name="identifier" combine="choice">
+    <data type="string">
+      <param name="pattern">[a-zA-Z_][a-zA-Z_0-9]*</param>
+    </data>
+  </define>
+  <!-- namespaced identifier ( identifier(.identifier)* ) -->
+  <define name="identifier_ns" combine="choice">
+    <data type="string">
+      <param name="pattern">[a-zA-Z_][a-zA-Z_0-9.]*</param>
+    </data>
+  </define>
+  <!-- param type -->
+  <define name="param_type" combine="choice">
+    <choice>
+      <value>unsigned byte</value>
+      <value>unsigned short</value>
+      <value>unsigned int</value>
+      <value>unsigned long</value>
+      <data type="string">
+        <param name="pattern">[a-zA-Z_][a-zA-Z_0-9.]*</param>
+      </data>
+    </choice>
+  </define>
+  <!-- M.N, where M and N are positive integers. -->
+  <define name="version_num" combine="choice">
+    <data type="string">
+      <param name="pattern">(0|[1-9]([0-9]*))\.(0|[1-9]([0-9]*))</param>
+    </data>
+  </define>
+  <!-- A valid version number M.N or *.* or combination of both. -->
+  <define name="version_num_ref" combine="choice">
+    <data type="string">
+      <param name="pattern">((0|\*|[1-9]([0-9]*)))\.((0|\*|[1-9]([0-9]*)))</param>
+    </data>
+  </define>
+</grammar>

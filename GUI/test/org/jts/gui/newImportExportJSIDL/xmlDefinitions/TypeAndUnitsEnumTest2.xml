@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<type_and_units_enum xmlns="urn:jaus:jsidl:1.0" name="MUST_RENAME" field_type="integer" field_units="degree" index="0">
+	++++ValueSetTest1.xml++++
+</type_and_units_enum>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_SendAction" id="ImportTest:SD_SendAction" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the entry element with all levels of multiplicity.
+
+    The 1st state has no optional elements and all multiplicity set to 0.
+    The 2nd state has all optional elements and all multiplicity set to 1.
+    The 3rd state has all multiplicity set to *.
+    
+    Note: This test also includes full coverage of the argument element.
+  </description>
+
+  <!-- 
+    element send_action 
+    {
+      attribute name { identifier_ns },
+      attribute interpretation { text }?,
+      argument*
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_SendAction" state_name="SendAction1"/>
+    <state_machine name="SD_SendAction">
+
+      <!-- The 1st state has no optional elements and all multiplicity set to 0 -->
+      <state name="SendAction1">
+        <entry>
+          <send_action name="SendAction1"/>
+        </entry>
+      </state>
+
+      <!-- The 2nd state has all optional elements and all multiplicity set to 1 -->
+      <state name="SendAction2">
+        <entry>
+          <send_action name="SendAction2" interpretation="A send_action interpretation.">
+            <argument value="'5'" />              
+          </send_action>
+        </entry>
+      </state>
+      
+      <!-- The 3rd state has all multiplicity set to * -->
+      <state name="SendAction3">
+        <entry>
+          <send_action name="SendAction3">
+            <argument value="'5'" />
+            <argument value="false" interpretation="An arguement interpretation"/>
+          </send_action>
+        </entry>
+      </state>
+      
+    </state_machine>
+  </protocol_behavior>
+</service_def>

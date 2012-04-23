@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest2" version="1.0">
+  <description>multiple nested states</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMStateTest2" state_name="A"/>
+    <state_machine name="FSMStateTest2">
+      <state name="A" initial_state="AA">
+      	<state name="AA">
+      	</state>
+      </state>
+      <state name="B" initial_state="BB">
+      	<state name="BB">
+      	</state>      
+      </state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol_behavior xmlns="urn:jaus:jsidl:1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns:ns3="urn:jaus:jsidl:plus" is_stateless="true">
+	<start state_machine_name="StateMachine" state_name="State"/>
+	<state_machine name="StateMachine">
+		<state name="State"/>
+	</state_machine>
+</protocol_behavior>

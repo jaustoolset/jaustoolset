@@ -1,0 +1,437 @@
+/*
+ * Created on Jan 19, 2004
+ */
+package com.u2d.element;
+
+import com.u2d.restrict.CommandRestriction;
+import com.u2d.restrict.Restriction;
+import com.u2d.view.*;
+import com.u2d.app.Role;
+import com.u2d.app.Authorizer;
+import com.u2d.model.*;
+import com.u2d.type.atom.StringEO;
+import com.u2d.type.atom.BooleanEO;
+import com.u2d.reflection.Cmd;
+import com.u2d.reflection.Arg;
+import com.u2d.reflection.Fld;
+import com.u2d.pattern.Filter;
+import com.u2d.pattern.Callback;
+import java.util.Arrays;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Method;
+
+/**
+ * @author Eitan Suez
+ */
+public abstract class Command extends Member
+{
+   
+   public static String[] fieldOrder = {"name", "fullPath", "label", "mnemonic", "description", "sensitive", "shortcut"};
+   public static String[] readOnly = {"name", "fullPath"};
+   public static String[] identities = {"fullPath"};
+
+   public Command() {}
+   
+   protected void init(FieldParent parent, String name)
+   {
+      _parent = parent;
+      getName().setValue(name);
+      
+      computePath();
+      
+      setState(_readState, true);
+   }
+   
+   protected Callback _callback;
+   public void setCallback(Callback callback) { _callback = callback; }
+
+
+   @Cmd
+   public void Execute(CommandInfo cmdInfo, @Arg("Target") ComplexEObject target)
+   {
+      try
+      {
+         execute(target, cmdInfo.getSource());
+      }
+      catch (InvocationTargetException ex)
+      {
+         ex.printStackTrace();
+      }
+   }
+
+   public abstract void execute(Object value, EView source)
+            throws java.lang.reflect.InvocationTargetException;
+
+   protected final BooleanEO _sensitive = new BooleanEO();
+   /**
+    * A sensitive command is one that should be guarded against
+    * inadvertant invocation.  Its cost is high and undoing is 
+    * difficult.  A ui is advised to make it difficult for an 
+    * end user to inadvertantly invoke the command.
+    */
+   @Fld(colname="is_sensitive")
+   public BooleanEO getSensitive() { return _sensitive; }
+   public boolean sensitive() { return _sensitive.booleanValue(); }
+
+   private boolean _blocks;
+   /**
+    * @see Cmd
+    */
+   public boolean blocks() { return _blocks; }
+   public void blocks(boolean blocks) { _blocks = blocks; }
+   
+   private boolean _batchable;
+   public boolean batchable() { return _batchable; }
+   public void batchable(boolean batchable) { _batchable = batchable; }
+
+   protected final StringEO _shortcut = new StringEO();
+   public StringEO getShortcut() { return _shortcut; }
+   public boolean hasShortcut() { return !_shortcut.isEmpty(); }
+   public String shortcut() { return _shortcut.stringValue(); }
+    
+   
+   
+   protected transient String _iconref;
+   public void iconref(String iconref) { _iconref = iconref; }
+   public String iconref() { return _iconref; }
+   public boolean hasIconref() { return !StringEO.isEmpty(_iconref); }
+
+   public String iconSmResourceRef()
+   {
+      return IconResolver.cmdIconRef(this, "16");
+   }
+
+   public String iconLgResourceRef()
+   {
+      return IconResolver.cmdIconRef(this, "32");
+   }
+
+   public String localizedLabel(Localized l)
+   {
+      String key = "Command." + name();
+      return l.localeLookup(key);
+   }
+
+   private transient boolean enabled = true;
+   public boolean isEnabled() { return enabled; }
+
+   public void setEnabled(boolean enabled)
+   {
+      boolean oldEnabled = this.enabled;
+      this.enabled = enabled;
+      firePropertyChange("enabled", oldEnabled, this.enabled);
+   }
+
+   /* authorization-related */
+
+   protected CommandRestriction _restriction = null;
+
+   public void applyRestriction(Restriction restriction)
+   {
+      if ((restriction != null) && !(restriction instanceof CommandRestriction))
+         throw new IllegalArgumentException("Restriction must be a command restriction");
+
+      _restriction = (CommandRestriction) restriction;
+      tracer().fine("Applying restriction on command: "+this.toString()+" (fullpath: "+fullPath()+")");
+   }
+   public CommandRestriction restriction() { return _restriction; }
+
+   public void liftRestriction()
+   {
+      tracer().fine("Lifting restriction on command: "+this.toString()+" (fullpath: "+fullPath()+")");
+      _restriction = null;
+   }
+
+   public boolean isForbidden(EObject target)
+   {
+      tracer().fine("Checking if command "+this.getFullPath()+" is forbidden.."+
+         "(restriction is: "+_restriction+")");
+      if (_restriction != null)
+      {
+         return _restriction.forbidden(target);
+      }
+      
+      Command superCmd = superCmd(target);
+      if (superCmd != null && superCmd != this)
+      {
+         return superCmd.isForbidden(target);
+      }
+
+      return false;
+   }
+   
+   public Command superCmd(EObject target)
+   {
+      if (target instanceof ComplexEObject)
+      {
+         ComplexEObject targetCeo = (ComplexEObject) target;
+         if (targetCeo instanceof ComplexType)
+         {
+            if (_parent == null)
+            {
+               return null;
+            }
+            ComplexType type = ComplexType.forClass(_parent.getJavaClass());
+            ComplexType superType = type.superType();
+            if (superType != null)
+            {
+               return superType.command(name());
+            }
+         }
+         else if (targetCeo instanceof Member)
+         {
+            if (_parent == null)
+            {
+               return null;
+            }
+            ComplexType type = ComplexType.forClass(_parent.getJavaClass());
+            ComplexType superType = type.superType();
+            if (superType != null)
+            {
+               return superType.instanceCommand(name());
+            }
+         }
+         else
+         {
+            ComplexType type = targetCeo.type();
+            ComplexType superType = type.superType();
+            if (superType != null)
+            {
+               return superType.instanceCommand(name());
+            }
+         }
+      }
+      else if (target instanceof AbstractListEO)
+      {
+         // e.g. A list view will sport its type's commands
+         AbstractListEO leo = (AbstractListEO) target;
+         ComplexType type = leo.type();
+         return type.command(name());
+         // problem:  the list of commands is constructed once.
+         // TODO: fix.
+      }
+      return null;
+   }
+
+   
+   
+   private Field _ownerField = null;
+   public void setOwner(Field ownerField)
+   {
+      _ownerField = ownerField;
+   }
+
+   public Authorizer getOwner(ComplexEObject parent)
+   {
+      if (_ownerField == null) return null;
+      return (Authorizer) _ownerField.get(parent);
+   }
+
+
+   public static com.u2d.pattern.SimpleFinder finder(String commandName)
+   {
+      return new NameFinder(commandName);
+   }
+
+   static class NameFinder implements com.u2d.pattern.SimpleFinder
+   {
+      String _cmdName = null;
+      NameFinder(String cmdName)
+      {
+         _cmdName = cmdName;
+      }
+      public boolean found(Object candidate)
+      {
+         if (!(candidate instanceof Command))
+            throw new IllegalArgumentException("Illegal Argument Type for CommandFinder");
+
+         Command cmd = (Command) candidate;
+         return cmd.name().equals(_cmdName);
+      }
+   }
+
+
+
+   public boolean equals(Object obj)
+   {
+      if (obj == null) return false;
+      if (!(obj instanceof Command)) return false;
+      if (obj == this) return true;
+      if (_parent == null) return false;
+      Command cmd = (Command) obj;
+      return fullPath().equals(cmd.fullPath());
+   }
+   
+   public int hashCode() { return fullPath().hashCode(); }
+
+   public boolean overrides(Command cmd)
+   {
+      return name().equals(cmd.name());
+   }
+
+
+   /*
+    * basically a guard against grafting the "Open" command
+    * on maximized views
+    */
+   public boolean isOpenInNonMinimizedContext(EView source)
+   {
+      if (source instanceof Minimizable)
+      {
+         Minimizable minsource = (Minimizable) source;
+         return ("Open".equals(name()) && !minsource.isMinimized() );
+      }
+      return false;
+   }
+
+   static java.util.List MINORCOMMANDS = Arrays.asList("Copy", "Paste");
+
+   /**
+    * Swallow minor commands for maximized views as they should only apply to minimized
+    * views (iconview or listitemview)
+    * 
+    * @return true if command is a minor command and view is not minimized
+    */
+   public boolean isMinorCommand(EView source)
+   {
+      if (source instanceof Minimizable)
+      {
+         Minimizable minsource = (Minimizable) source;
+         return (MINORCOMMANDS.contains(name()) && !minsource.isMinimized() );
+      }
+      return false;
+   }
+   
+   
+   protected String calcPath()
+   {
+      if (_parent == null)
+      {
+         // currently the case for commands set on non-complex types
+         // such as list types and atomic types.  this will be fixed shortly.
+         return "#" + _name;
+      }
+      return _parent.getJavaClass().getName() + "#" + _name;
+   }
+   protected void computePath()
+   {
+      _fullPath.setValue(calcPath());
+   }
+
+   
+   protected final StringEO _fullPath = new StringEO();
+   public StringEO getFullPath() { return _fullPath; }
+   public String fullPath() { return _fullPath.stringValue(); }
+
+   public static Command forPath(String path)
+   {
+      if (path == null) return null;
+
+      try
+      {
+         String[] parts = path.split("#");  // split on fullpath's # separator
+         ClassLoader loader = Thread.currentThread().getContextClassLoader();
+         Class cls = loader.loadClass(parts[0]);
+         ComplexType type = ComplexType.forClass(cls);
+         String commandName = parts[1];
+         
+         Command cmd;
+         if (parts.length == 3)
+         {
+            String stateClassName = parts[2];
+            Class stateClass = loader.loadClass(stateClassName);
+            cmd = type.command(commandName, stateClass);
+         }
+         else
+         {
+            cmd = type.findCommand(commandName);
+         }
+         
+         
+         if (cmd == null)
+         {
+            System.err.println("Can't find command: "+commandName+" on type: "+type);
+         }
+         return cmd;
+      }
+      catch (ClassNotFoundException ex)
+      {
+         System.err.println("ClassNotFoundException: "+ex.getMessage());
+         ex.printStackTrace();
+      }
+      return null;
+   }
+
+   
+   public Title title()
+   {
+      return _label.title();
+   }
+   
+   @Cmd(mnemonic='f')
+   public void ForbidForRole(CommandInfo cmdInfo, @Arg("Role") Role role)
+   {
+      CommandRestriction restriction = new CommandRestriction(role, this);
+      role.addCmdRestriction(restriction);
+      persistor().updateAssociation(restriction, role);
+   }
+   
+   
+   
+   static class CommandFilter implements Filter
+   {
+      EObject _target;
+      CommandFilter(EObject target)
+      {
+         _target = target;
+      }
+      public boolean exclude(Object item)
+      {
+         if (!(item instanceof Command))
+            return true;
+         
+         Command cmd = (Command) item;
+         
+         if (cmd.isForbidden(_target))
+         {
+            cmd.tracer().fine("command "+cmd+" is forbidden for " +
+                  "user "+cmd.currentUser()+" on target "+_target+" (skipping)");
+            return true;
+         }
+         
+         if (_target instanceof ComplexEObject)
+         {
+            Authorizer owner = cmd.getOwner((ComplexEObject) _target);
+            if (owner != null && !owner.authorizes(cmd.currentUser()))
+            {
+               return true;
+            }
+         }
+         
+         if (_target.field() != null &&
+             _target.field().isAggregate() &&
+             "delete".equalsIgnoreCase(cmd.name()))
+         {
+            return true;
+         }
+
+         return false;
+      }
+   }
+   
+   public static Filter commandFilter(EObject target)
+   {
+      return new CommandFilter(target);
+   }
+
+   public static boolean isStatic(Method method)
+   {
+      return Modifier.isStatic(method.getModifiers());
+   }
+   public static boolean isAbstract(Method method)
+   {
+      return Modifier.isAbstract(method.getModifiers());
+   }
+   
+}

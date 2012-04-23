@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_Parameter" id="ImportTest:SD_Parameter" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests the parameter element with all levels of multiplicity.
+
+    The 1st parameter has no optional elements.
+    The 2nd parameter has all optional elements.
+  </description>
+
+  <!-- 
+    element parameter 
+    {
+      attribute type { identifier_ns }, 
+      attribute value { text },
+      attribute interpretation { text }?  
+    }
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_Parameter" state_name="Parameter1"/>
+    <state_machine name="SD_Parameter">
+      <state name="Parameter1">
+        <transition name="Parameter1">
+
+          <!-- The 1st parameter has no optional elements -->
+          <parameter type="message_def" value="run"/>
+
+          <!-- The 2nd parameter has all optional elements -->
+          <parameter type="boolean" value="false" interpretation="A boolean parameter"/>
+
+          <simple/>
+        </transition>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../jsidl/jaus_service_interface_definition_language.rnc" type="compact"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" name="QueryClass"
+  id="urn:jaus:jss:mobility:MessageSet:QueryClass" version="0.6">
+  <declared_type_set_ref name="basicTypes" id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.0"/>
+  <declared_type_set_ref name="mobilityTypes" id="urn:jaus:jss:mobility:MessageSet:BasicTypes" version="0.6"/>
+  <message_def name="QueryGlobalPose" message_id="2402" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4402h: ReportGlobalPose message.  A logical AND shall be performed on the requested
+      presence vector and that representing the available fields from the responder.  The 
+      resulting message shall contain the fields indicated by the result of this logical AND operation.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryGlobalPoseRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned short integer" field_units="one" optional="false"
+          interpretation="See Report Global Pose Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryLocalPose" message_id="2403" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4403h: ReportLocalPose message.  A logical AND shall be performed on the 
+      requested presence vector and that representing the available fields from the responder.  
+      The resulting message shall contain the fields indicated by the result of this logical AND operation.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryLocalPoseRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned short integer" field_units="one" optional="false"
+          interpretation="See Report Local Pose Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="QueryVelocityState" message_id="2404" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4404h: ReportVelocityState message.  A logical AND shall be performed on the requested 
+      presence vector and that representing the available fields from the responder.  The resulting 
+      message shall contain the fields indicated by the result of this logical AND operation.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryVelocityStateRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned short integer" field_units="one" optional="false"
+          interpretation="See Report Velocity State Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="QueryWrenchEffort" message_id="2405" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4405h: ReportWrenchEffort message.  A logical AND shall be performed on the 
+      requested presence vector and that representing the available fields from the responder.  
+      The resulting message shall contain the fields indicated by the result of this logical AND operation.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryWrenchEffortRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned short integer" field_units="one" optional="false"
+          interpretation="See Report Wrench Effort Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def> 
+  <message_def name="QueryGlobalVector" message_id="2407" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4407h: ReportGlobalVector message.  A logical AND shall be performed on the 
+      requested presence vector and that representing the available fields from the responder.  
+      The resulting message shall contain the fields indicated by the result of this logical AND operation.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryGlobalVectorRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="See Report Global Vector Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>   
+  <message_def name="QueryLocalVector" message_id="2408" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4408h: ReportLocalVector message.  A logical AND shall be performed on the 
+      requested presence vector and that representing the available fields from the responder.  
+      The resulting message shall contain the fields indicated by the result of this logical AND operation.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryLocalVectorRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="See Report Local Vector Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryTravelSpeed" message_id="240A" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 440Ah: ReportTravelSpeed message.  
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryGlobalWaypoint" message_id="240C" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 440Ch: ReportGlobalWaypoint message.  Field #1 specifies the fields to be returned 
+      in the Report Global Waypoint message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryGlobalWaypointRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="See Report Global Waypoint Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def> 
+  <message_def name="QueryLocalWaypoint" message_id="240D" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 440Dh: ReportLocalWaypoint message.  Field #1 specifies the fields to be returned in the 
+      Report Local Waypoint message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryLocalWaypointRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="See Report Local Waypoint Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="QueryGlobalPathSegment" message_id="240F" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 440Fh: ReportGlobalPathSegment message.  A logical AND shall be performed on the 
+      requested presence vector and that representing the available fields from the responder.  
+      The resulting message shall contain the fields indicated by the result of this logical AND operation.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryGlobalPathSegmentRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="See Report Global Path Segment Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryLocalPathSegment" message_id="2410" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4410h: ReportLocalPathSegment message.  A logical AND shall be performed on the 
+      requested presence vector and that representing the available fields from the responder.  
+      The resulting message shall contain the fields indicated by the result of this logical AND operation.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryLocalPathSegmentRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="See Report Local Path Segment Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryGeomagneticProperty" message_id="2412" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4412h: ReportGeomagneticProperty message.  
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryVelocityCommand" message_id="2415" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4415h: ReportVelocityCommand message.  Field #2 specifies the fields to be returned in 
+      the Report Velocity Command message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryVelocityCommandRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned byte" field_units="one" optional="false"
+        interpretation="See Report Velocity State Message"/>
+        <fixed_field name="CommandType" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="See Report Velocity State Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryAccelerationLimit" message_id="2416" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4416h: ReportAccelerationLimit message.  Field #2 specifies the fields to be returned 
+      in the Report Acceleration Limit message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryAccelerationLimitRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="See Report Velocity State Message"/>
+        <fixed_field name="CommandType" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="See Report Velocity State Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryAccelerationState" message_id="2417" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a 
+      ID 4417h: ReportAccelerationState message.  A logical AND shall be performed on the 
+      requested presence vector and that representing the available fields from the responder.  
+      The resulting message shall contain the fields indicated by the result of this logical AND operation.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryAccelerationStateRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned short integer" field_units="one" optional="false"
+          interpretation="See Report Acceleration State Message"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryElement" message_id="241A" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query an element from a list.  The element is uniquely identified by the UID.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryElementRec" optional="false">
+        <declared_fixed_field name="ElementUID" declared_type_ref="mobilityTypes.ElementUID" optional="false"
+          interpretation="UID of the queried element.  A value of zero (0) represents the first (head) element in the list."/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>   
+  <message_def name="QueryElementList" message_id="241B" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query all elements from a list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryElementCount" message_id="241C" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query the number of elements in a list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryActiveElement" message_id="241E" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query the current active element of an executing list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>  
+</declared_type_set>

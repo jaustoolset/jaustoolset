@@ -1,0 +1,58 @@
+package org.openjaus.toolset.validator;
+
+import org.junit.*;
+import java.io.File;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
+public class TemplateTest
+{
+	private static JAXBContext jc;
+	private static Unmarshaller unmarshaller;
+
+	@Before
+    public static void createUnmarshaller() 
+	{
+		try
+		{
+			jc = JAXBContext.newInstance("org.openjaus.toolset.jsidl.binding");
+			unmarshaller = jc.createUnmarshaller();
+		}
+		catch(Exception e)
+		{
+			System.out.print(e);
+		}				
+    }
+
+	@Test
+	public void testValidTemplate1() 
+	{
+		try
+		{
+			org.openjaus.toolset.jsidl.binding.Template template;
+			template = (org.openjaus.toolset.jsidl.binding.Template)unmarshaller.unmarshal(new File( "testXML/Valid/Template1.xml"));
+			org.openjaus.toolset.validator.Template.validate(template);
+		}
+		catch(JAXBException jbe)
+		{
+			System.out.print(jbe);
+		}
+	}
+	
+	@Test(expected=ValidatorException.class)
+	public void testInvalidTemplate1() 
+	{
+		try
+		{
+			org.openjaus.toolset.jsidl.binding.Template template;
+			template = (org.openjaus.toolset.jsidl.binding.Template)unmarshaller.unmarshal(new File( "testXML/Invalid/Template1.xml"));
+			org.openjaus.toolset.validator.Template.validate(template);
+		}
+		catch(JAXBException jbe)
+		{
+			System.out.print(jbe);
+		}
+	}
+
+}

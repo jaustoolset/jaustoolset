@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Created-By: JTS
+Main-Class: src.Main
+Class-Path: statemap.jar
+

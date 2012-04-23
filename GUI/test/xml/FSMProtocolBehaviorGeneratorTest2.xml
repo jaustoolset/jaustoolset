@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest2" version="1.0">
+  <description>multiple state machines defined</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="MyMachine1" state_name="Ready"/>
+    <start state_machine_name="MyMachine2" state_name="Ready2"/>
+    <state_machine name="MyMachine1">
+      <state name="Ready">
+        
+      </state>
+    </state_machine>
+    <state_machine name="MyMachine2">
+      <state name="Ready2">
+        
+      </state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

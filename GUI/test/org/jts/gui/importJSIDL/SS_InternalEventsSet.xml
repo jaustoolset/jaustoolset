@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_set xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SS_InternalEventsSet" id="ImportTest:SS_InternalEventsSet" version="1.0">
+  <description xml:space="preserve"> 
+    This service set is part of the ImportTests.
+    This set includes three services, one with all optional items 
+    missing, one with an interpretation and a single event_def and one with mutiple event_defs.
+  </description>
+
+  <!-- 
+    element internal_events_set 
+    {
+      attribute interpretation { text }?,
+      (event_def | declared_event_def)*
+    }
+  -->
+
+  <service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+    name="SS_InternalEventsSet_1" id="ImportTest:SS_InternalEventsSet_1" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service tests an internal_events_set with all optional parameters missing.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+
+    <!-- No Interpretation, No Events -->
+    <internal_events_set/>
+
+    <protocol_behavior>
+      <start state_machine_name="SS_InternalEventsSet_1" state_name="init"/>
+      <state_machine name="SS_InternalEventsSet_1">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+
+  <service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+    name="SS_InternalEventsSet_2" id="ImportTest:SS_InternalEventsSet_2" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service tests an internal_events_set with an interpretation and one event_def.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+
+    <!-- Interpretation, One Event -->
+    <internal_events_set interpretation="This is an internal_events_set interpretation">
+      <event_def name="Event1">
+        <description>An event.</description>
+        <header name="Header"/>
+        <body name="Body"/>
+        <footer name="Footer"/>
+      </event_def>
+    </internal_events_set>
+
+    <protocol_behavior>
+      <start state_machine_name="SS_InternalEventsSet_2" state_name="init"/>
+      <state_machine name="SS_InternalEventsSet_2">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>  
+
+  <service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+    name="SS_InternalEventsSet_3" id="ImportTest:SS_InternalEventsSet_3" version="1.0">
+    <description xml:space="preserve">
+      This service def was created to test the import function of the JTS GUI. 
+      This service tests an internal_events_set with multiple event_defs.
+    </description>
+    <assumptions xml:space="preserve">
+      Messages may be lost or reordered.
+    </assumptions>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+
+    <!-- Multiple Events -->
+    <internal_events_set>
+      <event_def name="Event1">
+        <description>An event.</description>
+        <header name="Header"/>
+        <body name="Body"/>
+        <footer name="Footer"/>
+      </event_def>
+      <event_def name="Event2">
+        <description>Another Event.</description>
+        <header name="Header"/>
+        <body name="Body"/>
+        <footer name="Footer"/>
+      </event_def>
+    </internal_events_set>
+    
+    <protocol_behavior>
+      <start state_machine_name="SS_InternalEventsSet_3" state_name="init"/>
+      <state_machine name="SS_InternalEventsSet_3">
+        <state name="init"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+
+</service_set>

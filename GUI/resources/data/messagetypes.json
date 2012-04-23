@@ -1,0 +1,7 @@
+{
+  "item-type": "com.u2d.generated.MessageType",
+  "items": [
+ { "caption": "input" , "code": "input" },
+ { "caption": "output" , "code": "output" }
+  ]
+}

@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="InformClass"
+  id="urn:sae:as4:jss:core:MessageSet:InformClass" version="0.1">
+  <declared_type_set_ref name="basicTypes" id="urn:sae:as4:jss:core:MessageSet:BasicTypes"
+    version="0.1"/>
+  <message_def name="ReportAuthority" message_id="4001" is_command="false">
+    <description xml:space="preserve">
+      This message is used to report the current command authority. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportAuthorityRec" optional="false">
+        <fixed_field name="AuthorityCode" field_type="unsigned byte" field_units="one" optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="255"
+              upper_limit_type="inclusive"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportStatus" message_id="4002" is_command="false">
+    <description xml:space="preserve"> 
+      This message is used to report the current status of the sender of the message. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportStatusRec" optional="false">
+        <fixed_field name="Status" field_type="unsigned byte" field_units="one" optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="INITIALIZE"/>
+            <value_enum enum_index="1" enum_const="READY"/>
+            <value_enum enum_index="2" enum_const="STANDBY"/>
+            <value_enum enum_index="3" enum_const="SHUTDOWN"/>
+            <value_enum enum_index="4" enum_const="FAILURE"/>
+            <value_enum enum_index="5" enum_const="EMERGENCY"/>
+          </value_set>
+        </fixed_field>
+        <fixed_field name="Reserved" field_type="unsigned integer" field_units="one"
+          optional="false" interpretation="This field is reserved for compatibility with previous versions of the Standard."/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportTimeout" message_id="4003" is_command="false">
+    <description xml:space="preserve"> 
+      This message is used to report the timeout period of this message. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportTimoutRec" optional="false">
+        <fixed_field name="Timeout" field_type="unsigned byte" field_units="second" optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="TIMEOUT_FEATURE _DISABLED"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportTime" message_id="4011" is_command="false">
+    <description xml:space="preserve">
+      This message is used to report the current time of this service to querying clients. All times are in Coordinated Universal Time (UTC).
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="TimeRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+		    <bit_field name="TimeStamp" field_type_unsigned="unsigned integer" optional="false">
+		    <sub_field name="Milliseconds">
+		      <bit_range from_index="0" to_index="9"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="999"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Seconds">
+		      <bit_range from_index="10" to_index="15"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Minutes">
+		      <bit_range from_index="16" to_index="21"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Hour">
+		      <bit_range from_index="22" to_index="26"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="23"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Day">
+		      <bit_range from_index="27" to_index="31"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		  </bit_field>
+		  <bit_field name="DateStamp" field_type_unsigned="unsigned short integer" optional="false">
+		    <sub_field name="Day">
+		      <bit_range from_index="0" to_index="4"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Month">
+		      <bit_range from_index="5" to_index="8"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="12"
+		          upper_limit_type="inclusive"/>
+		      </value_set>
+		    </sub_field>
+		    <sub_field name="Year">
+		      <bit_range from_index="9" to_index="15"/>
+		      <value_set offset_to_lower_limit="false">
+		        <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="127"
+		          upper_limit_type="inclusive" interpretation="Where 0 is 2000, 1 is 2001, etc."/>
+		      </value_set>
+		    </sub_field>
+		  </bit_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportControl" message_id="400D" is_command="false">
+    <description xml:space="preserve">
+      This message is used to report the current control state of this service.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportControlRec" optional="false">
+        <fixed_field name="Control" field_type="unsigned byte" field_units="one" optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="NOT_CONTROLLED"/>
+            <value_enum enum_index="1" enum_const="CONTROLLED"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportEvents" message_id="41F0" is_command="false">
+    <description xml:space="preserve">
+      This message is used to report the active event requests that match the requirements provided in the QueryEvents message. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <list name="EventList" optional="false" interpretation="List of reported events">
+        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+        <record name="ReportEventRec" optional="false">
+          <fixed_field name="EventType" field_type="unsigned byte" field_units="one"
+            optional="false" interpretation="Type of event">
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_index="0" enum_const="Periodic (SC)"/>
+              <value_enum enum_index="1" enum_const="Every change"/>
+            </value_set>
+          </fixed_field>
+          <fixed_field name="EventID" field_type="unsigned byte" field_units="one" optional="false"
+            interpretation="Unique identifier of event"/>
+          <variable_length_field name="QueryMessage" field_format="JAUS MESSAGE" optional="false"
+            interpretation="The JAUS Query message to be used by the receiving component to
+            generate the Report message(s)">
+            <count_field min_count="2" field_type_unsigned="unsigned integer"/>
+          </variable_length_field>
+        </record>
+      </list>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="Event" message_id="41F1" is_command="false">
+    <description xml:space="preserve"> 
+      The Event message is sent when event is triggered. It includes the Event ID and a
+      sequence number to allow the client to keep track of event processing. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="EventRec" optional="false">
+        <fixed_field name="EventID" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="Unique identifier of the enclosed event"/>
+        <fixed_field name="SequenceNumber" field_type="unsigned byte" field_units="one"
+          optional="false" interpretation="Sequential count of the number of times this event has
+          been issued"/>
+        <variable_length_field name="ReportMessage" field_format="JAUS MESSAGE" optional="false"
+          interpretation="The JAUS Report message including the message header">
+          <count_field min_count="2" field_type_unsigned="unsigned integer"/>
+        </variable_length_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportHeartbeatPulse" message_id="4202" is_command="false">
+    <description xml:space="preserve">
+      This message notifies the receiver that the sender is alive.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportIdentification" message_id="4B00" is_command="false">
+    <description xml:space="preserve">
+      This message shall provide the requesting component an identification summary of the Subsystem, Node, or Component.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportIdentificationRec" optional="false">
+        <fixed_field name="QueryType" field_type="unsigned byte" field_units="one" optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Reserved"/>
+            <value_enum enum_index="1" enum_const="System Identification"/>
+            <value_enum enum_index="2" enum_const="Subsystem Identification"/>
+            <value_enum enum_index="3" enum_const="Node Identification"/>
+            <value_enum enum_index="4" enum_const="Component Identification"/>
+            <value_range lower_limit="5" upper_limit="255" lower_limit_type="inclusive"
+              upper_limit_type="inclusive" interpretation="Reserved"/>
+          </value_set>
+        </fixed_field>
+        <fixed_field name="AuthorityCode" field_type="unsigned byte" field_units="one" optional="false">
+          <value_set offset_to_lower_limit="false">
+            <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="255"
+              upper_limit_type="inclusive"/>
+          </value_set>
+        </fixed_field>
+        <fixed_field name="Type" field_type="unsigned short integer" field_units="one"
+          optional="false" interpretation="This field identifies the particular unmanned vehicle
+          (subsystem) type, node type or component type based on the following enumeration">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="RESERVED"/>
+            <value_enum enum_index="10001" enum_const="VEHICLE"/>
+            <value_range lower_limit="10002" upper_limit="20000" lower_limit_type="inclusive"
+              upper_limit_type="inclusive" interpretation="Reserved"/>
+            <value_enum enum_index="20001" enum_const="OCU"/>
+            <value_range lower_limit="20002" upper_limit="30000" lower_limit_type="inclusive"
+              upper_limit_type="inclusive" interpretation="Reserved"/>
+            <value_enum enum_index="30001" enum_const="OTHER_SUBSYSTEM"/>
+            <value_range lower_limit="30002" upper_limit="40000" lower_limit_type="inclusive"
+              upper_limit_type="inclusive" interpretation="Reserved"/>
+            <value_enum enum_index="40001" enum_const="NODE"/>
+            <value_range lower_limit="40002" upper_limit="50000" lower_limit_type="inclusive"
+              upper_limit_type="inclusive" interpretation="Reserved"/>
+            <value_enum enum_index="50001" enum_const="PAYLOAD"/>
+            <value_range lower_limit="50002" upper_limit="60000" lower_limit_type="inclusive"
+              upper_limit_type="inclusive" interpretation="Reserved"/>
+            <value_enum enum_index="60001" enum_const="COMPONENT"/>
+            <value_range lower_limit="60002" upper_limit="65535" lower_limit_type="inclusive"
+              upper_limit_type="inclusive" interpretation="Reserved"/>
+          </value_set>
+        </fixed_field>
+        <variable_length_string name="Identification" optional="false"
+          interpretation="Human-recognizable name of the Subsystem, Node or Component. ">
+          <count_field field_type_unsigned="unsigned byte"/>
+        </variable_length_string>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportConfiguration" message_id="4B01" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver a table of all existing components located on the source’s subsystem or node depending on the value of field 1 of the Code 2B01h: Query Configuration message. 
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <list name="NodeList" optional="false" interpretation="# of Nodes reported. For a single Node
+        Report this field shall be 1">
+        <count_field field_type_unsigned="unsigned byte" min_count="0" max_count="255"/>
+        <sequence name="NodeSeq" optional="false">
+          <record name="NodeRec" optional="false">
+            <fixed_field name="NodeID" field_type="unsigned byte" field_units="one" optional="false"
+              interpretation="Node ID.  For single Node or Component reporting this field shall
+              contain the Node ID as specified in the Destination Address of the Query Configuration
+              message"/>
+          </record>
+          <list name="ComponentList" optional="false">
+            <count_field field_type_unsigned="unsigned byte" min_count="0" max_count="255"/>
+            <record name="ComponentRec" optional="false">
+              <fixed_field name="ComponentID" field_type="unsigned byte" field_units="one"
+                optional="false" interpretation="Component ID.  For Single Component reporting this
+                field shall                 contain the Component ID as specified in the Destination
+                Address of the Query                 Configuration message and shall be the only
+                Component reported"/>
+              <fixed_field name="InstanceID" field_type="unsigned byte" field_units="one"
+                optional="false" interpretation="Inst ID when legacy Components are reported; a
+                value of zero (0) shall be used for non-legacy components."/>
+            </record>
+          </list>
+        </sequence>
+      </list>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportSubsystemList" message_id="4B02" is_command="false">
+    <description xml:space="preserve">
+      This message shall provide the receiving component a table of all subsystems located in the source’s system.  It also provides the ID of the component to send a Query Configuration message within the subsystem.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <list name="SubsystemList" optional="false">
+        <count_field field_type_unsigned="unsigned byte"/>
+        <record name="SubsystemRec" optional="false">
+          <fixed_field name="SubsystemID" field_type="unsigned short integer" field_units="one"
+            optional="false" interpretation="Subsystem ID"/>
+          <fixed_field name="NodeID" field_type="unsigned byte" field_units="one" optional="false"
+            interpretation="Node ID used for Query Configuration."/>
+          <fixed_field name="ComponentID" field_type="unsigned byte" field_units="one"
+            optional="false" interpretation="Component ID used for Query Configuration."/>
+        </record>
+      </list>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportServices" message_id="4B03" is_command="false">
+    <description xml:space="preserve">
+      This message allows a component to publish its capabilities, according to the Service Dictionary presented below.  If a component ID is specified in the RA, it may report only one service in beyond the core message support, and this service must be equal to the component ID.  If a component ID is not listed in the RA, it may report any number of services.  For example, a component with ID 33 must provide only service 33.   The exception to this rule is component ID 1 (the Node Manager) which may provide any number of services in addition to core message support.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <list name="NodeList" optional="false" interpretation="# of Nodes reported. For a single Node
+        Report this field shall be 1">
+        <count_field field_type_unsigned="unsigned byte" min_count="0" max_count="255"
+          interpretation="Number of node sequences in the message"/>
+        <sequence name="NodeSeq" optional="false">
+          <record name="NodeRec" optional="false">
+            <fixed_field name="NodeID" field_type="unsigned byte" field_units="one" optional="false"
+              interpretation="Node ID.  For single Node or Component reporting this field shall
+              contain the Node ID as specified in the Destination Address of the Query Configuration
+              message"/>
+          </record>
+          <list name="ComponentList" optional="false">
+            <count_field field_type_unsigned="unsigned byte" min_count="0" max_count="255"/>
+            <sequence name="ComponentSeq" optional="false">
+              <record name="ComponentRec" optional="false">
+                <fixed_field name="ComponentID" field_type="unsigned byte" field_units="one"
+                  optional="false" interpretation="Component ID.  For Single Component reporting
+                  this field shall                   contain the Component ID as specified in the
+                  Destination Address of the Query                   Configuration message and shall
+                  be the only Component reported"/>
+                <fixed_field name="InstanceID" field_type="unsigned byte" field_units="one"
+                  optional="false" interpretation="Inst ID when legacy Components are reported; a
+                  value of zero (0) shall be used for non-legacy components."/>
+              </record>
+              <list name="ServiceList" optional="false">
+                <count_field field_type_unsigned="unsigned byte" min_count="0" max_count="255"/>
+                <record name="ServiceRec" optional="false">
+                  <variable_length_string name="URI" optional="false">
+                    <count_field field_type_unsigned="unsigned byte"/>
+                  </variable_length_string>
+                  <fixed_field name="MajorVersionNumber" field_type="unsigned byte"
+                    field_units="one" optional="false"/>
+                  <fixed_field name="MinorVersionNumber" field_type="unsigned byte"
+                    field_units="one" optional="false"/>
+                </record>
+              </list>
+            </sequence>
+          </list>
+        </sequence>
+      </list>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+</declared_type_set>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def name="LocalWaypointDriver" id="urn:jaus:jss:mobility:LocalWaypointDriver" version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description>
+    The function of the Local Waypoint Driver is to move the platform given a single 
+    target waypoint, desired travel speed, current platform pose and current velocity 
+    state.  A single waypoint is provided via the Set Local Waypoint message.  The 
+    waypoint remains unchanged until a new Set Local Waypoint message is received.  
+    A waypoint consists of the desired position and orientation of the platform.  The 
+    second input consists of the desired travel speed.  The desired travel speed 
+    remains unchanged unless a new Set Travel Speed Message is received.  The travel 
+    speed may then be changed at any time during waypoint navigation.  The travel 
+    speed is reset to zero for all transitions from the Ready State.  
+  </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.0"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="mobility" id="urn:jaus:jss:mobility:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SetTravelSpeed" declared_type_ref="mobility.commandClass.SetTravelSpeed"/>
+      <declared_message_def name="SetLocalWaypoint" declared_type_ref="mobility.commandClass.SetLocalWaypoint"/>
+      <declared_message_def name="QueryTravelSpeed" declared_type_ref="mobility.queryClass.QueryTravelSpeed"/>
+      <declared_message_def name="QueryLocalWaypoint" declared_type_ref="mobility.queryClass.QueryLocalWaypoint"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportTravelSpeed" declared_type_ref="mobility.informClass.ReportTravelSpeed"/>
+      <declared_message_def name="ReportLocalWaypoint" declared_type_ref="mobility.informClass.ReportLocalWaypoint"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="management.accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled.StateA"/>
+    <state_machine name="management.accessControl.events.transport.ReceiveFSM" 
+        interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled" interpretation="redefine state in order to extend">
+          <state name="NotControlled" initial_state="StateA" interpretation="redefine state in order to extend">
+            <state name="StateA" interpretation="redefine state in order to extend">
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryTravelSpeed" value="msg" interpretation="enveloped query travel
+                    speed message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Travel Speed message">
+                    <argument value=" 'ReportTravelSpeed' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryLocalWaypoint" value="msg" interpretation="enveloped query local
+                    waypoint message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="waypointExists( msg )" interpretation="True if a valid waypoint has been received."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Local Waypoint message">
+                    <argument value=" 'ReportLocalWaypoint' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+             </state>
+            </state>
+          <state name="Controlled" initial_state="StateB" interpretation="redefine state in order to extend">
+            <state name="StateB" interpretation="redefine state in order to extend">
+              <state name="Ready">
+                <exit>
+                  <action name="resetTravelSpeed" interpretation="When leaving the Ready state, 
+                    reset the travel speed to zero."/>
+                </exit>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetTravelSpeed" value="msg" interpretation="enveloped set travel
+                    speed message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData ) &amp;&amp; waypointExists( msg )" 
+                    interpretation="True if the message that triggered the transition is received from the 
+                    client that is in control of this service AND a valid waypoint has been received."/>
+                  <simple/>
+                  <action name="setTravelSpeed" interpretation="Set the travel speed for the platform."/>
+                  </transition>
+              </state>
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetLocalWaypoint" value="msg" interpretation="enveloped set local
+                    waypoint message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered the 
+                    transition is received from the client that is in control of this service."/>
+                  <simple/>
+                  <action name="setWaypoint" interpretation="Set the target destination of the platform."/>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryTravelSpeed" value="msg" interpretation="enveloped query travel
+                    speed message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Travel Speed message">
+                    <argument value=" 'ReportTravelSpeed' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryLocalWaypoint" value="msg" interpretation="enveloped query local
+                    waypoint message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                  <guard condition="waypointExists( msg )" interpretation="True if a valid waypoint has been received."/>
+                  <simple/>
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report
+                    Local Waypoint message">
+                    <argument value=" 'ReportLocalWaypoint' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+              </state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,16 @@
+{
+  "item-type": "com.u2d.generated.ConstType",
+  "items": [
+  { "caption": "byte", "code": "byte" },
+  { "caption": "short integer", "code": "short integer" },
+  { "caption": "integer", "code": "integer" },
+  { "caption": "long integer", "code": "long integer" },
+  { "caption": "unsigned byte", "code": "unsigned byte" },
+  { "caption": "unsigned short integer", "code": "unsigned short integer" },
+  { "caption": "unsigned integer", "code": "unsigned integer" },
+  { "caption": "unsigned long integer", "code": "unsigned long integer" },
+  { "caption": "float", "code": "float" },
+  { "caption": "long float", "code": "long float" },
+  { "caption": "string", "code": "string" }
+  ]
+}

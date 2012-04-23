@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<push xmlns="urn:jaus:jsidl:1.0">
+	<end_state state="Blocked" />
+	<simple>
+		<end_state state="Block_Pop" />
+	</simple>
+</push>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="FSMTest" id="urn:JTS:CodeGenerator:ProtocolBehavior.FSMTest6" version="1.0">
+  <description>simple, push, pop, and internal default transitions with actions and guards NOTE:default transition actions can't have arguments because default transitions can't have parameters</description>
+  <assumptions></assumptions>
+  <message_set>
+    <input_set></input_set>
+    <output_set></output_set>
+  </message_set>
+  <internal_events_set></internal_events_set>
+  <protocol_behavior is_stateless="true">
+    <start state_machine_name="FSMTransitionTest3" state_name="A"/>
+    <state_machine name="FSMTransitionTest3">
+		<state name="A">
+			<default_transition>
+				<guard condition="g1()"/>
+				<simple>
+					<end_state state="A"/>
+				</simple>
+				<action name="Action">
+              	</action>
+			</default_transition>
+			<default_transition>
+				<guard condition="g2()"/>
+				<pop transition="T5">
+				</pop>
+				<action name="Action">
+              	</action>
+			</default_transition>
+			<default_transition>
+				<guard condition="g3()"/>
+				<push>
+					<end_state state="A" />
+				</push>
+				<action name="Action">
+              	</action>
+			</default_transition>
+			<default_transition>
+				<guard condition="g4()"/>
+				<internal>
+
+				</internal>
+				<action name="Action">
+              	</action>
+			</default_transition>
+		</state>
+    </state_machine>
+  </protocol_behavior>  
+</service_def>
+

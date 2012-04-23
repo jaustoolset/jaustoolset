@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:service_set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="urn:jaus:jsidl:plus ../../resources/schema/JSIDL_Plus/jsidl_plus.xsd"
+ xmlns="urn:jaus:jsidl:plus"
+ xmlns:ns1="urn:jaus:jsidl:plus"
+ name="TestSet"
+ id="urn:DeVivo:jaus_services:TestSet"
+ version="0.1">
+	<description xml:space="preserve" xmlns="urn:jaus:jsidl:1.0">The set of services to be tested</description>
+<service_def xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="urn:jaus:jsidl:1.0"
+ name="VariableLengthStuff1"
+ id="urn:org.jts.test:VariableLengthStuff1"
+ version="1.0">
+  <description/>
+  <assumptions/>
+  <message_set>
+    <input_set>
+      <message_def name="Message" is_command="true" message_id="0001">
+        <description xml:space="default"/>
+        <header name="EmptyHeader"/>
+        <body name="Body">
+          <sequence name="Sequence" optional="false">
+	          <record name="Record" optional="false">
+	            <variable_length_string name="VariableLengthString1" optional="false" interpretation="A
+	              variable length string that has an upper bound of 5000 characters">
+	              <count_field field_type_unsigned="unsigned short integer" min_count="0"
+	                max_count="5000"/>
+	            </variable_length_string>
+	          	<variable_length_string name="VariableLengthString2" optional="false" interpretation="A
+	          		variable length string that has an upper bound of 5000 characters">
+	          		<count_field field_type_unsigned="unsigned short integer" min_count="0"
+	          			max_count="5000"/>
+	          	</variable_length_string>
+	          	<variable_length_field name="VariableLengthField1" field_format="unsigned byte" optional="false">
+	          		<count_field field_type_unsigned="unsigned short integer"/>
+	          	</variable_length_field>
+	          	<variable_length_field name="VariableLengthField2" field_format="unsigned byte" optional="false">
+	          		<count_field field_type_unsigned="unsigned short integer"/>
+	          	</variable_length_field>
+	          	<variable_field name="VariableField1" optional="false">
+	          		<type_and_units_field>
+	          			<type_and_units_enum name="test1" index="0" field_type="unsigned byte" field_units="one"/>
+	          		</type_and_units_field>
+	          	</variable_field>
+	          	<variable_field name="VariableField2" optional="false">
+	          		<type_and_units_field>
+	          			<type_and_units_enum name="test1" index="0" field_type="unsigned byte" field_units="one"/>
+	          		</type_and_units_field>
+	          	</variable_field>
+	          	<variable_format_field name="VariableFormatField1" optional="false">
+	          		<format_field>
+	          			<format_enum index="0" field_format="JPEG"/>
+	          			<format_enum index="1" field_format="BMP"/>
+	          		</format_field>
+	          		<count_field field_type_unsigned="unsigned short integer"/>
+	          	</variable_format_field>
+	          	<variable_format_field name="VariableFormatField2" optional="false">
+	          		<format_field>
+	          			<format_enum index="0" field_format="JPEG"/>
+	          			<format_enum index="1" field_format="BMP"/>
+	          		</format_field>
+	          		<count_field field_type_unsigned="unsigned short integer"/>
+	          	</variable_format_field>
+	          </record>
+          </sequence>
+        </body>
+        <footer name="EmptyFooter"/>
+      </message_def>
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+	<protocol_behavior>
+		<start state_machine_name="stateMachine" state_name="Ready"/>
+		<state_machine name="stateMachine">
+			<state name="Ready"/>
+		</state_machine>
+	</protocol_behavior>
+</service_def>
+	</ns1:service_set>

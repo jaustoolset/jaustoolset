@@ -1,0 +1,33 @@
+
+For each model class you define, place here two corresponding
+icons representing that type.  The image file format can be
+either gif, jpg, or png.
+
+File naming convention is as the following example illustrates:
+
+  e.g.:  class:  Person
+
+   image file:  Person16.gif
+                Person32.gif
+
+Again, the file format can be something other than gif (jpg or png).
+
+Small and large image file names are the class name concatenated 
+with '16' and '32' respectively.  These images should be 16x16
+and 32x32 pixels in size.
+
+You can also specify icons for plural versions of a type (used
+in type and list views).  e.g.:  Persons32.png
+
+Different icons can be specified for each state an object is
+in.  See the IssueMgr demo application for an example.
+See the JMatter manual for complete instructions.
+
+2. you may place in this directory a file App32.png that will be
+  used as the icon identifying the main application frame.
+
+3. Finally, place a splash.gif (or jpg or png) in this directory
+  if you want a splash screen image.
+
+
+

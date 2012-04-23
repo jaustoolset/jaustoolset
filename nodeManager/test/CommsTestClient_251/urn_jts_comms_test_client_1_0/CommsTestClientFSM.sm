@@ -1,0 +1,50 @@
+%class CommsTestClientFSM
+%package urn_jts_comms_test_client_1_0
+%header <MessageSet.h>
+%include "CommsTestClientFSM.h"
+%start CommsTestClientFSM_SM::Waiting
+%map CommsTestClientFSM_SM
+// State 	 Transition 	 End State 	 Action(s)
+%%
+Running
+{
+		CommsTestMsgTransition(msg:CommsTestMsg,sender:JausAddress)
+		Running
+		{
+			processSuccessAction(msg);
+			sendCommsTestMsgAction();
+		}
+
+		timeoutTransition()
+		Running
+		{
+			processFailureAction();
+			sendCommsTestMsgAction();
+		}
+}
+
+Waiting
+{
+		reportServicesTransition(msg:ReportServices,sender:JausAddress)
+		[! ctxt.isCommsTestServer(msg, sender)]
+		Waiting
+		{
+			broadcastQueryServicesAction();
+		}
+
+		timeoutTransition()
+		Waiting
+		{
+			broadcastQueryServicesAction();
+		}
+
+		reportServicesTransition(msg:ReportServices,sender:JausAddress)
+		[ctxt.isCommsTestServer(msg, sender)]
+		Running
+		{
+			setServerAddressAction(sender);
+			sendCommsTestMsgAction();
+		}
+}
+
+%%

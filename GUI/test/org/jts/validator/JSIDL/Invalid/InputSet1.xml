@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<input_set xmlns="urn:jaus:jsidl:1.0">
+  <message_def name="LOGIN" message_id="000d" is_command="true">
+    <description>A command message.</description>
+    <header/>
+    <body>
+      <record name="User_Info_Rec" optional="false">
+        <fixed_length_string name="User_Name" string_length="15" optional="false"/>
+        <fixed_length_string name="Password" string_length="15" optional="false"/>
+      </record>
+    </body>
+    <footer/>
+  </message_def>
+  <message_def name="LOGOUT" message_id="000e" is_command="true">
+    <description>A logout command message.</description>
+    <header/>
+    <body/>
+    <footer/>
+  </message_def >
+  <message_def name="LOGOUT" message_id="000f" is_command="true">
+    <description>A logout command message.</description>
+    <header/>
+    <body/>
+    <footer/>
+  </message_def >
+</input_set>

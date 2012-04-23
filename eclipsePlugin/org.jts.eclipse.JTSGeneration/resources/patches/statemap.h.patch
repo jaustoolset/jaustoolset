@@ -1,0 +1,126 @@
+0a1,32
+> /***********           LICENSE HEADER   *******************************
+> JAUS Tool Set
+> Copyright (c)  2010, United States Government
+> All rights reserved.
+> 
+> Redistribution and use in source and binary forms, with or without 
+> modification, are permitted provided that the following conditions are met:
+> 
+>        Redistributions of source code must retain the above copyright notice, 
+> this list of conditions and the following disclaimer.
+> 
+>        Redistributions in binary form must reproduce the above copyright 
+> notice, this list of conditions and the following disclaimer in the 
+> documentation and/or other materials provided with the distribution.
+> 
+>        Neither the name of the United States Government nor the names of 
+> its contributors may be used to endorse or promote products derived from 
+> this software without specific prior written permission.
+> 
+> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+> AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+> IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+> ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
+> LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+> CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+> INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+> CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+> ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+> POSSIBILITY OF SUCH DAMAGE.
+> *********************  END OF LICENSE ***********************************/
+> 
+41c73
+< // $Id: statemap.h,v 1.15 2009/11/24 20:42:39 cwrapp Exp $
+---
+> // $Id: statemap.h,v 1.14 2009/03/01 18:20:40 cwrapp Exp $
+71,73c103,105
+< // Limit names to 100 ASCII characters.
+< // Why 100? Because it is a round number.
+< #define MAX_NAME_LEN 100
+---
+> // Limit names to 500 ASCII characters.
+> // Why 500? Because nested states have really long names
+> #define MAX_NAME_LEN 500
+640c672
+<                 *_debug_stream << "ENTER STATE     : "
+---
+>                 *_debug_stream << "NEW STATE    : "
+644c676
+<                 TRACE("ENTER STATE     : %s\n\r",
+---
+>                 TRACE("NEW STATE    : %s\n\r",
+680a713,726
+> 				/*delete
+> 				char *temp;
+> 				temp = strchr(_state->getName(), ':');
+> 				*_debug_stream << temp+2 << std::endl;
+> 				if(strncmp(temp+2, "__", 2) == 0)
+> 				{
+> 					*_debug_stream << "match" << std::endl;
+> 				}
+> 				else
+> 				{
+> 					*_debug_stream << _state->getName() << std::endl;
+> 				}
+> 				*/
+> 					
+690c736
+<                 *_debug_stream << "PUSH TO STATE   : "
+---
+>                 *_debug_stream << "PUSH TO STATE: "
+694c740
+<                 TRACE("PUSH TO STATE   : %s\n\r",
+---
+>                 TRACE("PUSH TO STATE: %s\n\r",
+698a745,781
+> 		
+> 		const char* peakTopStateStack()
+> 		{
+> 			if(_state_stack != NULL)
+> 			{
+> 				//*_debug_stream << "\n\nstacked state " << _state_stack->getState()->getName() << "\n";
+> 				return _state_stack->getState()->getName();
+> 			}
+> 			
+> 			//*_debug_stream << "\ncurrent state " << _state->getName() << "\n\n";
+> 			
+> 			return NULL;
+> 		};
+> 		
+> 		const char *getCurrentStateName()
+> 		{
+> 			if(_state != NULL)
+> 			{
+> 				return _state->getName();
+> 			}
+> 			
+> 			*_debug_stream << "NO current state to get name for getCurrentStateName" << std::endl;
+> 			
+> 			return NULL;
+> 		}
+> 		
+> 		const char *getPreviousStateName()
+> 		{
+> 			if(_previous_state != NULL)
+> 			{
+> 				return _previous_state->getName();
+> 			}
+> 			
+> 			*_debug_stream << "NO previous state to get name for getPreviousStateName" << std::endl;
+> 			
+> 			return NULL;
+> 		}
+724c807
+<                 *_debug_stream << "POP TO STATE    : "
+---
+>                 *_debug_stream << "POP TO STATE : "
+728c811
+<                 TRACE("POP TO STATE    : %s\n\r",
+---
+>                 TRACE("POP TO STATE : %s\n\r",
+818,820d900
+< // Revision 1.15  2009/11/24 20:42:39  cwrapp
+< // v. 6.0.1 update
+< //

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="DigitalVideo" id="urn:jaus:jss:environmentSensing:DigitalVideo" version="1.0"
+	xmlns="urn:jaus:jsidl:1.0">
+	<description xml:space="preserve">This service provides access to the capabilities 
+		and configuration of the digital visual sensor, allowing the controlling 
+		component to set the visual sensor to a particular operational profile. 
+		The actual transmission of the video stream is outside the scope of this 
+		service. The ability to start, stop and pause the video stream is provided 
+		in the message protocol. There may also be mechanisms in the chosen video 
+		transmission protocol to control the video stream. In such situations, the 
+		messages defined herein are redundant and either mechanism may be used by 
+		sensor's client.</description>
+	<assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+	<references>
+		<inherits_from name="visualSensor" id="urn:jaus:jss:environmentSensing:VisualSensor" version="1.0"/>
+	</references>
+	<declared_type_set name="Types">
+		<declared_type_set_ref name="environmentSensing" id="urn:jaus:jss:environmentSensing:MessageSet"
+			version="1.0"/>
+	</declared_type_set>
+	<message_set>
+		<input_set>
+			<declared_message_def name="ControlDigitalVideoSensorStream"
+				declared_type_ref="environmentSensing.commandClass.ControlDigitalVideoSensorStream"/>
+			<declared_message_def name="SetDigitalVideoSensorConfiguration"
+				declared_type_ref="environmentSensing.commandClass.SetDigitalVideoSensorConfiguration"/>
+			<declared_message_def name="QueryDigitalVideoSensorConfiguration"
+				declared_type_ref="environmentSensing.queryClass.QueryDigitalVideoSensorConfiguration"/>
+			<declared_message_def name="QueryDigitalVideoSensorCapabilities"
+				declared_type_ref="environmentSensing.queryClass.QueryDigitalVideoSensorCapabilities"/>
+		</input_set>
+
+		<output_set>
+			<declared_message_def name="ReportDigitalVideoSensorCapabilities"
+				declared_type_ref="environmentSensing.informClass.ReportDigitalVideoSensorCapabilities"/>
+			<declared_message_def name="ReportDigitalVideoSensorConfiguration"
+				declared_type_ref="environmentSensing.informClass.ReportDigitalVideoSensorConfiguration"/>
+		</output_set>
+	</message_set>
+	<internal_events_set/>
+	<protocol_behavior is_stateless="false">
+		<start state_machine_name="DigitalVideo.VisualSensor.AccessControl.Events.Transport.ReceiveFSM"
+			state_name="Receiving.Ready.NotControlled"/>
+		<state_machine name="DigitalVideo.VisualSensor.AccessControl.Events.Transport.ReceiveFSM">
+			<state name="Receiving" initial_state="Ready">
+				<state name="Ready" initial_state="NotControlled">
+					<state name="NotControlled">
+						<default_state>
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryDigitalVideoSensorCapabilities" value="msg"
+									interpretation="enveloped QueryDigitalVideoSensorCapabilities message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportDigitalVideoSensorCapabilities message">
+									<argument value=" 'ReportDigitalVideoSensorCapabilities' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryDigitalVideoSensorConfiguration" value="msg"
+									interpretation="enveloped QueryDigitalVideoSensorConfiguration message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportDigitalVideoSensorConfiguration message">
+									<argument value=" 'ReportDigitalVideoSensorConfiguration' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+						</default_state>
+					</state>
+					<state name="Controlled">
+						<default_state>
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="SetDigitalVideoSensorConfiguration" value="msg"
+									interpretation="enveloped SetDigitalVideoSensorConfiguration message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<guard condition="accessControl.isControllingClient( transportData )"
+									interpretation="True if the message that triggered the 
+									transition is received from the client that is in control 
+									of this service."/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send sendConfirmSensorConfiguration message">
+									<argument value=" 'ConfirmSensorConfiguration' "/>
+									<argument value="transportData"/>
+								</action>
+								<action name="updateDigitalVideoSensorConfiguration"
+									interpretation="Update the sensor user controllable 
+									configuration parameters according to the ones specified."
+								/>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="ControlDigitalVideoSensorStream" value="msg"
+									interpretation="enveloped ControlDigitalVideoSensorStream message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<guard condition="accessControl.isControllingClient( transportData )"
+									interpretation="True if the message that triggered the 
+									transition is received from the client that is in 
+									control of this service."/>
+								<simple/>
+								<action name="modifyDigitalVideoSensorStream"
+									interpretation="Modify the video stream according to 
+									the specified message."
+								/>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryDigitalVideoSensorCapabilities" value="msg"
+									interpretation="enveloped QueryDigitalVideoSensorCapabilities message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportDigitalVideoSensorCapabilities message">
+									<argument value=" 'ReportDigitalVideoSensorCapabilities' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+
+							<transition name="accessControl.events.transport.Receive">
+								<parameter type="QueryDigitalVideoSensorConfiguration" value="msg"
+									interpretation="enveloped QueryDigitalVideoSensorConfiguration message"/>
+								<parameter type="Receive.Body.ReceiveRec" value="transportData"
+									interpretation="transport data"/>
+								<simple/>
+								<action name="accessControl.events.transport.Send"
+									interpretation="Send a ReportDigitalVideoSensorConfiguration message">
+									<argument value=" 'ReportDigitalVideoSensorConfiguration' "/>
+									<argument value="transportData"/>
+								</action>
+							</transition>
+						</default_state>
+					</state>
+				</state>
+			</state>
+		</state_machine>
+	</protocol_behavior>
+</service_def>

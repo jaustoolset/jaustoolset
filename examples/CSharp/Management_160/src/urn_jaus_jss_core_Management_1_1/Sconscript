@@ -1,0 +1,58 @@
+Import('env')
+
+sources = Split("""
+		InternalEvents\BroadcastGlobal.cs
+		InternalEvents\BroadcastLocal.cs
+		InternalEvents\CommandCompleted.cs
+		InternalEvents\CommandExpired.cs
+		InternalEvents\EventError.cs
+		InternalEvents\EventOccurred.cs
+		InternalEvents\Failure.cs
+		InternalEvents\Initialized.cs
+		InternalEvents\Timeout.cs
+		ManagementService.cs
+		Management_ReceiveFSM.cs
+		Management_ReceiveFSM_sm.cs
+		Management_SendFSM.cs
+		Management_SendFSM_sm.cs
+		Messages\CancelEvent.cs
+		Messages\ClearEmergency.cs
+		Messages\CommandEvent.cs
+		Messages\ConfirmControl.cs
+		Messages\ConfirmEventRequest.cs
+		Messages\CreateCommandEvent.cs
+		Messages\CreateEvent.cs
+		Messages\Event.cs
+		Messages\QueryAuthority.cs
+		Messages\QueryControl.cs
+		Messages\QueryEvents.cs
+		Messages\QueryEventTimeout.cs
+		Messages\QueryStatus.cs
+		Messages\QueryTimeout.cs
+		Messages\RejectControl.cs
+		Messages\RejectEventRequest.cs
+		Messages\ReleaseControl.cs
+		Messages\ReportAuthority.cs
+		Messages\ReportControl.cs
+		Messages\ReportEvents.cs
+		Messages\ReportEventTimeout.cs
+		Messages\ReportStatus.cs
+		Messages\ReportTimeout.cs
+		Messages\RequestControl.cs
+		Messages\Reset.cs
+		Messages\Resume.cs
+		Messages\SetAuthority.cs
+		Messages\SetEmergency.cs
+		Messages\Shutdown.cs
+		Messages\Standby.cs
+		Messages\UpdateEvent.cs
+	""")
+
+libs = ['statemap', 'CSharpCommon' , 'AccessControlService', 'EventsService', 'TransportService']
+pathlibs = env.CLIRefs(libs)
+
+lib = env.CLILibrary('./lib/ManagementService', sources, ASSEMBLYREFS=pathlibs)
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )
+env.AddToRefPaths(lib)
+Return('lib')

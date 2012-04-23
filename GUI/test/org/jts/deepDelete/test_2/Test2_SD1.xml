@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="S1" id="s1.sd" version="1.0" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">test 2 service definition 1</description>
+    <assumptions xml:space="preserve">stuff.</assumptions>
+    <references/>
+    <declared_const_set name="S1_ConstSet" id="s1.constset" version="1.0">
+        <const_def name="S1_Const1" const_type="integer" const_value="10" field_units="bar"/>
+        <const_def name="S1_Const2" const_type="byte" const_value="5" field_units="hertz"/>
+        <const_def name="S1_Const3" const_type="long float" const_value="1.05" field_units="mole"/>
+    </declared_const_set>
+    <message_set>
+        <input_set>
+            <message_def name="S1_MS1" message_id="010D" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="S1_EmptyMessageHeader"/>
+                <body name="S1_MS1_Body">
+                    <sequence name="S1_SQ1" optional="false">
+                        <record name="S1_R1" optional="false">
+                            <fixed_field name="S1_FF1" optional="false" field_type="unsigned byte" field_units="day">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="9001" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </fixed_field>
+                            <variable_length_field name="S1_VLF1" optional="false" field_format="JPEG">
+                                <count_field min_count="1" max_count="1000" field_type_unsigned="unsigned short integer"/>
+                            </variable_length_field>
+                            <bit_field name="S1_BF1" optional="false" field_type_unsigned="unsigned short integer">
+                                <sub_field name="S1_BF1_SF1">
+                                    <bit_range from_index="1" to_index="15"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="11" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                            <variable_field name="S1_VF1" optional="false">
+                                <type_and_units_field>
+                                    <type_and_units_enum name="S1_VF1_TUE1" index="0" field_units="ampere" field_type="byte"/>
+                                </type_and_units_field>
+                            </variable_field>
+                            <variable_format_field name="S1_VFF1" optional="false">
+                                <format_field>
+                                    <format_enum index="0" field_format="JPEG"/>
+                                    <format_enum index="1" field_format="RAW"/>
+                                </format_field>
+                                <count_field min_count="1" max_count="10" field_type_unsigned="unsigned byte"/>
+                            </variable_format_field>
+                        </record>
+                        <record name="S1_R2" optional="false">
+                            <fixed_length_string name="S1_FLS1" string_length="100" optional="false"/>
+                            <variable_length_string name="S1_VLS1" optional="false">
+                                <count_field min_count="10" max_count="20" field_type_unsigned="unsigned byte"/>
+                            </variable_length_string>
+                        </record>
+                        <list name="S1_LS1" optional="false">
+                            <count_field min_count="1" max_count="10" field_type_unsigned="unsigned byte"/>
+                            <record name="S1_R2" optional="false">
+                                <fixed_length_string name="S1_FLS1" string_length="100" optional="false"/>
+                                <variable_length_string name="S1_VLS1" optional="false">
+                                    <count_field min_count="10" max_count="20" field_type_unsigned="unsigned byte"/>
+                                </variable_length_string>
+                            </record>
+                        </list>
+                    </sequence>
+                </body>
+                <footer name="S1_EmptyFooter"/>
+            </message_def>
+            <message_def name="S1_MS2" message_id="010E" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="S1_EmptyMessageHeader"/>
+                <body name="S1_MS2_Body">
+                    <variant name="S1_VR1" optional="true">
+                        <vtag_field min_count="0" max_count="2" field_type_unsigned="unsigned byte"/>
+                        <sequence name="S1_SQ1" optional="false">
+                            <record name="S1_R1" optional="false">
+                                <fixed_field name="S1_FF1" optional="false" field_type="unsigned byte" field_units="day">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="9001" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </fixed_field>
+                                <variable_length_field name="S1_VLF1" optional="false" field_format="JPEG">
+                                    <count_field min_count="1" max_count="1000" field_type_unsigned="unsigned short integer"/>
+                                </variable_length_field>
+                                <bit_field name="S1_BF1" optional="false" field_type_unsigned="unsigned short integer">
+                                    <sub_field name="S1_BF1_SF1">
+                                        <bit_range from_index="1" to_index="15"/>
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="11" upper_limit_type="inclusive"/>
+                                        </value_set>
+                                    </sub_field>
+                                </bit_field>
+                                <variable_field name="S1_VF1" optional="false">
+                                    <type_and_units_field>
+                                        <type_and_units_enum name="S1_VF1_TUE1" index="0" field_units="ampere" field_type="byte"/>
+                                    </type_and_units_field>
+                                </variable_field>
+                                <variable_format_field name="S1_VFF1" optional="false">
+                                    <format_field>
+                                        <format_enum index="0" field_format="JPEG"/>
+                                        <format_enum index="1" field_format="RAW"/>
+                                    </format_field>
+                                    <count_field min_count="1" max_count="10" field_type_unsigned="unsigned byte"/>
+                                </variable_format_field>
+                            </record>
+                            <record name="S1_R2" optional="false">
+                                <fixed_length_string name="S1_FLS1" string_length="100" optional="false"/>
+                                <variable_length_string name="S1_VLS1" optional="false">
+                                    <count_field min_count="10" max_count="20" field_type_unsigned="unsigned byte"/>
+                                </variable_length_string>
+                            </record>
+                            <list name="S1_LS1" optional="false">
+                                <count_field min_count="1" max_count="10" field_type_unsigned="unsigned byte"/>
+                                <record name="S1_R2" optional="false">
+                                    <fixed_length_string name="S1_FLS1" string_length="100" optional="false"/>
+                                    <variable_length_string name="S1_VLS1" optional="false">
+                                        <count_field min_count="10" max_count="20" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                            </list>
+                        </sequence>
+                        <list name="S1_LS2" optional="false">
+                            <count_field min_count="1" max_count="10" field_type_unsigned="unsigned byte"/>
+                            <list name="S1_LS1" optional="false">
+                                <count_field min_count="1" max_count="10" field_type_unsigned="unsigned byte"/>
+                                <record name="S1_R2" optional="false">
+                                    <fixed_length_string name="S1_FLS1" string_length="100" optional="false"/>
+                                    <variable_length_string name="S1_VLS1" optional="false">
+                                        <count_field min_count="10" max_count="20" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                            </list>
+                        </list>
+                        <record name="S1_R3" optional="false">
+                            <array name="S1_ARR1" optional="false">
+                                <fixed_field name="S1_FF1" optional="false" field_type="unsigned byte" field_units="day">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="9001" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </fixed_field>
+                                <dimension name="S1_Dimension1" size="1"/>
+                                <dimension name="S1_Dimension2" size="1"/>
+                            </array>
+                            <array name="S1_ARR2" optional="false">
+                                <variable_length_field name="S1_VLF1" optional="false" field_format="JPEG">
+                                    <count_field min_count="1" max_count="1000" field_type_unsigned="unsigned short integer"/>
+                                </variable_length_field>
+                                <dimension name="S1_Dimension1" size="1"/>
+                                <dimension name="S1_Dimension2" size="1"/>
+                            </array>
+                            <array name="S1_ARR3" optional="false">
+                                <variable_length_string name="S1_VLS1" optional="false">
+                                    <count_field min_count="10" max_count="20" field_type_unsigned="unsigned byte"/>
+                                </variable_length_string>
+                                <dimension name="S1_Dimension1" size="1"/>
+                                <dimension name="S1_Dimension2" size="1"/>
+                            </array>
+                        </record>
+                    </variant>
+                </body>
+                <footer name="S1_EmptyFooter"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="S1_MS3" message_id="010F" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="S1_EmptyMessageHeader"/>
+                <body name="S1_MS3_Body">
+                    <record name="S1_R3" optional="false">
+                        <array name="S1_ARR1" optional="false">
+                            <fixed_field name="S1_FF1" optional="false" field_type="unsigned byte" field_units="day">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="9001" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </fixed_field>
+                            <dimension name="S1_Dimension1" size="1"/>
+                            <dimension name="S1_Dimension2" size="1"/>
+                        </array>
+                        <array name="S1_ARR2" optional="false">
+                            <variable_length_field name="S1_VLF1" optional="false" field_format="JPEG">
+                                <count_field min_count="1" max_count="1000" field_type_unsigned="unsigned short integer"/>
+                            </variable_length_field>
+                            <dimension name="S1_Dimension1" size="1"/>
+                            <dimension name="S1_Dimension2" size="1"/>
+                        </array>
+                        <array name="S1_ARR3" optional="false">
+                            <variable_length_string name="S1_VLS1" optional="false">
+                                <count_field min_count="10" max_count="20" field_type_unsigned="unsigned byte"/>
+                            </variable_length_string>
+                            <dimension name="S1_Dimension1" size="1"/>
+                            <dimension name="S1_Dimension2" size="1"/>
+                        </array>
+                    </record>
+                </body>
+                <footer name="S1_EmptyFooter"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set>
+        <event_def name="S1_EV1">
+            <description xml:space="preserve">event 1</description>
+            <header name="S1_EmptyEventHeader"/>
+            <body name="S1_EV1_Body">
+                <record name="S1_R2" optional="false">
+                    <fixed_length_string name="S1_FLS1" string_length="100" optional="false"/>
+                    <variable_length_string name="S1_VLS1" optional="false">
+                        <count_field min_count="10" max_count="20" field_type_unsigned="unsigned byte"/>
+                    </variable_length_string>
+                </record>
+            </body>
+            <footer name="S1_EmptyFooter"/>
+        </event_def>
+        <event_def name="S1_EV2">
+            <description xml:space="preserve">event 2</description>
+            <header name="S1_EmptyEventHeader"/>
+            <body name="S1_EV2_Body">
+                <list name="S1_LS1" optional="false">
+                    <count_field min_count="1" max_count="10" field_type_unsigned="unsigned byte"/>
+                    <record name="S1_R2" optional="false">
+                        <fixed_length_string name="S1_FLS1" string_length="100" optional="false"/>
+                        <variable_length_string name="S1_VLS1" optional="false">
+                            <count_field min_count="10" max_count="20" field_type_unsigned="unsigned byte"/>
+                        </variable_length_string>
+                    </record>
+                </list>
+            </body>
+            <footer name="S1_EmptyFooter"/>
+        </event_def>
+    </internal_events_set>
+    <protocol_behavior>
+        <start state_machine_name="S1.NullFSM" state_name="Null"/>
+        <state_machine name="S1.NullFSM">
+            <state name="Null"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

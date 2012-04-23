@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transition name="accessControlClient-Receive" xmlns="urn:jaus:jsidl:1.0">
+	<parameter type="Event" value="msg"/>
+	<guard condition="isReportStatus( msg ) &amp;&amp; isServerState( msg, 'StateAShutdown')"/>
+	<simple>
+		<end_state state="ReceivingShutdown"/>
+	</simple>
+	<action name="printServerState" interpretation="print state reported in the report status message">
+		<argument value="msg"/>
+	</action>
+	<action name="print">
+		<argument value="'completed step 22...'"></argument>
+	</action>
+</transition>

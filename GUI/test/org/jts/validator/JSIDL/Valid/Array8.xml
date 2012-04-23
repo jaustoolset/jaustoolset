@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<array name="Array8" optional="false" interpretation="A variable length field in an array may not be optional"  xmlns="urn:jaus:jsidl:1.0">
+	<variable_length_field name="QueryMessage" field_format="JAUS MESSAGE" optional="false" interpretation="" xmlns="urn:jaus:jsidl:1.0">
+		<count_field min_count="2" field_type_unsigned="unsigned integer"/>
+	</variable_length_field>
+	<dimension name="dimension1" size="9"/>
+	<dimension name="dimension2" size="1"/>
+</array>

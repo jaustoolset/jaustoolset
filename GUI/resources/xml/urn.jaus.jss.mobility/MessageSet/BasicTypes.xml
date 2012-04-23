@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../jsidl/jaus_service_interface_definition_language.rnc" type="compact"?>
+<declared_type_set name="BasicTypes" id="urn:jaus:jss:mobility:MessageSet:BasicTypes" version="0.6"
+  xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <declared_const_set_ref name="basicConstants" id="urn:jaus:jss:mobility:MessageSet:BasicConstants" version="1.0"/>
+  <declared_type_set_ref name="basicTypes" id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.0"/>
+  <!-- Element UID -->
+  <fixed_field name="ElementUID" field_type="unsigned short integer" field_units="one" optional="false"/>
+  <!-- Speed -->
+  <fixed_field name="Speed" field_type="unsigned short integer" field_units="meter per second" optional="false">
+    <scale_range real_lower_limit="0" real_upper_limit="327.67" integer_function="round"/>
+  </fixed_field>
+  <!-- Velocity -->
+  <fixed_field name="Velocity" field_type="unsigned integer" field_units="meter per second" optional="false">
+    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+  </fixed_field>
+  <!-- Rotational Velocity -->
+  <fixed_field name="RotationalVelocity" field_type="unsigned short integer" field_units="radian per second" optional="false">
+    <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+  </fixed_field>
+  <!-- Acceleration -->
+  <fixed_field name="Acceleration" field_type="unsigned integer" field_units="meter per second squared" optional="false">
+    <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+  </fixed_field>
+  <!-- Rotational Acceleration -->
+  <fixed_field name="RotationalAcceleration" field_type="unsigned integer" field_units="radian per second squared" optional="false">
+    <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+  </fixed_field>
+  <!-- GlobalPose -->
+  <record name="GlobalPoseRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned short integer"/>
+    <fixed_field name="Latitude" field_type="unsigned integer" field_units="degree" optional="true">
+      <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Longitude" field_type="unsigned integer" field_units="degree" optional="true">
+      <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Altitude" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Position_RMS" field_type="unsigned integer" field_units="meter" optional="true" 
+                      interpretation="An RMS value indicating the validity of the position data.">
+      <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+    </fixed_field> 
+    <fixed_field name="Roll" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Pitch" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>  
+    <fixed_field name="Yaw" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>  
+    <fixed_field name="Attitude_RMS" field_type="unsigned short integer" field_units="radian" optional="true" 
+      interpretation="An RMS value indicating the validity of the orientation data.">
+      <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    <declared_bit_field name="TimeStamp" declared_type_ref="basicTypes.TimeStamp" optional="true" />
+  </record>
+  <!-- LocalPose -->
+  <record name="LocalPoseRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned short integer"/>
+    <fixed_field name="X" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Y" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Z" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Position_RMS" field_type="unsigned integer" field_units="meter" optional="true" 
+      interpretation="An RMS value indicating the validity of the position data.">
+      <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+    </fixed_field> 
+    <fixed_field name="Roll" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Pitch" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>  
+    <fixed_field name="Yaw" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>  
+    <fixed_field name="Attitude_RMS" field_type="unsigned short integer" field_units="radian" optional="true" 
+      interpretation="An RMS value indicating the validity of the orientation data.">
+      <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    <declared_bit_field name="TimeStamp" declared_type_ref="basicTypes.TimeStamp" optional="true" />
+  </record>
+  <!-- VelocityCommandRec -->
+  <record name="VelocityCommandRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned byte"/>
+    <fixed_field name="CommandType" field_type="unsigned byte" field_units="one" optional="false">
+      <value_set offset_to_lower_limit="false">
+        <value_enum enum_index="0" enum_const="Set current command"/>
+        <value_enum enum_index="1" enum_const="Set maximum allowed values"/>
+        <value_enum enum_index="2" enum_const="Set minimum allowed values"/>
+        <value_enum enum_index="3" enum_const="Set default command"/>
+      </value_set>
+    </fixed_field>
+    <declared_fixed_field name="Velocity_X" declared_type_ref="Velocity" optional="true"/>
+    <declared_fixed_field name="Velocity_Y" declared_type_ref="Velocity" optional="true"/>
+    <declared_fixed_field name="Velocity_Z" declared_type_ref="Velocity" optional="true"/>
+    <declared_fixed_field name="RollRate" declared_type_ref="RotationalVelocity" optional="true"/>
+    <declared_fixed_field name="PitchRate" declared_type_ref="RotationalVelocity" optional="true"/>
+    <declared_fixed_field name="YawRate" declared_type_ref="RotationalVelocity" optional="true"/>
+  </record>
+  <!-- AccelerationLimitRec -->
+  <record name="AccelerationLimitRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned byte"/>
+    <fixed_field name="CommandType" field_type="unsigned byte" field_units="one" optional="false">
+      <value_set offset_to_lower_limit="false">
+        <value_enum enum_index="1" enum_const="Set maximum allowed values"/>
+        <value_enum enum_index="2" enum_const="Set minimum allowed values"/>
+      </value_set>
+    </fixed_field>
+    <declared_fixed_field name="Acceleration_X" declared_type_ref="Acceleration" optional="true"/>
+    <declared_fixed_field name="Acceleration_Y" declared_type_ref="Acceleration" optional="true"/>
+    <declared_fixed_field name="Acceleration_Z" declared_type_ref="Acceleration" optional="true"/>
+    <declared_fixed_field name="RollAcceleration" declared_type_ref="RotationalAcceleration" optional="true"/>
+    <declared_fixed_field name="PitchAcceleration" declared_type_ref="RotationalAcceleration" optional="true"/>
+    <declared_fixed_field name="YawAcceleration" declared_type_ref="RotationalAcceleration" optional="true"/>
+  </record>
+  <!-- WrenchEffort -->
+  <record name="WrenchEffortRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned short integer"/>
+    <fixed_field name="PropulsiveLinearEffortX" field_type="unsigned short integer" field_units="one" optional="true" 
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="PropulsiveLinearEffortY" field_type="unsigned short integer" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="PropulsiveLinearEffortZ" field_type="unsigned short integer" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="PropulsiveRotationalEffortX" field_type="unsigned short integer" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="PropulsiveRotationalEffortY" field_type="unsigned short integer" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>  
+    <fixed_field name="PropulsiveRotationalEffortZ" field_type="unsigned short integer" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="ResistiveLinearEffortX" field_type="unsigned byte" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="ResistiveLinearEffortY" field_type="unsigned byte" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="ResistiveLinearEffortZ" field_type="unsigned byte" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="ResistiveRotationalEffortX" field_type="unsigned byte" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="ResistiveRotationalEffortY" field_type="unsigned byte" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>  
+    <fixed_field name="ResistiveRotationalEffortZ" field_type="unsigned byte" field_units="one" optional="true"
+                          interpretation="Measured as a percent of maximum">
+      <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>  
+  </record>
+  <!-- GlobalVector -->
+  <record name="GlobalVectorRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned byte"/>
+    <declared_fixed_field name="Speed" declared_type_ref="Speed" optional="false"/> 
+    <fixed_field name="Altitude" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Heading" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>  
+    <fixed_field name="Roll" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Pitch" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>  
+  </record>  
+  <!-- LocalVector -->
+  <record name="LocalVectorRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned byte"/>
+    <declared_fixed_field name="Speed" declared_type_ref="Speed" optional="false"/> 
+    <fixed_field name="Z" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Heading" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>  
+    <fixed_field name="Roll" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Pitch" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>  
+  </record> 
+  <!-- TravelSpeed -->
+  <record name="TravelSpeedRec" optional="false">
+    <declared_fixed_field name="Speed" declared_type_ref="Speed" optional="false"/> 
+  </record>
+  <!-- GlobalWaypoint -->
+  <record name="GlobalWaypointRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned byte"/>
+    <fixed_field name="Latitude" field_type="unsigned integer" field_units="degree" optional="false">
+      <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Longitude" field_type="unsigned integer" field_units="degree" optional="false">
+      <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Altitude" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Roll" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Pitch" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>  
+    <fixed_field name="Yaw" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="WaypointTolerance" field_type="unsigned short integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="PathTolerance" field_type="unsigned integer" field_units="meter" optional="true"
+                          interpretation="A value of zero (0) is used for infinite tolerance">     
+      <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+  </record>
+  <!-- LocalWaypoint -->
+  <record name="LocalWaypointRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned byte"/>
+    <fixed_field name="X" field_type="unsigned integer" field_units="meter" optional="false">
+      <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Y" field_type="unsigned integer" field_units="meter" optional="false">
+      <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Z" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Roll" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="Pitch" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>  
+    <fixed_field name="Yaw" field_type="unsigned short integer" field_units="radian" optional="true">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="WaypointTolerance" field_type="unsigned short integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="PathTolerance" field_type="unsigned integer" field_units="meter" optional="true"
+                          interpretation="A value of zero (0) is used for infinite tolerance">
+      <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+  </record>  
+  <!-- GlobalPathSegment -->
+  <record name="GlobalPathSegmentRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned byte"/>
+    <fixed_field name="P1_Latitude" field_type="unsigned integer" field_units="degree" optional="false">
+      <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="P1_Longitude" field_type="unsigned integer" field_units="degree" optional="false">
+      <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="P1_Altitude" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="P2_Latitude" field_type="unsigned integer" field_units="degree" optional="false">
+      <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="P2_Longitude" field_type="unsigned integer" field_units="degree" optional="false">
+      <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="P2_Altitude" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="WeightingFactor" field_type="unsigned short integer" field_units="one" optional="false"
+                          interpretation="A value of zero (0) is a straight line">     
+      <scale_range real_lower_limit="0" real_upper_limit="500" integer_function="round"/>
+    </fixed_field>    
+    <fixed_field name="PathTolerance" field_type="unsigned integer" field_units="meter" optional="true"
+                          interpretation="A value of zero (0) is used for infinite tolerance">     
+      <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+  </record>
+  <!-- LocalPathSegment -->
+  <record name="LocalPathSegmentRec" optional="false">
+    <presence_vector field_type_unsigned="unsigned byte"/>
+    <fixed_field name="P1_X" field_type="unsigned integer" field_units="meter" optional="false">
+      <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="P1_Y" field_type="unsigned integer" field_units="meter" optional="false">
+      <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="P1_Z" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="P2_X" field_type="unsigned integer" field_units="meter" optional="false">
+      <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="P2_Y" field_type="unsigned integer" field_units="meter" optional="false">
+      <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="P2_Z" field_type="unsigned integer" field_units="meter" optional="true">
+      <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+    </fixed_field>
+    <fixed_field name="WeightingFactor" field_type="unsigned short integer" field_units="one" optional="false"
+                          interpretation="A value of zero (0) is a straight line">     
+      <scale_range real_lower_limit="0" real_upper_limit="500" integer_function="round"/>
+    </fixed_field>    
+    <fixed_field name="PathTolerance" field_type="unsigned integer" field_units="meter" optional="true"
+                          interpretation="A value of zero (0) is used for infinite tolerance">     
+      <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+    </fixed_field>
+  </record> 
+  <!-- ListElement -->
+  <record name="ElementRec" optional="false">
+    <declared_fixed_field name="ElementUID" declared_type_ref="ElementUID" optional="false" 
+                          interpretation="Values zero (0) and 65535 are invalid (reserved)."/>
+    <declared_fixed_field name="PreviousUID" declared_type_ref="ElementUID" optional="false"
+        interpretation="UID of the previous (parent) element in the list.  The value is zero (0) if this is the first (head) element."/>
+    <declared_fixed_field name="NextUID" declared_type_ref="ElementUID" optional="false"
+    interpretation="UID of the next (child) element in the list.  The value is zero (0) if this is the last (tail) element."/>
+    <variable_format_field name="ElementData" optional="false" interpretation="Element data to be added to the list">
+      <format_field>
+        <format_enum index="0" field_format="JAUS MESSAGE"/>
+        <format_enum index="1" field_format="User defined"/>
+      </format_field>
+      <count_field field_type_unsigned="unsigned short integer"/>
+    </variable_format_field>
+  </record> 
+  <!-- GeomagneticProperty -->
+  <record name="GeomagneticPropertyRec" optional="false">
+    <fixed_field name="MagneticVariation" field_type="unsigned short integer" field_units="radian" optional="false">
+      <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+    </fixed_field>
+    </record>
+</declared_type_set>

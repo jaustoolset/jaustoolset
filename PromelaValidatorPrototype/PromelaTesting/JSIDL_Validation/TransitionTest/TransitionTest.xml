@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="TransitionServiceDef" id="urn.jts.TransitionTest" version="1.1" xmlns:ns2="urn:jaus:jsidl:1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:plus">
+    <description xml:space="preserve"></description>
+    <assumptions xml:space="preserve"></assumptions>
+    <references/>
+    <message_set>
+        <input_set>
+            <message_def name="Message1" message_id="5013" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+            <message_def name="Message2" message_id="1514" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+            <message_def name="Message3" message_id="1515" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+            <message_def name="PushMessage" message_id="1516" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+            <message_def name="PopMessage" message_id="1517" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="EmptyBody"/>
+                <footer name="EmptyFooter"/>
+            </message_def>
+            <message_def name="ExitDefaultStateMessage" message_id="1519" is_command="false">
+                <description xml:space="preserve"></description>
+                <header name="JTS_DefaultHeader">
+                    <record name="DefaultHeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_units="one" field_type="unsigned short integer"/>
+                    </record>
+                </header>
+                <body name="SignedBody">
+                    <record name="SignedRec" optional="false">
+                        <fixed_field name="SignedInt" optional="false" field_units="one" field_type="integer"/>
+                        <fixed_field name="SignedShort" optional="false" field_units="one" field_type="short integer"/>
+                        <fixed_field name="SignedLong" optional="false" field_units="one" field_type="long integer"/>
+                        <fixed_field name="SignedByte" optional="false" field_units="one" field_type="byte"/>
+                    </record>
+                </body>
+                <footer name="EmptyFooter"/>
+            </message_def>
+        </input_set>
+        <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="true">
+        <start state_machine_name="TransitionFSM" state_name="State13"/>
+        <state_machine name="TransitionFSM">
+            <state name="State13">
+                <transition name="Message1">
+                    <guard condition="Guard1()"/>
+                    <ns2:internal/>
+                </transition>
+                <transition name="Message1">
+                    <ns2:internal/>
+                </transition>
+                <transition name="Message2">
+                    <simple>
+                        <end_state state="State14"/>
+                    </simple>
+                </transition>
+                <transition name="Message2">
+                    <guard condition="Guard2()"/>
+                    <simple>
+                        <end_state state="State14"/>
+                    </simple>
+                </transition>
+                <transition name="PushMessage">
+                    <push>
+                        <end_state state="State15"/>
+                    </push>
+                </transition>
+                <transition name="PushMessage">
+                    <guard condition="Guard4()"/>
+                    <push>
+                        <end_state state="State15"/>
+                    </push>
+                </transition>
+            </state>
+            <state name="State15">
+                <transition name="PopMessage">
+                    <pop/>
+                </transition>
+                <transition name="PopMessage">
+                    <guard condition="Guard4()"/>
+                    <pop/>
+                </transition>
+            </state>
+            <state name="State14">
+                <transition name="Message3">
+					<simple>
+                        <end_state state="State13"/>
+                    </simple>
+                </transition>
+            </state>
+			<default_state>
+				<transition name="ExitDefaultStateMessage">
+                    <simple>
+                        <end_state state="State14"/>
+                    </simple>
+				</transition>
+				<transition name="ExitDefaultStateMessage">
+					<guard condition="DefaultStateGuard()"/>                    
+					<simple>
+                        <end_state state="State14"/>
+                    </simple>
+				</transition>
+			</default_state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

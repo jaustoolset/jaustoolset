@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="ServiceSet1" id="urn:org.jts.test:ServiceSet1" version="1.0"
+  xmlns="urn:jaus:jsidl:plus">
+   <description xml:space="preserve" xmlns="urn:jaus:jsidl:1.0">
+    A set containing two service definitions
+  </description>
+   <service_def name="Service1" id="urn:jts:test:ServiceSet1:Service1" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="FSM" state_name="Ready"/>
+      <state_machine name="FSM">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+   <service_def name="Service2" id="urn:jts:test:ServiceSet1:Service1" version="1.0" xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <message_set>
+      <input_set/>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="FSM" state_name="Ready"/>
+      <state_machine name="FSM">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+</ns1:service_set>

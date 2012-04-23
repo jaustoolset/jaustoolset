@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<message_def xmlns="urn:jaus:jsidl:1.0" name="MessageDefTest3" is_command="true" message_id="0003">
+	<description xml:space="preserve"> An empty message definition </description>
+	++++FooterTest1.xml++++
+</message_def>

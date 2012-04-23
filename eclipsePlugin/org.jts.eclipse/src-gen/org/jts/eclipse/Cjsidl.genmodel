@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.jts.eclipse/src-gen"
+    editDirectory="/org.jts.eclipse.edit/src" editorDirectory="/org.jts.eclipse.editor/src"
+    modelPluginID="org.jts.eclipse" forceOverwrite="true" modelName="Cjsidl" updateClasspath="false"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" complianceLevel="5.0"
+    copyrightFields="false" editPluginID="org.jts.eclipse.edit" editorPluginID="org.jts.eclipse.editor">
+  <genPackages prefix="Cjsidl" basePackage="org.jts.eclipse" disposableProviderFactory="true"
+      loadInitialization="true" literalsInterface="false" ecorePackage="Cjsidl.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Cjsidl.ecore#//FIELD_FORMAT">
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/AU"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/BMP"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/JPEG"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/MJPEG"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/MPEG1"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/MPEG2"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/MP2"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/MP3"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/MP4"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/RAW"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/WAV"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/JAUS_MESSAGE"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/XML"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/RNC"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/RNG"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/XSD"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//FIELD_FORMAT/USER_DEFINED"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Cjsidl.ecore#//UNIT">
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/KG"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/SEC"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/AMP"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/KELVIN"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/MOLE"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/CANDELA"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/ONE"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/SQR_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/CUBIC_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/METER_PER_SEC"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/METER_PER_SEC_SQR"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/RECIPROCAL_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/KG_PER_CUBIC_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/CUBICMETERPERKG"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/AMPPERSQRMETER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/AMP_PER_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/MOLE_PER_CUBIC_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/CANDELA_PER_SQUARE_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/RADIAN"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/STE_RAD"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/HRZ"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/NEWTON"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/PASCAL"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/JOULE"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/WATT"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/COULOMB"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/VOLT"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/FARAD"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/OHM"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/SIEMENS"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/WEBER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/TESLA"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/HENRY"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/CELSIUS"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/LUMEN"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/LUX"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/BECQUEREL"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/SIEVERT"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/KATAL"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/PASCAL_SEC"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/NEWTON_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/NEWTON_PER_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/RAD_PER_SEC"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/RAD_PER_SEC_SQR"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/WATT_PER_SQR_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/JOULE_PER_KELVIN"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/JOULE_PER_KG"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/WATT_PER_METER_KELVIN"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/JOULES_PER_CUBIC_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/VOLT_PER_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/COULOMB_PER_CUBIC_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/COULOMB_PER_SQR_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/FARAD_PER_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/HENRY_PER_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/JOULE_PER_MOLE"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/JOULE_PER_MOLE_KELVIN"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/COULOMB_PER_KG"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/GRAY_PER_SEC"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/WATT_PER_SQR_METER_STERAD"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/KATAL_PER_CUBIC_METER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/MIN"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/HOUR"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/DAY"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/DEGREE"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/LTR"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/MTON"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/NEPER"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/BEL"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/NMILE"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/KNOT"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/ARE"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/HECTARE"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/BAR"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/ANGSROM"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/BARN"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/CURIE"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/ROENTGEN"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/RAD"/>
+      <genEnumLiterals ecoreEnumLiteral="Cjsidl.ecore#//UNIT/REM"/>
+    </genEnums>
+    <genClasses ecoreClass="Cjsidl.ecore#//jaus">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//jaus/set"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//serviceDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//serviceDef/serviceName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//serviceDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//serviceDef/serviceVersion"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//serviceDef/descr"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//serviceDef/assumpt"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//serviceDef/refs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//serviceDef/constSet"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//serviceDef/typeSet"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//serviceDef/messageSet"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//serviceDef/internalEventSet"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//serviceDef/protocolBehavior"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//description">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//description/content"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//references">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//references/refInherit"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//references/refClient"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//refAttr">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//refAttr/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//refAttr/importedNamespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//refAttr/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//declaredConstSet">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredConstSet/constName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredConstSet/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredConstSet/constSetVersion"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredConstSet/declaredConstSetRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredConstSet/constDef"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//declaredConstSetRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredConstSetRef/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredConstSetRef/importedNamespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredConstSetRef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//declaredTypeSet">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredTypeSet/typeName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredTypeSet/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredTypeSet/version"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredTypeSet/declaredConstSetRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredTypeSet/declaredTypeSetRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredTypeSet/typeDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredTypeSet/typeRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredTypeSet/scopedRef"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//messageSet">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//messageSet/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//messageSet/inputComment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messageSet/inputSet"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//messageSet/outputComment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messageSet/outputSet"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//messages">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messages/messageDefs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messages/typeRefs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messages/scopedRefs"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//internalEventSet">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//internalEventSet/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//internalEventSet/defs"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//eventDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//eventDef/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//eventDef/descr"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//eventDef/header"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//eventDef/body"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//eventDef/footer"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//messageRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//messageRef/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messageRef/ref"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//messageRef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//protocolBehavior">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//protocolBehavior/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//protocolBehavior/stateless"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//protocolBehavior/stateMachine"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//startState">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//startState/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//startState/scoped"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//startState/state"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//stateMachine">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//stateMachine/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//stateMachine/scoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//stateMachine/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//stateMachine/startState"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//stateMachine/defaultState"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//stateMachine/states"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//state">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//state/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//state/initial"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//state/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//state/entryAction"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//state/exitAction"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//state/transitions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//state/defaultTransition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//state/defaultState"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//state/subState"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//defaultState">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//defaultState/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//defaultState/transition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//defaultState/defaultTransition"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//entry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//entry/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//entry/actions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//entry/sendActions"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//exit">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//exit/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//exit/actions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//exit/sendActions"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//transParams">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//transParams/params"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//transParam">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//transParam/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//transParam/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//transParam/scopedEventType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//transParam/unsignedType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//transParam/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//transition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//transition/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//transition/type"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//transition/scoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//transition/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//transition/params"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//transition/transGuard"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//transition/actions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//transition/sendActions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//transition/destination"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//defaultTransition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//defaultTransition/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//defaultTransition/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//defaultTransition/transGuard"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//defaultTransition/actions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//defaultTransition/sendActions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//defaultTransition/destination"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//internalTransition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//internalTransition/comment"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//simpleTransition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//simpleTransition/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//simpleTransition/nextState"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//pushTransition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//pushTransition/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//pushTransition/nextState"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//pushTransition/simpleTransition"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//popTransition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//popTransition/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//popTransition/secondaryTransition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//popTransition/param"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//nextState">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//nextState/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//nextState/firstState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//nextState/scoped"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//nextState/nextState"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//guard">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//guard/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//guard/guardAction"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//guard/equiv"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//guard/logicalOperator"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//guardAction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//guardAction/not"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//guardAction/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//guardAction/param"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//guardParam">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//guardParam/parameter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//guardParam/guardConst"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//actionList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//actionList/actions"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//sendActionList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//sendActionList/actions"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//action">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//action/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//action/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//action/param"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//constDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//constDef/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//constDef/constType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//constDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//constDef/constValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//constDef/fieldUnits"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//declaredTypeSetRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredTypeSetRef/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredTypeSetRef/importedNamespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredTypeSetRef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//typeDef">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/messageDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/arrayDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/recordDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/listDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/variantDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/sequenceDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/fixedFieldDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/varField"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/bitfieldDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/fixedLenString"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/varLenString"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/varLenField"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/varFormatField"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/headerDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/bodyDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeDef/footerDef"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//messageDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//messageDef/command"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//messageDef/messageID"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//messageDef/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messageDef/descr"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messageDef/header"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messageDef/body"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messageDef/footer"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//headerDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//headerDef/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//headerDef/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//headerDef/recordListSequenceVariant"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//bodyDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//bodyDef/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//bodyDef/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//bodyDef/recordListSequenceVariant"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//footerDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//footerDef/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//footerDef/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//footerDef/recordListSequenceVariant"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//headerRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//headerRef/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//headerRef/typeRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//headerRef/scopedRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//headerRef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//bodyRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//bodyRef/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//bodyRef/typeRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//bodyRef/scopedRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//bodyRef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//footerRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//footerRef/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//footerRef/typeRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//footerRef/scopedRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//footerRef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//headerScopedRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//headerScopedRef/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//headerScopedRef/names"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//headerScopedRef/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//bodyScopedRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//bodyScopedRef/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//bodyScopedRef/names"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//bodyScopedRef/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//footerScopedRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//footerScopedRef/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//footerScopedRef/names"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//footerScopedRef/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//containerDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//containerDef/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//containerDef/optional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//containerDef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//containerRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//containerRef/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//containerRef/optional"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//containerRef/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//containerRef/typeScoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//containerRef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//declaredEventDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredEventDef/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredEventDef/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//declaredEventDef/scopedEventType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//declaredEventDef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//simpleNumericType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//simpleNumericType/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//fixedLenString">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//fixedLenString/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//fixedLenString/optional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//fixedLenString/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//fixedLenString/upperLim"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//fixedLenString/upperLimRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//fixedLenString/upperLimScoped"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//varLenString">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenString/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenString/optional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenString/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenString/lowerLim"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varLenString/lowerLimRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varLenString/lowerLimScoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenString/upperLim"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varLenString/upperLimRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varLenString/upperLimScoped"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//fixedFieldDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//fixedFieldDef/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//fixedFieldDef/optional"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//fixedFieldDef/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//fixedFieldDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//fixedFieldDef/fieldUnit"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//fixedFieldDef/valueRange"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//varField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varField/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varField/optional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varField/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varField/vtagField"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//varLenField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenField/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenField/optional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenField/fieldFormat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenField/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenField/countComment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenField/lowerLim"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varLenField/lowerLimRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varLenField/lowerLimScoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varLenField/upperLim"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varLenField/upperLimRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varLenField/upperLimScoped"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//taggedUnitsEnum">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//taggedUnitsEnum/const_tag"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//taggedUnitsEnum/tag"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//taggedUnitsEnum/scopedTag"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//taggedUnitsEnum/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//taggedUnitsEnum/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//taggedUnitsEnum/fieldUnit"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//taggedUnitsEnum/valueSetDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//taggedUnitsEnum/scaledRangeDef"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//varFormatField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varFormatField/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varFormatField/optional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varFormatField/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varFormatField/countComment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//varFormatField/units"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varFormatField/countRange"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//varFormatField/formatField"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//formatEnumDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//formatEnumDef/index"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//formatEnumDef/constRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//formatEnumDef/constScopedRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//formatEnumDef/fieldFormat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//formatEnumDef/fieldFormatStr"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//valueSetDef">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//valueSetDef/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//valueSetDef/offset"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//bitfieldDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//bitfieldDef/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//bitfieldDef/optional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//bitfieldDef/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//bitfieldDef/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//bitfieldDef/subField"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//valueRange">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//valueRange/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//valueRange/lowerLimit_type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//valueRange/lowerLim"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//valueRange/lowerLimRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//valueRange/lowerLimScoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//valueRange/upperLim"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//valueRange/upperLimRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//valueRange/upperLimScoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//valueRange/upperLimit_type"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//valueSpec">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//valueSpec/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//valueSpec/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//valueSpec/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//scaledRangeDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//scaledRangeDef/interp"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//scaledRangeDef/lowerLim"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scaledRangeDef/lowerLimRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scaledRangeDef/lowerLimScoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//scaledRangeDef/upperLim"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scaledRangeDef/upperLimRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scaledRangeDef/upperLimScoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//scaledRangeDef/function"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//subField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//subField/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//subField/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//subField/fromIndex"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//subField/toIndex"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//subField/valueSet"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//listDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//listDef/countComment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//listDef/minCount"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//listDef/minCountRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//listDef/minCountScoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//listDef/maxCount"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//listDef/maxCountRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//listDef/maxCountScoped"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//listDef/containerRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//listDef/containerDef"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//variantDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//variantDef/vtagComment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//variantDef/minCount"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//variantDef/minCountRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//variantDef/minCountScoped"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//variantDef/maxCount"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//variantDef/maxCountRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//variantDef/maxCountScoped"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//variantDef/itemList"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//taggedItemDef">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//taggedItemDef/containerDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//taggedItemDef/containerRef"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//sequenceDef">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//sequenceDef/containerTypeList"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//recordDef">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//recordDef/arrayDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//recordDef/fieldDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//recordDef/variableFieldDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//recordDef/bitfieldDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//recordDef/fixedLengthStringDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//recordDef/variableLengthStringDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//recordDef/variableLengthFieldDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//recordDef/varFormatField"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//recordDef/typeReference"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//recordDef/scopedRef"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//constReference">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//constReference/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//constReference/constVal"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//typeReference">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//typeReference/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//typeReference/optional"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//typeReference/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//typeReference/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//arrayDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//arrayDef/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//arrayDef/optional"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//arrayDef/typeRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//arrayDef/scopedType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//arrayDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//arrayDef/arraySize"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//messageScopedRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//messageScopedRef/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messageScopedRef/scope"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messageScopedRef/scopes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//messageScopedRef/ref"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//messageScopedRef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//scopedType">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scopedType/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scopedType/names"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scopedType/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//scopedEventType">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scopedEventType/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scopedEventType/names"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scopedEventType/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//scopedTypeId">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//scopedTypeId/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//scopedTypeId/optional"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scopedTypeId/ref"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Cjsidl.ecore#//scopedTypeId/scopedName"/>
+    </genClasses>
+    <genClasses ecoreClass="Cjsidl.ecore#//scopedConstId">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scopedConstId/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scopedConstId/names"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Cjsidl.ecore#//scopedConstId/type"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

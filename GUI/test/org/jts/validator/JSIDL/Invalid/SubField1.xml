@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sub_field name="sub 1" xmlns="urn:jaus:jsidl:1.0">
+  <bit_range from_index="3" to_index="3"/>
+  <value_set offset_to_lower_limit="false">
+    <value_range lower_limit="0" upper_limit="12" lower_limit_type="inclusive" upper_limit_type="inclusive"/>
+  </value_set>
+</sub_field>

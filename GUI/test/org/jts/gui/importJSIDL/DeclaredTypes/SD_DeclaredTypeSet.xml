@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" name="SD_DeclaredTypeSet" id="ImportTest:SD_DeclaredTypeSet" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. It contains a simple service def with a declared type set for references.
+  </description>
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <declared_type_set name="declared_type_set">
+    <declared_type_set_ref name="DeclaredTypeSet5" id="ImportTest:DeclaredTypeSet5" version="1.0" />
+  </declared_type_set>    
+  
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_DeclaredTypeSet" state_name="init"/>
+    <state_machine name="SD_DeclaredTypeSet">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

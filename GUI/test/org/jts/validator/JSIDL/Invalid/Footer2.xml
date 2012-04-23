@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<footer name="Footer2" interpretation="A record in a footer may not be optional" xmlns="urn:jaus:jsidl:1.0">
+	<record name="HeaderRec" optional="true">
+		<fixed_field name="MessageID" field_type="unsigned short integer" field_units="one" optional="false" interpretation=""/>
+	</record>
+</footer>

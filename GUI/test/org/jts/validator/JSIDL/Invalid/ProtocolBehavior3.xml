@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol_behavior is_stateless="false" xmlns="urn:jaus:jsidl:1.0">
+
+	<start state_machine_name="FSM_A" state_name="Init2"/>
+	<start state_machine_name="FSM_B" state_name="Init"/>
+
+	<state_machine name="FSM_A">
+		<state name="Init">
+			<transition name="Message1">
+				<simple>
+					<end_state state="Running"/>
+				</simple>
+			</transition>
+		</state>
+		
+		<state name="Running">
+			<transition name="InternalEvent2">
+				<simple>
+					<end_state state="Running"/>
+				</simple>
+			</transition>
+		</state>
+
+	</state_machine>
+
+	<state_machine name="FSM_B">
+		<state name="Init">
+			<transition name="Message1">
+				<simple>
+					<end_state state="Running"/>
+				</simple>
+			</transition>
+		</state>
+		
+		<state name="Running">
+			<transition name="InternalEvent2">
+				<simple>
+					<end_state state="Running"/>
+				</simple>
+			</transition>
+		</state>
+	</state_machine>
+
+</protocol_behavior>

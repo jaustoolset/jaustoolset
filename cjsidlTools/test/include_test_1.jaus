@@ -1,0 +1,50 @@
+service AckermanDriver (id="AS4:AS6091:AckermanDriver", version="0.1") {
+  // First cut
+  // Parag Batavia
+  // Neya Systems, LLC
+
+  description "The AckermanDriver provides the means to control Ackerman 
+          steered vehicles";
+  assumptions "None";
+
+// #include include_test_1_1.jaus
+
+  messages {
+
+    query 0x1000 QueryPlatformSpecifications {
+      description "Request PlatformSpecifications data";
+    }
+
+    inform 0x2000 ReportPlatformSpecifications {
+      description "Sends PlatformSpecifications data";
+      PlatformSpecificationsSeq platformData;
+    }
+
+    query 0x1001 QueryAckermanDriver {
+      description "Queries ackerman driver for current set data";
+    }
+    
+    inform 0x2001 ReportAckermanDriver {
+      description "Reports ackerman driver data ";
+      PlatformSpecificSpecification ackermanData;
+      // AckermanDriverRec is this a different record that you haven't defined yet?
+    }
+	
+    command 0x3001 SetAckermanDriver {
+      description "Sets ackerman driver parameters";
+      PlatformSpecificSpecification ackermanData;
+      // AckermanDriverRec is this a different record that you haven't defined yet?
+    }
+  }
+
+  events Event {
+  }
+
+  protocol {
+    start fsm.Init;
+    state_machine fsm {
+      state Init {}
+    }
+  }
+}
+    

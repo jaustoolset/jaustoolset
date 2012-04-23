@@ -1,0 +1,152 @@
+50a51,57
+> //JTS
+> import org.hibernate.Query;
+> import org.hibernate.Session;
+> import com.u2d.app.Context;
+> import org.hibernate.Transaction;
+> //jts
+> 
+120a128,131
+> 	  // JTS
+> 	  _desktopPane.getContextMenu().add(new JTS_DeleteDatabaseAction());
+> 	  _desktopPane.getContextMenu().addSeparator();
+> 	  // jts
+169a181,187
+>       
+>       // JTS
+>       addSplashFirstRun();
+>       // set paginable page size to arbitrary large number
+>       // so paginable views never cut pages (easier than making separate views without pagination)
+>       _app.setPagesize( 1000000 );
+>       // jts
+316c334,336
+<                   showUserMenu();
+---
+>                   // JTS - never show the user menu 
+> 				  //showUserMenu();
+> 				  // jts
+414c434,436
+<          Substance.addSkinMenuTo(_menuBar);
+---
+>     	  // JTS
+>          //Substance.addSkinMenuTo(_menuBar);
+>     	  // jts
+612a635,714
+>    // JTS
+>    class JTS_DeleteDatabaseAction extends AbstractAction
+>    {
+>       public JTS_DeleteDatabaseAction()
+>       {
+>          putValue(javax.swing.Action.NAME, "Delete Database");
+>       }
+> 
+>       public void actionPerformed(ActionEvent evt)
+>       {
+> 		JTS_deleteDatabase();
+> 	  }
+>    }
+>    private void JTS_deleteDatabase()
+>    {
+> 	 JTS_deleteItem("AbstractComplexEObject_JTS");
+> 	 JTS_deleteItem("Component");
+> 	 JTS_deleteItem("ServiceSet");
+> 	 JTS_deleteItem("ServiceDef");
+> 	 
+> 	 JTS_deleteItem("ProtocolBehavior");
+> 	 JTS_deleteItem("MessageDef");
+> 	 JTS_deleteItem("EventDef");
+> 	 
+> 	 JTS_deleteItem("ConstantSet");
+> 	 JTS_deleteItem("Constant");
+> 	 JTS_deleteItem("InputSet");
+> 	 JTS_deleteItem("OutputSet");
+> 	 JTS_deleteItem("Header");
+> 	 JTS_deleteItem("Body");
+> 	 JTS_deleteItem("Footer");
+> 	 
+> 	 JTS_deleteItem("ComplexField");
+> 	 JTS_deleteItem("Record");
+> 	 JTS_deleteItem("Sequence");
+> 	 JTS_deleteItem("Variant");
+> 	 JTS_deleteItem("List");
+> 	 
+> 	 JTS_deleteItem("SimpleField");
+> 	 JTS_deleteItem("FormatField");
+> 	 JTS_deleteItem("VariableField");
+> 	 JTS_deleteItem("VariableFormatField");
+> 	 JTS_deleteItem("BitField");
+> 	 JTS_deleteItem("FixedField");
+> 	 
+> 	 JTS_deleteItem("ValueSet");
+> 	 JTS_deleteItem("SubField");
+> 	 JTS_deleteItem("TypeAndUnitsEnum");
+> 	 
+> 	 JTS_deleteItem("Dimension");
+> 	 JTS_deleteItem("ScaleRange");
+> 	 JTS_deleteItem("ValueRange");
+> 	 JTS_deleteItem("ValueEnum");
+> 	 JTS_deleteItem("BitRange");
+> 	 JTS_deleteItem("FormatEnum");
+> 	 JTS_deleteItem("VariableLengthField");
+> 	 JTS_deleteItem("FixedLengthString");
+> 	 JTS_deleteItem("VariableLengthString");
+> 	 
+> 	 com.u2d.app.Context.getInstance().getViewMechanism().message(
+>                         "Database deletion complete!");
+>    }
+>    private void JTS_deleteItem(String tableName)
+>    {
+>      com.u2d.persist.HBMSingleSession persistenceMechanism = (com.u2d.persist.HBMSingleSession) Context.getInstance().getPersistenceMechanism();
+> 	 Session session = persistenceMechanism.getSession();
+> 	 Transaction tx = session.beginTransaction();
+> 
+>      String query = "from " + tableName;
+> 	 Iterator it = session.createQuery(query).list().iterator();
+> 	 
+> 	 while(it.hasNext())
+> 	 {
+> 		session.delete(it.next());
+> 	 }
+> 	 
+> 	 tx.commit();
+>    }
+>    
+>    //jts
+683c785,792
+<          add(new JScrollPane(descriptionArea));
+---
+>          // JTS
+>          descriptionArea.setLineWrap(true);
+>          descriptionArea.setWrapStyleWord(true);
+>          JScrollPane pane = new JScrollPane(descriptionArea);
+>          pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+>          add(pane);
+>          //add(new JScrollPane(descriptionArea));
+>          // jts
+710a820,845
+>    // JTS
+>    public void addSplashFirstRun()
+>    {
+> 	   AboutDlgSplash_JTS splash = new AboutDlgSplash_JTS();
+> 
+> 	   // test to see if this run is the first time JTS was run
+> 	   // assume that the initial run condition will be when
+> 	   // there are no logged events stored in the database
+> 	   com.u2d.persist.HBMSingleSession persistenceMechanism = (com.u2d.persist.HBMSingleSession) Context.getInstance().getPersistenceMechanism();
+> 	   Session session = persistenceMechanism.getSession();
+> 	   String hql = "from LoggedEvent";
+> 
+> 	   Query hibernateQuery = session.createQuery(hql);
+> 	   if( hibernateQuery.list().size() == 0 )
+> 	   {
+> 		   splash.setVisible(true);
+> 	   }
+>    }
+>    class AboutDlgSplash_JTS extends AboutDlg
+>    {
+> 	   public AboutDlgSplash_JTS()
+> 	   {
+> 		   super();
+> 	   }
+>    }
+>    // jts

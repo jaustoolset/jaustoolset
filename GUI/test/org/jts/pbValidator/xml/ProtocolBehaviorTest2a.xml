@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jts:ProtocolBehaviorTest2a"
+  name="ProtocolBehaviorTest2a" version="1.0">
+  <description xml:space="preserve">
+     Tests "When inheritance is used, the definitions for the pseudo start states in the derived service must either be 
+     identical to the definitions of the pseudo start states in the base service definition, or they must point to nested
+     states belonging to the start states defined in the base service definitions." 
+  </description>
+  <assumptions/> 
+  <message_set>
+    <input_set/>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="FSM" state_name="Ready"/>
+    <state_machine name="FSM">
+      <state name="Ready">
+         <state name="StateA" initial_state="StateAA">
+            <state name="StateAA"/>
+            <state name="StateAB"/>
+            <state name="StateAC"/>
+         </state>
+		</state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

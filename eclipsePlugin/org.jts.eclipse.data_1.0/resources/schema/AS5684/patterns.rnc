@@ -1,0 +1,27 @@
+# JAUS Service Interface Definition Language (JSIDLv1.0)
+#
+
+# Note: combine operator "|" must be used for all production rules in this file
+# to resolve the double (diamond) reference in 
+# jaus_service_interface_definition_language.rnc. 
+
+namespace rng = "http://relaxng.org/ns/structure/1.0"
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
+
+# An identifier is a sequence of letters and digits. The first character
+# must be a letter or the underscore character _. Upper and lower 
+# case letters are different, and identifiers may have any length.
+
+identifier |= xsd:string { pattern="[a-zA-Z_][a-zA-Z_0-9]*" }
+ 
+# namespaced identifier ( identifier(.identifier)* )
+ 
+identifier_ns |= xsd:string { pattern="[a-zA-Z_][a-zA-Z_0-9.]*" }
+
+# M.N, where M and N are positive integers. 
+
+version_num |= xsd:string { pattern="(0|[1-9]([0-9]*))\.(0|[1-9]([0-9]*))" }
+
+# A valid version number M.N or *.* or combination of both.
+
+version_num_ref |= xsd:string { pattern = "((0|\*|[1-9]([0-9]*)))\.((0|\*|[1-9]([0-9]*)))" } 

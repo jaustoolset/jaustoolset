@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_Array" id="ImportTest:SD_Array" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a record entity with all levels of multiplicity and options.
+
+    The 1st message_def contains an array with optional items missing, a fixed_field element and one dimension
+    The 2nd message_def contains an array with all optional items (interpretaion), a single fixed_field element and one dimension
+    The 3rd message_def contains an array with a variable_field entity and one dimension
+    The 4th message_def contains an array with a bit_field entity and one dimension
+    The 5th message_def contains an array with a fixed_length_string entity and one dimension
+    The 6th message_def contains an array with a variable_length_string entity and one dimension
+    The 7th message_def contains an array with a variable_format_field entity and one dimension
+    The 8th message_def contains an array with a fixed_field and multiple dimensions
+    
+    Note: This file also provides full coverage of the bit_range element.
+  </description>
+
+  <!-- 
+    element array 
+    {
+      attribute name { identifier },
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,
+
+      ( fixed_field | variable_field |bit_field |
+      fixed_length_string | variable_length_string|
+      variable_length_field |variable_format_field | 
+      declared_fixed_field |declared_variable_field | 
+      declared_bit_field | declared_fixed_length_string | 
+      declared_variable_length_string | declared_variable_length_field | 
+      declared_variable_format_field ),
+      
+      element dimension 
+      {
+        attribute name { identifier },
+        attribute size { identifier_ns | xsd:unsignedInt },
+        attribute interpretation { text }?
+      }+
+    }  
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, fixed_field -->
+      <message_def name="Array1" message_id="0111" is_command="false">
+        <description>
+          A message to test the array entity. Contains an array with 
+          optional items missing, a fixed_field element and one dimension. 
+        </description>
+        <header name="Array"/>
+        <body name="Array1">
+          <record name="Array1Rec" optional="false">
+            <array name="Array1" optional="false">
+              <fixed_field name="Field1" field_type="byte" field_units="one" optional="false"/>
+              <dimension name="dimension1" size="9"/>
+            </array>
+          </record>
+        </body>
+        <footer name="Array"/>
+      </message_def>
+
+      <!-- All optional elements, fixed_field -->
+      <message_def name="Array2" message_id="0112" is_command="false">
+        <description>
+          A message to test the array entity. Contains an array with all 
+          optional items (interpretaion), a single fixed_field element and one dimension. 
+        </description>
+        <header name="Array"/>
+        <body name="Array2">
+          <record name="Array2Rec" optional="false">
+            <array name="Array2" optional="false" interpretation="A linear array of fixed fields of type byte">
+              <fixed_field name="Field2" field_type="byte" field_units="one" optional="false"/>
+              <dimension name="dimension2" size="9" interpretation="A dimension interpretation"/>
+            </array>
+          </record>
+        </body>
+        <footer name="Array"/>
+      </message_def>
+      
+      <!-- variable_field element -->
+      <message_def name="Array3" message_id="0113" is_command="false">
+        <description>
+          A message to test the array entity. Contains an array with a variable_field entity and one dimension. 
+        </description>
+        <header name="Array"/>
+        <body name="Array3">
+        <record name="Array3Rec" optional="false">
+          <array name="Array3" optional="false">
+              <variable_field name="temperature" interpretation="CPU temperature" optional="false">
+                <type_and_units_field>                
+                  <type_and_units_enum index="0" field_type="short integer" field_units="degree Celsius"/>
+                  <type_and_units_enum index="1" field_type="short integer" field_units="kelvin"/>
+                  <type_and_units_enum index="2" field_type="float" field_units="degree Celsius"/>
+                  <type_and_units_enum index="3" field_type="float" field_units="kelvin"/>
+                </type_and_units_field>                
+              </variable_field>
+              <dimension name="dimension3" size="2"/>
+            </array>
+          </record>
+        </body>
+        <footer name="Array"/>
+      </message_def>
+
+      <!-- bit_field element -->
+      <message_def name="Array4" message_id="0114" is_command="false">
+        <description>
+          A message to test the array entity. Contains an array with a bit_field entity and one dimension.
+        </description>
+        <header name="Array"/>
+        <body name="Array4">
+          <record name="Array4Rec" optional="false">
+            <array name="Array4" optional="false">
+              <bit_field name="BitField1" field_type_unsigned="unsigned integer" optional="false"
+                interpretation="A timestamp specified in an unsigned integer">
+                <sub_field name="Milliseconds">
+                  <bit_range from_index="0" to_index="9"/>
+                  <value_set offset_to_lower_limit="false">
+                    <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="999"
+                      upper_limit_type="inclusive"/>
+                  </value_set>
+                </sub_field>
+                <sub_field name="Seconds">
+                  <bit_range from_index="10" to_index="15" interpretation="0-59 Seconds per minute"/>
+                  <value_set offset_to_lower_limit="false">
+                    <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+                      upper_limit_type="inclusive"/>
+                  </value_set>
+                </sub_field>
+                <sub_field name="Minutes">
+                  <bit_range from_index="16" to_index="21"/>
+                  <value_set offset_to_lower_limit="false">
+                    <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="59"
+                      upper_limit_type="inclusive"/>
+                  </value_set>
+                </sub_field>
+                <sub_field name="Hour">
+                  <bit_range from_index="22" to_index="26"/>
+                  <value_set offset_to_lower_limit="false">
+                    <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="23"
+                      upper_limit_type="inclusive"/>
+                  </value_set>
+                </sub_field>
+                <sub_field name="Day">
+                  <bit_range from_index="27" to_index="31"/>
+                  <value_set offset_to_lower_limit="false">
+                    <value_range lower_limit_type="inclusive" lower_limit="1" upper_limit="31"
+                      upper_limit_type="inclusive"/>
+                  </value_set>
+                </sub_field>
+              </bit_field>
+              <dimension name="dimension4" size="2"/>
+            </array>            
+          </record>
+        </body>
+        <footer name="Array"/>
+      </message_def>
+      
+      <!-- fixed_length_string element -->
+      <message_def name="Array5" message_id="0115" is_command="false">
+        <description>
+          A message to test the array entity. Contains an array with 
+          a fixed_length_string entity and one dimension.
+        </description>
+        <header name="Array"/>
+        <body name="Array5">
+          <record name="Array5Rec" optional="false">
+            <array name="Array5" optional="false">
+              <fixed_length_string name="subsystem_name" string_length="80" optional="false" />
+              <dimension name="dimension5" size="2"/>      
+            </array>
+          </record>
+        </body>
+        <footer name="Array"/>
+      </message_def>
+      
+      <!-- variable_length_string element -->
+      <message_def name="Array6" message_id="0116" is_command="false">
+        <description>
+          A message to test the array entity. Contains a record with a variable_length_string entity.
+        </description>
+        <header name="Array"/>
+        <body name="Array6">
+          <record name="Array6Rec" optional="false">
+            <array name="Array6" optional="false">
+              <variable_length_string name="node_description" interpretation="a brief description of the node's functions" optional="true">
+                <count_field field_type_unsigned="unsigned byte"/>
+              </variable_length_string>
+              <dimension name="dimension6" size="2"/>      
+            </array>
+          </record>
+        </body>
+        <footer name="Array"/>
+      </message_def>
+      
+      <!-- variable_format_field element -->
+      <message_def name="Array7" message_id="0117" is_command="false">
+        <description>
+          A message to test the array entity. Contains an array with a 
+          variable_format_field entity and one dimension.
+        </description>
+        <header name="Array"/>
+        <body name="Array7">
+          <record name="Array7Rec" optional="false">
+            <array name="Array7" optional="false">
+              <variable_format_field name="video_frames" optional="false">
+                <format_field>
+                  <format_enum index="0" field_format="MJPEG"/>
+                  <format_enum index="1" field_format="MPEG-1"/>
+                  <format_enum index="2" field_format="MPEG-2"/>
+                  <format_enum index="3" field_format="MP4"/>
+                </format_field>
+                <count_field field_type_unsigned="unsigned short integer"/>
+              </variable_format_field>            
+              <dimension name="dimension7" size="2"/>      
+            </array>
+          </record>
+        </body>
+        <footer name="Array"/>
+      </message_def>
+      
+      <!-- fixed_field element, 2 dimensions -->
+      <message_def name="Array8" message_id="0118" is_command="false">
+        <description>
+          A message to test the array entity. Contains an array with a 
+          fixed_field and multiple dimensions.
+        </description>
+        <header name="Array"/>
+        <body name="Array8">
+          <record name="Array1Rec" optional="false">
+            <array name="Array8" optional="false">
+              <fixed_field name="FixedField1" field_type="byte" field_units="one" optional="false"/>
+              <dimension name="dimension8" size="2"/>
+              <dimension name="dimension9" size="10"/>
+            </array>
+         </record>
+        </body>
+        <footer name="Array"/>
+      </message_def>
+      
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_Array" state_name="init"/>
+    <state_machine name="SD_Array">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

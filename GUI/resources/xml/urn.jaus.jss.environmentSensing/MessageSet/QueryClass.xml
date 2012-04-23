@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="QueryClass"
+	id="urn:jaus:jss:environmentSensing:MessageSet:QueryClass"
+	version="1.0">
+	<declared_type_set_ref name="coreTypes"
+		id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.0"/>
+	<declared_type_set_ref name="environmentTypes"
+		id="urn:jaus:jss:environmentSensing:MessageSet:BasicTypes"
+		version="1.0"/>
+
+	<message_def name="QueryRangeSensorCapabilities" message_id="2801"
+		is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Range Sensor Capabilities message. A logical AND shall be 
+			performed on the requested presence vector and that 
+			representing the available fields from the responder. 
+			The resulting message shall contain the fields indicated 
+			by the result of this logical AND operation.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="RangeSensorCapabilitiesList" optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryRangeSensorCapabilitiesRec"
+					optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned short integer"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryRangeSensorConfiguration"
+		message_id="2802" is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Range Sensor Configuration message. A logical AND shall be 
+			performed on the requested presence vector and that representing 
+			the available fields from the responder. The resulting message 
+			shall contain the fields indicated by the result of this logical 
+			AND operation.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="RangeSensorConfigurationList" optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryRangeSensorConfigurationRec"
+					optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned short integer"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryRangeSensorData" message_id="2803"
+		is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Range Sensor Data message. A logical AND shall be performed 
+			on the requested presence vector and that representing the 
+			available fields from the responder. The resulting message 
+			shall contain the fields indicated by the result of this logical 
+			AND operation. The second field specifies which coordinate 
+			system the data should be reported in, either the sensor’s 
+			native coordinate system or, if supported, a coordinate system 
+			specified by a Set Specified Sensor Coordinate System message.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="QueryRangeSensorDataList" optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryRangeSensorDataRec"
+					optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<declared_fixed_field
+						name="ReportCoordinateSystem"
+						declared_type_ref="environmentTypes.CoordinateSystemEnum"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned short integer"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryRangeSensorCompressedData"
+		message_id="2804" is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report Range 
+			Sensor Compressed Data message. A logical AND shall be 
+			performed on the requested presence vector and that representing 
+			the available fields from the responder. The resulting message 
+			shall contain the fields indicated by the result of this logical 
+			AND operation. The third field specifies which coordinate system 
+			the data should be reported in, either the sensor’s native 
+			coordinate system or, if supported, a coordinate system specified 
+			by a Set Specified Sensor Coordinate System message. The fourth 
+			field specifies the data compression algorithm. Three compression 
+			algorithms are supported: DEFLATE, bzip2 and LZMA.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="QueryRangeSensorCompressedDataList"
+				optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryRangeSensorCompressedDataRec"
+					optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<declared_fixed_field
+						name="ReportCoordinateSystem"
+						declared_type_ref="environmentTypes.CoordinateSystemEnum"
+						optional="false"/>
+					<declared_fixed_field name="DataCompression"
+						declared_type_ref="environmentTypes.DataCompressionEnum"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned short integer"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QuerySensorGeometricProperties"
+		message_id="2805" is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving component to reply to the requestor with a Report 
+			Sensor Geometric Properties message.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<declared_list name="SensorIdList"
+				declared_type_ref="environmentTypes.SensorIdList"
+				optional="false"/>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryVisualSensorCapabilities"
+		message_id="2806" is_command="false">
+		<description xml:space="preserve">This message must be used to 
+			query for the capabilities of all available visual sensors 
+			on the receiving service. It shall cause the receiving service 
+			to reply to the requestor with a Report Visual Sensor 
+			Capabilities message. A logical AND shall be performed on 
+			the requested presence vector and that representing the 
+			available fields from the responder.  The resulting message 
+			shall contain the fields indicated by the result of this 
+			logical AND operation.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="QueryVisualSensorCapabilitiesList"
+				optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryVisualSensorCapabilitiesRec"
+					optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned short integer"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryVisualSensorConfiguration"
+		message_id="2807" is_command="false">
+		<description xml:space="preserve">This message must be used to 
+			query for the current configuration of the given visual sensor(s). 
+			It shall cause the receiving service to reply to the requestor 
+			with a Report Visual Sensor Configuration message. A logical 
+			AND shall be performed on the requested presence vector and 
+			that representing the available fields from the responder. 
+			The resulting message shall contain the fields indicated by 
+			the result of this logical AND operation.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="QueryVisualSensorConfigurationList"
+				optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryVisualSensorConfigurationRec"
+					optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned short integer"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryDigitalVideoSensorCapabilities"
+		message_id="2808" is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Digital Video Sensor Capabilities message. A logical AND 
+			shall be performed on the requested presence vector and 
+			that representing the available fields from the responder.  
+			The resulting message shall contain the fields indicated 
+			by the result of this logical AND operation.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="QueryDigitalVideoSensorCapabilitiesList"
+				optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryDigitalVideoSensorCapabilitiesRec"
+					optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned byte"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryDigitalVideoSensorConfiguration"
+		message_id="2809" is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Digital Video Sensor Configuration message. A logical AND 
+			shall be performed on the requested presence vector and 
+			that representing the available fields from the responder.  
+			The resulting message shall contain the fields indicated by 
+			the result of this logical AND operation.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="QueryDigitalVideoConfigurationList"
+				optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryDigitalVideoConfigurationRec"
+					optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned byte"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryAnalogVideoSensorCapabilities"
+		message_id="2810" is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Analog Video Sensor Capabilities message.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<declared_list name="SensorIdList"
+				declared_type_ref="environmentTypes.SensorIdList"
+				optional="false"/>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryAnalogVideoSensorConfiguration"
+		message_id="2811" is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Analog Video Sensor Configuration message.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<declared_list name="SensorIdList"
+				declared_type_ref="environmentTypes.SensorIdList"
+				optional="false"/>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryStillImageSensorCapabilities"
+		message_id="2812" is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Still Image Sensor Capabilities message. A logical AND shall 
+			be performed on the requested presence vector and that 
+			representing the available fields from the responder.  The 
+			resulting message shall contain the fields indicated by the 
+			result of this logical AND operation.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="QueryStillImageSensorCapabilitiesList"
+				optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryStillImageSensorCapabilitiesRec"
+					optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned byte"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryStillImageSensorConfiguration"
+		message_id="2813" is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Still Image Sensor Configuration message. A logical AND shall
+			be performed on the requested presence vector and that 
+			representing the available fields from the responder.  The 
+			resulting message shall contain the fields indicated by the 
+			result of this logical AND operation.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="QueryStillImageSensorConfigurationList"
+				optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryStillImageSensorConfigurationRec"
+					optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned byte"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+	<message_def name="QueryStillImageData" message_id="2814"
+		is_command="false">
+		<description xml:space="preserve">This message shall cause the 
+			receiving component to reply to the requestor with a Report 
+			Still Image Data message.  A logical AND shall be performed 
+			on the requested presence vector and that representing the 
+			available fields from the responder.  The resulting message 
+			shall contain the fields indicated by the result of this 
+			logical AND operation.</description>
+		<declared_header name="AppHeader"
+			declared_type_ref="coreTypes.JAUSApplicationLayerHeader"/>
+		<body name="Body">
+			<list name="QueryStillImageDataList" optional="false">
+				<count_field min_count="0" max_count="65535"
+					field_type_unsigned="unsigned short integer"/>
+				<record name="QueryStillImageDataRec" optional="false">
+					<declared_fixed_field name="SensorID"
+						declared_type_ref="environmentTypes.SensorID"
+						optional="false"/>
+					<declared_fixed_field
+						name="ReportCoordinateSystem"
+						declared_type_ref="environmentTypes.CoordinateSystemEnum"
+						optional="false"/>
+					<fixed_field name="QueryPresenceVector"
+						optional="false" field_units="one"
+						field_type="unsigned byte"/>
+				</record>
+			</list>
+		</body>
+		<footer name="Footer"/>
+	</message_def>
+
+</declared_type_set>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<array name="Array5" optional="false" interpretation="A fixed length string in an array may not be optional"  xmlns="urn:jaus:jsidl:1.0">
+	<fixed_length_string name="subsystem_name" string_length="80" optional="true" xmlns="urn:jaus:jsidl:1.0"/>
+	<dimension name="dimension1" size="9"/>
+	<dimension name="dimension2" size="1"/>
+</array>

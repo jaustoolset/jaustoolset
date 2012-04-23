@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<default_state xmlns="urn:jaus:jsidl:1.0">
+  <transition name="Run">
+    <parameter type="message_def" value="Run"/>
+    <parameter type="message_def" value="proc_avail"/>
+
+    <guard condition="is_Processor_Available(proc_avail) == true &amp;&amp; isValid( Run )"/>
+
+    <simple>
+      <end_state state="Running"/>
+    </simple>
+
+    <action name="Stop_Timer">
+      <!-- String constant encased in double quotes and then in single quotes -->
+      <argument value= " ‘Idle’ "/>
+    </action>
+
+    <action name="Do_Work">
+      <argument value="Run"/>
+    </action>
+  </transition>
+  
+  <transition name="Run">
+    <parameter type="message_def" value="Run"/>
+    <parameter type="message_def" value="proc_avail"/>
+
+    <guard condition="is_Processor_Available(proc_avail) == true &amp;&amp; isValid( Run )"/>
+
+    <simple>
+      <end_state state="Running"/>
+    </simple>
+
+    <action name="Stop_Timer">
+      <!-- String constant encased in double quotes and then in single quotes -->
+      <argument value= " ‘Idle’ "/>
+    </action>
+
+    <action name="Do_Work">
+      <argument value="Run"/>
+    </action>
+  </transition>
+
+  <transition name="Stop">
+    <simple>
+      <end_state state="Idle"/>
+    </simple>
+
+    <action name="Clean_Up"/>
+  </transition>
+
+  <default_transition>
+    <simple>
+      <end_state state="Retry_Connection"/>
+    </simple>
+    <action name="Stop_Connecting"/>
+  </default_transition>
+
+</default_state>

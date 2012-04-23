@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl_plus:0.11" 
+  name="SD_VariableLengthField" id="ImportTest:SD_VariableLengthField" version="1.0">
+  <description xml:space="preserve">
+    This service def was created to test the import function of the JTS GUI. 
+    This service tests a variable_length_field entity with all levels of multiplicity and options.
+
+    The 1st message_def contains a variable_length_field with all optional items missing.
+    The 2nd message_def contains a variable_length_field with all optional elements (and sub-elements).
+  </description>
+
+  <!-- 
+    element variable_length_field 
+    {
+      attribute name { identifier },
+      attribute_field_format,
+      attribute optional {xsd:boolean },
+      attribute interpretation { text }?,  
+    count_field 
+    }
+
+    attribute field_format 
+    { 
+      "AU" | "BMP" | "JPEG" | "MJPEG" | "MPEG-1" | "MPEG-2"
+      | "MP2" | "MP3" | "MP4" | "RAW" | "WAV" | "JAUS MESSAGE" 
+      | "XML" | "RNC" | "RNG" | "XSD" | text
+    }
+
+    element count_field 
+    { 
+      attribute_field_type_unsigned, 
+      attribute min_count { identifier_ns | xsd:unsignedInt }?,
+      attribute max_count{ identifier_ns | xsd:unsignedInt }?,
+      attribute interpretation { text }?
+    }    
+  -->
+
+  <assumptions xml:space="preserve">
+    Messages may be lost or reordered.
+  </assumptions>
+  <message_set>
+    <input_set>
+
+      <!-- No optional elements, variable_length_field -->
+      <message_def name="VariableLengthField1" message_id="0171" is_command="false">
+        <description>
+          The 1st message_def contains a variable_length_field with all optional items missing.
+        </description>
+        <header name="VariableLengthField"/>
+        <body name="VariableLengthField1">
+          <record name="VariableLengthField1Rec" optional="false">
+            <variable_length_field name="Field1" field_format="JAUS MESSAGE" optional="false" >
+              <count_field field_type_unsigned="unsigned integer"/>
+            </variable_length_field>
+          </record>
+          </body>
+          <footer name="VariableLengthField"/>
+      </message_def>
+
+      <!-- All optional elements, variable_length_field -->
+      <message_def name="VariableLengthField2" message_id="0172" is_command="false">
+        <description>
+          The 2nd message_def contains a variable_length_field with all optional elements (and sub-elements).
+        </description>
+        <header name="VariableLengthField"/>
+        <body name="VariableLengthField2">
+          <record name="VariableLengthField2Rec" optional="false">
+            <variable_length_field name="Field2" field_format="BMP" optional="true" interpretation="This is a variable_length_field interpretation.">
+              <count_field field_type_unsigned="unsigned integer" min_count="0" max_count="150000" interpretation="This is some count field"/>
+            </variable_length_field>
+          </record>
+        </body>
+        <footer name="VariableLengthField"/>
+      </message_def>
+
+    </input_set>
+    <output_set/>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior>
+    <start state_machine_name="SD_VariableLengthField" state_name="init"/>
+    <state_machine name="SD_VariableLengthField">
+      <state name="init"/>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

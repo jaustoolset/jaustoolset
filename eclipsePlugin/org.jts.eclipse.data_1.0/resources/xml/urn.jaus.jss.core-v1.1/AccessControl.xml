@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" xmlns:ns2="urn:jaus:jsidl:1.1"
+  name="AccessControl" id="urn:jaus:jss:core:AccessControl" version="1.1">
+  <description xml:space="preserve">
+    The Access Control service offers a basic interface for acquiring preemptable exclusive control to one or more related services that utilize this function. Once the exclusive control is established, the related services shall only execute commands originating from the controlling component. The authority code parameter of this service is used for preemption and is to be set equal to that of its controlling client. This service always grants control to the highest authority client that is requesting exclusive control. Commands from all other clients are ignored unless from a client with higher authority.
+    This service maintains two values, a default value and a current value of a field called authority code. The default value is the value that the service is pre-configured with. Access is provided to clients based on the value of their authority code in comparison to the current value of this service.
+  </description>
+  <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+  <references>
+    <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1"/>
+  </references>
+  <declared_type_set name="Types">
+    <declared_type_set_ref name="core" id="urn:jaus:jss:core:MessageSet"
+      version="1.1"/>
+                                <fixed_length_string name="fixedLenStr" string_length="20" optional="false"/>
+                        <variable_length_string name="varLenStr" optional="false">
+                            <count_field min_count="20" max_count="30" field_type_unsigned="unsigned byte"/>
+                        </variable_length_string>
+
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="RequestControl"
+        declared_type_ref="core.commandClass.RequestControl"/>
+      <declared_message_def name="ReleaseControl"
+        declared_type_ref="core.commandClass.ReleaseControl"/>
+      <declared_message_def name="QueryControl"
+        declared_type_ref="core.queryClass.QueryControl"/>
+      <declared_message_def name="QueryAuthority"
+        declared_type_ref="core.queryClass.QueryAuthority"/>
+      <declared_message_def name="SetAuthority"
+        declared_type_ref="core.commandClass.SetAuthority"/>
+      <declared_message_def name="QueryTimeout"
+        declared_type_ref="core.queryClass.QueryTimeout"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportControl"
+        declared_type_ref="core.informClass.ReportControl"/>
+      <declared_message_def name="RejectControl"
+        declared_type_ref="core.commandClass.RejectControl"/>
+      <declared_message_def name="ConfirmControl"
+        declared_type_ref="core.commandClass.ConfirmControl"/>
+      <declared_message_def name="ReportAuthority"
+        declared_type_ref="core.informClass.ReportAuthority"/>
+      <declared_message_def name="ReportTimeout"
+        declared_type_ref="core.informClass.ReportTimeout"/>
+    </output_set>
+  </message_set>
+  <internal_events_set>
+    <event_def name="Timedout">
+      <description> Occurs when access is not re-acquired periodically </description>
+      <header name="Header"/>
+      <body name="Body"/>
+      <footer name="Footer"/>
+    </event_def>
+  </internal_events_set>
+  <protocol_behavior is_stateless="false">
+    <start state_machine_name="events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled.Available"/>
+    <state_machine name="events.transport.ReceiveFSM" interpretation="extending
+      ReceiveFSM of base       service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine
+        state in order to         extend">
+        <state name="Ready" initial_state="NotControlled"
+          interpretation="redefine state in order to extend">
+          <state name="NotControlled" initial_state="Available">
+            <entry interpretation="Set the services current authority value to
+              the default authority value">
+              <action name="init"/>
+            </entry>
+            <transition name="events.transport.Receive">
+              <parameter type="ReleaseControl" value="msg"
+                interpretation="enveloped release control message"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                interpretation="transport data"/>
+              <ns2:internal/>
+              <action name="events.transport.Send" interpretation="Send a Reject
+                Control message to the client requesting release">
+                <argument value=" 'RejectControl' "/>
+                <argument value=" 'CONTROL_RELEASED' "/>
+                <argument value="transportData"/>
+              </action>
+            </transition>
+            <state name="Available">
+              <transition name="events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request                 control
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="isDefaultAuthorityGreater(msg)"
+                  interpretation="True if the                 default authority
+                  code of this service is greater than the authority code of the
+                  client service that triggered the corresponding transition"/>
+                <ns2:internal/>
+                <action name="events.transport.Send" interpretation="Send a
+                  confirm control                 message with the specified
+                  response code to requesting client">
+                  <argument value=" 'ConfirmControl' "/>
+                  <argument value=" 'INSUFFICIENT_AUTHORITY' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <transition name="events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request                 control
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="! isDefaultAuthorityGreater(msg)"
+                  interpretation="True if the base                 authority
+                  code of this service is greater than the authority code of the
+                  client                 service that triggered the
+                  corresponding                   transition"/>
+                <simple>
+                  <end_state state="Receiving.Ready.Controlled.Available"/>
+                </simple>
+                <action name="StoreAddress" interpretation="Store the address of
+                  the client that                 sent the message that caused
+                  this action to be executed">
+                  <argument value="transportData"/>
+                </action>
+                <action name="SetAuthority" interpretation="Set the current
+                  authority value of this                 service to the
+                  specified                   authority">
+                  <argument value="msg"/>
+                </action>
+                <action name="ResetTimer" interpretation="Reset the timer"/>
+                <action name="events.transport.Send" interpretation="Send a
+                  confirm control                 message with the specified
+                  response code to requesting client">
+                  <argument value=" 'ConfirmControl' "/>
+                  <argument value=" 'CONTROL_ACCEPTED' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+            </state>
+            <state name="NotAvailable">
+              <transition name="events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request                 control
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <ns2:internal/>
+                <action name="events.transport.Send" interpretation="Send a
+                  confirm component control                 message with the
+                  specified response code to requesting client">
+                  <argument value=" 'ConfirmControl' "/>
+                  <argument value=" 'NOT_AVAILABLE' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+            </state>
+          </state>
+          <state name="Controlled" initial_state="Available">
+            <transition name="events.transport.Receive">
+              <parameter type="SetAuthority" value="msg"
+                interpretation="enveloped set authority message"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                interpretation="transport data"/>
+              <guard condition="isAuthorityValid(msg) &amp;&amp;
+                isControllingClient( transportData )" interpretation="True if
+                the value of the                 authority                  code
+                received from the client is less than or equal to
+                the current authority value                  of this service, ,
+                but greater than or                 equal to the receiving
+                components default authority,                 and if the
+                message that triggered the transition is received from the
+                client                 that is in control of this service"/>
+              <ns2:internal/>
+              <action name="SetAuthority" interpretation="Set the current
+                authority value of this                 service to the specified
+                authority">
+                <argument value="msg"/>
+              </action>
+            </transition>
+            <state name="Available">
+              <transition name="events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request                 control
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="isCurrentAuthorityLess(msg) &amp;&amp;
+                  !                   isControllingClient( transportData )"
+                  interpretation="True if                   the current
+                  authority value of                 this service is
+                  less than the authority code of the client service that
+                  triggered                 the corresponding transition, and if
+                  the message that triggered the transition is
+                  not                   received from the client that is in
+                  control of this service"/>
+                <ns2:internal/>
+                <action name="events.transport.Send" interpretation="Send a
+                  Reject                   Control message to
+                  current                   controlling client">
+                  <argument value=" 'RejectControl' " interpretation="Send a
+                    Reject Control message with the specified response code to
+                    the                     client that currently has control."/>
+                  <argument value=" 'CONTROL_RELEASED' "/>
+                  <argument value="transportData"/>
+                </action>
+                <action name="StoreAddress" interpretation="Store the address of
+                  the client that                 sent                   the
+                  message that caused this action to be executed">
+                  <argument value="transportData"/>
+                </action>
+                <action name="SetAuthority" interpretation="Set the current
+                  authority value of this                 service to the
+                  specified                   authority">
+                  <argument value="msg"/>
+                </action>
+                <action name="ResetTimer" interpretation="Reset the timer"/>
+                <action name="events.transport.Send" interpretation="Send a
+                  confirm control                 message with the specified
+                  response code to requesting client">
+                  <argument value=" 'ConfirmControl' "/>
+                  <argument value=" 'CONTROL_ACCEPTED' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <transition name="events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request                 control
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="! isCurrentAuthorityLess(msg)
+                  &amp;&amp;                   !
+                  isControllingClient( transportData )" interpretation="True if
+                  the current authority value of                   this service
+                  is not less than the authority code of the client
+                  service that                 triggered the corresponding
+                  transition, and if the message that triggered
+                  the transition is received from the client that is in control
+                  of                   this service"/>
+                <ns2:internal/>
+                <action name="events.transport.Send" interpretation="Send a
+                  confirm control                 message with the specified
+                  response code to requesting client">
+                  <argument value=" 'ConfirmControl' "/>
+                  <argument value=" 'INSUFFICIENT_AUTHORITY' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <transition name="events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request                 control
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="! isDefaultAuthorityGreater(msg)
+                  &amp;&amp;                 isControllingClient(
+                  transportData )" interpretation="True if the default authority
+                  code of                 this service is not greater than the
+                  authority code of the client service that
+                  triggered the corresponding transition, and if the message
+                  that                   triggered the
+                  transition is received from the                   client that
+                  is in control of this service"/>
+                <ns2:internal/>
+                <action name="ResetTimer" interpretation="Reset the timer"/>
+                <action name="SetAuthority" interpretation="Set the current
+                  authority value of this                 service to the
+                  specified                   authority">
+                  <argument value="msg"/>
+                </action>
+                <action name="events.transport.Send" interpretation="Send a
+                  confirm control                 message with the specified
+                  response code to requesting client">
+                  <argument value=" 'ConfirmControl' "/>
+                  <argument value=" 'CONTROL_ACCEPTED' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <transition name="events.transport.Receive">
+                <parameter type="ReleaseControl" value="msg"
+                  interpretation="enveloped release                 control
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="isControllingClient( transportData )"
+                  interpretation="True if                   the message that
+                  triggered the transition is                   received from
+                  the client that is in control of this
+                  service"/>
+                <simple>
+                  <end_state state="Receiving.Ready.NotControlled.Available"/>
+                </simple>
+                <action name="events.transport.Send" interpretation="Send a
+                  Reject                   Control message with the specified
+                  response code to the client                   requesting
+                  release">
+                  <argument value=" 'RejectControl' "/>
+                  <argument value=" 'CONTROL_RELEASED' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <transition name="transport.Receive">
+                <parameter type="RequestControl" value="msg"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                <guard condition="isDefaultAuthorityGreater(msg)
+                  &amp;&amp;
+                  isControllingClient(transportData)" interpretation="True if
+                  the                   default authority code of this
+                  service is                   greater than the authority code
+                  of the client service that                   triggered the
+                  corresponding transition, and if                   the message
+                  that triggered the transition is                   received
+                  from the client that is in control of this service"/>
+                <simple>
+                  <end_state state="Receiving.Ready.NotControlled.Available"/>
+                </simple>
+                <action name="transport.Send" interpretation="Send a Reject
+                  Control message">
+                  <argument value=" 'RejectControl' " interpretation="Send a
+                    Reject Control message with the specified response code to
+                    the                     client that currently has control"/>
+                  <argument value=" 'CONTROL_RELEASED'"/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <transition name="Timedout">
+                <simple>
+                  <end_state state="Receiving.Ready.NotControlled.Available"/>
+                </simple>
+                <action name="events.transport.Send" interpretation="Send a
+                  Reject                   Control message to
+                  controlling client">
+                  <argument value=" 'RejectControl' " interpretation="Send a
+                    Reject Control message with the specified response code to
+                    the                     client that currently has control"/>
+                  <argument value=" 'CONTROL_RELEASED' "/>
+                </action>
+              </transition>
+            </state>
+            <state name="NotAvailable">
+              <transition name="events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request                 control
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <ns2:internal/>
+                <action name="events.transport.Send" interpretation="Send a
+                  confirm control                 message with the specified
+                  response code to requesting client">
+                  <argument value=" 'ConfirmControl' "/>
+                  <argument value=" 'NOT_AVAILABLE' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <transition name="events.transport.Receive">
+                <parameter type="ReleaseControl" value="msg"
+                  interpretation="enveloped request                 control
+                  message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <ns2:internal/>
+                <action name="events.transport.Send" interpretation="Send a
+                  reject                   control                 message
+                  with the                   specified response code to the
+                  client requesting release">
+                  <argument value=" 'RejectControl' "/>
+                  <argument value=" 'NOT_AVAILABLE' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <transition name="Timedout">
+                <internal xmlns="urn:jaus:jsidl:1.1"/>
+                <action name="resetTimer" interpretation="reset the timer"/>
+              </transition>
+            </state>
+          </state>
+          <default_state>
+            <transition name="events.transport.Receive">
+              <parameter type="QueryAuthority" value="msg"
+                interpretation="enveloped query                 authority
+                message"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                interpretation="transport data"/>
+              <ns2:internal/>
+              <action name="events.transport.Send" interpretation="Send a Report
+                Authority message                 to                 querying
+                client">
+                <argument value=" 'ReportAuthority' "/>
+                <argument value="transportData"/>
+              </action>
+            </transition>
+            <transition name="events.transport.Receive">
+              <parameter type="QueryTimeout" value="msg"
+                interpretation="enveloped query                 timeout message"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                interpretation="transport data"/>
+              <ns2:internal/>
+              <action name="events.transport.Send" interpretation="Send a Report
+                Timeout message to                 querying client">
+                <argument value=" 'ReportTimeout' "/>
+                <argument value="transportData"/>
+              </action>
+            </transition>
+            <transition name="events.transport.Receive">
+              <parameter type="QueryControl" value="msg"
+                interpretation="enveloped query control                 message"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                interpretation="transport data"/>
+              <ns2:internal/>
+              <action name="events.transport.Send" interpretation="Send a Report
+                Control message                 with the
+                specified control value">
+                <argument value=" 'ReportControl' "/>
+                <argument value="transportData"/>
+              </action>
+            </transition>
+          </default_state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:service_set xmlns:ns1="urn:jaus:jsidl:plus" name="TestSet" id="urn:DeVivo:jaus_services:TestSet" version="0.1" xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">The set of services to be tested</description>
+  <service_def name="Variant4" id="urn:org.jts.test:Variant4" version="1.0"
+    xmlns="urn:jaus:jsidl:1.0">
+    <description/>
+    <assumptions/>
+    <message_set>
+      <input_set>
+  			<message_def name="MsgIn" is_command="true" message_id="0001">
+  				<description xml:space="default"/>
+          <header name="Header">
+            <record name="HeaderRec" optional="false">
+              <fixed_field name="MessageID" field_type="unsigned short integer" field_units="one"
+                optional="false" interpretation="A two byte field to hold the message ID of a message"/>
+            </record>          
+          </header>
+          <body name="Body">
+            <variant name="VariantTop" optional="false" interpretation="Variant containing sequences">
+              <vtag_field field_type_unsigned="unsigned byte" min_count="0" max_count="3"/>
+              <sequence name="SeqA" optional="false" interpretation="A sequence containing a record and a list">
+                <record name="RecA" optional="false">
+                  <fixed_field name="fieldA1" field_type="short integer" field_units="one" optional="false"/>
+                </record>
+                <list name="ListA" optional="false">
+                  <count_field field_type_unsigned="unsigned byte"/>
+                  <record name="RecAInner" optional="false">
+                    <fixed_field name="fieldA2" field_type="short integer" field_units="one" optional="false"/>
+                  </record>
+                </list>
+              </sequence>
+              <sequence name="SeqB" optional="false" interpretation="A sequence containing a record and a list">
+                <record name="RecB" optional="false">
+                  <fixed_field name="fieldB1" field_type="short integer" field_units="one" optional="false"/>
+                </record>
+                <list name="ListB" optional="false">
+                  <count_field field_type_unsigned="unsigned byte"/>
+                  <record name="RecBInner" optional="false">
+                    <fixed_field name="fieldB2" field_type="short integer" field_units="one" optional="false"/>
+                  </record>
+                </list>
+              </sequence>
+            </variant>
+          </body>
+          <footer name="EmptyFooter"/>
+        </message_def>
+      </input_set>
+      <output_set/>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+      <start state_machine_name="stateMachine" state_name="Ready"/>
+      <state_machine name="stateMachine">
+        <state name="Ready"/>
+      </state_machine>
+    </protocol_behavior>
+  </service_def>
+</ns1:service_set>
