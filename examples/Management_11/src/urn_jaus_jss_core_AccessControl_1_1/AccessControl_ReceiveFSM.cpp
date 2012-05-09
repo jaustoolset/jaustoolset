@@ -144,6 +144,7 @@ void AccessControl_ReceiveFSM::StoreAddressAction(Receive::Body::ReceiveRec tran
 		(unsigned short)transportData.getSourceID()->getNodeID() << "." <<
 		(unsigned short)transportData.getSourceID()->getComponentID() << std::endl;
 
+	if (currentController) delete currentController;
 	currentController = new JausAddress(transportData.getSourceID()->getSubsystemID(),
 		transportData.getSourceID()->getNodeID(), transportData.getSourceID()->getComponentID());
 
