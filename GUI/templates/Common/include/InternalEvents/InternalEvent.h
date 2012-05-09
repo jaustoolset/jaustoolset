@@ -47,7 +47,7 @@ public:
 		m_Name = name;
 	    m_Source = source;
 	};
-   ~InternalEvent(){};
+    virtual ~InternalEvent(){};
 	jVariableLengthString getName() { return m_Name; };
 	jVariableLengthString getSource() { return m_Source; };
 
