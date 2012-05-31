@@ -944,8 +944,9 @@ public class VariableLengthStringGenerator
                 code.decoderLines.add("\tcountfield = " + code.getNameSpace() + "::correctEndianness(countfield);");
                 code.decoderLines.add("\tpos += sizeof(" + lengthType + ");");
                 code.decoderLines.add("");
-                code.decoderLines.add("\tchar string_data[countfield];");
+                code.decoderLines.add("\tchar string_data[countfield+1];");
                 code.decoderLines.add("\tmemcpy(string_data, bytes+pos, countfield);");
+                code.decoderLines.add("\tstring_data[countfield] = 0;");
                 code.decoderLines.add("\tpos += countfield;");
                 code.decoderLines.add("\tstd::string tmp_string(string_data);");
                 code.decoderLines.add("");
