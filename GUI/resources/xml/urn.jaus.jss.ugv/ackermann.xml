@@ -23,8 +23,8 @@
                     </record>
                 </header>
                 <body name="body">
-                    <record name="ackermanData" optional="false"
-                        interpretation="Effort in range [0.0, 100.0]">
+                    <record name="ackermanData" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
                         <fixed_field name="SteeringPosition"
                             optional="false"
                             field_type="unsigned short integer"
@@ -48,6 +48,22 @@
                             <scale_range real_lower_limit="0.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="MaxSteeringRate"
+                              optional="true"
+                              field_type="unsigned short integer"
+                              field_units="radian per second">
+                          <scale_range real_lower_limit="0.0"
+                              real_upper_limit="327.67"
+                              integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="MaxSteeringTorque"
+                              optional="true"
+                              field_type="unsigned short integer"
+                              field_units="newton meter">
+                          <scale_range real_lower_limit="0.0"
+                              real_upper_limit="500"
+                              integer_function="round"/>
                         </fixed_field>
                     </record>
                 </body>
@@ -81,33 +97,49 @@
                     </record>
                 </header>
                 <body name="body">
-                    <record name="ackermanData" optional="false"
-                        interpretation="Effort in range [0.0, 100.0]">
-                        <fixed_field name="SteeringPosition"
-                            optional="false"
-                            field_type="unsigned short integer"
-                            field_units="radian">
-                            <scale_range real_lower_limit="-24.0"
-                                real_upper_limit="24.0"
-                                integer_function="round"/>
-                        </fixed_field>
-                        <fixed_field name="ThrottleEffort"
-                            optional="false"
-                            field_type="unsigned short integer"
-                            field_units="one">
-                            <scale_range real_lower_limit="0.0"
-                                real_upper_limit="100.0"
-                                integer_function="round"/>
-                        </fixed_field>
-                        <fixed_field name="BrakeEffort"
-                            optional="false"
-                            field_type="unsigned short integer"
-                            field_units="one">
-                            <scale_range real_lower_limit="0.0"
-                                real_upper_limit="100.0"
-                                integer_function="round"/>
-                        </fixed_field>
-                    </record>
+                  <record name="ackermanDataRec" optional="false">
+                    <presence_vector field_type_unsigned="unsigned byte"/>
+                    <fixed_field name="SteeringPosition"
+                        optional="false"
+                        field_type="unsigned short integer"
+                        field_units="radian">
+                      <scale_range real_lower_limit="-24.0"
+                          real_upper_limit="24.0"
+                          integer_function="round"/>
+                    </fixed_field>
+                    <fixed_field name="ThrottleEffort"
+                        optional="false"
+                        field_type="unsigned short integer"
+                        field_units="one">
+                      <scale_range real_lower_limit="0.0"
+                          real_upper_limit="100.0"
+                          integer_function="round"/>
+                    </fixed_field>
+                    <fixed_field name="BrakeEffort"
+                        optional="false"
+                        field_type="unsigned short integer"
+                        field_units="one">
+                      <scale_range real_lower_limit="0.0"
+                          real_upper_limit="100.0"
+                          integer_function="round"/>
+                    </fixed_field>
+                    <fixed_field name="SteeringRate"
+                              optional="true"
+                              field_type="unsigned short integer"
+                              field_units="radian per second">
+                      <scale_range real_lower_limit="-327.67"
+                          real_upper_limit="327.68"
+                          integer_function="round"/>
+                    </fixed_field>
+                    <fixed_field name="SteeringTorque"
+                          optional="true"
+                          field_type="unsigned short integer"
+                          field_units="newton meter">
+                      <scale_range real_lower_limit="-500.0"
+                          real_upper_limit="500"
+                          integer_function="round"/>
+                    </fixed_field>
+                  </record>
                 </body>
                 <footer name="footer"/>
             </message_def>

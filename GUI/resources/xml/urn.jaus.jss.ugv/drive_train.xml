@@ -161,9 +161,9 @@
                     </record>
                 </header>
                 <body name="body">
-                    <record name="transmissionStateRec"
+                    <record name="reportTransmissionStateRec"
                         optional="false">
-                        <fixed_field name="TransmissionState"
+                        <fixed_field name="RequestedTransmissionState"
                             optional="false" field_type="byte"
                             field_units="one">
                             <value_set offset_to_lower_limit="false">
@@ -200,6 +200,44 @@
                                 <value_enum enum_index="15"
                                    enum_const="L10"/>
                             </value_set>
+                        </fixed_field>
+                        <fixed_field name="ActualTransmissionState"
+                              optional="false" field_type="byte"
+                              field_units="one">
+                          <value_set offset_to_lower_limit="false">
+                            <value_enum enum_index="0"
+                               enum_const="DEFAULT"/>
+                            <value_enum enum_index="1"
+                               enum_const="PARK"/>
+                            <value_enum enum_index="2"
+                               enum_const="NEUTRAL"/>
+                            <value_enum enum_index="3"
+                               enum_const="REVERSE"/>
+                            <value_enum enum_index="4"
+                               enum_const="Reserved"/>
+                            <value_enum enum_index="5"
+                               enum_const="Reserved"/>
+                            <value_enum enum_index="6"
+                               enum_const="1st"/>
+                            <value_enum enum_index="7"
+                               enum_const="2nd"/>
+                            <value_enum enum_index="8"
+                               enum_const="3rd"/>
+                            <value_enum enum_index="9"
+                               enum_const="4th"/>
+                            <value_enum enum_index="10"
+                               enum_const="5th"/>
+                            <value_enum enum_index="11"
+                               enum_const="6th"/>
+                            <value_enum enum_index="12"
+                               enum_const="7th"/>
+                            <value_enum enum_index="13"
+                               enum_const="8th"/>
+                            <value_enum enum_index="14"
+                               enum_const="9th"/>
+                            <value_enum enum_index="15"
+                               enum_const="10th"/>
+                          </value_set>
                         </fixed_field>
                     </record>
                 </body>

@@ -77,17 +77,6 @@
                                    upper_limit_type="inclusive"/>
                                 </value_set>
                             </sub_field>
-                            <sub_field name="Reserved">
-                                <bit_range from_index="24"
-                                   to_index="31"/>
-                                <value_set
-                                   offset_to_lower_limit="false">
-                                   <value_range lower_limit="0"
-                                   lower_limit_type="inclusive"
-                                   upper_limit="512"
-                                   upper_limit_type="inclusive"/>
-                                </value_set>
-                            </sub_field>
                             <sub_field name="Headlights">
                                 <bit_range from_index="0" to_index="0"/>
                                 <value_set
@@ -189,6 +178,36 @@
                                    upper_limit="15"
                                    upper_limit_type="inclusive"/>
                                 </value_set>
+                            </sub_field>
+                            <sub_field name="HighBeams">
+                              <bit_range from_index="24" to_index="24"/>
+                              <value_set
+                                 offset_to_lower_limit="false">
+                                <value_range lower_limit="0"
+                                lower_limit_type="inclusive"
+                                upper_limit="1"
+                                upper_limit_type="inclusive"/>
+                              </value_set>
+                            </sub_field>
+                            <sub_field name="ParkingLights">
+                              <bit_range from_index="25" to_index="25"/>
+                              <value_set
+                                 offset_to_lower_limit="false">
+                                <value_range lower_limit="0"
+                                lower_limit_type="inclusive"
+                                upper_limit="1"
+                                upper_limit_type="inclusive"/>
+                              </value_set>
+                            </sub_field>
+                            <sub_field name="FogLights">
+                              <bit_range from_index="26" to_index="26"/>
+                              <value_set
+                                 offset_to_lower_limit="false">
+                                <value_range lower_limit="0"
+                                lower_limit_type="inclusive"
+                                upper_limit="1"
+                                upper_limit_type="inclusive"/>
+                              </value_set>
                             </sub_field>
                         </bit_field>
                     </record>
@@ -235,17 +254,6 @@
                                    upper_limit_type="inclusive"/>
                                 </value_set>
                             </sub_field>
-                            <sub_field name="Reserved">
-                                <bit_range from_index="24"
-                                   to_index="31"/>
-                                <value_set
-                                   offset_to_lower_limit="false">
-                                   <value_range lower_limit="0"
-                                   lower_limit_type="inclusive"
-                                   upper_limit="512"
-                                   upper_limit_type="inclusive"/>
-                                </value_set>
-                            </sub_field>
                             <sub_field name="Headlights">
                                 <bit_range from_index="0" to_index="0"/>
                                 <value_set
@@ -347,6 +355,36 @@
                                    upper_limit="15"
                                    upper_limit_type="inclusive"/>
                                 </value_set>
+                            </sub_field>
+                            <sub_field name="HighBeams">
+                              <bit_range from_index="24" to_index="24"/>
+                              <value_set
+                                 offset_to_lower_limit="false">
+                                <value_range lower_limit="0"
+                                lower_limit_type="inclusive"
+                                upper_limit="1"
+                                upper_limit_type="inclusive"/>
+                              </value_set>
+                            </sub_field>
+                            <sub_field name="ParkingLights">
+                              <bit_range from_index="25" to_index="25"/>
+                              <value_set
+                                 offset_to_lower_limit="false">
+                                <value_range lower_limit="0"
+                                lower_limit_type="inclusive"
+                                upper_limit="1"
+                                upper_limit_type="inclusive"/>
+                              </value_set>
+                            </sub_field>
+                            <sub_field name="FogLights">
+                              <bit_range from_index="26" to_index="26"/>
+                              <value_set
+                                 offset_to_lower_limit="false">
+                                <value_range lower_limit="0"
+                                lower_limit_type="inclusive"
+                                upper_limit="1"
+                                upper_limit_type="inclusive"/>
+                              </value_set>
                             </sub_field>
                         </bit_field>
                     </record>
@@ -490,16 +528,38 @@
                                    upper_limit_type="inclusive"/>
                                 </value_set>
                             </sub_field>
-                            <sub_field name="Reserved">
-                                <bit_range from_index="12"
-                                   to_index="31"/>
-                                <value_set
-                                   offset_to_lower_limit="false">
-                                   <value_range lower_limit="0"
-                                   lower_limit_type="inclusive"
-                                   upper_limit="512"
-                                   upper_limit_type="inclusive"/>
-                                </value_set>
+                            <sub_field name="HighBeams">
+                              <bit_range from_index="12"
+                                 to_index="12"/>
+                              <value_set
+                                 offset_to_lower_limit="false">
+                                <value_range lower_limit="0"
+                                lower_limit_type="inclusive"
+                                upper_limit="1"
+                                upper_limit_type="inclusive"/>
+                              </value_set>
+                            </sub_field>
+                            <sub_field name="ParkingLights">
+                              <bit_range from_index="13"
+                                 to_index="13"/>
+                              <value_set
+                                 offset_to_lower_limit="false">
+                                <value_range lower_limit="0"
+                                lower_limit_type="inclusive"
+                                upper_limit="1"
+                                upper_limit_type="inclusive"/>
+                              </value_set>
+                            </sub_field>
+                            <sub_field name="FogLights">
+                              <bit_range from_index="14"
+                                 to_index="14"/>
+                              <value_set
+                                 offset_to_lower_limit="false">
+                                <value_range lower_limit="0"
+                                lower_limit_type="inclusive"
+                                upper_limit="1"
+                                upper_limit_type="inclusive"/>
+                              </value_set>
                             </sub_field>
                         </bit_field>
                     </record>

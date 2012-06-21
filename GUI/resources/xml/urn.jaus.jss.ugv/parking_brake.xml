@@ -28,12 +28,9 @@
                             optional="false"
                             field_type="unsigned byte"
                             field_units="one">
-                            <value_set offset_to_lower_limit="false">
-                                <value_enum enum_index="1"
-                                   enum_const="PARKING_BRAKE_ON"/>
-                                <value_enum enum_index="2"
-                                   enum_const="PARKING_BRAKE_OFF"/>
-                            </value_set>
+                          <scale_range real_lower_limit="0.0"
+                            real_upper_limit="100"
+                            integer_function="round"/>
                         </fixed_field>
                     </record>
                 </body>
@@ -72,12 +69,9 @@
                             optional="false"
                             field_type="unsigned byte"
                             field_units="one">
-                            <value_set offset_to_lower_limit="false">
-                                <value_enum enum_index="1"
-                                   enum_const="PARKING_BRAKE_ON"/>
-                                <value_enum enum_index="2"
-                                   enum_const="PARKING_BRAKE_OFF"/>
-                            </value_set>
+                          <scale_range real_lower_limit="0.0"
+                          real_upper_limit="100"
+                          integer_function="round"/>
                         </fixed_field>
                     </record>
                 </body>
