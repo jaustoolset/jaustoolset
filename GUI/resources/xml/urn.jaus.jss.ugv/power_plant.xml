@@ -1,0 +1,1219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="PowerPlantManager"
+    id="urn:jaus:jss:ugv:PowerPlantManager" version="1.0"
+    xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
+    xmlns:ns3="urn:jaus:jsidl:1.1">
+    <description xml:space="preserve">The powerplant driver provides the means to control vehicle power plants</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="accessControl"
+            id="urn:jaus:jss:core:AccessControl" version="1.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetPowerPlantConfiguration"
+                message_id="0506" is_command="true">
+                <description xml:space="preserve">Sets powerplant state</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <list name="powerPlantStateList" optional="false">
+                        <count_field min_count="0" max_count="256"
+                            field_type_unsigned="unsigned short integer"/>
+                        <sequence name="powerPlantState"
+                            optional="false">
+                            <record name="powerPlantID"
+                                optional="false">
+                                <fixed_field name="powerPlantID"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="255"
+                                   upper_limit_type="inclusive"/>
+                                   </value_set>
+                                </fixed_field>
+                            </record>
+                            <variant name="plantState"
+                                optional="false">
+                                <vtag_field min_count="0"
+                                   max_count="4"
+                                   field_type_unsigned="unsigned byte"/>
+                                <record name="gasEngineState"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field name="powerState"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="POWER_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="POWER_OFF"/>
+                                   <value_enum enum_index="3"
+                                   enum_const="POWER_STANDBY"/>
+                                   </value_set>
+                                   </fixed_field>
+                                   <fixed_field name="rpm"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one"/>
+                                   <fixed_field name="throttle"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="100"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                </record>
+                                <record name="dieselEngineState"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field name="powerState"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="POWER_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="POWER_OFF"/>
+                                   <value_enum enum_index="3"
+                                   enum_const="POWER_STANDBY"/>
+                                   </value_set>
+                                   </fixed_field>
+                                   <fixed_field name="rpm"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one"/>
+                                   <fixed_field name="throttle"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="100"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="plugState"
+                                   optional="true"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="GLOWPLUG_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="GLOWPLUG_OFF"/>
+                                   </value_set>
+                                   </fixed_field>
+                                </record>
+                                <record name="batteryState"
+                                   optional="false"
+                                   interpretation="This contains settable state for various powerplant types">
+                                   <fixed_field name="powerState"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="POWER_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="POWER_OFF"/>
+                                   <value_enum enum_index="3"
+                                   enum_const="POWER_STANDBY"/>
+                                   </value_set>
+                                   </fixed_field>
+                                </record>
+                                <record name="hydraulicState"
+                                   optional="false">
+                                   <fixed_field name="powerState"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="POWER_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="POWER_OFF"/>
+                                   <value_enum enum_index="3"
+                                   enum_const="POWER_STANDBY"/>
+                                   </value_set>
+                                   </fixed_field>
+                                </record>
+                                <record name="fuelCellState"
+                                   optional="false">
+                                   <fixed_field name="powerState"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="POWER_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="POWER_OFF"/>
+                                   <value_enum enum_index="3"
+                                   enum_const="POWER_STANDBY"/>
+                                   </value_set>
+                                   </fixed_field>
+                                </record>
+                            </variant>
+                        </sequence>
+                    </list>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="QueryPowerPlantConfiguration"
+                message_id="2506" is_command="false">
+                <description xml:space="preserve">Queries current powerplant state</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <list name="idList" optional="false">
+                        <count_field min_count="0" max_count="256"
+                            field_type_unsigned="unsigned short integer"/>
+                        <record name="powerPlantID" optional="false">
+                            <fixed_field name="powerPlantID"
+                                optional="false"
+                                field_type="unsigned byte"
+                                field_units="one">
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="255"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="QueryPowerPlantCapabilities"
+                message_id="2507" is_command="false">
+                <description xml:space="preserve">Request Powerplant Configuration Data</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <list name="idList" optional="false">
+                        <count_field min_count="0" max_count="256"
+                            field_type_unsigned="unsigned short integer"/>
+                        <record name="powerPlantID" optional="false">
+                            <fixed_field name="powerPlantID"
+                                optional="false"
+                                field_type="unsigned byte"
+                                field_units="one">
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="255"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="QueryPowerPlantStatus"
+                message_id="2508" is_command="false">
+                <description xml:space="preserve">Request Platform Status Data</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <list name="idList" optional="false">
+                        <count_field min_count="0" max_count="256"
+                            field_type_unsigned="unsigned short integer"/>
+                        <record name="powerPlantID" optional="false">
+                            <fixed_field name="powerPlantID"
+                                optional="false"
+                                field_type="unsigned byte"
+                                field_units="one">
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="255"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportPowerPlantConfiguration"
+                message_id="4506" is_command="false">
+                <description xml:space="preserve">Reports current powerplant state</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <list name="powerPlantStateList" optional="false">
+                        <count_field min_count="0" max_count="256"
+                            field_type_unsigned="unsigned short integer"/>
+                        <sequence name="powerPlantState"
+                            optional="false">
+                            <record name="powerPlantID"
+                                optional="false">
+                                <fixed_field name="powerPlantID"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="255"
+                                   upper_limit_type="inclusive"/>
+                                   </value_set>
+                                </fixed_field>
+                            </record>
+                            <variant name="plantState"
+                                optional="false">
+                                <vtag_field min_count="0"
+                                   max_count="4"
+                                   field_type_unsigned="unsigned byte"/>
+                                <record name="gasEngineState"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field name="powerState"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="POWER_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="POWER_OFF"/>
+                                   <value_enum enum_index="3"
+                                   enum_const="POWER_STANDBY"/>
+                                   </value_set>
+                                   </fixed_field>
+                                   <fixed_field name="rpm"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one"/>
+                                   <fixed_field name="throttle"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="100"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                </record>
+                                <record name="dieselEngineState"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field name="powerState"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="POWER_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="POWER_OFF"/>
+                                   <value_enum enum_index="3"
+                                   enum_const="POWER_STANDBY"/>
+                                   </value_set>
+                                   </fixed_field>
+                                   <fixed_field name="rpm"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one"/>
+                                   <fixed_field name="throttle"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="100"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="plugState"
+                                   optional="true"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="GLOWPLUG_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="GLOWPLUG_OFF"/>
+                                   </value_set>
+                                   </fixed_field>
+                                </record>
+                                <record name="batteryState"
+                                   optional="false"
+                                   interpretation="This contains settable state for various powerplant types">
+                                   <fixed_field name="powerState"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="POWER_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="POWER_OFF"/>
+                                   <value_enum enum_index="3"
+                                   enum_const="POWER_STANDBY"/>
+                                   </value_set>
+                                   </fixed_field>
+                                </record>
+                                <record name="hydraulicState"
+                                   optional="false">
+                                   <fixed_field name="powerState"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="POWER_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="POWER_OFF"/>
+                                   <value_enum enum_index="3"
+                                   enum_const="POWER_STANDBY"/>
+                                   </value_set>
+                                   </fixed_field>
+                                </record>
+                                <record name="fuelCellState"
+                                   optional="false">
+                                   <fixed_field name="powerState"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_enum enum_index="1"
+                                   enum_const="POWER_ON"/>
+                                   <value_enum enum_index="2"
+                                   enum_const="POWER_OFF"/>
+                                   <value_enum enum_index="3"
+                                   enum_const="POWER_STANDBY"/>
+                                   </value_set>
+                                   </fixed_field>
+                                </record>
+                            </variant>
+                        </sequence>
+                    </list>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="ReportPowerPlantCapabilities"
+                message_id="4507" is_command="false">
+                <description xml:space="preserve">Report Powerplant Configuration Data</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <list name="powerPlantConfiguration"
+                        optional="false">
+                        <count_field min_count="0" max_count="16"
+                            field_type_unsigned="unsigned byte"/>
+                        <sequence name="powerPlantConfig"
+                            optional="false">
+                            <record name="PowerPlantDescRec"
+                                optional="false">
+                                <fixed_field name="powerPlantID"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one"/>
+                                <variable_length_string
+                                   name="description" optional="false"
+                                   interpretation="A human-readable string that can be used to disambiguate multiple powerplants.">
+                                   <count_field min_count="0"
+                                   max_count="255"
+                                   field_type_unsigned="unsigned byte"
+                                   />
+                                </variable_length_string>
+                            </record>
+                            <variant name="powerPlantConfigurationVar"
+                                optional="false">
+                                <vtag_field min_count="0"
+                                   max_count="4"
+                                   field_type_unsigned="unsigned byte"/>
+                                <record name="gasEngineConfig"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field name="fuelCapacity"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="liter">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="256.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="oilCapacity"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="liter">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="256.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxOilPressure"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="bar">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="512"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxOilTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxEngineTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="256.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxCoolantLevel"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="liter">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="256"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxCoolantTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                </record>
+                                <record name="dieselEngineConfig"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned short integer"/>
+                                   <fixed_field name="fuelCapacity"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="liter">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="256.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="oilCapacity"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="liter">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="256.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxOilPressure"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="bar">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="512"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxOilTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxEngineTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="256.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxCoolantLevel"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="liter">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="256"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxCoolantTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxGlowPlugTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="256.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="glowPlugTime"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="second">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="256.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                </record>
+                                <list name="batteryConfig"
+                                   optional="false">
+                                   <count_field min_count="0"
+                                   max_count="256"
+                                   field_type_unsigned="unsigned short integer"/>
+                                   <record name="batteryConfig"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field name="nominalVoltage"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="volt">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="1000.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxAmpHr"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="ampere">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="1000.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxCrankingAmps"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="ampere">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="5000.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   </record>
+                                </list>
+                                <record name="hydraulicConfig"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field name="fluidCapacity"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="liter">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="256"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxPressure"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="bar">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="512"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="maxTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                </record>
+                                <record name="fuelCellConfig"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field name="fuelCapacity"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="kilogram">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="256"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                </record>
+                            </variant>
+                        </sequence>
+                    </list>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="ReportPowerPlantStatus"
+                message_id="4508" is_command="false">
+                <description xml:space="preserve">Report Platform Status Data</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <list name="powerPlantStatusList" optional="false">
+                        <count_field min_count="0" max_count="256"
+                            field_type_unsigned="unsigned short integer"/>
+                        <sequence name="powerPlantStatus"
+                            optional="false">
+                            <record name="powerPlantID"
+                                optional="false">
+                                <fixed_field name="powerPlantID"
+                                   optional="false"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="255"
+                                   upper_limit_type="inclusive"/>
+                                   </value_set>
+                                </fixed_field>
+                            </record>
+                            <variant name="powerPlantStatusVar"
+                                optional="false">
+                                <vtag_field min_count="0"
+                                   max_count="4"
+                                   field_type_unsigned="unsigned byte"/>
+                                <record name="gasEngineStatus"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned short integer"/>
+                                   <fixed_field
+                                   name="percentRemainingFuel"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="100.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field
+                                   name="percentOilPressure"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="200.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="percentOilLevel"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="100"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="oilTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="engineTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range
+                                   real_lower_limit="-75.0"
+                                   real_upper_limit="180.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="engineHours"
+                                   optional="true"
+                                   field_type="unsigned integer"
+                                   field_units="hour"/>
+                                   <fixed_field name="tachometer"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one"/>
+                                   <fixed_field name="coolantLevel"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="liter">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="256"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="coolantTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field
+                                   name="airIntakePressure"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="bar">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="512"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="airIntakeTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="exhaustTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                </record>
+                                <record name="dieselEngineStatus"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned short integer"/>
+                                   <fixed_field
+                                   name="percentRemainingFuel"
+                                   optional="true"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="100.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field
+                                   name="percentOilPressure"
+                                   optional="true"
+                                   field_type="unsigned byte"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="100.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="percentOilLevel"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="100"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="oilTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="engineTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range
+                                   real_lower_limit="-75.0"
+                                   real_upper_limit="180.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="engineHours"
+                                   optional="true"
+                                   field_type="unsigned integer"
+                                   field_units="hour"/>
+                                   <fixed_field name="tachometer"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one"/>
+                                   <fixed_field name="coolantLevel"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="liter">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="256"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="coolantTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field
+                                   name="airIntakePressure"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="bar">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="512"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="airIntakeTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="exhaustTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="glowPlugTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range
+                                   real_lower_limit="-75.0"
+                                   real_upper_limit="180.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                </record>
+                                <list name="batteryStatus"
+                                   optional="false">
+                                   <count_field min_count="0"
+                                   max_count="256"
+                                   field_type_unsigned="unsigned short integer"/>
+                                   <record name="batteryStatus"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field
+                                   name="percentChargeRemaining"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="100"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="voltage"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="volt">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="1000.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="currentDraw"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="ampere">
+                                   <scale_range real_lower_limit="0.0"
+                                   real_upper_limit="1000.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="batteryTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range
+                                   real_lower_limit="-75.0"
+                                   real_upper_limit="180.0"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="batteryHours"
+                                   optional="true"
+                                   field_type="unsigned integer"
+                                   field_units="hour"/>
+                                   </record>
+                                </list>
+                                <record name="hydraulicStatus"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field name="fluidLevel"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="liter">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="256"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field
+                                   name="percentFluidPressure"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="200"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="fluidTemp"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="degree Celsius">
+                                   <scale_range real_lower_limit="-75"
+                                   real_upper_limit="180"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="totalHours"
+                                   optional="true"
+                                   field_type="unsigned integer"
+                                   field_units="hour"/>
+                                </record>
+                                <record name="fuelCellStatus"
+                                   optional="false">
+                                   <presence_vector
+                                   field_type_unsigned="unsigned byte"/>
+                                   <fixed_field
+                                   name="percentRemainingFuel"
+                                   optional="true"
+                                   field_type="unsigned short integer"
+                                   field_units="one">
+                                   <scale_range real_lower_limit="0"
+                                   real_upper_limit="100"
+                                   integer_function="round"/>
+                                   </fixed_field>
+                                   <fixed_field name="totalHours"
+                                   optional="true"
+                                   field_type="unsigned integer"
+                                   field_units="hour"/>
+                                </record>
+                            </variant>
+                        </sequence>
+                    </list>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start
+            state_machine_name="accessControl.events.transport.ReceiveFSM"
+            state_name="Receiving.Ready.NotControlled"/>
+        <start
+            state_machine_name="accessControl.events.transport.SendFSM"
+            state_name="Sending"/>
+        <state_machine
+            name="accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled">
+                        <default_state>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryPowerPlantConfiguration"
+                                   value="msg"
+                                   interpretation="enveloped query power plant configuration message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportPowerPlantConfiguration"
+                                   interpretation="Send a Report Power Plant Configuration message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryPowerPlantCapabilities"
+                                   value="msg"
+                                   interpretation="enveloped query power plant capabilities message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportPowerPlantCapabilities"
+                                   interpretation="Send a Report Power Plant Capabilities message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryPowerPlantStatus"
+                                   value="msg"
+                                   interpretation="enveloped query power plant status message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportPowerPlantStatus"
+                                   interpretation="Send a Report Power Plant Status message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled">
+                        <default_state>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="SetPowerPlantConfiguration"
+                                   value="msg"
+                                   interpretation="enveloped set power plant configuration message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <guard
+                                   condition="isControllingClient( transportData ) &amp;&amp; isSupported( msg )"
+                                   interpretation="True if the message that triggered the transition is received from                    
+                                   the client that is in control of this service AND the message contains valid settings                   
+                                   for the specified powerplant types."/>
+                                <ns3:internal/>
+                                <action
+                                   name="setPowerPlantConfiguration"
+                                   interpretation="Update the settings for the specified powerplants.">
+                                   <argument value="msg"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryPowerPlantConfiguration"
+                                   value="msg"
+                                   interpretation="enveloped query power plant configuration message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportPowerPlantConfiguration"
+                                   interpretation="Send a Report Power Plant Configuration message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryPowerPlantCapabilities"
+                                   value="msg"
+                                   interpretation="enveloped query power plant capabilities message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportPowerPlantCapabilities"
+                                   interpretation="Send a Report Power Plant Capabilities message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryPowerPlantStatus"
+                                   value="msg"
+                                   interpretation="enveloped query power plant status message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportPowerPlantStatus"
+                                   interpretation="Send a Report Power Plant Status message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

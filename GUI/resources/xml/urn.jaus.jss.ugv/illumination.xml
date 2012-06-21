@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="IlluminationService"
+    id="urn:jaus:jss:ugv:IlluminationService" version="1.0"
+    xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
+    xmlns:ns3="urn:jaus:jsidl:1.1">
+    <description xml:space="preserve">The Illumination Service provides the means to control UGV lights.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="accessControl"
+            id="urn:jaus:jss:core:AccessControl" version="1.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryIlluminationState"
+                message_id="2513" is_command="false">
+                <description xml:space="preserve">Queries current illumination state</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body"/>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="QueryIlluminationConfiguration"
+                message_id="2514" is_command="false">
+                <description xml:space="preserve">Queries available illuminators</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body"/>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="SetIlluminationState" message_id="0513"
+                is_command="true">
+                <description xml:space="preserve">Sets illumination state</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <record name="illuminationRec" optional="false">
+                        <bit_field name="illumination"
+                            optional="false"
+                            field_type_unsigned="unsigned integer">
+                            <sub_field name="VariableLight3">
+                                <bit_range from_index="16"
+                                   to_index="19"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VariableLight4">
+                                <bit_range from_index="20"
+                                   to_index="23"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Reserved">
+                                <bit_range from_index="24"
+                                   to_index="31"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="512"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Headlights">
+                                <bit_range from_index="0" to_index="0"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="LeftTurnSignal">
+                                <bit_range from_index="1" to_index="1"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="RightTurnSignal">
+                                <bit_range from_index="2" to_index="2"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="RunningLights">
+                                <bit_range from_index="3" to_index="3"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="BrakeLights">
+                                <bit_range from_index="4" to_index="4"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="BackupLights">
+                                <bit_range from_index="5" to_index="5"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VisibleLightSource">
+                                <bit_range from_index="6" to_index="6"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="IRLightSource">
+                                <bit_range from_index="7" to_index="7"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VariableLight1">
+                                <bit_range from_index="8"
+                                   to_index="11"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VariableLight2">
+                                <bit_range from_index="12"
+                                   to_index="15"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportIlluminationState"
+                message_id="4513" is_command="false">
+                <description xml:space="preserve">Reports current illumination state</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <record name="illuminationRec" optional="false">
+                        <bit_field name="illumination"
+                            optional="false"
+                            field_type_unsigned="unsigned integer">
+                            <sub_field name="VariableLight3">
+                                <bit_range from_index="16"
+                                   to_index="19"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VariableLight4">
+                                <bit_range from_index="20"
+                                   to_index="23"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Reserved">
+                                <bit_range from_index="24"
+                                   to_index="31"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="512"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Headlights">
+                                <bit_range from_index="0" to_index="0"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="LeftTurnSignal">
+                                <bit_range from_index="1" to_index="1"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="RightTurnSignal">
+                                <bit_range from_index="2" to_index="2"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="RunningLights">
+                                <bit_range from_index="3" to_index="3"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="BrakeLights">
+                                <bit_range from_index="4" to_index="4"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="BackupLights">
+                                <bit_range from_index="5" to_index="5"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VisibleLightSource">
+                                <bit_range from_index="6" to_index="6"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="IRLightSource">
+                                <bit_range from_index="7" to_index="7"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VariableLight1">
+                                <bit_range from_index="8"
+                                   to_index="11"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VariableLight2">
+                                <bit_range from_index="12"
+                                   to_index="15"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="ReportIlluminationConfiguration"
+                message_id="4514" is_command="false">
+                <description xml:space="preserve">Reports current illumination state</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <record name="illuminatorTypes" optional="false">
+                        <bit_field name="types" optional="false"
+                            field_type_unsigned="unsigned integer">
+                            <sub_field name="Headlights">
+                                <bit_range from_index="0" to_index="0"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="LeftTurnSignal">
+                                <bit_range from_index="1" to_index="1"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="RightTurnSignal">
+                                <bit_range from_index="2" to_index="2"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="RunningLights">
+                                <bit_range from_index="3" to_index="3"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="BrakeLights">
+                                <bit_range from_index="4" to_index="4"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="BackupLights">
+                                <bit_range from_index="5" to_index="5"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VisibleLightSource">
+                                <bit_range from_index="6" to_index="6"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="IRLightSource">
+                                <bit_range from_index="7" to_index="7"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VariableLight1">
+                                <bit_range from_index="8" to_index="8"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VariableLight2">
+                                <bit_range from_index="9" to_index="9"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VariableLight3">
+                                <bit_range from_index="10"
+                                   to_index="10"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="VariableLight4">
+                                <bit_range from_index="11"
+                                   to_index="11"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Reserved">
+                                <bit_range from_index="12"
+                                   to_index="31"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="512"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start
+            state_machine_name="accessControl.events.transport.ReceiveFSM"
+            state_name="Receiving.Ready.NotControlled"/>
+        <start
+            state_machine_name="accessControl.events.transport.SendFSM"
+            state_name="Sending"/>
+        <state_machine
+            name="accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled">
+                        <default_state>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryIlluminationState"
+                                   value="msg"
+                                   interpretation="enveloped query illumination                    
+                                   state message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportIlluminationState"
+                                   interpretation="Send a Report Illumination State message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryIlluminationConfiguration"
+                                   value="msg"
+                                   interpretation="enveloped query illumination                    
+                                   configuration message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportIlluminationConfiguration"
+                                   interpretation="Send a Report Illumination                    
+                                   Configuration message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled">
+                        <default_state>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter type="SetIlluminationState"
+                                   value="msg"
+                                   interpretation="enveloped set illumination                    state message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <guard
+                                   condition="isControllingClient( transportData ) &amp;&amp; isSupported( msg )"
+                                   interpretation="True if the message that triggered the transition is received from the                    client that is in control of this service AND the illumination sources specified in the                   message are supported by the service.s"/>
+                                <ns3:internal/>
+                                <action name="setIlluminationState"
+                                   interpretation="Set the illumination state for the                    specified sources.">
+                                   <argument value="msg"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryIlluminationState"
+                                   value="msg"
+                                   interpretation="enveloped query illumination                    state message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportIlluminationState"
+                                   interpretation="Send a Report Illumination State message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryIlluminationConfiguration"
+                                   value="msg"
+                                   interpretation="enveloped query illumination                    configuration message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportIlluminationConfiguration"
+                                   interpretation="Send a Report Illumination                    Configuration message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

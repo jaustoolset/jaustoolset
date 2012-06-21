@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="AnnunciatorService"
+    id="urn:jaus:jss:ugv:AnnunciatorService" version="1.0"
+    xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
+    xmlns:ns3="urn:jaus:jsidl:1.1">
+    <description xml:space="preserve">The Annunciator Service provides the means to control 
+        audible devices such as horns and back-up indicators.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="accessControl"
+            id="urn:jaus:jss:core:AccessControl" version="1.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetAnnunciatorState" message_id="0516"
+                is_command="true">
+                <description xml:space="preserve">Sets annunciator state</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <record name="annunciatorRec" optional="false">
+                        <bit_field name="annunciator" optional="false"
+                            field_type_unsigned="unsigned integer">
+                            <sub_field name="Horn">
+                                <bit_range from_index="0" to_index="3"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Siren">
+                                <bit_range from_index="4" to_index="7"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Backup">
+                                <bit_range from_index="8"
+                                   to_index="11"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Variable1">
+                                <bit_range from_index="12"
+                                   to_index="15"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Variable2">
+                                <bit_range from_index="16"
+                                   to_index="19"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Reserved">
+                                <bit_range from_index="20"
+                                   to_index="31"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="2047"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="QueryAnnunciatorState"
+                message_id="2516" is_command="false">
+                <description xml:space="preserve">Queries current annunciator state</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body"/>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="QueryAnnunciatorConfiguration"
+                message_id="2517" is_command="false">
+                <description xml:space="preserve">Queries supported annunciator types</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body"/>
+                <footer name="footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportAnnunciatorState"
+                message_id="4516" is_command="false">
+                <description xml:space="preserve">Reports current annunciator state</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <record name="annunciatorRec" optional="false">
+                        <bit_field name="annunciator" optional="false"
+                            field_type_unsigned="unsigned integer">
+                            <sub_field name="Horn">
+                                <bit_range from_index="0" to_index="3"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Siren">
+                                <bit_range from_index="4" to_index="7"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Backup">
+                                <bit_range from_index="8"
+                                   to_index="11"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Variable1">
+                                <bit_range from_index="12"
+                                   to_index="15"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Variable2">
+                                <bit_range from_index="16"
+                                   to_index="19"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="15"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Reserved">
+                                <bit_range from_index="20"
+                                   to_index="31"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="2047"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="ReportAnnunciatorConfiguration"
+                message_id="4517" is_command="false">
+                <description xml:space="preserve">Reports supported annunciator types</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <record name="typesRec" optional="false">
+                        <bit_field name="types" optional="false"
+                            field_type_unsigned="unsigned byte">
+                            <sub_field name="Horn">
+                                <bit_range from_index="0" to_index="0"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Siren">
+                                <bit_range from_index="1" to_index="1"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Backup">
+                                <bit_range from_index="2" to_index="2"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Variable1">
+                                <bit_range from_index="3" to_index="3"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Variable2">
+                                <bit_range from_index="4" to_index="4"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="1"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Reserved">
+                                <bit_range from_index="5" to_index="7"/>
+                                <value_set
+                                   offset_to_lower_limit="false">
+                                   <value_range lower_limit="0"
+                                   lower_limit_type="inclusive"
+                                   upper_limit="31"
+                                   upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start
+            state_machine_name="accessControl.events.transport.ReceiveFSM"
+            state_name="Receiving.Ready.NotControlled"/>
+        <start
+            state_machine_name="accessControl.events.transport.SendFSM"
+            state_name="Sending"/>
+        <state_machine
+            name="accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled">
+                        <default_state>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryAnnunciatorState"
+                                   value="msg"
+                                   interpretation="enveloped query annunciator state message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportAnnunciatorState"
+                                   interpretation="Send a Report Annunciator State message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryAnnunciatorConfiguration"
+                                   value="msg"
+                                   interpretation="enveloped query annunciator configuration message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportAnnunciatorConfiguration"
+                                   interpretation="Send a Report Annunciator Configuration message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled">
+                        <default_state>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter type="SetAnnunciatorState"
+                                   value="msg"
+                                   interpretation="enveloped set annunciator state message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <guard
+                                   condition="isControllingClient( transportData ) &amp;&amp; isSupported( msg )"
+                                   interpretation="True if the message that triggered the transition is received from the                   
+                                   client that is in control of this service AND the annunciator sources specified in the                  
+                                   message are supported by the service."/>
+                                <ns3:internal/>
+                                <action name="setAnnunciatorState"
+                                   interpretation="Set the annunciator state for the specified sources.">
+                                   <argument value="msg"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryAnnunciatorState"
+                                   value="msg"
+                                   interpretation="enveloped query annunciator state message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportAnnunciatorState"
+                                   interpretation="Send a Report Annunciator State message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="accessControl.events.transport.Receive">
+                                <parameter
+                                   type="QueryAnnunciatorConfiguration"
+                                   value="msg"
+                                   interpretation="enveloped query annunciator configuration message"/>
+                                <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                <ns3:internal/>
+                                <action
+                                   name="sendReportAnnunciatorConfiguration"
+                                   interpretation="Send a Report Annunciator Configuration message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

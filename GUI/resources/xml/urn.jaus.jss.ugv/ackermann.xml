@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="AckermanDriver"
+    id="urn:jaus:jss:ugv:AckermanDriver" version="1.0"
+    xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
+    xmlns:ns3="urn:jaus:jsidl:1.1">
+    <description xml:space="preserve">The AckermanDriver provides the means to control Ackerman steered vehicles</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="management"
+            id="urn:jaus:jss:core:Management" version="1.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetAckermanParameters"
+                message_id="0500" is_command="true">
+                <description xml:space="preserve">Sets ackerman driver parameters</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <record name="ackermanData" optional="false"
+                        interpretation="Effort in range [0.0, 100.0]">
+                        <fixed_field name="SteeringPosition"
+                            optional="false"
+                            field_type="unsigned short integer"
+                            field_units="radian">
+                            <scale_range real_lower_limit="-24.0"
+                                real_upper_limit="24.0"
+                                integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ThrottleEffort"
+                            optional="false"
+                            field_type="unsigned short integer"
+                            field_units="one">
+                            <scale_range real_lower_limit="0.0"
+                                real_upper_limit="100.0"
+                                integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="BrakeEffort"
+                            optional="false"
+                            field_type="unsigned short integer"
+                            field_units="one">
+                            <scale_range real_lower_limit="0.0"
+                                real_upper_limit="100.0"
+                                integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+            <message_def name="QueryAckermanParameters"
+                message_id="2500" is_command="false">
+                <description xml:space="preserve">Queries ackerman driver for current set data</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body"/>
+                <footer name="footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportAckermanParameters"
+                message_id="4500" is_command="false">
+                <description xml:space="preserve">Reports current ackerman driver data</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false"
+                            interpretation="Two byte field to hold message ID"
+                            field_type="unsigned short integer"
+                            field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <record name="ackermanData" optional="false"
+                        interpretation="Effort in range [0.0, 100.0]">
+                        <fixed_field name="SteeringPosition"
+                            optional="false"
+                            field_type="unsigned short integer"
+                            field_units="radian">
+                            <scale_range real_lower_limit="-24.0"
+                                real_upper_limit="24.0"
+                                integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ThrottleEffort"
+                            optional="false"
+                            field_type="unsigned short integer"
+                            field_units="one">
+                            <scale_range real_lower_limit="0.0"
+                                real_upper_limit="100.0"
+                                integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="BrakeEffort"
+                            optional="false"
+                            field_type="unsigned short integer"
+                            field_units="one">
+                            <scale_range real_lower_limit="0.0"
+                                real_upper_limit="100.0"
+                                integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start
+            state_machine_name="management.accessControl.events.transport.ReceiveFSM"
+            state_name="Receiving.Ready.NotControlled.StateA"/>
+        <start
+            state_machine_name="management.accessControl.events.transport.SendFSM"
+            state_name="Sending"/>
+        <state_machine
+            name="management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="StateA">
+                        <state name="StateA" initial_state="Init">
+                            <state name="Standby"/>
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                            <default_state>
+                                <transition
+                                   name="management.accessControl.events.transport.Receive">
+                                   <parameter
+                                   type="QueryAckermanParameters"
+                                   value="msg"
+                                   interpretation="enveloped query ackerman parameters message"/>
+                                   <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                   <ns3:internal/>
+                                   <action
+                                   name="sendReportAckermanParameters"
+                                   interpretation="Send a Report                     
+                                   Skid Steer Effort message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                   </action>
+                                </transition>
+                            </default_state>
+                        </state>
+                    </state>
+                    <state name="Controlled" initial_state="StateB">
+                        <state name="StateB" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <exit>
+                                   <action name="stopMotion"
+                                   interpretation="When leaving the Ready state, stop motion on the vehicle."
+                                   />
+                                </exit>
+                                <transition
+                                   name="management.accessControl.events.transport.Receive">
+                                   <parameter
+                                   type="SetAckermanParameters"
+                                   value="msg"
+                                   interpretation="enveloped set ackerman parameters message"/>
+                                   <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                   <guard
+                                   condition="isControllingClient( transportData )"
+                                   interpretation="True if the message that triggered the transition is received from the                      
+                                   client that is in control of this service"/>
+                                   <ns3:internal/>
+                                   <action
+                                   name="setAckermanParameters"
+                                   interpretation="Set the throttle, brake, and steering angle for the vehicle.">
+                                   <argument value="msg"/>
+                                   </action>
+                                </transition>
+                            </state>
+                            <state name="Emergency"/>
+                            <default_state>
+                                <transition
+                                   name="management.accessControl.events.transport.Receive">
+                                   <parameter
+                                   type="QueryAckermanParameters"
+                                   value="msg"
+                                   interpretation="enveloped query ackerman parameters message"/>
+                                   <parameter
+                                   type="Receive.Body.ReceiveRec"
+                                   value="transportData"
+                                   interpretation="transport data"/>
+                                   <ns3:internal/>
+                                   <action
+                                   name="sendReportAckermanParameters"
+                                   interpretation="Send a Report Skid Steer Effort message">
+                                   <argument value="msg"/>
+                                   <argument value="transportData"/>
+                                   </action>
+                                </transition>
+                            </default_state>
+                        </state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine
+            name="management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>
