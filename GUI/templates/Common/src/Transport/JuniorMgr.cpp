@@ -374,9 +374,13 @@ JrErrorCode JuniorMgr::sendto( unsigned int destination,
         // TO DO : Pend here for ACK-NAK
         if (flags & GuaranteeDelivery)
         {
+			// The timeout mechanism used requires we POLL for messages.  Switch
+			// modes, then switch back once we get our ack/nak or timeout.
+			((JrSocket*)_transport)->setWaitType(JrSocket::POLL);
+			
             // We need to wait for an acknowledgement.  We wait a configurable
             // period of time, resend a configurable number of times.
-            MessageList msglist;
+			MessageList msglist;
             unsigned long last_msg_time = JrGetTimestamp();
             int send_count = 0; bool acked = false;
             while (!acked)
@@ -422,6 +426,9 @@ JrErrorCode JuniorMgr::sendto( unsigned int destination,
                     last_msg_time = JrGetTimestamp();
                 }
             }
+
+			// Switch back to PEND mode so we're not wasting CPU cycles.
+			((JrSocket*)_transport)->setWaitType(JrSocket::PEND);
         }
     } while(bytes_sent < size);  // continue to loop until we've sent
                                  // the entire buffer.
