@@ -726,21 +726,20 @@
                             field_type_unsigned="unsigned short integer"/>
                         <sequence name="powerPlantStatus"
                             optional="false">
-                            <record name="powerPlantID"
-                                optional="false">
-                                <fixed_field name="powerPlantID"
-                                   optional="false"
-                                   field_type="unsigned byte"
-                                   field_units="one">
-                                   <value_set
-                                   offset_to_lower_limit="false">
-                                   <value_range lower_limit="0"
-                                   lower_limit_type="inclusive"
-                                   upper_limit="255"
-                                   upper_limit_type="inclusive"/>
-                                   </value_set>
-                                </fixed_field>
-                            </record>
+                          <record name="PowerPlantDescRec"
+                              optional="false">
+                            <fixed_field name="powerPlantID"
+                               optional="false"
+                               field_type="unsigned byte"
+                               field_units="one"/>
+                            <variable_length_string
+                               name="description" optional="false"
+                               interpretation="A human-readable string that can be used to describe power plant status, including but not limited to error conditions.">
+                              <count_field min_count="0"
+                              max_count="255"
+                              field_type_unsigned="unsigned byte"/>
+                            </variable_length_string>
+                          </record>
                             <variant name="powerPlantStatusVar"
                                 optional="false">
                                 <vtag_field min_count="0"
