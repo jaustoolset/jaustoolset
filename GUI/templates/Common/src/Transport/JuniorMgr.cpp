@@ -51,6 +51,9 @@ JuniorMgr::JuniorMgr():
     _ack_timeout = 100; // in milliseconds
     _msg_count = 0;
     _max_msg_size = 4079;
+	_outstanding_ack_request_source = 0;
+	_outstanding_ack_request_seqnum = 0;
+	_outstanding_ack_request_acked = false;
 }
 
 JuniorMgr::~JuniorMgr()
@@ -342,10 +345,21 @@ JrErrorCode JuniorMgr::sendto( unsigned int destination,
         msg.setSourceId(_id);
         msg.setPriority(priority);
         msg.setMessageCode(code);
-        if (flags & GuaranteeDelivery) msg.setAckNakFlag(1);
+		msg.setSequenceNumber(_message_counter);
         if (flags & ServiceConnection) msg.setServiceConnection(1);
         if (flags & ExperimentalFlag) msg.setExperimental(1);
-        msg.setSequenceNumber(_message_counter);
+        if (flags & GuaranteeDelivery) 
+		{
+			msg.setAckNakFlag(1);
+
+			// The outstanding ACK request is shared with the receive loop.
+			_outstanding_ack_request_source = destination;
+			_outstanding_ack_request_seqnum = _message_counter;
+			_outstanding_ack_request_acked = false;
+		}
+
+        
+		// Increment the counter so the next message gets a new sequence number
         _message_counter++;
 
         // Set the payload, being careful not to exceed
@@ -371,64 +385,36 @@ JrErrorCode JuniorMgr::sendto( unsigned int destination,
         bytes_sent += payload_size;
 
 
-        // TO DO : Pend here for ACK-NAK
+        // Pend here for ACK-NAK.  This will be triggered by the JrReceive call.
+        // We wait a configurable period of time, resend a configurable number of times.
         if (flags & GuaranteeDelivery)
-        {
-			// The timeout mechanism used requires we POLL for messages.  Switch
-			// modes, then switch back once we get our ack/nak or timeout.
-			((JrSocket*)_transport)->setWaitType(JrSocket::POLL);
-			
-            // We need to wait for an acknowledgement.  We wait a configurable
-            // period of time, resend a configurable number of times.
-			MessageList msglist;
-            unsigned long last_msg_time = JrGetTimestamp();
-            int send_count = 0; bool acked = false;
-            while (!acked)
+        {	
+			unsigned long last_msg_time = JrGetTimestamp();
+            int send_count = 0;
+            while (!_outstanding_ack_request_acked)
             {
-                // sleep a bit to free up the CPU
-                JrSleep(1);
-
-                // While waiting, we need to process other messages. 
-                Transport::TransportError ret = _transport->recvMsg(msglist);
-                while (!msglist.empty())
-                {
-                    Message* incoming = msglist.front();
-                    msglist.pop_front();
-
-                    // Found a message.  Form a response if ACK/NAK selected.
-                    if (incoming->getAckNakFlag() == 1) sendAckMsg( incoming );
-
-                    // Check if this is the acknowledgement we've been waiting for.
-                    if ((incoming->getAckNakFlag() == 3) && 
-                        (incoming->getSequenceNumber() == msg.getSequenceNumber()) )
-                    {
-                        delete incoming;
-                        acked = true;
-                    }
-                    else
-                    {
-                        // Put the incoming message in the buffer
-                        addMsgToBuffer(incoming);
-                    }
-                }
-
-                // If we have to resend a message that is part of a large data
-                // stream, the data control flags need to be updated.  This 
-                // seems wonky to have to do, but it's part of JAUS.
-				if (msg.getDataControlFlag() == Message::MiddleMsg) 
-					msg.setDataControlFlag(Message::MiddleResentMsg);
 
                 // See if it's time to resend the message (or timeout)
                 if ((unsigned long)(JrGetTimestamp() - last_msg_time) > _ack_timeout)
                 {
-                    if (++send_count > _max_retries) return Timeout;
+					// If we exceeded the max tries count, return failure
+                    if (++send_count > _max_retries)
+						return Timeout;
+
+					// If we have to resend a message that is part of a large data
+					// stream, the data control flags need to be updated.  This 
+					// seems wonky to have to do, but it's part of JAUS.
+					if (msg.getDataControlFlag() == Message::MiddleMsg) 
+						msg.setDataControlFlag(Message::MiddleResentMsg);
+
+					// Resend the message and update the "last sent" timestamp
                     sendOrBroadcast(msg);
                     last_msg_time = JrGetTimestamp();
                 }
-            }
 
-			// Switch back to PEND mode so we're not wasting CPU cycles.
-			((JrSocket*)_transport)->setWaitType(JrSocket::PEND);
+				// sleep a bit to free up the CPU
+                JrSleep(10);
+            }
         }
     } while(bytes_sent < size);  // continue to loop until we've sent
                                  // the entire buffer.
@@ -458,8 +444,26 @@ JrErrorCode JuniorMgr::recvfrom(unsigned int* sender,
         // Found a message.  Form a response if ACK/NAK selected.
         if (msg->getAckNakFlag() == 1) sendAckMsg( msg );
 
-        // Add this message to a priority buffer
-        addMsgToBuffer(msg);
+        // Check if this is the acknowledgement we've been waiting for.
+        if ((msg->getAckNakFlag() == 3) && 
+            (msg->getSequenceNumber() == _outstanding_ack_request_seqnum) &&
+			(msg->getSourceId() == _outstanding_ack_request_source) )
+        {
+			// Found a match.  Signal to the send call that it
+			// no longer has to wait on the ack.
+            _outstanding_ack_request_acked = true;
+			delete msg;
+        }
+		else if ((msg->getAckNakFlag() != 2) && (msg->getAckNakFlag() != 3))
+		{
+			// Add this message to a priority buffer
+			addMsgToBuffer(msg);
+		}
+		else
+		{
+			// Either this is a NAK, or an unexpected ACK. Silently discard.
+			delete msg;
+		}
     }
 
     // Check each priority based buffer (highest first) looking for a message

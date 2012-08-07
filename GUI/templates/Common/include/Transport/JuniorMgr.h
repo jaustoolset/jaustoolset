@@ -85,6 +85,15 @@ private:
     unsigned short _maxMsgHistory;      // as a message count
     unsigned short _oldMsgTimeout;      // in seconds
     unsigned char  _detectDuplicates; 
+
+	// We now allow the receive loop to find the ack/nak response,
+	// rather than doing it from the send loop.  But that means
+	// sharing some data....
+	// NOTE: This is likely fragile in a multithreaded environment
+	// where two threads are sending on a common Jr handle...
+	JAUS_ID _outstanding_ack_request_source;
+	unsigned short _outstanding_ack_request_seqnum;
+	bool _outstanding_ack_request_acked;
 };
 
 inline TimeStampedMsgListIter JuniorMgr::searchMsgList(
