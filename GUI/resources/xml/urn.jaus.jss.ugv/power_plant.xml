@@ -631,7 +631,7 @@
                                    <count_field min_count="0"
                                    max_count="256"
                                    field_type_unsigned="unsigned short integer"/>
-                                   <record name="batteryConfig"
+                                   <record name="batteryConfigRec"
                                    optional="false">
                                    <presence_vector
                                    field_type_unsigned="unsigned byte"/>
@@ -953,7 +953,7 @@
                                    <count_field min_count="0"
                                    max_count="256"
                                    field_type_unsigned="unsigned short integer"/>
-                                   <record name="batteryStatus"
+                                   <record name="batteryStatusRec"
                                    optional="false">
                                    <presence_vector
                                    field_type_unsigned="unsigned byte"/>
