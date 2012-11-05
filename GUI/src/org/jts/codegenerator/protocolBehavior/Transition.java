@@ -1147,6 +1147,8 @@ public class Transition {
                     if (getTriggerName(tr, sd).compareTo("Receive") == 0)
                     {
                         messageTransitions.append("\t\t\t\t\tunsigned short id = *((unsigned short*) casted_ie->getBody()->getReceiveRec()->getMessagePayload()->getData());");
+						messageTransitions.append(System.getProperty("line.separator"));
+						messageTransitions.append("\t\t\t\t\tid = JSIDL_v_1_0::correctEndianness(id);");
                         messageTransitions.append(System.getProperty("line.separator"));
 
                             findInputMessage(tr, msg_type, msg_value, sd);
