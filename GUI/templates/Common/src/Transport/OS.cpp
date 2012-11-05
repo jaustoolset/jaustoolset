@@ -111,7 +111,7 @@ std::list<unsigned int> DeVivo::Junior::JrGetIPAddresses()
 {
     std::list<unsigned int> addresses;
 
-#if defined(WINDOWS) || defined(__CYGWIN__)
+#if defined(WINDOWS) || defined(__CYGWIN__) || defined(NO_IF_ADDRS)
 
     // Windows doesn't support ioctl calls, and the gethostbyname is a 
     // better method anyway....
@@ -120,9 +120,24 @@ std::list<unsigned int> DeVivo::Junior::JrGetIPAddresses()
     {
         struct hostent *phe = gethostbyname(ac);
         if (phe != 0) 
+		{
             for (int i = 0; phe->h_addr_list[i] != 0; ++i) 
                 addresses.push_back(((in_addr*)phe->h_addr_list[i])->s_addr);
+		}
+		else
+		{
+			JrError
+				<< "on '" << ac << "', gethostbyname fails"
+				<< " (so no port identification/searching)"
+				<< std::endl;
+		}
     }
+	else
+	{
+		JrError
+			<< "could not determine host's name (so no port identification/searching)"
+			<< std::endl;
+	}
 
 #else
 

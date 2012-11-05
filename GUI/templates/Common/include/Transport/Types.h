@@ -28,6 +28,7 @@
 
 #include <string>
 #include <list>
+#include <ostream>
 #include <sstream>
 #include "OS.h"
 
@@ -131,10 +132,13 @@ class IP_ADDRESS
 
    bool operator==(IP_ADDRESS in)
    {
-       if ((addr == in.addr) && (port == in.port)) return true;
-       return false;
+	   return (addr == in.addr) && (port == in.port);
    }
-   std::string toString()
+   bool operator!=(IP_ADDRESS in)
+   {
+	   return (addr != in.addr) || (port != in.port);
+   }
+   std::string toString() const
    {
        std::stringstream ss;
        ss << inet_ntoa(*(in_addr*) &addr) << ":" << ntohs(port);
@@ -153,12 +157,26 @@ class IP_ADDRESS
        port = htons((unsigned short)(strtod(port_str.c_str(), NULL)));
        return true;
    }
-    
    unsigned int addr;
    unsigned short port;
 };
 
 }} // namespace DeVivo::Junior
+
+template <class charT, class traits>
+  std::basic_ostream<charT,traits>& operator<< (std::basic_ostream<charT,traits>& os, const DeVivo::Junior::IP_ADDRESS& xAddress )
+{
+   os << xAddress.toString();
+   return os;
+}
+
+template <class charT, class traits>
+  std::basic_ostream<charT,traits>& operator<< (std::basic_ostream<charT,traits>& os, const DeVivo::Junior::JAUS_ID& xID )
+{
+   os << xID.val;
+   return os;
+}
+
 #endif //__JR_COMMON_TYPES_H
 
 

@@ -1,18 +1,15 @@
 
-December 1, 2011 : Version 2.0 Release Notes
+November 5, 2012 : Version 2.2 Release Notes
 
-Version 2.0 is a significant update from v1.5.  There are several other significant feature additions.  Please consult the User's Guide for additional details.
+Version 2.2 is a minor update from v2.0.  
 
-- The Code Generator has been updated to generate separate libraries for each service in an inherited chain.  This allows a single component to support multiple services while still inheriting from a common parent as per the JAUS Core Service Set (AS5710, Version 1).  This will also promote better code re-use.
+- The NodeManager (transport layer) has been improved for ack/nak handling.
 
-- JTS functionality is now encapsulated in an Eclipse Plug-in.   
+- Bug fixes related to Big Endian hosts, namely ARM processors.   
 
-- Support for Promela-based protocol validation has been added.
+- Improved code generation of comparison operators for lists.
 
-- Fixed issues related to validation of messages and protocol behavior
-
-- Added support for generating Microsoft Visual Studio build files in addition to Scons (C++ only).
-
+- Clean-up memory leaks in generated and example code.
 
 
 Known issues:

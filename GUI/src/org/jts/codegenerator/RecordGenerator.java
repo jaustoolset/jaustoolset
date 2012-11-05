@@ -1373,6 +1373,11 @@ public class RecordGenerator
         methodCode.clear();
         if (codeType == CodeLines.CodeType.C_PLUS_PLUS)
         {
+            methodCode.add("if (" + varName + ".size() !=  value." + varName + ".size())");
+            methodCode.add("{");
+            methodCode.add("\treturn false;");
+            methodCode.add("}");
+            methodCode.add("");
             methodCode.add("for (int i = 0; i < " + varName + ".size(); i++)");
             methodCode.add("{");
             methodCode.add("\tif (" + varName + "[i] !=  value." + varName + "[i])");
@@ -1387,6 +1392,11 @@ public class RecordGenerator
         }
         else if (codeType == CodeLines.CodeType.JAVA)
         {
+            methodCode.add("if (" + varName + ".size() !=  value." + varName + ".size())");
+            methodCode.add("{");
+            methodCode.add("\treturn false;");
+            methodCode.add("}");
+            methodCode.add("");
             methodCode.add("for (int i = 0; i < " + varName + ".size(); i++)");
             methodCode.add("{");
             methodCode.add("\tif (!" + varName + ".get(i).isEqual(value.getElement(i)))");
@@ -1401,6 +1411,11 @@ public class RecordGenerator
         }
         else if (codeType == CodeLines.CodeType.C_SHARP)
         {
+            methodCode.add("if (" + varName + ".Count !=  value." + varName + ".Count)");
+            methodCode.add("{");
+            methodCode.add("\treturn false;");
+            methodCode.add("}");
+            methodCode.add("");
             methodCode.add("for (int i = 0; i < value." + varName + ".Count; i++)");
             methodCode.add("{");
             methodCode.add("\tif (!this." + varName + "[i].isEqual(value." + varName + "[i]))");

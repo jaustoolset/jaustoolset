@@ -66,6 +66,9 @@ public class ScaleRangeGenerator
             String min = scaleRange.getRealLowerLimit().replaceAll("\\,", "");
             String max = scaleRange.getRealUpperLimit().replaceAll("\\,", "");
 		
+			if ( !min.contains(".") ) min = min.concat( ".0" );
+			if ( !max.contains(".") ) max = max.concat( ".0" );
+
             //double maxNum = Double.parseDouble(max);
             //double minNum = Double.parseDouble(min);
             //double midNum = (maxNum - minNum) / 2;
@@ -92,13 +95,16 @@ public class ScaleRangeGenerator
 	{
             String min = scaleRange.getRealLowerLimit().replaceAll("\\,", "");
             String max = scaleRange.getRealUpperLimit().replaceAll("\\,", "");
-	
+
             if (codeType == CodeLines.CodeType.C_PLUS_PLUS)
             {
+				if ( !min.contains(".") ) min = min.concat( ".0" );
+				if ( !max.contains(".") ) max = max.concat( ".0" );
+	
 	            String scaleFactor = "( " + max +  " - " + min + " ) / " + CppCode.getIntegerRange(fieldType);
 	            String bias = min;
 	
-	            strVector.add("double scaleFactor = " + scaleFactor + ";");
+	            strVector.add("double scaleFactor = " + scaleFactor + ";" );
                     strVector.add("double bias = " + bias + ";");
                     strVector.add("");
                     strVector.add(doubleVar + " = " + variableName + " * scaleFactor + bias;");
@@ -133,6 +139,11 @@ public class ScaleRangeGenerator
 
             if (codeType == CodeLines.CodeType.C_PLUS_PLUS)
             {
+					String minX = min;
+
+					if ( !min.contains(".") ) min = min.concat( ".0" );
+					if ( !max.contains(".") ) max = max.concat( ".0" );
+
                     //double scaleFactor = (Double.valueOf(max) - Double.valueOf(min)) / CppCode.getIntegerRange(fieldType);
                     //double bias = Double.valueOf(min);
                     String scaleFactor = "( " + max +  " - " + min + " ) / " + CppCode.getIntegerRange(fieldType);
@@ -193,6 +204,9 @@ public class ScaleRangeGenerator
             String min = scaleRange.getRealLowerLimit().replaceAll("\\,", "");
             String max = scaleRange.getRealUpperLimit().replaceAll("\\,", "");
 
+			if ( !min.contains(".") ) min = min.concat( ".0" );
+			if ( !max.contains(".") ) max = max.concat( ".0" );
+
             Util.indent(1, code);
             code.add(0, "if ((" + doubleVar + " >= " + min + ") && (" + doubleVar + " <= " + max + "))");
             code.add(1, "{");
@@ -209,6 +223,9 @@ public class ScaleRangeGenerator
 	{
             String min = scaleRange.getRealLowerLimit().replaceAll("\\,", "");
             String max = scaleRange.getRealUpperLimit().replaceAll("\\,", "");
+
+			if ( !min.contains(".") ) min = min.concat( ".0" );
+			if ( !max.contains(".") ) max = max.concat( ".0" );
 
             if (fieldType.startsWith("unsigned"))
             {

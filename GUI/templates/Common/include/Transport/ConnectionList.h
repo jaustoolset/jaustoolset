@@ -77,7 +77,7 @@ public:
 	// Functions to access the list
 	bool getAddrFromId( JAUS_ID id, AddressType& addr );
 	bool getMsgVersion( JAUS_ID id, MsgVersion& version );
-	bool updateMsgVersion( JAUS_ID id, MsgVersion version );
+	bool updateConnection( JAUS_ID id, AddressType& add, MsgVersion& version );
     ConnectionListType& getList(){return _list;};
    
 protected:
@@ -98,12 +98,13 @@ inline bool ConnectionList<AddressType>::addElement(JAUS_ID id,
     if (id.val == 0) return false;
 
 	// check for duplicates
-	AddressType prevAddr; MsgVersion prevVersion;
-	if (getAddrFromId(id, prevAddr) && (addr == prevAddr))
+	AddressType prevAddr;
+	if (getAddrFromId(id, prevAddr))
 	{
-		// Element with same ID and address found.  Update the version
+		// Element with same ID.
+		// Update the address and version
 		// and return success.
-		updateMsgVersion(id, version);
+		updateConnection(id, addr, version);
 		return true;
 	}
 
@@ -112,7 +113,11 @@ inline bool ConnectionList<AddressType>::addElement(JAUS_ID id,
 	if (connection == NULL) return false;
 
     // Add this connection to our list
-    JrFull << "Adding address book entry for id " << id.val << std::endl;
+    JrFull
+		<< "Adding address book entry for id " << id.val
+		<< " for addr " << addr
+		<< " at position " << _list.size()
+		<< std::endl;
     _list.push_back(connection);
     return true;
 }
@@ -126,8 +131,8 @@ inline bool ConnectionList<S>::removeElement(JAUS_ID id)
     return true;
 }
 
-template<class S>
-inline bool ConnectionList<S>::getAddrFromId( JAUS_ID id, S& addr )
+template<class AddressType>
+inline bool ConnectionList<AddressType>::getAddrFromId( JAUS_ID id, AddressType& addr )
 {
     if (id == 0) return false;
 
@@ -143,8 +148,8 @@ inline bool ConnectionList<S>::getAddrFromId( JAUS_ID id, S& addr )
     return false;
 }
 
-template<class S>
-inline bool ConnectionList<S>::getMsgVersion( JAUS_ID id, MsgVersion& version )
+template<class AddressType>
+inline bool ConnectionList<AddressType>::getMsgVersion( JAUS_ID id, MsgVersion& version )
 {
     if (id == 0) return false;
 
@@ -160,8 +165,8 @@ inline bool ConnectionList<S>::getMsgVersion( JAUS_ID id, MsgVersion& version )
     return false;
 }
 
-template<class S>
-inline bool ConnectionList<S>::updateMsgVersion( JAUS_ID id, MsgVersion version )
+template<class AddressType>
+inline bool ConnectionList<AddressType>::updateConnection( JAUS_ID id, AddressType& addr, MsgVersion& version )
 {
     if (id == 0) return false;
 
@@ -170,6 +175,7 @@ inline bool ConnectionList<S>::updateMsgVersion( JAUS_ID id, MsgVersion version 
     {
         if (_list[i]->getId() == id)
         {
+            _list[i]->setAddress(addr);
             _list[i]->setVersion(version);
             return true;
         }

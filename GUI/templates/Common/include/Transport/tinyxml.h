@@ -1022,13 +1022,10 @@ public:
 			return TIXML_SUCCESS;
 		return TIXML_WRONG_TYPE;
 	}
-	/*
-	 This is - in theory - a bug fix for "QueryValueAtribute returns truncated std::string"
-	 but template specialization is hard to get working cross-compiler. Leaving the bug for now.
 	 
 	// The above will fail for std::string because the space character is used as a seperator.
 	// Specialize for strings. Bug [ 1695429 ] QueryValueAtribute returns truncated std::string
-	template<> int QueryValueAttribute( const std::string& name, std::string* outValue ) const
+	int QueryValueAttribute( const std::string& name, std::string* outValue ) const
 	{
 		const TiXmlAttribute* node = attributeSet.Find( name );
 		if ( !node )
@@ -1036,7 +1033,6 @@ public:
 		*outValue = node->ValueStr();
 		return TIXML_SUCCESS;
 	}
-	*/
 	#endif
 
 	/** Sets an attribute of name to a given value. The attribute

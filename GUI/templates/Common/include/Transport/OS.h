@@ -61,8 +61,10 @@
     #include <stdint.h>
 	#include <signal.h>
 	#include <time.h>
+#ifndef NO_IF_ADDRS
 #ifndef __CYGWIN__
     #include <ifaddrs.h>
+#endif
 #endif
 #ifndef DllExport
 #define DllExport

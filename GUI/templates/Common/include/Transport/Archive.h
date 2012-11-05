@@ -186,7 +186,7 @@ public:
     // based on some index from the front.
     template<class T> void getValueAt(int index, T& value)
     {
-        value = *((T*) (data+index));
+        memcpy(&value,(data+index),sizeof(value));
         bool isBigHost = (htons(256) == 256);
         if (( isBigHost && (pack_mode == LittleEndian)) ||
             (!isBigHost && (pack_mode == BigEndian)))
@@ -201,10 +201,11 @@ public:
         if (( isBigHost && (pack_mode == LittleEndian)) ||
             (!isBigHost && (pack_mode == BigEndian)))
         {
-            *((T*)(data+index)) = swapBytes(value);
+			T temp = swapBytes(value);
+			memcpy(data+index, &temp, sizeof(value));
         }
         else 
-            *((T*)(data+index)) = value;
+			memcpy(data+index, &value, sizeof(value));
     }
 
     // Set the data explicitly from a raw character buffer
