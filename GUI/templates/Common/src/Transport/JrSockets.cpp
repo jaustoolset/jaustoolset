@@ -179,7 +179,7 @@ Transport::TransportError JrSocket::sendMsg(Message& msg)
         JAUS_ID dest = msg.getDestinationId();
 		for (int i = 0; i < _map.getList().size(); i++)
         {
-            if (msg.getDestinationId() == _map.getList()[i]->getId())
+            if (dest == _map.getList()[i]->getId())
             {
                 msg.setDestinationId(_map.getList()[i]->getId());
                 result = sendMsg(msg, _map.getList()[i]->getAddress());
