@@ -5,7 +5,7 @@ Version 2.2 is a minor update from v2.0.
 
 - The NodeManager (transport layer) has been improved for ack/nak handling.
 
-- Bug fixes related to Big Endian hosts, namely ARM processors.   
+- Bug fixes related to Big Endian hosts, namely ARM processors, and broadcast messages.
 
 - Improved code generation of comparison operators for lists.
 
