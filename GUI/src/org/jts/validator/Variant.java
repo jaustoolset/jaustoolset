@@ -71,10 +71,14 @@ public class Variant
 		VtagField vtField = variant.getVtagField();
 		
 		int maxCount = Integer.parseInt(vtField.getMaxCount());
-		int minCount = Integer.parseInt(vtField.getMinCount());		
-		if(maxCount - minCount + 1 != recordList.size())
+		int minCount = Integer.parseInt(vtField.getMinCount());	
+		
+		if ((maxCount != 0) && (minCount != 0) && (recordList.size() != 0))	// allow for empty variants
 		{
-			throw new ValidatorException("Variant count range must be equal to record list size");	
+			if(maxCount - minCount + 1 != recordList.size())
+			{
+				throw new ValidatorException("Variant count range must be equal to record list size");	
+			}
 		}
 
 		for( Object obj : variant.getRecordOrDeclaredRecordOrList() )
