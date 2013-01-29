@@ -345,8 +345,8 @@ public class VariableLengthStringGenerator
             {
                 //For Encoding
                 methodCode.add("");
-                methodCode.add(lengthType + " " + variableName + "Length = 0;");
-                methodCode.add(variableName + "Length = " + code.getNameSpace() + "::correctEndianness(" + stringLength + ");");
+                methodCode.add(lengthType + " " + variableName + "Length = " + stringLength + ";");
+                methodCode.add(variableName + "Length = " + code.getNameSpace() + "::correctEndianness(" + variableName + "Length);");
                 methodCode.add("memcpy(bytes+pos, (unsigned char*)&" + variableName + "Length, sizeof(" + lengthType + "));");
                 methodCode.add("pos += sizeof(" + lengthType + ");");
                 methodCode.add("");
