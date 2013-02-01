@@ -125,13 +125,13 @@ public class Record {
     if( optionalCount > 0 ) { 
       pv = new org.jts.jsidl.binding.PresenceVector();
    
-      if( optionalCount < 8 ) {
+      if( optionalCount <= 8 ) {
         pv.setFieldTypeUnsigned("unsigned byte");
-      } else if( optionalCount < 16 ) {
+      } else if( optionalCount <= 16 ) {
         pv.setFieldTypeUnsigned("unsigned short integer");
-      }  else if( optionalCount < 32 ) {
+      }  else if( optionalCount <= 32 ) {
         pv.setFieldTypeUnsigned("unsigned integer");
-      }  else if( optionalCount < 64 ) {
+      }  else if( optionalCount <= 64 ) {
         pv.setFieldTypeUnsigned("unsigned long integer");
       }  else ;
     }

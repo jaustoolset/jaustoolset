@@ -188,16 +188,16 @@
     <body name="Body">
       <record name="ReportAccelerationStateRec" optional="false">
         <presence_vector field_type_unsigned="unsigned short integer"/>
-        <declared_fixed_field name="Acceleration_X" declared_type_ref="mobilityTypes.Acceleration" optional="false"/>
-        <declared_fixed_field name="Acceleration_Y" declared_type_ref="mobilityTypes.Acceleration" optional="false"/>
-        <declared_fixed_field name="Acceleration_Z" declared_type_ref="mobilityTypes.Acceleration" optional="false"/>
+        <declared_fixed_field name="Acceleration_X" declared_type_ref="mobilityTypes.Acceleration" optional="true"/>
+        <declared_fixed_field name="Acceleration_Y" declared_type_ref="mobilityTypes.Acceleration" optional="true"/>
+        <declared_fixed_field name="Acceleration_Z" declared_type_ref="mobilityTypes.Acceleration" optional="true"/>
         <fixed_field name="Acceleration_RMS" field_type="unsigned integer" field_units="meter per second squared" optional="true"
           interpretation="An RMS value indicating the validity of the acceleration data.">
           <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
         </fixed_field>
-        <declared_fixed_field name="RollAcceleration" declared_type_ref="mobilityTypes.RotationalAcceleration" optional="false"/>
-        <declared_fixed_field name="PitchAcceleration" declared_type_ref="mobilityTypes.RotationalAcceleration" optional="false"/>
-        <declared_fixed_field name="YawAcceleration" declared_type_ref="mobilityTypes.RotationalAcceleration" optional="false"/>
+        <declared_fixed_field name="RollAcceleration" declared_type_ref="mobilityTypes.RotationalAcceleration" optional="true"/>
+        <declared_fixed_field name="PitchAcceleration" declared_type_ref="mobilityTypes.RotationalAcceleration" optional="true"/>
+        <declared_fixed_field name="YawAcceleration" declared_type_ref="mobilityTypes.RotationalAcceleration" optional="true"/>
         <fixed_field name="RotationalAcceleration_RMS" field_type="unsigned short integer" field_units="radian per second squared" optional="true"
           interpretation="An RMS value indicating the validity of the rotational acceleration data.">
           <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>

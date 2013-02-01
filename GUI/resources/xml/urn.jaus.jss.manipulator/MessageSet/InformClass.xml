@@ -14,99 +14,301 @@
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body">
-      <sequence name="ReportManipulatorSpecification" optional="false">
-        <record name="ManipulatorCoordinateSystemRec" optional="false">
-          <presence_vector field_type_unsigned="unsigned byte" />
-          <fixed_field name="ManipulatorCoordinateSysX" field_type="unsigned integer" field_units="meter"
-            optional="true"
-            interpretation="x coordinate of origin of manipulator coordinate system measured with respect to vehicle coordinate system">
-            <scale_range real_lower_limit="-30" real_upper_limit="30" integer_function="round" />
+      <sequence name="ReportManipulatorSpecification"
+                optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <record name="ManipulatorCoordinateSystemRec"
+                optional="true">
+          <fixed_field name="ManipulatorCoordinateSysX"
+                       optional="false"
+                       interpretation="x coordinate of origin of manipulator coordinate system measured with respect to vehicle coordinate system"
+                       field_type="unsigned integer"
+                       field_units="meter">
+            <scale_range real_lower_limit="-30"
+                         real_upper_limit="30"
+                         integer_function="round"/>
           </fixed_field>
-          <fixed_field name="ManipulatorCoordinateSysY" field_type="unsigned integer" field_units="meter"
-            optional="true"
-            interpretation="y coordinate of origin of manipulator coordinate system measured with respect to vehicle coordinate system">
-            <scale_range real_lower_limit="-30" real_upper_limit="30" integer_function="round" />
+          <fixed_field name="ManipulatorCoordinateSysY"
+                       optional="false"
+                       interpretation="y coordinate of origin of manipulator coordinate system measured with respect to vehicle coordinate system"
+                       field_type="unsigned integer"
+                       field_units="meter">
+            <scale_range real_lower_limit="-30"
+                         real_upper_limit="30"
+                         integer_function="round"/>
           </fixed_field>
-          <fixed_field name="ManipulatorCoordinateSysZ" field_type="unsigned integer" field_units="meter"
-            optional="true"
-            interpretation="z coordinate of origin of manipulator coordinate system measured with respect to vehicle coordinate system">
-            <scale_range real_lower_limit="-30" real_upper_limit="30" integer_function="round" />
+          <fixed_field name="ManipulatorCoordinateSysZ"
+                       optional="false"
+                       interpretation="z coordinate of origin of manipulator coordinate system measured with respect to vehicle coordinate system"
+                       field_type="unsigned integer"
+                       field_units="meter">
+            <scale_range real_lower_limit="-30"
+                         real_upper_limit="30"
+                         integer_function="round"/>
           </fixed_field>
-          <fixed_field name="DComponentOfUnitQuaternionQ" field_type="unsigned integer" field_units="one"
-            optional="true"
-            interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system">
-            <scale_range real_lower_limit="-1" real_upper_limit="1" integer_function="round" />
+          <fixed_field name="DComponentOfUnitQuaternionQ"
+                       optional="false"
+                       interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system"
+                       field_type="unsigned integer"
+                       field_units="one">
+            <scale_range real_lower_limit="-1"
+                         real_upper_limit="1"
+                         integer_function="round"/>
           </fixed_field>
-          <fixed_field name="AComponentOfUnitQuaternionQ" field_type="unsigned integer" field_units="one"
-            optional="true"
-            interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system">
-            <scale_range real_lower_limit="-1" real_upper_limit="1" integer_function="round" />
+          <fixed_field name="AComponentOfUnitQuaternionQ"
+                       optional="false"
+                       interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system"
+                       field_type="unsigned integer"
+                       field_units="one">
+            <scale_range real_lower_limit="-1"
+                         real_upper_limit="1"
+                         integer_function="round"/>
           </fixed_field>
-          <fixed_field name="BComponentOfUnitQuaternionQ" field_type="unsigned integer" field_units="one"
-            optional="true"
-            interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system">
-            <scale_range real_lower_limit="-1" real_upper_limit="1" integer_function="round" />
+          <fixed_field name="BComponentOfUnitQuaternionQ"
+                       optional="false"
+                       interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system"
+                       field_type="unsigned integer"
+                       field_units="one">
+            <scale_range real_lower_limit="-1"
+                         real_upper_limit="1"
+                         integer_function="round"/>
           </fixed_field>
-          <fixed_field name="CComponentOfUnitQuaternionQ" field_type="unsigned integer" field_units="one"
-            optional="true"
-            interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system">
-            <scale_range real_lower_limit="-1" real_upper_limit="1" integer_function="round" />
+          <fixed_field name="CComponentOfUnitQuaternionQ"
+                       optional="false"
+                       interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system"
+                       field_type="unsigned integer"
+                       field_units="one">
+            <scale_range real_lower_limit="-1"
+                         real_upper_limit="1"
+                         integer_function="round"/>
           </fixed_field>
         </record>
-        <list name="JointSpecificationList" optional="false">
-          <count_field field_type_unsigned="unsigned byte" />
-          <variant name="JointSpecifications" optional="false">
-            <vtag_field field_type_unsigned="unsigned byte" />
-            <record name="RevoluteJointSpecificationRec" optional="false">
-              <fixed_field name="LinkLength" field_type="short integer" field_units="meter" optional="false"
-                interpretation="Link Length">
-                <scale_range real_lower_limit="-10" real_upper_limit="10" integer_function="round" />               
+        <variant name="FirstJointParameters"
+                 optional="false">
+          <vtag_field min_count="0"
+                      max_count="1"
+                      field_type_unsigned="unsigned byte"/>
+          <record name="RevoluteJoint1OffsetRec"
+                  optional="false">
+            <presence_vector field_type_unsigned="unsigned byte"/>
+            <fixed_field name="Joint1Offset"
+                         optional="false"
+                         field_type="unsigned short integer"
+                         field_units="meter">
+              <scale_range real_lower_limit="-10"
+                           real_upper_limit="10"
+                           integer_function="round"/>
+            </fixed_field>
+            <fixed_field name="Joint1MinValue"
+                         optional="true"
+                         field_type="unsigned integer"
+                         field_units="radian">
+              <scale_range real_lower_limit="-25.13274122871834590768"
+                           real_upper_limit="25.13274122871834590768"
+                           integer_function="round"/>
+            </fixed_field>
+            <fixed_field name="Joint1MaxValue"
+                         optional="true"
+                         field_type="unsigned integer"
+                         field_units="radian">
+              <scale_range real_lower_limit="-25.13274122871834590768"
+                           real_upper_limit="25.13274122871834590768"
+                           integer_function="round"/>
+            </fixed_field>
+            <fixed_field name="Joint1MaxSpeed"
+                         optional="true"
+                         field_type="unsigned integer"
+                         field_units="radian per second">
+              <scale_range real_lower_limit="0"
+                           real_upper_limit="31.4159265358979323846"
+                           integer_function="round"/>
+            </fixed_field>
+            <fixed_field name="Joint1MaxTorque"
+                         optional="true"
+                         field_type="unsigned integer"
+                         field_units="newton meter">
+              <scale_range real_lower_limit="0"
+                           real_upper_limit="5000"
+                           integer_function="round"/>
+            </fixed_field>
+          </record>
+          <record name="PrismaticJoint1AngleRec"
+                  optional="false">
+            <presence_vector field_type_unsigned="unsigned byte"/>
+            <fixed_field name="Joint1Angle"
+                         optional="false"
+                         field_type="unsigned short integer"
+                         field_units="radian">
+              <scale_range real_lower_limit="-3.14159265358979323846"
+                           real_upper_limit="3.14159265358979323846"
+                           integer_function="round"/>
+            </fixed_field>
+            <fixed_field name="Joint1MinValue"
+                         optional="false"
+                         field_type="unsigned integer"
+                         field_units="meter">
+              <scale_range real_lower_limit="-10"
+                           real_upper_limit="10"
+                           integer_function="round"/>
+            </fixed_field>
+            <fixed_field name="Joint1MaxValue"
+                         optional="false"
+                         field_type="unsigned integer"
+                         field_units="meter">
+              <scale_range real_lower_limit="-10"
+                           real_upper_limit="10"
+                           integer_function="round"/>
+            </fixed_field>
+            <fixed_field name="Joint1MaxSpeed"
+                         optional="true"
+                         field_type="unsigned integer"
+                         field_units="meter per second">
+              <scale_range real_lower_limit="-5"
+                           real_upper_limit="5"
+                           integer_function="round"/>
+            </fixed_field>
+            <fixed_field name="Joint1MaxForce"
+                         optional="true"
+                         field_type="unsigned integer"
+                         field_units="newton">
+              <scale_range real_lower_limit="0"
+                           real_upper_limit="5000"
+                           integer_function="round"/>
+            </fixed_field>
+          </record>
+        </variant>
+        <list name="JointSpecificationList"
+              optional="false">
+          <count_field min_count="0"
+                       max_count="255"
+                       field_type_unsigned="unsigned byte"/>
+          <variant name="JointSpecifications"
+                   optional="false">
+            <vtag_field min_count="0"
+                        max_count="1"
+                        field_type_unsigned="unsigned byte"/>
+            <record name="RevoluteJointSpecificationRec"
+                    optional="false">
+              <presence_vector field_type_unsigned="unsigned byte"/> 
+              <fixed_field name="LinkLength"
+                           optional="false"
+                           interpretation="Link Length"
+                           field_type="unsigned short integer"
+                           field_units="meter">
+                <scale_range real_lower_limit="-10"
+                             real_upper_limit="10"
+                             integer_function="round"/>
               </fixed_field>
-              <fixed_field name="TwistAngle" field_type="unsigned short integer" field_units="radian"
-                optional="false" interpretation="Twist Angle">
-                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846"
-                  integer_function="round" />
+              <fixed_field name="TwistAngle"
+                           optional="false"
+                           interpretation="Twist Angle"
+                           field_type="unsigned short integer"
+                           field_units="radian">
+                <scale_range real_lower_limit="-3.14159265358979323846"
+                             real_upper_limit="3.14159265358979323846"
+                             integer_function="round"/>
               </fixed_field>
-              <fixed_field name="JointOffset" field_type="short integer" field_units="meter" optional="false"
-                interpretation="Joint Offset">
-                <scale_range real_lower_limit="-10" real_upper_limit="10" integer_function="round" />                
+              <fixed_field name="JointOffset"
+                           optional="false"
+                           interpretation="Joint Offset"
+                           field_type="unsigned short integer"
+                           field_units="meter">
+                <scale_range real_lower_limit="-10"
+                             real_upper_limit="10"
+                             integer_function="round"/>
               </fixed_field>
-              <fixed_field name="MinValue" field_type="unsigned integer" field_units="radian" optional="false">
-                <scale_range real_lower_limit="-25.13274122871834590768" real_upper_limit="25.13274122871834590768"
-                  integer_function="round" />
+              <fixed_field name="MinValue"
+                           optional="true"
+                           field_type="unsigned integer"
+                           field_units="radian">
+                <scale_range real_lower_limit="-25.13274122871834590768"
+                             real_upper_limit="25.13274122871834590768"
+                             integer_function="round"/>
               </fixed_field>
-              <fixed_field name="MaxValue" field_type="unsigned integer" field_units="radian" optional="false">
-                <scale_range real_lower_limit="-25.13274122871834590768" real_upper_limit="25.13274122871834590768"
-                  integer_function="round" />
+              <fixed_field name="MaxValue"
+                           optional="true"
+                           field_type="unsigned integer"
+                           field_units="radian">
+                <scale_range real_lower_limit="-25.13274122871834590768"
+                             real_upper_limit="25.13274122871834590768"
+                             integer_function="round"/>
               </fixed_field>
-              <fixed_field name="MaxSpeed" field_type="unsigned integer" field_units="radian per second"
-                optional="false">
-                <scale_range real_lower_limit="0" real_upper_limit="31.4159265358979323846" integer_function="round" />
+              <fixed_field name="MaxSpeed"
+                           optional="true"
+                           field_type="unsigned integer"
+                           field_units="radian per second">
+                <scale_range real_lower_limit="0"
+                             real_upper_limit="31.4159265358979323846"
+                             integer_function="round"/>
+              </fixed_field>
+              <fixed_field name="MaxTorque"
+                           optional="true"
+                           field_type="unsigned integer"
+                           field_units="newton meter">
+                <scale_range real_lower_limit="0"
+                             real_upper_limit="5000"
+                             integer_function="round"/>
               </fixed_field>
             </record>
-            <record name="PrismaticJointSpecificationRec" optional="false">
-              <fixed_field name="LinkLength" field_type="short integer" field_units="meter" optional="false"
-                interpretation="Link Length">
-                <scale_range real_lower_limit="-10" real_upper_limit="10" integer_function="round" />                
+            <record name="PrismaticJointSpecificationRec"
+                    optional="false">
+              <presence_vector field_type_unsigned="unsigned byte"/>
+              <fixed_field name="LinkLength"
+                           optional="false"
+                           interpretation="Link Length"
+                           field_type="unsigned short integer"
+                           field_units="meter">
+                <scale_range real_lower_limit="-10"
+                             real_upper_limit="10"
+                             integer_function="round"/>
               </fixed_field>
-              <fixed_field name="TwistAngle" field_type="unsigned short integer" field_units="radian"
-                optional="false">
-                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846"
-                  integer_function="round" />
+              <fixed_field name="TwistAngle"
+                           optional="false"
+                           field_type="unsigned short integer"
+                           field_units="radian">
+                <scale_range real_lower_limit="-3.14159265358979323846"
+                             real_upper_limit="3.14159265358979323846"
+                             integer_function="round"/>
               </fixed_field>
-              <fixed_field name="JointAngle" field_type="unsigned short integer" field_units="radian" optional="false">
-                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846"
-                  integer_function="round" />
+              <fixed_field name="JointAngle"
+                           optional="false"
+                           field_type="unsigned short integer"
+                           field_units="radian">
+                <scale_range real_lower_limit="-3.14159265358979323846"
+                             real_upper_limit="3.14159265358979323846"
+                             integer_function="round"/>
               </fixed_field>
-              <fixed_field name="MinValue" field_type="unsigned integer" field_units="meter" optional="false">
-                <scale_range real_lower_limit="-10" real_upper_limit="10" integer_function="round" />
+              <fixed_field name="MinValue"
+                           optional="false"
+                           field_type="unsigned integer"
+                           field_units="meter">
+                <scale_range real_lower_limit="-10"
+                             real_upper_limit="10"
+                             integer_function="round"/>
               </fixed_field>
-              <fixed_field name="MaxValue" field_type="unsigned integer" field_units="meter" optional="false">
-                <scale_range real_lower_limit="-10" real_upper_limit="10" integer_function="round" />
+              <fixed_field name="MaxValue"
+                           optional="false"
+                           field_type="unsigned integer"
+                           field_units="meter">
+                <scale_range real_lower_limit="-10"
+                             real_upper_limit="10"
+                             integer_function="round"/>
               </fixed_field>
-              <fixed_field name="MaxSpeed" field_type="unsigned integer" field_units="meter per second"
-                optional="false">
-                <scale_range real_lower_limit="-5" real_upper_limit="5" integer_function="round" />
+              <fixed_field name="MaxSpeed"
+                           optional="true"
+                           field_type="unsigned integer"
+                           field_units="meter per second">
+                <scale_range real_lower_limit="-5"
+                             real_upper_limit="5"
+                             integer_function="round"/>
+              </fixed_field>
+              <fixed_field name="MaxTorque"
+                           optional="true"
+                           field_type="unsigned integer"
+                           field_units="newton meter">
+                <scale_range real_lower_limit="0"
+                             real_upper_limit="5000"
+                             integer_function="round"/>
               </fixed_field>
             </record>
           </variant>
@@ -383,7 +585,7 @@
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body">
       <record name="ReportEndEffectorSpecificationRec" optional="false">
-        <fixed_field name="ParentId" field_type="unsigned long integer" field_units="one" optional="false"
+        <fixed_field name="ParentId" field_type="unsigned integer" field_units="one" optional="false"
           interpretation="4 byte identifier of the manipulator on which this end effector is mounted" />
       </record>
     </body>

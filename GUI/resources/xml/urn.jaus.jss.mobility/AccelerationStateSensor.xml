@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<service_def name="AccelerationStateSensor" id="urn:jaus:jss:mobility:AccelerationStateSensor" version="0.6" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+<service_def name="AccelerationStateSensor" id="urn:jaus:jss:mobility:AccelerationStateSensor" version="1.0" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
   <description>
     This service reports the acceleration state of the unmanned platform.  The Acceleration State Sensor 
     reports the acceleration state that is the first derivative (the rate of change) of the velocity state reported by 
