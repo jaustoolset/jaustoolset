@@ -1,0 +1,100 @@
+<?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<service_def name="PrimitiveEndEffector" id="urn:jaus:jss:manipulator:PrimitiveEndEffector"
+  version="1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description xml:space="preserve">
+  	This service is the low level interface to an end effector.  The End Effector is a one degree of freedom manipulator, usually 
+    mounted on the end of an n-degree of freedom manipulator.
+  </description>
+  <assumptions>
+    Messages may be delayed, lost, or reordered.
+  </assumptions>
+  <references>
+    <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1" />
+  </references>
+  <declared_type_set name="types">
+    <declared_type_set_ref name="manipulator" id="urn:jaus:jss:manipulator:MessageSet" version="1.1" />
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="QueryEndEffectorSpecification" declared_type_ref="manipulator.queryClass.QueryEndEffectorSpecification" />
+      <declared_message_def name="QueryEndEffectorEffort" declared_type_ref="manipulator.queryClass.QueryEndEffectorEffort" />
+      <declared_message_def name="SetEndEffectorEffort" declared_type_ref="manipulator.commandClass.SetEndEffectorEffort" />
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportEndEffectorSpecification" declared_type_ref="manipulator.informClass.ReportEndEffectorSpecification" />
+      <declared_message_def name="ReportEndEffectorEffort" declared_type_ref="manipulator.informClass.ReportEndEffectorEffort" />
+    </output_set>
+  </message_set>
+  <internal_events_set />
+  <protocol_behavior is_stateless="false">
+    <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled" />
+    <state_machine name="management.accessControl.events.transport.ReceiveFSM" interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled" interpretation="redefine state in order to extend">
+          <state name="NotControlled" interpretation="redefine state in order to extend">
+            
+              <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryEndEffectorSpecification" value="msg"
+                    interpretation="enveloped query End Effector specification message" />
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
+                  <simple />
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a report End Effector spec message">
+                    <argument value=" 'ReportEndEffectorSpecification' " />
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryEndEffectorEffort" value="msg" interpretation="enveloped query End Effector effort message" />
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
+                  <simple />
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a report End Effector effort message">
+                    <argument value=" 'ReportEndEffectorEffort' " />
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+    
+          </state>
+          <state name="Controlled" interpretation="redefine state in order to extend">
+            <state name="Available" initial_state="Standby">
+              <state name="Ready">
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetEndEffectorEffort" value="msg" interpretation="enveloped set End Effector effort message" />
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
+                  <guard condition="management.accessControl.isControllingClient(transportData)"
+                    interpretation="True if the message that triggered the transition is received from the client that is in control of this service" />
+                  <simple />
+                  <action name="setEndEffectorEffort" interpretation="Set the effort for the end effector">
+                    <argument value="msg" />
+                  </action>
+                </transition>
+              </state>
+            </state>
+            <default_state>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryEndEffectorSpecification" value="msg"
+                    interpretation="enveloped query End Effector specification message" />
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
+                  <simple />
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a report End Effector spec message">
+                    <argument value=" 'ReportEndEffectorSpecification' " />
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="QueryEndEffectorEffort" value="msg" interpretation="enveloped query End Effector effort message" />
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
+                  <simple />
+                  <action name="management.accessControl.events.transport.Send" interpretation="Send a report End Effector effort message">
+                    <argument value=" 'ReportEndEffectorEffort' " />
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

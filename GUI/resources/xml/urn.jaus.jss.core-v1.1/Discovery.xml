@@ -111,10 +111,14 @@
             </transition>
             <transition name="transport.Receive">
               <parameter type="RegisterServices" value="msg"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
               <ns2:internal/>
               <action name="PublishServices" interpretation="Add the component
                 that sent the message                 to the list of reported
-                services"/>
+                services">
+                <argument value="msg"/>
+                <argument value="transportData"/>
+              </action>
             </transition>
           </default_state>
         </state>

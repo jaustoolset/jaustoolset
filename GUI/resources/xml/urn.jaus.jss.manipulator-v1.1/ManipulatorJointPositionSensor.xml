@@ -1,0 +1,56 @@
+<?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<service_def name="ManipulatorJointPositionSensor" id="urn:jaus:jss:manipulator:ManipulatorJointPositionSensor"
+  version="1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" >
+  <description xml:space="preserve">
+  	The function of the Joint Position Sensor Service is to report the values of manipulator joint parameters when queried.
+  </description>
+  <assumptions>
+    Messages may be delayed, lost, or reordered.
+  </assumptions>
+  <references>
+    <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1" />
+  </references>
+  <declared_type_set name="types">
+    <declared_type_set_ref name="manipulator" id="urn:jaus:jss:manipulator:MessageSet" version="1.1" />
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="QueryJointPositions" declared_type_ref="manipulator.queryClass.QueryJointPositions" />
+      <declared_message_def name="QueryManipulatorSpecifications" declared_type_ref="manipulator.queryClass.QueryManipulatorSpecifications" />
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportJointPositions" declared_type_ref="manipulator.informClass.ReportJointPositions" />
+      <declared_message_def name="ReportManipulatorSpecifications" declared_type_ref="manipulator.informClass.ReportManipulatorSpecifications" />
+    </output_set>
+  </message_set>
+  <internal_events_set />
+  <protocol_behavior is_stateless="false">
+    <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready" />
+    <state_machine name="events.transport.ReceiveFSM" interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+        <state name="Ready">
+          <default_state>
+            <transition name="events.transport.Receive">
+              <parameter type="QueryJointPositions" value="msg" interpretation="enveloped query joint positions message" />
+              <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
+              <simple />
+              <action name="events.transport.Send" interpretation="Send Report Joint Positions message to the service that sent the query">
+                <argument value=" 'ReportJointPositions' " />
+                <argument value="transportData"/>
+              </action>
+            </transition>
+            <transition name="events.transport.Receive">
+              <parameter type="QueryManipulatorSpecifications" value="msg" interpretation="enveloped query manipulator specifications message" />
+              <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
+              <simple />
+              <action name="events.transport.Send" interpretation="Send a Report Manipulator Specs message">
+                <argument value=" 'ReportManipulatorSpecifications' " />
+                <argument value="transportData"/>
+              </action>
+            </transition>
+          </default_state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

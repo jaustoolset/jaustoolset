@@ -1,0 +1,9 @@
+<?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<declared_type_set name="MessageSet" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" id="urn:jaus:jss:manipulator:MessageSet" version="1.1">
+  <declared_type_set_ref name="commandClass" id="urn:jaus:jss:manipulator:MessageSet:CommandClass"
+    version="1.1"/>
+  <declared_type_set_ref name="informClass" id="urn:jaus:jss:manipulator:MessageSet:InformClass"
+    version="1.1"/>
+  <declared_type_set_ref name="queryClass" id="urn:jaus:jss:manipulator:MessageSet:QueryClass"
+    version="1.1"/>
+</declared_type_set>

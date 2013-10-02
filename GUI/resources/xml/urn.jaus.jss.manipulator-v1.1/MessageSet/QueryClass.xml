@@ -1,0 +1,242 @@
+<?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<declared_type_set name="QueryClass" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1"
+  id="urn:jaus:jss:manipulator:MessageSet:QueryClass" version="1.1">
+  <declared_const_set_ref name="basicConsts" id="urn:jaus:jss:manipulator:MessageSet:BasicConstants"
+    version="1.1" />
+  <declared_type_set_ref name="basicTypes" id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.1" />
+    <declared_type_set_ref name="manipulatorTypes" id="urn:jaus:jss:manipulator:MessageSet:BasicManipulatorTypes"
+    version="1.1" />
+  <message_def name="QueryManipulatorSpecifications" message_id="2600" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4600h:
+      ReportManipulatorSpecifications message. A logical AND shall be performed on the requested presence vector and
+      that representing the available fields from the responder. The resulting message shall contain the
+      fields indicated by the result of this logical AND operation.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <record name="QueryManipulatorSpecificationsRec" optional="false">
+        <fixed_field name="PresenceVector" field_units="one" field_type="unsigned byte" optional="false" />
+      </record>
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryJointEfforts" message_id="2601" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4601h: ReportJointEfforts message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryJointPositions" message_id="2602" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4602h: ReportJointPositions message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryJointVelocities" message_id="2603" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4603h: ReportJointVelocities message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryToolOffset" message_id="2604" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4604h: ReportToolOffset message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryJointForceTorques" message_id="2605" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4605h: ReportJointForceTorques message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryMotionProfile" message_id="2607" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4607h: ReportMotionProfile message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryCommandedJointPositions" message_id="2608" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4608h: ReportCommandedJointPositions message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryCommandedEndEffectorPose" message_id="2610" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4610h: ReportCommandedEndEffectorPose message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryCommandedJointVelocities" message_id="2611" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4611h: ReportCommandedJointVelocities message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryCommandedEndEffectorVelocityState" message_id="2612" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4612h: ReportCommandedEndEffectorVelocityState message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryCommandedActuatorForceTorques" message_id="2613" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4613h: ReportCommandedActuatorForceTorques message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryEndEffectorPose" message_id="2615" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4615h: ReportEndEffectorPose message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryEndEffectorVelocityState" message_id="2616" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4616h: ReportEndEffectorVelocityState message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryPanTiltSpecifications" message_id="2620" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4620h: ReportPanTiltSpecifications message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <record name="QueryPanTiltSpecificationsRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="unsigned byte" field_units="one" optional="false" />
+      </record>
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryPanTiltJointEfforts" message_id="2621" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4621h: ReportPanTiltJointEfforts message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryPanTiltJointPositions" message_id="2622" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4622h: ReportPanTiltJointPositions message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryPanTiltJointVelocities" message_id="2623" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4623h: ReportPanTiltJointVelocities message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryPanTiltMotionProfile" message_id="2627" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4627h: ReportPanTiltMotionProfile message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryCommandedPanTiltJointPositions" message_id="2628" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4628h: ReportCommandedPanTiltJointPositions message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryCommandedPanTiltJointVelocities" message_id="2631" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4631h: ReportCommandedPanTiltJointVelocities message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryEndEffectorSpecification" message_id="2632" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4632h: ReportEndEffectorSpecification message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryEndEffectorEffort" message_id="2633" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving service to reply to the requestor with a ID 4633h: ReportEndEffectorEffort message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <!-- Message Defs for ListManager -->
+  <message_def name="QueryElement" message_id="241A" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query an element from a list.  The element is uniquely identified by the UID.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <record name="QueryElementRec" optional="false">
+        <declared_fixed_field name="ElementUID" declared_type_ref="manipulatorTypes.ElementUID"
+          optional="false" interpretation="UID of the queried element.  A value of zero (0) represents the first (head) element in the list." />
+      </record>
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryElementList" message_id="241B" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query all elements from a list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryElementCount" message_id="241C" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query the number of elements in a list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="QueryActiveElement" message_id="261E" is_command="false">
+    <description xml:space="preserve">
+      This message is used to query the current active element of an executing list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body" />
+    <footer name="Footer" />
+  </message_def>
+</declared_type_set>

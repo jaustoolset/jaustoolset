@@ -1,0 +1,240 @@
+<?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<declared_type_set name="CommandClass" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1"
+  id="urn:jaus:jss:manipulator:MessageSet:CommandClass" version="1.1">
+  <declared_const_set_ref name="basicConsts" id="urn:jaus:jss:manipulator:MessageSet:BasicConstants"
+    version="1.1" />
+  <declared_type_set_ref name="basicTypes" id="urn:jaus:jss:core:MessageSet:BasicTypes"
+    version="1.1" />
+  <declared_type_set_ref name="manipulatorTypes" id="urn:jaus:jss:manipulator:MessageSet:BasicManipulatorTypes"
+    version="1.1" />
+  <message_def name="SetJointEfforts" message_id="0601" is_command="true">
+    <description xml:space="preserve">
+      This message is used to control joint actuators in an open loop fashion. The command states the percentage
+      level of effort that each actuator should exercise in order to move its corresponding joint. The message must
+      contain effort commands for each joint in the manipulator.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_list name="JointEffortList" optional="false" declared_type_ref="manipulatorTypes.JointEffortList" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetJointPositions" message_id="0602" is_command="true">
+    <description xml:space="preserve">
+      This message sets the desired joint position values.  The message must contain a position command for each joint in the manipulator.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_list name="JointPositionList" optional="false" declared_type_ref="manipulatorTypes.JointPositionList" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetJointVelocities" message_id="0603" is_command="true">
+    <description xml:space="preserve">
+      This message sets the desired joint velocity values.  The message must contain a velocity command for each joint in the manipulator.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_list name="JointVelocityList" optional="false" declared_type_ref="manipulatorTypes.JointVelocityList" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetToolOffset" message_id="0604" is_command="true">
+    <description xml:space="preserve">
+      This message specifies the coordinates of the end-effector tool point (End Effector Pose) in terms of the End Effector Coordinate System.  For a six-axis robot, this coordinate system is defined by having its origin located at the intersection of the S6 joint axis vector and the user defined link vector a67.  The Z axis of the coordinate system is along S6 and the X axis is along the a67 vector.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_record name="ToolPointRec" optional="false" declared_type_ref="manipulatorTypes.ToolPointRec" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetMotionProfile" message_id="0607" is_command="true">
+    <description xml:space="preserve">
+      This message sets maximum speeds, acceleration, and deceleration rates for each joint of the manipulator.  The message must contain a profile for each joint in the manipulator.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_list name="MotionProfileList" optional="false" declared_type_ref="manipulatorTypes.MotionProfileList" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetEndEffectorPose" message_id="0610" is_command="true">
+    <description xml:space="preserve">
+      This message defines the desired end-effector position and orientation.  The coordinates of the tool point are defined in terms of the vehicle coordinate system.  The orientation of the end-effector is defined by a unit quaternion (d ; a, b, c) which specifies the axis and angle of rotation that was used to establish the orientation of the end-effector coordinate system with respect to the vehicle coordinate system.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_record name="EndEffectorPoseRec" optional="false" declared_type_ref="manipulatorTypes.EndEffectorPoseRec" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetEndEffectorVelocityState" message_id="0612" is_command="true">
+    <description xml:space="preserve">
+      This message defines the desired end-effector velocity state measured with respect to the vehicle coordinate system.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_record name="EndEffectorVelocityRec" optional="false" declared_type_ref="manipulatorTypes.EndEffectorVelocityRec" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetActuatorForceTorques" message_id="0613" is_command="true">
+    <description xml:space="preserve">
+      This message defines the desired actuator forces (for each prismatic actuator) and the desired actuator torques (for each revolute actuator).
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_list name="ActuatorForceTorqueList" optional="false" declared_type_ref="manipulatorTypes.ActuatorForceTorqueList" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetPanTiltJointEfforts" message_id="0621" is_command="true">
+    <description xml:space="preserve">
+      This message is used to control the two joint actuators for a pan tilt mechanism in an open loop fashion. The command states the percentage level of effort that each actuator should exercise in order to move its corresponding joint.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_record name="PanTiltJointEffortRec" optional="false" declared_type_ref="manipulatorTypes.PanTiltJointEffortRec" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetPanTiltJointPositions" message_id="0622" is_command="true">
+    <description xml:space="preserve">
+      This message sets the desired joint position values for a pan tilt mechanism.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_record name="PanTiltJointPositionRec" optional="false" declared_type_ref="manipulatorTypes.PanTiltJointPositionRec" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetPanTiltJointVelocities" message_id="0623" is_command="true">
+    <description xml:space="preserve">
+      This message sets the desired joint velocity values for a pan tilt mechanism.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_record name="PanTiltJointVelocitiesRec" optional="false" declared_type_ref="manipulatorTypes.PanTiltJointVelocitiesRec" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetPanTiltMotionProfile" message_id="0627" is_command="true">
+    <description xml:space="preserve">
+      This message sets maximum speeds, acceleration, and deceleration rates for each joint of the pan tilt mechanism.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_record name="PanTiltMotionProfileRec" optional="false" declared_type_ref="manipulatorTypes.PanTiltMotionProfileRec" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <message_def name="SetEndEffectorEffort" message_id="0633" is_command="true">
+    <description xml:space="preserve">
+      This message is used to control a single degree of freedom end effector in an open loop fashion. The command states the percentage level of effort that the end effector should exercise.  The mapping of effort to end effector behavior (open/close gripper, turn a screw driver, activate a welder) is implementation specific.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
+    <body name="Body">
+      <declared_record name="EndEffectorEffortRec" optional="false" declared_type_ref="manipulatorTypes.EndEffectorEffortRec" />
+    </body>
+    <footer name="Footer" />
+  </message_def>
+  <!-- Message Defs for ListManager -->
+  <message_def name="SetElement" message_id="041A" is_command="true">
+    <description xml:space="preserve">
+      This message is used to add, insert or replace one or more elements in a list.  Each element is uniquely 
+      identified by the UID, and the sequence within the list is specified by the previous (parent) and next (child) 
+      elements.  This message can also be used to update an existing element.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <sequence name="SetElementSeq" optional="false">
+        <record name="RequestIDRec" optional="false">
+          <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+            interpretation="ID of the request.  This ID will be returned in the response message."/>
+        </record>
+        <list name="ElementList" optional="false">
+          <count_field field_type_unsigned="unsigned byte"/>
+          <declared_record name="ElementRec" declared_type_ref="manipulatorTypes.ElementRec" optional="false"/>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="DeleteElement" message_id="041B" is_command="true">
+    <description xml:space="preserve">
+      This message is used to delete one or more elements from a list.  Each element is uniquely identified by the UID.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <sequence name="DeleteElementSeq" optional="false">
+        <record name="RequestIDRec" optional="false">
+          <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+            interpretation="ID of the request.  This ID will be returned in the response message."/>
+        </record>
+        <list name="DeleteElementList" optional="false">
+          <count_field field_type_unsigned="unsigned byte"/>
+          <record name="DeleteElementRec" optional="false">
+            <declared_fixed_field name="ElementUID" declared_type_ref="manipulatorTypes.ElementUID" optional="false"
+               interpretation="UID of the element to be deleted, where a value of 65535 represents all element in the list."/>
+          </record>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def> 
+  <message_def name="ConfirmElementRequest" message_id="041C" is_command="false">
+    <description xml:space="preserve">
+      This message is used to confirm successful operation on an element list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+        <record name="RequestIDRec" optional="false">
+          <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+            interpretation="ID of the request that generated this confirmation message."/>
+        </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>  
+  <message_def name="RejectElementRequest" message_id="041D" is_command="false">
+    <description xml:space="preserve">
+      This message is used to reject an operation on an element list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="RejectElementRec" optional="false">
+        <fixed_field name="RequestID" field_type="unsigned byte" field_units="one" optional="false"
+        interpretation="ID of the request that generated this confirmation message."/>
+        <fixed_field name="ResponseCode" field_type="unsigned byte" field_units="one" optional="false"
+          interpretation="ID of the request that generated this confirmation message.">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="1" enum_const="Invalid element ID"/>            
+            <value_enum enum_index="2" enum_const="Invalid previous element"/>
+            <value_enum enum_index="3" enum_const="Invalid next element"/>
+            <value_enum enum_index="4" enum_const="Unsupported element type"/>
+            <value_enum enum_index="5" enum_const="Element ID not found"/>
+            <value_enum enum_index="6" enum_const="Out of memory"/>
+            <value_enum enum_index="7" enum_const="Unspecified error"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ExecuteList" message_id="061E" is_command="false">
+    <description xml:space="preserve">
+      This message is used to begin execution of a sequential list of motion commands.  Optionally,
+      the starting element UID can also be specified, 
+      where an unspecified value or a value of zero (0) indicates the first (head) element in the list.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ExecuteListRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <declared_fixed_field name="ElementUID" declared_type_ref="manipulatorTypes.ElementUID" optional="true"
+          interpretation="Element UID of the starting element.  A value of zero (0) indicates the first (head) element of the list."/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+</declared_type_set>
