@@ -16,11 +16,9 @@
   <message_set>
     <input_set>
       <declared_message_def name="QueryPanTiltJointPositions" declared_type_ref="manipulator.queryClass.QueryPanTiltJointPositions" />
-      <declared_message_def name="QueryPanTiltSpecifications" declared_type_ref="manipulator.queryClass.QueryPanTiltSpecifications" />
     </input_set>
     <output_set>
       <declared_message_def name="ReportPanTiltJointPositions" declared_type_ref="manipulator.informClass.ReportPanTiltJointPositions" />
-      <declared_message_def name="ReportPanTiltSpecifications" declared_type_ref="manipulator.informClass.ReportPanTiltSpecifications" />
     </output_set>
   </message_set>
   <internal_events_set />
@@ -37,15 +35,6 @@
               <simple />
               <action name="events.transport.Send" interpretation="Send Report Pan Tilt Joint Positions message to the service that sent the query">
                 <argument value=" 'ReportPanTiltJointPositions' " />
-                <argument value="transportData"/>
-              </action>
-            </transition>
-            <transition name="events.transport.Receive">
-              <parameter type="QueryPanTiltSpecifications" value="msg" interpretation="enveloped query pan tilt specifications message" />
-              <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-              <simple />
-              <action name="events.transport.Send" interpretation="Send a Report Pan Tilt Specifications message">
-                <argument value=" 'ReportPanTiltSpecifications' " />
                 <argument value="transportData"/>
               </action>
             </transition>

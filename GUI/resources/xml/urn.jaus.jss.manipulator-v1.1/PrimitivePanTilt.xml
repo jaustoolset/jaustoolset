@@ -18,12 +18,10 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryPanTiltSpecifications" declared_type_ref="manipulator.queryClass.QueryPanTiltSpecifications" />
       <declared_message_def name="QueryPanTiltJointEfforts" declared_type_ref="manipulator.queryClass.QueryPanTiltJointEfforts" />
       <declared_message_def name="SetPanTiltJointEfforts" declared_type_ref="manipulator.commandClass.SetPanTiltJointEfforts" />
     </input_set>
     <output_set>
-      <declared_message_def name="ReportPanTiltSpecifications" declared_type_ref="manipulator.informClass.ReportPanTiltSpecifications" />
       <declared_message_def name="ReportPanTiltJointEfforts" declared_type_ref="manipulator.informClass.ReportPanTiltJointEfforts" />
     </output_set>
   </message_set>
@@ -36,16 +34,6 @@
           <state name="NotControlled" interpretation="redefine state in order to extend">
             
               <default_state>
-                <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="QueryPanTiltSpecifications" value="msg"
-                    interpretation="enveloped query Pan Tilt specifications message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <simple />
-                  <action name="management.accessControl.events.transport.Send" interpretation="Send a report Pan Tilt specifications message">
-                    <argument value=" 'ReportPanTiltSpecifications' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
                 <transition name="management.accessControl.events.transport.Receive">
                   <parameter type="QueryPanTiltJointEfforts" value="msg" interpretation="enveloped query Pan Tilt joint efforts message" />
                   <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
@@ -75,16 +63,6 @@
               </state>
             </state>
             <default_state>
-                <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="QueryPanTiltSpecifications" value="msg"
-                    interpretation="enveloped query Pan Tilt specifications message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <simple />
-                  <action name="management.accessControl.events.transport.Send" interpretation="Send a report Pan Tilt specifications message">
-                    <argument value=" 'ReportPanTiltSpecifications' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
                 <transition name="management.accessControl.events.transport.Receive">
                   <parameter type="QueryPanTiltJointEfforts" value="msg" interpretation="enveloped query Pan Tilt joint efforts message" />
                   <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />

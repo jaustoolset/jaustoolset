@@ -15,12 +15,10 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryManipulatorSpecifications" declared_type_ref="manipulator.queryClass.QueryManipulatorSpecifications" />
       <declared_message_def name="QueryCommandedActuatorForceTorques" declared_type_ref="manipulator.queryClass.QueryCommandedActuatorForceTorques" />
       <declared_message_def name="SetActuatorForceTorques" declared_type_ref="manipulator.commandClass.SetActuatorForceTorques" />
     </input_set>
     <output_set>
-      <declared_message_def name="ReportManipulatorSpecifications" declared_type_ref="manipulator.informClass.ReportManipulatorSpecifications" />
       <declared_message_def name="ReportCommandedActuatorForceTorques" declared_type_ref="manipulator.informClass.ReportCommandedActuatorForceTorques" />
     </output_set>
   </message_set>
@@ -33,16 +31,6 @@
           <state name="NotControlled" interpretation="redefine state in order to extend">
             
               <default_state>
-                <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="QueryManipulatorSpecifications" value="msg"
-                    interpretation="enveloped query manipulator specification message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <simple />
-                  <action name="management.accessControl.events.transport.Send" interpretation="Send a report manipulator specs message">
-                    <argument value=" 'ReportManipulatorSpecifications' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
                 <transition name="management.accessControl.events.transport.Receive">
                   <parameter type="QueryCommandedActuatorForceTorques" value="msg" interpretation="enveloped Query Commanded Actuator Force Torque message" />
                   <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
@@ -71,16 +59,6 @@
               </state>
             </state>
             <default_state>
-                <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="QueryManipulatorSpecifications" value="msg"
-                    interpretation="enveloped query manipulator specification message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <simple />
-                  <action name="management.accessControl.events.transport.Send" interpretation="Send a report manipulator specs message">
-                    <argument value=" 'ReportManipulatorSpecifications' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
                 <transition name="management.accessControl.events.transport.Receive">
                   <parameter type="QueryCommandedActuatorForceTorques" value="msg" interpretation="enveloped Query Commanded Actuator Force Torque message" />
                   <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />

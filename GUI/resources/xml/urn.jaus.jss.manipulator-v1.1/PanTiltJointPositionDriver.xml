@@ -20,16 +20,11 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryPanTiltSpecifications" declared_type_ref="manipulator.queryClass.QueryPanTiltSpecifications" />
       <declared_message_def name="QueryCommandedPanTiltJointPositions" declared_type_ref="manipulator.queryClass.QueryCommandedPanTiltJointPositions" />
-      <declared_message_def name="QueryPanTiltMotionProfile" declared_type_ref="manipulator.queryClass.QueryPanTiltMotionProfile" />
       <declared_message_def name="SetPanTiltJointPositions" declared_type_ref="manipulator.commandClass.SetPanTiltJointPositions" />
-      <declared_message_def name="SetPanTiltMotionProfile" declared_type_ref="manipulator.commandClass.SetPanTiltMotionProfile" />
     </input_set>
     <output_set>
-      <declared_message_def name="ReportPanTiltSpecifications" declared_type_ref="manipulator.informClass.ReportPanTiltSpecifications" />
       <declared_message_def name="ReportCommandedPanTiltJointPositions" declared_type_ref="manipulator.informClass.ReportCommandedPanTiltJointPositions" />
-      <declared_message_def name="ReportPanTiltMotionProfile" declared_type_ref="manipulator.informClass.ReportPanTiltMotionProfile" />
     </output_set>
   </message_set>
   <internal_events_set />
@@ -42,31 +37,11 @@
            
               <default_state>
                 <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="QueryPanTiltSpecifications" value="msg"
-                    interpretation="enveloped query Pan Tilt specifications message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <simple />
-                  <action name="management.accessControl.events.transport.Send" interpretation="Send a report Pan Tilt specifications message">
-                    <argument value=" 'ReportPanTiltSpecifications' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
-                <transition name="management.accessControl.events.transport.Receive">
                   <parameter type="QueryCommandedPanTiltJointPositions" value="msg" interpretation="enveloped query commanded Pan Tilt Joint Positions message" />
                   <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
                   <simple />
                   <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Commanded Pan Tilt Joint Positions message">
                     <argument value=" 'ReportCommandedPanTiltJointPositions' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
-                <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="QueryPanTiltMotionProfile" value="msg" interpretation="enveloped query Pan Tilt motion profile message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <guard condition="panTiltMotionProfileExists()" interpretation="True if a Pan Tilt motion profile has already been received." />
-                  <simple />
-                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Pan Tilt Motion Profile message">
-                    <argument value=" 'ReportPanTiltMotionProfile' " />
                     <argument value="transportData"/>
                   </action>
                 </transition>
@@ -94,42 +69,12 @@
             </state>
             <default_state>
                 <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="QueryPanTiltSpecifications" value="msg"
-                    interpretation="enveloped query Pan Tilt specifications message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <simple />
-                  <action name="management.accessControl.events.transport.Send" interpretation="Send a report Pan Tilt specifications message">
-                    <argument value=" 'ReportPanTiltSpecifications' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
-                <transition name="management.accessControl.events.transport.Receive">
                   <parameter type="QueryCommandedPanTiltJointPositions" value="msg" interpretation="enveloped query commanded Pan Tilt Joint Positions message" />
                   <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
                   <simple />
                   <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Commanded Pan Tilt Joint Positions message">
                     <argument value=" 'ReportCommandedPanTiltJointPositions' " />
                     <argument value="transportData"/>
-                  </action>
-                </transition>
-                <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="QueryPanTiltMotionProfile" value="msg" interpretation="enveloped query Pan Tilt motion profile message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <guard condition="panTiltMotionProfileExists()" interpretation="True if a Pan Tilt motion profile has already been received." />
-                  <simple />
-                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Pan Tilt Motion Profile message">
-                    <argument value=" 'ReportPanTiltMotionProfile' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
-                <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="SetPanTiltMotionProfile" value="msg" interpretation="enveloped set Pan Tilt motion profile message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <guard condition="management.accessControl.isControllingClient(transportData)"
-                    interpretation="True if the message that triggered the transition is received from the client that is in control of this service." />
-                  <simple />
-                  <action name="setPanTiltMotionProfile" interpretation="Set the motion profile parameters for the pan tilt mechanism">
-                    <argument value="msg" />
                   </action>
                 </transition>
               </default_state>

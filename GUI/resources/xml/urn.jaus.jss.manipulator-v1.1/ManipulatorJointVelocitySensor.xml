@@ -16,11 +16,9 @@
   <message_set>
     <input_set>
       <declared_message_def name="QueryJointVelocities" declared_type_ref="manipulator.queryClass.QueryJointVelocities" />
-      <declared_message_def name="QueryManipulatorSpecifications" declared_type_ref="manipulator.queryClass.QueryManipulatorSpecifications" />
     </input_set>
     <output_set>
       <declared_message_def name="ReportJointVelocities" declared_type_ref="manipulator.informClass.ReportJointVelocities" />
-      <declared_message_def name="ReportManipulatorSpecifications" declared_type_ref="manipulator.informClass.ReportManipulatorSpecifications" />
     </output_set>
   </message_set>
   <internal_events_set />
@@ -36,15 +34,6 @@
               <simple />
               <action name="events.transport.Send" interpretation="Send Report Joint Velocities message to the service that sent the query">
                 <argument value=" 'ReportJointVelocities' " />
-                <argument value="transportData"/>
-              </action>
-            </transition>
-            <transition name="events.transport.Receive">
-              <parameter type="QueryManipulatorSpecifications" value="msg" interpretation="enveloped query manipulator specifications message" />
-              <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-              <simple />
-              <action name="events.transport.Send" interpretation="Send a Report Manipulator Specs message">
-                <argument value=" 'ReportManipulatorSpecifications' " />
                 <argument value="transportData"/>
               </action>
             </transition>

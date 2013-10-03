@@ -20,16 +20,11 @@
   <message_set>
     <input_set>
       <declared_message_def name="ExecuteList" declared_type_ref="manipulator.commandClass.ExecuteList" />
-      <declared_message_def name="SetMotionProfile" declared_type_ref="manipulator.commandClass.SetMotionProfile" />
       <declared_message_def name="QueryActiveElement" declared_type_ref="manipulator.queryClass.QueryActiveElement" />
-      <declared_message_def name="QueryManipulatorSpecifications" declared_type_ref="manipulator.queryClass.QueryManipulatorSpecifications" />
-      <declared_message_def name="QueryMotionProfile" declared_type_ref="manipulator.queryClass.QueryMotionProfile" />
       <declared_message_def name="QueryCommandedJointPositions" declared_type_ref="manipulator.queryClass.QueryCommandedJointPositions" />
     </input_set>
     <output_set>
       <declared_message_def name="ReportActiveElement" declared_type_ref="manipulator.informClass.ReportActiveElement" />
-      <declared_message_def name="ReportManipulatorSpecifications" declared_type_ref="manipulator.informClass.ReportManipulatorSpecifications" />
-      <declared_message_def name="ReportMotionProfile" declared_type_ref="manipulator.informClass.ReportMotionProfile" />
       <declared_message_def name="ReportCommandedJointPositions" declared_type_ref="manipulator.informClass.ReportCommandedJointPositions" />
     </output_set>
   </message_set>
@@ -42,26 +37,6 @@
           <state name="NotControlled" interpretation="redefine state in order to extend">
             
               <default_state>
-                <transition name="listManager.management.accessControl.events.transport.Receive">
-                  <parameter type="QueryManipulatorSpecifications" value="msg"
-                    interpretation="enveloped query manipulator specification message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <simple />
-                  <action name="listManager.management.accessControl.events.transport.Send" interpretation="Send a report manipulator specs message">
-                    <argument value=" 'ReportManipulatorSpecifications' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
-                <transition name="listManager.management.accessControl.events.transport.Receive">
-                  <parameter type="QueryMotionProfile" value="msg" interpretation="enveloped query motion profile message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <guard condition="motionProfileExists()" interpretation="True if a motion profile has already been received." />
-                  <simple />
-                  <action name="listManager.management.accessControl.events.transport.Send" interpretation="Send a Report Motion Profile message">
-                    <argument value=" 'ReportMotionProfile' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
                 <transition name="listManager.management.accessControl.events.transport.Receive">
                   <parameter type="QueryActiveElement" value="msg" interpretation="enveloped query Active element message" />
                   <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
@@ -93,7 +68,7 @@
                 <transition name="listManager.management.accessControl.events.transport.Receive">
                   <parameter type="ExecuteList" value="msg" interpretation="enveloped execute list message" />
                   <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <guard condition="listManager.management.accessControl.isControllingClient( msg ) &amp;&amp; listManager.elementExists( msg ) &amp;&amp; motionProfileExists()"
+                  <guard condition="listManager.management.accessControl.isControllingClient( transportData ) &amp;&amp; listManager.elementExists( msg ) &amp;&amp; motionProfileExists()"
                     interpretation="True if the message that triggered the transition is received from the client that is in control of this service AND
                       True if the Element UID specified in the message that triggered the transition exists in the list AND
                       True if a motion profile has already been received." />
@@ -106,26 +81,6 @@
               </state>
             </state>
             <default_state>
-                <transition name="listManager.management.accessControl.events.transport.Receive">
-                  <parameter type="QueryManipulatorSpecifications" value="msg"
-                    interpretation="enveloped query manipulator specification message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <simple />
-                  <action name="listManager.management.accessControl.events.transport.Send" interpretation="Send a report manipulator specs message">
-                    <argument value=" 'ReportManipulatorSpecifications' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
-                <transition name="listManager.management.accessControl.events.transport.Receive">
-                  <parameter type="QueryMotionProfile" value="msg" interpretation="enveloped query motion profile message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <guard condition="motionProfileExists()" interpretation="True if a motion profile has already been received." />
-                  <simple />
-                  <action name="listManager.management.accessControl.events.transport.Send" interpretation="Send a Report Motion Profile message">
-                    <argument value=" 'ReportMotionProfile' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
                 <transition name="listManager.management.accessControl.events.transport.Receive">
                   <parameter type="QueryActiveElement" value="msg" interpretation="enveloped query Active element message" />
                   <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
@@ -146,16 +101,6 @@
                   </action>
                 </transition>
                 <transition name="listManager.management.accessControl.events.transport.Receive">
-                  <parameter type="SetMotionProfile" value="msg" interpretation="enveloped query motion profile message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <guard condition="listManager.management.accessControl.isControllingClient(transportData)"
-                    interpretation="True if the message that triggered the transition is received from the client that is in control of this service." />
-                  <simple />
-                  <action name="setMotionProfile" interpretation="Set the motion profile parameters for the manipulator.">
-                    <argument value="msg" />
-                  </action>
-                </transition>
-                <transition name="listManager.management.accessControl.events.transport.Receive">
                   <parameter type="SetElement" value="msg" interpretation="enveloped set element message" />
                   <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
                   <guard condition="listManager.management.accessControl.isControllingClient(transportData) &amp;&amp; listManager.isValidElementRequest(msg) &amp;&amp; isElementSupported(msg)"
@@ -171,30 +116,7 @@
                     <argument value="transportData"/>
                   </action>
                 </transition>
-                <transition name="listManager.management.accessControl.events.transport.Receive">
-                  <parameter type="SetElement" value="msg" interpretation="enveloped set element message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <guard condition="listManager.management.accessControl.isControllingClient(transportData) &amp;&amp; ! listManager.isValidElementRequest(msg)"
-                    interpretation="True if the message that triggered the transition is received from the client that is in control of this service AND 
-                    the resulting list would be invalid as defined by the List Manager Service description or the receiving entity does not have sufficient memory to store the element(s)" />
-                  <simple />
-                  <action name="listManager.management.accessControl.events.transport.Send" interpretation="Send a Reject Element Request message">
-                    <argument value=" 'RejectElementRequest' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
-                <transition name="listManager.management.accessControl.events.transport.Receive">
-                  <parameter type="SetElement" value="msg" interpretation="enveloped set element message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <guard condition="listManager.management.accessControl.isControllingClient(transportData) &amp;&amp; ! isElementSupported(msg)"
-                    interpretation="True if the message that triggered the transition is received from the client that is in control of this service AND 
-                    the message contains payload(s) that are not valid serialized Set Joint Positions message(s)." />
-                  <simple />
-                  <action name="listManager.management.accessControl.events.transport.Send" interpretation="Send a Reject Element Request message">
-                    <argument value=" 'RejectElementRequest' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
+                
               </default_state>
           </state>
         </state>
