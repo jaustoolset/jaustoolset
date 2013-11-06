@@ -1,40 +1,52 @@
 <?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
-<service_def name="ManipulatorJointForceTorqueSensor" id="urn:jaus:jss:manipulator:ManipulatorJointForceTorqueSensor"
-  version="1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" >
+<service_def name="ManipulatorJointForceTorqueSensor"
+  id="urn:jaus:jss:manipulator:ManipulatorJointForceTorqueSensor" version="1.1"
+  xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
   <description xml:space="preserve">
-  	The function of the Joint Force/Torque Sensor is to report the values of instantaneous torques (for revolute joints) and forces 
-    (for prismatic joints) that are applied at the individual joints of the manipulator kinematic model when queried.
+    The function of the Joint Force/Torque Sensor is to report the values of 
+    instantaneous torques (for revolute joints) and forces (for prismatic joints)
+    that are applied at the individual joints of the manipulator kinematic model 
+    when queried.  To ensure backward compatibility with 1.0 implementations of 
+    this service, it is recommended that this service be co-located on the same 
+    component as a Manipulator Definition Service.
   </description>
-  <assumptions>
-    Messages may be delayed, lost, or reordered.
-  </assumptions>
+  <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
   <references>
-    <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1" />
+    <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1"/>
   </references>
   <declared_type_set name="types">
-    <declared_type_set_ref name="manipulator" id="urn:jaus:jss:manipulator:MessageSet" version="1.1" />
+    <declared_type_set_ref name="manipulator" id="urn:jaus:jss:manipulator:MessageSet"
+      version="1.1"/>
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryJointForceTorques" declared_type_ref="manipulator.queryClass.QueryJointForceTorques" />
+      <declared_message_def name="QueryJointForceTorques"
+        declared_type_ref="manipulator.queryClass.QueryJointForceTorques"/>
     </input_set>
     <output_set>
-      <declared_message_def name="ReportJointForceTorques" declared_type_ref="manipulator.informClass.ReportJointForceTorques" />
+      <declared_message_def name="ReportJointForceTorques"
+        declared_type_ref="manipulator.informClass.ReportJointForceTorques"/>
     </output_set>
   </message_set>
-  <internal_events_set />
+  <internal_events_set/>
   <protocol_behavior is_stateless="false">
-    <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready" />
-    <state_machine name="events.transport.ReceiveFSM" interpretation="extending ReceiveFSM of base service (transport)">
-      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+    <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+    <state_machine name="events.transport.ReceiveFSM"
+      interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready"
+        interpretation="redefine state in order to extend">
         <state name="Ready">
           <default_state>
             <transition name="events.transport.Receive">
-              <parameter type="QueryJointForceTorques" value="msg" interpretation="enveloped query joint force torques message" />
-              <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-              <simple />
-              <action name="events.transport.Send" interpretation="Send Report Joint Force Torques message to the service that sent the query">
-                <argument value=" 'ReportJointForceTorques' " />
+              <parameter type="QueryJointForceTorques" value="msg"
+                interpretation="enveloped query joint force torques message"/>
+              <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                interpretation="transport data"/>
+              <simple/>
+              <action name="events.transport.Send"
+                interpretation="Send Report Joint Force Torques message to the service 
+                that sent the query">
+                <argument value=" 'ReportJointForceTorques' "/>
                 <argument value="transportData"/>
               </action>
             </transition>

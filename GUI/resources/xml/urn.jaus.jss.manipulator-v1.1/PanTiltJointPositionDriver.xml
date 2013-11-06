@@ -1,83 +1,103 @@
 <?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
-<service_def name="PanTiltJointPositionDriver" id="urn:jaus:jss:manipulator:PanTiltJointPositionDriver"
-  version="1.1" xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1" >
+<service_def name="PanTiltJointPositionDriver"
+  id="urn:jaus:jss:manipulator:PanTiltJointPositionDriver" version="1.1"
+  xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
   <description xml:space="preserve">
-  	The function of the Pan Tilt Joint Positions Driver is to perform closed-loop joint position control.  A single target is provided via the 
-    Set Pan Tilt Joint Positions message.  The target remains unchanged until a new Set Pan Tilt Joint Positions message is received.  The 
-    Set Pan Tilt Motion Profile message is used to set maximum velocity and acceleration rates for each of the two variable joint parameters.  
-    All motions utilize the motion profile data that was most recently sent.  Default settings are not assumed so that upon initialization this 
-    message must be sent before the first Set Pan Tilt Joint Positions message is sent.  The desired joint parameter values are input to the 
-    service via the Set Pan Tilt Joint Positions message.
+    The function of the Pan Tilt Joint Position Driver is to perform closed-loop joint 
+    position control.  A single target is provided via the Set Pan Tilt Joint Position 
+    message.  The target remains unchanged until a new Set Pan Tilt Joint Position 
+    message is received.  To ensure backward compatibility with 1.0 implementations of 
+    this service, it is recommended that this service be co-located on the same component 
+    as a Pan Tilt Definition Service and a Pan Tilt Motion Profile Service.
   </description>
-  <assumptions>
-    Messages may be delayed, lost, or reordered.
-  </assumptions>
+  <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
   <references>
-    <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1" />
+    <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
   </references>
   <declared_type_set name="types">
-    <declared_type_set_ref name="manipulator" id="urn:jaus:jss:manipulator:MessageSet" version="1.1" />
+    <declared_type_set_ref name="manipulator" id="urn:jaus:jss:manipulator:MessageSet"
+      version="1.1"/>
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryCommandedPanTiltJointPositions" declared_type_ref="manipulator.queryClass.QueryCommandedPanTiltJointPositions" />
-      <declared_message_def name="SetPanTiltJointPositions" declared_type_ref="manipulator.commandClass.SetPanTiltJointPositions" />
+      <declared_message_def name="QueryCommandedPanTiltJointPositions"
+        declared_type_ref="manipulator.queryClass.QueryCommandedPanTiltJointPositions"/>
+      <declared_message_def name="SetPanTiltJointPositions"
+        declared_type_ref="manipulator.commandClass.SetPanTiltJointPositions"/>
     </input_set>
     <output_set>
-      <declared_message_def name="ReportCommandedPanTiltJointPositions" declared_type_ref="manipulator.informClass.ReportCommandedPanTiltJointPositions" />
+      <declared_message_def name="ReportCommandedPanTiltJointPositions"
+        declared_type_ref="manipulator.informClass.ReportCommandedPanTiltJointPositions"/>
     </output_set>
   </message_set>
-  <internal_events_set />
+  <internal_events_set/>
   <protocol_behavior is_stateless="false">
-    <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled" />
-    <state_machine name="management.accessControl.events.transport.ReceiveFSM" interpretation="extending ReceiveFSM of base service (transport)">
-      <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
-        <state name="Ready" initial_state="NotControlled" interpretation="redefine state in order to extend">
+    <start state_machine_name="management.accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled"/>
+    <state_machine name="management.accessControl.events.transport.ReceiveFSM"
+      interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready"
+        interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled"
+          interpretation="redefine state in order to extend">
           <state name="NotControlled" interpretation="redefine state in order to extend">
-           
-              <default_state>
-                <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="QueryCommandedPanTiltJointPositions" value="msg" interpretation="enveloped query commanded Pan Tilt Joint Positions message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <simple />
-                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Commanded Pan Tilt Joint Positions message">
-                    <argument value=" 'ReportCommandedPanTiltJointPositions' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
-              </default_state>
+
+            <default_state>
+              <transition name="management.accessControl.events.transport.Receive">
+                <parameter type="QueryCommandedPanTiltJointPositions" value="msg"
+                  interpretation="enveloped query commanded Pan Tilt Joint Positions message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <simple/>
+                <action name="management.accessControl.events.transport.Send"
+                  interpretation="Send a Report Commanded Pan Tilt Joint Positions message">
+                  <argument value=" 'ReportCommandedPanTiltJointPositions' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+            </default_state>
 
           </state>
           <state name="Controlled" interpretation="redefine state in order to extend">
             <state name="Available" initial_state="Standby">
               <state name="Ready">
                 <exit>
-                  <action name="stopMotion" interpretation="Stop motion of the pan tilt unit." />
+                  <action name="stopMotion"
+                    interpretation="Stop motion of the pan tilt unit."/>
                 </exit>
                 <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="SetPanTiltJointPositions" value="msg" interpretation="enveloped set Pan Tilt joint efforts message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <guard condition="management.accessControl.isControllingClient(transportData) &amp;&amp; panTiltMotionProfileExists()"
-                    interpretation="True if the message that triggered the transition is received from the client that is in control of this service AND
-                      True if a Pan Tilt motion profile has already been received." />
-                  <simple />
-                  <action name="setPanTiltJointEfforts" interpretation="Set the desired joint values for the pan tilt mechanism">
-                    <argument value="msg" />
+                  <parameter type="SetPanTiltJointPositions" value="msg"
+                    interpretation="enveloped set Pan Tilt joint efforts message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="management.accessControl.isControllingClient(transportData) 
+                    &amp;&amp; panTiltMotionProfileExists()"
+                    interpretation="True if the message that triggered the transition 
+                    is received from the client that is in control of this service AND
+                    True if a Pan Tilt motion profile has already been received."/>
+                  <simple/>
+                  <action name="setPanTiltJointEfforts"
+                    interpretation="Set the desired joint values for the pan tilt mechanism">
+                    <argument value="msg"/>
                   </action>
                 </transition>
               </state>
             </state>
             <default_state>
-                <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="QueryCommandedPanTiltJointPositions" value="msg" interpretation="enveloped query commanded Pan Tilt Joint Positions message" />
-                  <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data" />
-                  <simple />
-                  <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Commanded Pan Tilt Joint Positions message">
-                    <argument value=" 'ReportCommandedPanTiltJointPositions' " />
-                    <argument value="transportData"/>
-                  </action>
-                </transition>
-              </default_state>
+              <transition name="management.accessControl.events.transport.Receive">
+                <parameter type="QueryCommandedPanTiltJointPositions" value="msg"
+                  interpretation="enveloped query commanded Pan Tilt Joint Positions message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <simple/>
+                <action name="management.accessControl.events.transport.Send"
+                  interpretation="Send a Report Commanded Pan Tilt Joint Positions message">
+                  <argument value=" 'ReportCommandedPanTiltJointPositions' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+            </default_state>
           </state>
         </state>
       </state>
