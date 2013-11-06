@@ -313,6 +313,16 @@
             </record>
           </variant>
         </list>
+        <list name="JointNamesList" optional="true">
+          <count_field min_count="0" max_count="255"
+            field_type_unsigned="unsigned byte"/>
+          <record name="JointNameRec" optional="false">
+            <variable_length_string name="Description" optional="false" interpretation=
+              "A human-readable string that can be used to label each joint on a user interface">
+              <count_field field_type_unsigned="unsigned byte"/>
+            </variable_length_string>
+          </record>
+        </list>
       </sequence>
     </body>
     <footer name="Footer" />
