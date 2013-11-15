@@ -209,6 +209,7 @@ public class ProtocolBehaviorGenerator {
 
             // generate the transition functions for the current state machine.
             // Note that we track the regular transitions and default transitions separately.
+			org.jts.codegenerator.protocolBehavior.Transition.generateTransitionVocabularyCheck(sm, sd, transitionCalls, m_codeType);
             org.jts.codegenerator.protocolBehavior.Transition.generateTransitionFunctions(sm, sd, transitionCalls, m_codeType, false);
             org.jts.codegenerator.protocolBehavior.Transition.generateTransitionFunctions(sm, sd, defaultCalls, m_codeType, true);
 
@@ -2459,7 +2460,7 @@ public class ProtocolBehaviorGenerator {
 				                
 				        // Add the transition to the fromState
 				        fromState.getTransition().add( transition );
-    }
+					}
 				}
 			}
 		}	        

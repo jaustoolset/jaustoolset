@@ -1043,9 +1043,9 @@ public class Transition {
 		    if ((defaultOnly && (st.getName().compareTo("Internally_Generated_State_DO_NOT_USE") == 0)) ||
 		        (!defaultOnly && (st.getName().compareTo("Internally_Generated_State_DO_NOT_USE") != 0)) )
 		    {
-			org.jts.codegenerator.protocolBehavior.Transition.getTransitions(st, transitions);
+				org.jts.codegenerator.protocolBehavior.Transition.getTransitions(st, transitions);
+			}
 		}
-	}
 	}
 	
 	/**
@@ -1095,10 +1095,22 @@ public class Transition {
 		ArrayList<org.jts.jsidl.binding.Transition> transitions = new ArrayList<org.jts.jsidl.binding.Transition>();
 		getTransitions(sm, transitions, defaultOnly);
 		
-		// For each transition, add a handler.
+		// For each transition, add a handler.  Do "Receive" transitions first.
 		for(org.jts.jsidl.binding.Transition tr : transitions)
 		{
-			generateTransitionFunctions(tr, sm, sd, messageTransitions, codeType);
+			if (getTriggerName(tr, sd).compareTo("Receive") == 0)
+			{
+				generateTransitionFunctions(tr, sm, sd, messageTransitions, codeType);
+			}
+		}
+
+		// Now do everything that isn't a Receive transition
+		for(org.jts.jsidl.binding.Transition tr : transitions)
+		{
+			if (getTriggerName(tr, sd).compareTo("Receive") != 0)
+			{
+				generateTransitionFunctions(tr, sm, sd, messageTransitions, codeType);
+			}
 		}
 	}
 
@@ -1174,9 +1186,11 @@ public class Transition {
                     messageTransitions.append(");");
                     messageTransitions.append(System.getProperty("line.separator"));
 
-                    // If the call is successful, stop checking for other transitions.  Goto the 'done' label
+                    // If the call is successful, stop checking for other transitions.  Goto the 'leave' label
                     // for clean-up and exit.
                     messageTransitions.append("\t\t\t\t\t\tdone = true;");
+                    messageTransitions.append(System.getProperty("line.separator"));
+					messageTransitions.append("\t\t\t\t\t\tgoto leave;");
                     messageTransitions.append(System.getProperty("line.separator"));
 
                     // If this transition is triggered on an input message, we have an additional level
@@ -1794,5 +1808,96 @@ public class Transition {
 			}
 		}
 	}
-	
+
+	//
+	// This function generates a block that checks to make sure any Receive transitions are based on 
+	// input vocabulary of this service.  If not, we don't need to check any further.
+	//
+	public static void generateTransitionVocabularyCheck(org.jts.jsidl.binding.StateMachine sm, org.jts.jsidl.binding.ServiceDef sd, StringBuffer messageTransitions, CodeLines.CodeType codeType )
+	{
+		ArrayList<String> inputMessages = new ArrayList<String>();
+
+		// Get a list of all transitions in the state machine
+		ArrayList<org.jts.jsidl.binding.Transition> transitions = new ArrayList<org.jts.jsidl.binding.Transition>();
+		getTransitions(sm, transitions, false);
+		
+		// For each transition, find the input message and add it to the list.
+		for (org.jts.jsidl.binding.Transition tr : transitions)
+		{
+			// We only care about "Receive" transitions...
+			if (getTriggerName(tr, sd).compareTo("Receive") != 0)
+				continue;
+
+			// We need to know the input message...
+			StringBuilder msg_type = new StringBuilder();
+			StringBuilder msg_value = new StringBuilder();
+			findInputMessage(tr, msg_type, msg_value, sd);
+
+			// Only add it if it's not in our list already...
+			if ((msg_type.length() != 0) && !inputMessages.contains(msg_type.toString()))
+			{
+				inputMessages.add(msg_type.toString());
+			}
+		}
+
+		// Now that we know what input messages are used, we can
+		// generate the actual check
+		generateTransitionVocabularyCheck( inputMessages, messageTransitions, codeType );
+	}
+
+	//
+	// This function generates a block that checks to make sure any Receive transitions are based on 
+	// input vocabulary of this service.  If not, we don't need to check any further.
+	//
+	public static void generateTransitionVocabularyCheck(ArrayList<String> inputMessages, StringBuffer messageTransitions, CodeLines.CodeType codeType )
+	{
+		if (inputMessages.size() == 0) return;
+
+		if (codeType == CodeLines.CodeType.C_PLUS_PLUS)
+        {
+            // Set-up the IF condition
+			messageTransitions.append("\t\t\ttry");
+            messageTransitions.append(System.getProperty("line.separator"));
+			messageTransitions.append("\t\t\t{");
+            messageTransitions.append(System.getProperty("line.separator"));
+            messageTransitions.append("\t\t\t\tif ((done == false) && (ie->getName().compare(\"Receive\") == 0))");
+            messageTransitions.append(System.getProperty("line.separator"));
+            messageTransitions.append("\t\t\t\t{");
+            messageTransitions.append(System.getProperty("line.separator"));
+			messageTransitions.append("\t\t\t\t\tReceive* casted_ie = (Receive*) ie;");
+			messageTransitions.append(System.getProperty("line.separator"));
+			messageTransitions.append("\t\t\t\t\tunsigned short id = *((unsigned short*) casted_ie->getBody()->getReceiveRec()->getMessagePayload()->getData());");
+			messageTransitions.append(System.getProperty("line.separator"));
+			messageTransitions.append(System.getProperty("line.separator"));
+			messageTransitions.append("\t\t\t\t\tif (");
+
+			// Loop through all input messages, setting up the if check
+			Boolean first = true;
+			for (String msg : inputMessages)
+			{
+				if (!first) 
+				{
+					messageTransitions.append(" &&");
+					messageTransitions.append(System.getProperty("line.separator"));
+					messageTransitions.append("\t\t\t\t\t\t");
+				}
+
+				messageTransitions.append("(id != " + msg + "::ID)");
+				first = false;
+			}
+
+			// If the IF check is satisfies, exit the function by jumping to the end
+			messageTransitions.append(")");
+			messageTransitions.append(System.getProperty("line.separator"));
+			messageTransitions.append("\t\t\t\t\t\tgoto leave;");
+			messageTransitions.append(System.getProperty("line.separator"));
+				
+			// Pop the rest of the way, and add an empty catch.
+			messageTransitions.append("\t\t\t\t}");
+			messageTransitions.append(System.getProperty("line.separator"));
+            messageTransitions.append("\t\t\t} catch (...) {}");
+            messageTransitions.append(System.getProperty("line.separator"));
+            messageTransitions.append(System.getProperty("line.separator"));
+		}
+	}
 }

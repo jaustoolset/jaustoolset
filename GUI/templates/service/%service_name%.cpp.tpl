@@ -51,7 +51,7 @@ bool %service_name%::processTransitions(InternalEvent* ie)
 
 			// Invoke the FSM transition for this event.
 %transition_calls%			 
-
+leave:
    mutex.unlock();
    return done;
 }
@@ -72,7 +72,7 @@ bool %service_name%::defaultTransitions(InternalEvent* ie)
 
 			// Invoke the FSM transition for this event.
 %default_transition_calls%	
-
+leave:
    mutex.unlock();
    return done;
 }

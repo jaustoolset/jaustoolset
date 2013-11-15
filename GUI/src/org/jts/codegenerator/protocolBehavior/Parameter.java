@@ -62,6 +62,7 @@ public class Parameter {
                 if(codeType == CodeLines.CodeType.C_PLUS_PLUS)
                 {
                     localBuffer.append(par.getValue() + ":" + type.replaceAll("\\.", "\\:\\:"));
+					if (!type.endsWith("*") && !type.endsWith("&")) localBuffer.append("&");
                 }
                 else if(codeType == CodeLines.CodeType.JAVA)
                 {
