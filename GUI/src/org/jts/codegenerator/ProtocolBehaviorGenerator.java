@@ -196,7 +196,7 @@ public class ProtocolBehaviorGenerator {
             // extract the version of the transport used
 			ServiceDef top = org.jts.codegenerator.support.InheritanceHelper.getTopParent(sd, ss);
 			if (top.getId().equals("urn:jaus:jss:core:Transport")) 
-                transportVersion = sd.getVersion();
+                transportVersion = top.getVersion();
 
             // generate the action and guard functions for the current state machine
             if (codeType == CodeLines.CodeType.C_PLUS_PLUS) {
