@@ -1,0 +1,149 @@
+<?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<service_def name="ManipulatorEndEffectorPoseListDriver"
+  id="urn:jaus:jss:manipulator:ManipulatorEndEffectorPoseListDriver" version="2.0"
+  xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description xml:space="preserve">
+    The function of the End Effector Pose List Driver is to perform closed-loop control 
+    of a sequence of positions and orientations of the tool tip specified in the 
+    manipulator base coordinate system. The sequence of targets is specified by one or 
+    more SetElement messages, as defined by the List Manager Service [AS6009]. To ensure 
+    backward compatibility with 1.0 implementations of this service, it is recommended 
+    that this service be co-located on the same component as a Manipulator Definition 
+    Service, a Manipulator Tool Offset Service, and a Manipulator Joint Motion Profile 
+    Service.  
+  </description>
+  <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
+  <references>
+    <inherits_from name="manipulatorListDriver"
+      id="urn:jaus:jss:manipulator:ManipulatorListDriver" version="2.0"/>
+  </references>
+  <declared_type_set name="types">
+    <declared_type_set_ref name="manipulator" id="urn:jaus:jss:manipulator:MessageSet"
+      version="2.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="QueryCommandedEndEffectorPose"
+        declared_type_ref="manipulator.queryClass.QueryCommandedEndEffectorPose"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportCommandedEndEffectorPose"
+        declared_type_ref="manipulator.informClass.ReportCommandedEndEffectorPose"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior is_stateless="false">
+    <start
+      state_machine_name="manipulatorListDriver.listManager.management.accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled"/>
+    <state_machine
+      name="manipulatorListDriver.listManager.management.accessControl.events.transport.ReceiveFSM"
+      interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready"
+        interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled"
+          interpretation="redefine state in order to extend">
+          <state name="NotControlled" interpretation="redefine state in order to extend">
+
+            <default_state>
+              <transition
+                name="manipulatorListDriver.listManager.management.accessControl.events.transport.Receive">
+                <parameter type="QueryCommandedEndEffectorPose" value="msg"
+                  interpretation="enveloped query commanded end effector pose message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <simple/>
+                <action
+                  name="manipulatorListDriver.listManager.management.accessControl.events.transport.Send"
+                  interpretation="Send a Report Commanded End Effector Pose message">
+                  <argument value=" 'ReportCommandedEndEffectorPose' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+            </default_state>
+
+          </state>
+          <state name="Controlled" interpretation="redefine state in order to extend">
+            <state name="Available" initial_state="Standby">
+              <state name="Ready">
+                <exit>
+                  <action name="stopMotion"
+                    interpretation="Stop motion of the manipulator."/>
+                </exit>
+                <transition
+                  name="manipulatorListDriver.listManager.management.accessControl.events.transport.Receive">
+                  <parameter type="ExecuteList" value="msg"
+                    interpretation="enveloped execute list message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="manipulatorListDriver.listManager.management.accessControl.isControllingClient(transportData) 
+                    &amp;&amp; listManager.elementExists(msg) &amp;&amp; isListValid()"
+                    interpretation="True if the message that triggered the transition 
+                    is received from the client that is in control of this service AND
+                      True if the Element UID specified in the message that triggered 
+                      the transition exists in the list AND True if the list contains 
+                      End Effector Pose messages."/>
+                  <simple/>
+                  <action name="executeTargetList"
+                    interpretation="Begin sequential execution of the target list starting 
+                    at the specified element.">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+              </state>
+            </state>
+            <default_state>
+              <transition
+                name="manipulatorListDriver.listManager.management.accessControl.events.transport.Receive">
+                <parameter type="QueryCommandedEndEffectorPose" value="msg"
+                  interpretation="enveloped query commanded end effector pose message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <simple/>
+                <action
+                  name="manipulatorListDriver.listManager.management.accessControl.events.transport.Send"
+                  interpretation="Send a Report Commanded End Effector Pose message">
+                  <argument value=" 'ReportCommandedEndEffectorPose' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <transition
+                name="manipulatorListDriver.listManager.management.accessControl.events.transport.Receive">
+                <parameter type="SetElement" value="msg"
+                  interpretation="enveloped set element message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard
+                  condition="manipulatorListDriver.listManager.management.accessControl.isControllingClient(transportData) &amp;&amp; listManager.isValidElementRequest(msg) &amp;&amp; isElementSupported(msg)"
+                  interpretation="True if the message that triggered the transition is 
+                  received from the client that is in control of this service AND True 
+                  if the resulting list will not be invalid as defined by the List 
+                  Manager Service description and the receiving entity has sufficient 
+                  memory to store the element(s) AND True if the message that triggered 
+                  the transition contains payload(s) of valid serialized Set End Effector 
+                  Pose message(s)."/>
+                <simple/>
+                <action name="setElement"
+                  interpretation="Store the given targets(s) in the target list with 
+                  sequence specified by the previous and next element UIDs.  If this 
+                  action represents an insert or append into an existing list, the service 
+                  should modify the NextUID of the previous element and/or the PreviousUID 
+                  of the next element to reflect the updated sequence">
+                  <argument value="msg"/>
+                </action>
+                <action
+                  name="manipulatorListDriver.listManager.management.accessControl.events.transport.Send"
+                  interpretation="Send a Confirm Element Request message">
+                  <argument value=" 'ConfirmElementRequest' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+
+            </default_state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

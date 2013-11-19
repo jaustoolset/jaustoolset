@@ -1,0 +1,116 @@
+<?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<service_def name="ManipulatorEndEffectorVelocityStateDriver"
+  id="urn:jaus:jss:manipulator:ManipulatorEndEffectorVelocityStateDriver" version="2.0"
+  xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description xml:space="preserve">
+    The function of the End Effector Velocity State Driver is to perform closed-loop 
+    velocity control of the tool tip.  The velocity state of the tool tip is defined 
+    by two length-three vectors, i.e., ωe and vtool,e.  These vectors respectively 
+    represent the angular velocity of the end effector coordinate system and the linear 
+    velocity of the tool tip as measured with respect to the manipulator base coordinate 
+    system.  It is assumed that the manipulator begins motion immediately after receiving 
+    the “Set End Effector Velocity State” message. To ensure backward compatibility with 
+    1.0 implementations of this service, it is recommended that this service be co-located 
+    on the same component as a Manipulator Definition Service, a Manipulator Tool Offset 
+    Service, and a Manipulator Joint Motion Profile Service.
+  </description>
+  <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
+  <references>
+    <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+  </references>
+  <declared_type_set name="types">
+    <declared_type_set_ref name="manipulator" id="urn:jaus:jss:manipulator:MessageSet"
+      version="2.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SetEndEffectorVelocityState"
+        declared_type_ref="manipulator.commandClass.SetEndEffectorVelocityState"/>
+      <declared_message_def name="QueryCommandedEndEffectorVelocityState"
+        declared_type_ref="manipulator.queryClass.QueryCommandedEndEffectorVelocityState"
+      />
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportCommandedEndEffectorVelocityState"
+        declared_type_ref="manipulator.informClass.ReportCommandedEndEffectorVelocityState"
+      />
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior is_stateless="false">
+    <start state_machine_name="management.accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled"/>
+    <state_machine name="management.accessControl.events.transport.ReceiveFSM"
+      interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready"
+        interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled"
+          interpretation="redefine state in order to extend">
+          <state name="NotControlled" interpretation="redefine state in order to extend">
+
+            <default_state>
+              <transition name="management.accessControl.events.transport.Receive">
+                <parameter type="QueryCommandedEndEffectorVelocityState" value="msg"
+                  interpretation="enveloped query commanded End effector velocity 
+                  state message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <simple/>
+                <action name="management.accessControl.events.transport.Send"
+                  interpretation="Send a Report Commanded End effector velocity 
+                  state message">
+                  <argument value=" 'ReportCommandedEndEffectorVelocityState' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+            </default_state>
+
+          </state>
+          <state name="Controlled" interpretation="redefine state in order to extend">
+            <state name="Available" initial_state="Standby">
+              <state name="Ready">
+                <exit>
+                  <action name="stopMotion"
+                    interpretation="Stop motion of the manipulator."/>
+                </exit>
+                <transition name="management.accessControl.events.transport.Receive">
+                  <parameter type="SetEndEffectorVelocityState" value="msg"
+                    interpretation="enveloped set End effector velocity state message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard
+                    condition="management.accessControl.isControllingClient(transportData) 
+                    &amp;&amp; motionProfileExists()"
+                    interpretation="True if the message that triggered the transition 
+                    is received from the client that is in control of this service AND
+                    True if a motion profile has already been received"/>
+                  <simple/>
+                  <action name="setEndEffectorVelocityState"
+                    interpretation="Set the desired velocity state for the end-effector">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+              </state>
+            </state>
+            <default_state>
+              <transition name="management.accessControl.events.transport.Receive">
+                <parameter type="QueryCommandedEndEffectorVelocityState" value="msg"
+                  interpretation="enveloped query commanded End effector velocity 
+                  state message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <simple/>
+                <action name="management.accessControl.events.transport.Send"
+                  interpretation="Send a Report Commanded End effector velocity 
+                  state message">
+                  <argument value=" 'ReportCommandedEndEffectorVelocityState' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+            </default_state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

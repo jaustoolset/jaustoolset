@@ -1,0 +1,80 @@
+<?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<service_def name="ManipulatorEndEffectorVelocityStateSensor"
+  id="urn:jaus:jss:manipulator:ManipulatorEndEffectorVelocityStateSensor" version="2.0"
+  xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
+  <description xml:space="preserve">
+    The function of the End Effector Velocity State Sensor is to report the velocity 
+    state of the tool tip as defined by two length-three vectors, i.e., ωe and vtool,e.  
+    These vectors respectively represent the angular velocity of the end effector 
+    coordinate system and the linear velocity of the tool tip as measured with respect 
+    to the manipulator base coordinate system.  To ensure backward compatibility with 
+    1.0 implementations of this service, it is recommended that this service be 
+    co-located on the same component as a Manipulator Definition Service and a 
+    Manipulator Tool Offset Service.
+  </description>
+  <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
+  <references>
+    <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.1"
+    />
+  </references>
+  <declared_type_set name="types">
+    <declared_type_set_ref name="manipulator" id="urn:jaus:jss:manipulator:MessageSet"
+      version="2.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="QueryEndEffectorVelocityState"
+        declared_type_ref="manipulator.queryClass.QueryEndEffectorVelocityState"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportEndEffectorVelocityState"
+        declared_type_ref="manipulator.informClass.ReportEndEffectorVelocityState"/>
+    </output_set>
+  </message_set>
+  <internal_events_set/>
+  <protocol_behavior is_stateless="false">
+    <start state_machine_name="accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled"/>
+    <state_machine name="accessControl.events.transport.ReceiveFSM"
+      interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready"
+        interpretation="redefine state in order to extend">
+        <state name="Ready" initial_state="NotControlled"
+          interpretation="redefine state in order to extend">
+          <state name="NotControlled">
+            <default_state>
+              <transition name="accessControl.events.transport.Receive">
+                <parameter type="QueryEndEffectorVelocityState" value="msg"
+                  interpretation="enveloped query end effector velocity state message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <simple/>
+                <action name="accessControl.events.transport.Send"
+                  interpretation="Send a report end effector velocity state message">
+                  <argument value=" 'ReportEndEffectorVelocityState' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+            </default_state>
+          </state>
+          <state name="Controlled" interpretation="redefine state in order to extend">
+            <default_state>
+              <transition name="accessControl.events.transport.Receive">
+                <parameter type="QueryEndEffectorVelocityState" value="msg"
+                  interpretation="enveloped query end effector velocity state message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <simple/>
+                <action name="accessControl.events.transport.Send"
+                  interpretation="Send a report end effector velocity state message">
+                  <argument value=" 'ReportEndEffectorVelocityState' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+            </default_state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>
