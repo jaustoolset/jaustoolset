@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<service_def name="OdometryService"
-    id="urn:jaus:jss:ugv:OdometryService" version="1.0"
-    xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
+<?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<service_def name="OdometryService" id="urn:jaus:jss:ugv:OdometryService"
+    version="1.0" xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
     xmlns:ns3="urn:jaus:jsidl:1.1">
     <description xml:space="preserve">The Odometry Service provides platform odometry (distance travelled) information</description>
     <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
     <references>
-        <inherits_from name="accessControl"
-            id="urn:jaus:jss:core:AccessControl" version="1.0"/>
+        <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl"
+            version="1.1"/>
     </references>
     <message_set>
         <input_set>
             <message_def name="ResetOdometry" message_id="0515"
                 is_command="true">
-                <description xml:space="preserve">Resets odometry value. MAIN is not a valid value to reset</description>
+                <description xml:space="preserve">Resets odometry value. PLATFORM is not a valid value to reset</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
                         <fixed_field name="MessageID" optional="false"
@@ -24,17 +24,12 @@
                 </header>
                 <body name="body">
                     <record name="toReset" optional="false">
-                        <fixed_field name="OdometryType"
-                            optional="false"
-                            field_type="unsigned byte"
-                            field_units="one">
+                        <fixed_field name="OdometryType" optional="false"
+                            field_type="unsigned byte" field_units="one">
                             <value_set offset_to_lower_limit="false">
-                                <value_enum enum_index="2"
-                                   enum_const="TRIP_A"/>
-                                <value_enum enum_index="3"
-                                   enum_const="TRIP_B"/>
-                                <value_enum enum_index="4"
-                                   enum_const="TRIP_C"/>
+                                <value_enum enum_index="2" enum_const="TRIP_A"/>
+                                <value_enum enum_index="3" enum_const="TRIP_B"/>
+                                <value_enum enum_index="4" enum_const="TRIP_C"/>
                             </value_set>
                         </fixed_field>
                     </record>
@@ -55,17 +50,12 @@
                 <body name="body">
                     <record name="queryRec" optional="false">
                         <fixed_field name="odom" optional="false"
-                            field_type="unsigned byte"
-                            field_units="one">
+                            field_type="unsigned byte" field_units="one">
                             <value_set offset_to_lower_limit="false">
-                                <value_enum enum_index="1"
-                                   enum_const="PLATFORM"/>
-                                <value_enum enum_index="2"
-                                   enum_const="TRIP_A"/>
-                                <value_enum enum_index="3"
-                                   enum_const="TRIP_B"/>
-                                <value_enum enum_index="4"
-                                   enum_const="TRIP_C"/>
+                                <value_enum enum_index="1" enum_const="PLATFORM"/>
+                                <value_enum enum_index="2" enum_const="TRIP_A"/>
+                                <value_enum enum_index="3" enum_const="TRIP_B"/>
+                                <value_enum enum_index="4" enum_const="TRIP_C"/>
                             </value_set>
                         </fixed_field>
                     </record>
@@ -88,8 +78,7 @@
                 <body name="body">
                     <record name="odometryRec" optional="false">
                         <fixed_field name="odometry" optional="false"
-                            field_type="unsigned integer"
-                            field_units="meter"/>
+                            field_type="unsigned integer" field_units="meter"/>
                     </record>
                 </body>
                 <footer name="footer"/>
@@ -98,32 +87,25 @@
     </message_set>
     <internal_events_set/>
     <protocol_behavior>
-        <start
-            state_machine_name="accessControl.events.transport.ReceiveFSM"
+        <start state_machine_name="accessControl.events.transport.ReceiveFSM"
             state_name="Receiving.Ready.NotControlled"/>
-        <start
-            state_machine_name="accessControl.events.transport.SendFSM"
-            state_name="Sending"/>
-        <state_machine
-            name="accessControl.events.transport.ReceiveFSM">
+        <state_machine name="accessControl.events.transport.ReceiveFSM">
             <state name="Receiving" initial_state="Ready">
                 <state name="Ready" initial_state="NotControlled">
                     <state name="NotControlled">
                         <default_state>
                             <transition
                                 name="accessControl.events.transport.Receive">
-                                <parameter type="QueryOdometry"
-                                   value="msg"
-                                   interpretation="enveloped query odometry message"/>
-                                <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                <ns3:internal/>
+                                <parameter type="QueryOdometry" value="msg"
+                                    interpretation="enveloped query odometry message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
                                 <action name="sendReportOdometry"
-                                   interpretation="Send a Report Odometry message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
+                                    interpretation="Send a Report Odometry message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
                                 </action>
                             </transition>
                         </default_state>
@@ -132,48 +114,40 @@
                         <default_state>
                             <transition
                                 name="accessControl.events.transport.Receive">
-                                <parameter type="ResetOdometry"
-                                   value="msg"
-                                   interpretation="enveloped reset odometry message"/>
-                                <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
+                                <parameter type="ResetOdometry" value="msg"
+                                    interpretation="enveloped reset odometry message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
                                 <guard
-                                   condition="isControllingClient( transportData )"
-                                   interpretation="True if the message                    
+                                    condition="isControllingClient( transportData )"
+                                    interpretation="True if the message                    
                                    that triggered the transition is received from the client 
                                    that is in control of this service."/>
-                                <ns3:internal/>
+                                <simple/>
                                 <action name="resetTripOdometer"
-                                   interpretation="Reset the specified trip odometer to zero.">
-                                   <argument value="msg"/>
+                                    interpretation="Reset the specified trip odometer to zero.">
+                                    <argument value="msg"/>
                                 </action>
                             </transition>
                             <transition
                                 name="accessControl.events.transport.Receive">
-                                <parameter type="QueryOdometry"
-                                   value="msg"
-                                   interpretation="enveloped query odometry message"/>
-                                <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                <ns3:internal/>
+                                <parameter type="QueryOdometry" value="msg"
+                                    interpretation="enveloped query odometry message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
                                 <action name="sendReportOdometry"
-                                   interpretation="Send a Report Odometry message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
+                                    interpretation="Send a Report Odometry message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
                                 </action>
                             </transition>
                         </default_state>
                     </state>
-                    <default_state/>
                 </state>
             </state>
-        </state_machine>
-        <state_machine name="accessControl.events.transport.SendFSM">
-            <state name="Sending"/>
         </state_machine>
     </protocol_behavior>
 </service_def>

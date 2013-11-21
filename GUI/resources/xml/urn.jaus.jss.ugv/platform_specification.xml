@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
 <service_def name="PlatformSpecificationsService"
     id="urn:jaus:jss:ugv:PlatformSpecifications" version="1.0"
     xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
@@ -7,13 +8,13 @@
         and geometric characteristics of the platform.</description>
     <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
     <references>
-        <inherits_from name="events" id="urn:jaus:jss:core:Events"
-            version="1.0"/>
+        <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1"
+        />
     </references>
     <message_set>
         <input_set>
-            <message_def name="QueryPlatformSpecifications"
-                message_id="2502" is_command="false">
+            <message_def name="QueryPlatformSpecifications" message_id="2502"
+                is_command="false">
                 <description xml:space="preserve">Request PlatformSpecifications data</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
@@ -28,8 +29,8 @@
             </message_def>
         </input_set>
         <output_set>
-            <message_def name="ReportPlatformSpecifications"
-                message_id="4502" is_command="false">
+            <message_def name="ReportPlatformSpecifications" message_id="4502"
+                is_command="false">
                 <description xml:space="preserve">Sends PlatformSpecifications data</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
@@ -41,221 +42,211 @@
                 </header>
                 <body name="body">
                     <sequence name="platformData" optional="false">
-                        <variant name="platformSpecifics"
-                            optional="false">
+                        <variant name="platformSpecifics" optional="false">
                             <vtag_field min_count="0" max_count="1"
                                 field_type_unsigned="unsigned byte"/>
                             <record name="skidsteer" optional="false"
-                                interpretation="Ackerman specific platform specs">
+                                interpretation="Skid-steer specific platform specs">
                                 <presence_vector
-                                   field_type_unsigned="unsigned byte"/>
+                                    field_type_unsigned="unsigned byte"/>
                                 <fixed_field name="TrackSeparation"
-                                   optional="true"
-                                   field_type="unsigned short integer"
-                                   field_units="one">
-                                   <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                    optional="true"
+                                    field_type="unsigned short integer"
+                                    field_units="meter">
+                                    <scale_range real_lower_limit="0"
+                                        real_upper_limit="30"
+                                        integer_function="round"/>
                                 </fixed_field>
                             </record>
-                            <record name="ackerman" optional="false"
+                            <record name="Ackermann" optional="false"
                                 interpretation="Minimum and maximum steering angle. Left is negative, right is positive.  
                                 This variant is used to hold platform-specific specifications">
                                 <presence_vector
-                                   field_type_unsigned="unsigned byte"/>
+                                    field_type_unsigned="unsigned byte"/>
                                 <fixed_field name="SteeringAngleRange"
-                                   optional="true"
-                                   field_type="unsigned short integer"
-                                   field_units="radian">
-                                   <scale_range
-                                   real_lower_limit="-24.0"
-                                   real_upper_limit="24.0"
-                                   integer_function="round"/>
+                                    optional="true"
+                                    field_type="unsigned short integer"
+                                    field_units="radian">
+                                    <scale_range
+                                        real_lower_limit="-1.57079632679489661923"
+                                        real_upper_limit="1.57079632679489661923"
+                                        integer_function="round"/>
                                 </fixed_field>
                                 <fixed_field name="MinTurnRadius"
-                                   optional="true"
-                                   field_type="unsigned short integer"
-                                   field_units="meter">
-                                   <scale_range real_lower_limit="0.0"
-                                   real_upper_limit="25.0"
-                                   integer_function="round"/>
+                                    optional="true"
+                                    field_type="unsigned short integer"
+                                    field_units="meter">
+                                    <scale_range real_lower_limit="0.0"
+                                        real_upper_limit="25.0"
+                                        integer_function="round"/>
                                 </fixed_field>
                                 <fixed_field name="WheelSeparation"
-                                   optional="true"
-                                   field_type="unsigned short integer"
-                                   field_units="one">
-                                   <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                    optional="true"
+                                    field_type="unsigned short integer"
+                                    field_units="meter">
+                                    <scale_range real_lower_limit="0"
+                                        real_upper_limit="30"
+                                        integer_function="round"/>
                                 </fixed_field>
                             </record>
                         </variant>
-                        <record name="platformInertial"
-                            optional="false"
+                        <record name="platformInertial" optional="false"
                             interpretation="General platform specs">
-                            <presence_vector
-                                field_type_unsigned="unsigned byte"/>
+                            <presence_vector field_type_unsigned="unsigned byte"/>
                             <fixed_field name="MaximumForwardSpeed"
                                 optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter per second">
                                 <scale_range real_lower_limit="0.0"
-                                   real_upper_limit="90.0"
-                                   integer_function="round"/>
+                                    real_upper_limit="90.0"
+                                    integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="MaximumReverseSpeed"
                                 optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter per second">
                                 <scale_range real_lower_limit="0.0"
-                                   real_upper_limit="90.0"
-                                   integer_function="round"/>
+                                    real_upper_limit="90.0"
+                                    integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="MaximumRotationalSpeed"
                                 optional="true"
                                 field_type="unsigned short integer"
                                 field_units="radian per second">
                                 <scale_range real_lower_limit="0.0"
-                                   real_upper_limit="6.28"
-                                   integer_function="round"/>
+                                    real_upper_limit="6.28"
+                                    integer_function="round"/>
                             </fixed_field>
-                            <fixed_field
-                                name="MaximumForwardAcceleration"
-                                optional="true"
-                                field_type="unsigned byte"
+                            <fixed_field name="MaximumForwardAcceleration"
+                                optional="true" field_type="unsigned byte"
                                 field_units="meter per second squared">
                                 <scale_range real_lower_limit="0.0"
-                                   real_upper_limit="40.0"
-                                   integer_function="round"/>
+                                    real_upper_limit="40.0"
+                                    integer_function="round"/>
                             </fixed_field>
-                            <fixed_field
-                                name="MaximumReverseAcceleration"
-                                optional="true"
-                                field_type="unsigned byte"
+                            <fixed_field name="MaximumReverseAcceleration"
+                                optional="true" field_type="unsigned byte"
                                 field_units="meter per second squared">
                                 <scale_range real_lower_limit="0.0"
-                                   real_upper_limit="40.0"
-                                   integer_function="round"/>
+                                    real_upper_limit="40.0"
+                                    integer_function="round"/>
                             </fixed_field>
-                            <fixed_field
-                                name="MaximumForwardDeceleration"
-                                optional="true"
-                                field_type="unsigned byte"
+                            <fixed_field name="MaximumForwardDeceleration"
+                                optional="true" field_type="unsigned byte"
                                 field_units="meter per second squared">
                                 <scale_range real_lower_limit="0.0"
-                                   real_upper_limit="40.0"
-                                   integer_function="round"/>
+                                    real_upper_limit="40.0"
+                                    integer_function="round"/>
                             </fixed_field>
-                            <fixed_field
-                                name="MaximumReverseDeceleration"
-                                optional="true"
-                                field_type="unsigned byte"
+                            <fixed_field name="MaximumReverseDeceleration"
+                                optional="true" field_type="unsigned byte"
                                 field_units="meter per second squared">
                                 <scale_range real_lower_limit="0.0"
-                                   real_upper_limit="40.0"
-                                   integer_function="round"/>
+                                    real_upper_limit="40.0"
+                                    integer_function="round"/>
                             </fixed_field>
                         </record>
                         <record name="platformSpec" optional="false"
                             interpretation="This is the main container for the ReportPlatformSpecs message">
                             <presence_vector
                                 field_type_unsigned="unsigned short integer"/>
-                            <variable_length_string
-                                name="MobilityPlatformName"
+                            <variable_length_string name="MobilityPlatformName"
                                 optional="false">
-                                <count_field min_count="0"
-                                   max_count="255"
-                                   field_type_unsigned="unsigned byte"
-                                />
+                                <count_field min_count="0" max_count="255"
+                                    field_type_unsigned="unsigned byte"/>
                             </variable_length_string>
                             <fixed_field name="Front" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter">
                                 <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                    real_upper_limit="30"
+                                    integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Back" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter">
                                 <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                    real_upper_limit="30"
+                                    integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Right" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter">
                                 <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                    real_upper_limit="30"
+                                    integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Left" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter">
                                 <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                    real_upper_limit="30"
+                                    integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Bottom" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter">
                                 <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                    real_upper_limit="30"
+                                    integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Top" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter">
                                 <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                    real_upper_limit="30"
+                                    integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Xcg" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter">
-                                <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                <scale_range real_lower_limit="-30"
+                                    real_upper_limit="30"
+                                    integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Ycg" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter">
-                                <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                <scale_range real_lower_limit="-30"
+                                    real_upper_limit="30"
+                                    integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Zcg" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter">
-                                <scale_range real_lower_limit="0"
-                                   real_upper_limit="30"
-                                   integer_function="round"/>
+                                <scale_range real_lower_limit="-30"
+                                    real_upper_limit="30"
+                                    integer_function="round"/>
                             </fixed_field>
-                            <fixed_field name="WheelBase"
-                                optional="true"
+                            <fixed_field name="WheelBase" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="meter">
                                 <scale_range real_lower_limit="0"
-                                   real_upper_limit="60"
-                                   integer_function="round"/>
+                                    real_upper_limit="60"
+                                    integer_function="round"/>
                             </fixed_field>
-                            <fixed_field name="StaticPitchOver"
-                                optional="true"
+                            <fixed_field name="StaticPitchOver" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="radian">
                                 <scale_range
-                                   real_lower_limit="-3.14159265358979323846"
-                                   real_upper_limit="3.14159265358979323846"
-                                   integer_function="round"/>
+                                    real_lower_limit="-3.14159265358979323846"
+                                    real_upper_limit="3.14159265358979323846"
+                                    integer_function="round"/>
                             </fixed_field>
-                            <fixed_field name="StaticRollOver"
-                                optional="true"
+                            <fixed_field name="StaticRollOver" optional="true"
                                 field_type="unsigned short integer"
                                 field_units="radian">
                                 <scale_range
-                                   real_lower_limit="-3.14159265358979323846"
-                                   real_upper_limit="3.14159265358979323846"
-                                   integer_function="round"/>
+                                    real_lower_limit="-3.14159265358979323846"
+                                    real_upper_limit="3.14159265358979323846"
+                                    integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="VehicleWeight" optional="true"
+                                field_type="unsigned integer"
+                                field_units="kilogram">
+                                <scale_range real_lower_limit="0"
+                                    real_upper_limit="1000000"
+                                    integer_function="round"/>
                             </fixed_field>
                         </record>
                     </sequence>
@@ -268,21 +259,17 @@
     <protocol_behavior is_stateless="false">
         <start state_machine_name="events.transport.ReceiveFSM"
             state_name="Receiving.Ready"/>
-        <start state_machine_name="events.transport.SendFSM"
-            state_name="Sending"/>
         <state_machine name="events.transport.ReceiveFSM">
             <state name="Receiving" initial_state="Ready">
                 <state name="Ready">
                     <default_state>
                         <transition name="transport.Receive">
-                            <parameter
-                                type="QueryPlatformSpecifications"
+                            <parameter type="QueryPlatformSpecifications"
                                 value="msg"/>
                             <parameter type="Receive.Body.ReceiveRec"
                                 value="transportData"/>
-                            <ns3:internal/>
-                            <action
-                                name="sendReportPlatformSpecifications"
+                            <simple/>
+                            <action name="sendReportPlatformSpecifications"
                                 interpretation="Send a Report                  
                                 Platform Specifications message to querying client">
                                 <argument value="msg"/>
@@ -292,9 +279,6 @@
                     </default_state>
                 </state>
             </state>
-        </state_machine>
-        <state_machine name="events.transport.SendFSM">
-            <state name="Sending"/>
         </state_machine>
     </protocol_behavior>
 </service_def>

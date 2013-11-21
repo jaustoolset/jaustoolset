@@ -1,557 +1,548 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<service_def name="DriveTrainDriver"
-    id="urn:jaus:jss:ugv:DriveTrainDriver" version="1.0"
-    xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
-    xmlns:ns3="urn:jaus:jsidl:1.1">
-    <description xml:space="preserve">The DrivetrainDriver provides the means to control transmissions</description>
-    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
-    <references>
-        <inherits_from name="management"
-            id="urn:jaus:jss:core:Management" version="1.0"/>
-    </references>
-    <message_set>
-        <input_set>
-            <message_def name="SetTransmissionState" message_id="0509"
-                is_command="true">
-                <description xml:space="preserve">Sets desired transmission state</description>
-                <header name="header">
-                    <record name="HeaderRec" optional="false">
-                        <fixed_field name="MessageID" optional="false"
-                            interpretation="Two byte field to hold message ID"
-                            field_type="unsigned short integer"
-                            field_units="one"/>
-                    </record>
-                </header>
-                <body name="body">
-                    <record name="transmissionStateRec"
-                        optional="false">
-                        <fixed_field name="TransmissionState"
-                            optional="false" field_type="byte"
-                            field_units="one">
-                            <value_set offset_to_lower_limit="false">
-                                <value_enum enum_index="0"
-                                   enum_const="DEFAULT"/>
-                                <value_enum enum_index="1"
-                                   enum_const="PARK"/>
-                                <value_enum enum_index="2"
-                                   enum_const="NEUTRAL"/>
-                                <value_enum enum_index="3"
-                                   enum_const="REVERSE"/>
-                                <value_enum enum_index="4"
-                                   enum_const="DRIVE"/>
-                                <value_enum enum_index="5"
-                                   enum_const="OVERDRIVE"/>
-                                <value_enum enum_index="6"
-                                   enum_const="L1"/>
-                                <value_enum enum_index="7"
-                                   enum_const="L2"/>
-                                <value_enum enum_index="8"
-                                   enum_const="L3"/>
-                                <value_enum enum_index="9"
-                                   enum_const="L4"/>
-                                <value_enum enum_index="10"
-                                   enum_const="L5"/>
-                                <value_enum enum_index="11"
-                                   enum_const="L6"/>
-                                <value_enum enum_index="12"
-                                   enum_const="L7"/>
-                                <value_enum enum_index="13"
-                                   enum_const="L8"/>
-                                <value_enum enum_index="14"
-                                   enum_const="L9"/>
-                                <value_enum enum_index="15"
-                                   enum_const="L10"/>
-                            </value_set>
-                        </fixed_field>
-                    </record>
-                </body>
-                <footer name="footer"/>
-            </message_def>
-            <message_def name="QueryTransmissionState"
-                message_id="2509" is_command="false">
-                <description xml:space="preserve">Requests current transmission state</description>
-                <header name="header">
-                    <record name="HeaderRec" optional="false">
-                        <fixed_field name="MessageID" optional="false"
-                            interpretation="Two byte field to hold message ID"
-                            field_type="unsigned short integer"
-                            field_units="one"/>
-                    </record>
-                </header>
-                <body name="body"/>
-                <footer name="footer"/>
-            </message_def>
-            <message_def name="SetTransferCaseState" message_id="0510"
-                is_command="true">
-                <description xml:space="preserve">Sets desired transfer case state</description>
-                <header name="header">
-                    <record name="HeaderRec" optional="false">
-                        <fixed_field name="MessageID" optional="false"
-                            interpretation="Two byte field to hold message ID"
-                            field_type="unsigned short integer"
-                            field_units="one"/>
-                    </record>
-                </header>
-                <body name="body">
-                    <record name="transferCaseState" optional="false">
-                        <fixed_field name="TransferCaseState"
-                            optional="false" field_type="byte"
-                            field_units="one">
-                            <value_set offset_to_lower_limit="false">
-                                <value_enum enum_index="0"
-                                   enum_const="DEFAULT"/>
-                                <value_enum enum_index="1"
-                                   enum_const="FWD"/>
-                                <value_enum enum_index="2"
-                                   enum_const="FWD_AUTO"/>
-                                <value_enum enum_index="3"
-                                   enum_const="FWD_MANUAL_LOW"/>
-                                <value_enum enum_index="4"
-                                   enum_const="FWD_MANUAL_HIGH"/>
-                                <value_enum enum_index="5"
-                                   enum_const="AWD_LOW"/>
-                                <value_enum enum_index="6"
-                                   enum_const="AWD_HIGH"/>
-                            </value_set>
-                        </fixed_field>
-                    </record>
-                </body>
-                <footer name="footer"/>
-            </message_def>
-            <message_def name="QueryTransferCaseState"
-                message_id="2510" is_command="false">
-                <description xml:space="preserve">Requests current transfer case state</description>
-                <header name="header">
-                    <record name="HeaderRec" optional="false">
-                        <fixed_field name="MessageID" optional="false"
-                            interpretation="Two byte field to hold message ID"
-                            field_type="unsigned short integer"
-                            field_units="one"/>
-                    </record>
-                </header>
-                <body name="body"/>
-                <footer name="footer"/>
-            </message_def>
-            <message_def name="QueryTransmissionCapabilities"
-                message_id="2511" is_command="false">
-                <description xml:space="preserve">Queries for a bitfield of valid gears and 
+<?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<service_def name="DriveTrainDriver" id="urn:jaus:jss:ugv:DriveTrainDriver" version="1.0"
+   xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0" xmlns:ns3="urn:jaus:jsidl:1.1">
+   <description xml:space="preserve">The DrivetrainDriver provides the means to control transmissions</description>
+   <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+   <references>
+      <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+   </references>
+   <message_set>
+      <input_set>
+         <message_def name="SetTransmissionState" message_id="0509" is_command="true">
+            <description xml:space="preserve">Sets desired transmission state</description>
+            <header name="header">
+               <record name="HeaderRec" optional="false">
+                  <fixed_field name="MessageID" optional="false"
+                     interpretation="Two byte field to hold message ID"
+                     field_type="unsigned short integer" field_units="one"/>
+               </record>
+            </header>
+            <body name="body">
+               <record name="transmissionStateRec" optional="false">
+                  <fixed_field name="TransmissionState" optional="false" field_type="unsigned byte"
+                     field_units="one">
+                     <value_set offset_to_lower_limit="false">
+                        <value_enum enum_index="0" enum_const="DEFAULT"/>
+                        <value_enum enum_index="1" enum_const="PARK"/>
+                        <value_enum enum_index="2" enum_const="NEUTRAL"/>
+                        <value_enum enum_index="3" enum_const="REVERSE"/>
+                        <value_enum enum_index="4" enum_const="DRIVE"/>
+                        <value_enum enum_index="5" enum_const="OVERDRIVE"/>
+                        <value_enum enum_index="6" enum_const="L1"/>
+                        <value_enum enum_index="7" enum_const="L2"/>
+                        <value_enum enum_index="8" enum_const="L3"/>
+                        <value_enum enum_index="9" enum_const="L4"/>
+                        <value_enum enum_index="10" enum_const="L5"/>
+                        <value_enum enum_index="11" enum_const="L6"/>
+                        <value_enum enum_index="12" enum_const="L7"/>
+                        <value_enum enum_index="13" enum_const="L8"/>
+                        <value_enum enum_index="14" enum_const="L9"/>
+                        <value_enum enum_index="15" enum_const="L10"/>
+                     </value_set>
+                  </fixed_field>
+               </record>
+            </body>
+            <footer name="footer"/>
+         </message_def>
+         <message_def name="QueryTransmissionState" message_id="2509" is_command="false">
+            <description xml:space="preserve">Requests current transmission state</description>
+            <header name="header">
+               <record name="HeaderRec" optional="false">
+                  <fixed_field name="MessageID" optional="false"
+                     interpretation="Two byte field to hold message ID"
+                     field_type="unsigned short integer" field_units="one"/>
+               </record>
+            </header>
+            <body name="body"/>
+            <footer name="footer"/>
+         </message_def>
+         <message_def name="SetTransferCaseState" message_id="0510" is_command="true">
+            <description xml:space="preserve">Sets desired transfer case state for 
+                  Front Wheel Drive or All Wheel Drive vehicles</description>
+            <header name="header">
+               <record name="HeaderRec" optional="false">
+                  <fixed_field name="MessageID" optional="false"
+                     interpretation="Two byte field to hold message ID"
+                     field_type="unsigned short integer" field_units="one"/>
+               </record>
+            </header>
+            <body name="body">
+               <record name="transferCaseState" optional="false">
+                  <fixed_field name="TransferCaseState" optional="false" field_type="unsigned byte"
+                     field_units="one">
+                     <value_set offset_to_lower_limit="false">
+                        <value_enum enum_index="0" enum_const="DEFAULT"/>
+                        <value_enum enum_index="1" enum_const="FWD"/>
+                        <value_enum enum_index="2" enum_const="FWD_AUTO"/>
+                        <value_enum enum_index="3" enum_const="FWD_MANUAL_LOW"/>
+                        <value_enum enum_index="4" enum_const="FWD_MANUAL_HIGH"/>
+                        <value_enum enum_index="5" enum_const="AWD_LOW"/>
+                        <value_enum enum_index="6" enum_const="AWD_HIGH"/>
+                     </value_set>
+                  </fixed_field>
+               </record>
+            </body>
+            <footer name="footer"/>
+         </message_def>
+         <message_def name="QueryTransferCaseState" message_id="2510" is_command="false">
+            <description xml:space="preserve">Requests current transfer case state</description>
+            <header name="header">
+               <record name="HeaderRec" optional="false">
+                  <fixed_field name="MessageID" optional="false"
+                     interpretation="Two byte field to hold message ID"
+                     field_type="unsigned short integer" field_units="one"/>
+               </record>
+            </header>
+            <body name="body"/>
+            <footer name="footer"/>
+         </message_def>
+         <message_def name="QueryTransmissionCapabilities" message_id="2511" is_command="false">
+            <description xml:space="preserve">Queries for a bitfield of valid gears and 
                     transfer case settings</description>
-                <header name="header">
-                    <record name="HeaderRec" optional="false">
-                        <fixed_field name="MessageID" optional="false"
-                            interpretation="Two byte field to hold message ID"
-                            field_type="unsigned short integer"
-                            field_units="one"/>
-                    </record>
-                </header>
-                <body name="body"/>
-                <footer name="footer"/>
-            </message_def>
-        </input_set>
-        <output_set>
-            <message_def name="ReportTransmissionState"
-                message_id="4509" is_command="false">
-                <description xml:space="preserve">Returns current transmission state</description>
-                <header name="header">
-                    <record name="HeaderRec" optional="false">
-                        <fixed_field name="MessageID" optional="false"
-                            interpretation="Two byte field to hold message ID"
-                            field_type="unsigned short integer"
-                            field_units="one"/>
-                    </record>
-                </header>
-                <body name="body">
-                    <record name="reportTransmissionStateRec"
-                        optional="false">
-                        <fixed_field name="RequestedTransmissionState"
-                            optional="false" field_type="byte"
-                            field_units="one">
-                            <value_set offset_to_lower_limit="false">
-                                <value_enum enum_index="0"
-                                   enum_const="DEFAULT"/>
-                                <value_enum enum_index="1"
-                                   enum_const="PARK"/>
-                                <value_enum enum_index="2"
-                                   enum_const="NEUTRAL"/>
-                                <value_enum enum_index="3"
-                                   enum_const="REVERSE"/>
-                                <value_enum enum_index="4"
-                                   enum_const="DRIVE"/>
-                                <value_enum enum_index="5"
-                                   enum_const="OVERDRIVE"/>
-                                <value_enum enum_index="6"
-                                   enum_const="L1"/>
-                                <value_enum enum_index="7"
-                                   enum_const="L2"/>
-                                <value_enum enum_index="8"
-                                   enum_const="L3"/>
-                                <value_enum enum_index="9"
-                                   enum_const="L4"/>
-                                <value_enum enum_index="10"
-                                   enum_const="L5"/>
-                                <value_enum enum_index="11"
-                                   enum_const="L6"/>
-                                <value_enum enum_index="12"
-                                   enum_const="L7"/>
-                                <value_enum enum_index="13"
-                                   enum_const="L8"/>
-                                <value_enum enum_index="14"
-                                   enum_const="L9"/>
-                                <value_enum enum_index="15"
-                                   enum_const="L10"/>
-                            </value_set>
-                        </fixed_field>
-                        <fixed_field name="ActualTransmissionState"
-                              optional="false" field_type="byte"
-                              field_units="one">
-                          <value_set offset_to_lower_limit="false">
-                            <value_enum enum_index="0"
-                               enum_const="DEFAULT"/>
-                            <value_enum enum_index="1"
-                               enum_const="PARK"/>
-                            <value_enum enum_index="2"
-                               enum_const="NEUTRAL"/>
-                            <value_enum enum_index="3"
-                               enum_const="REVERSE"/>
-                            <value_enum enum_index="4"
-                               enum_const="Reserved"/>
-                            <value_enum enum_index="5"
-                               enum_const="Reserved"/>
-                            <value_enum enum_index="6"
-                               enum_const="1st"/>
-                            <value_enum enum_index="7"
-                               enum_const="2nd"/>
-                            <value_enum enum_index="8"
-                               enum_const="3rd"/>
-                            <value_enum enum_index="9"
-                               enum_const="4th"/>
-                            <value_enum enum_index="10"
-                               enum_const="5th"/>
-                            <value_enum enum_index="11"
-                               enum_const="6th"/>
-                            <value_enum enum_index="12"
-                               enum_const="7th"/>
-                            <value_enum enum_index="13"
-                               enum_const="8th"/>
-                            <value_enum enum_index="14"
-                               enum_const="9th"/>
-                            <value_enum enum_index="15"
-                               enum_const="10th"/>
-                          </value_set>
-                        </fixed_field>
-                    </record>
-                </body>
-                <footer name="footer"/>
-            </message_def>
-            <message_def name="ReportTransferCaseState"
-                message_id="4510" is_command="false">
-                <description xml:space="preserve">Returns current transfer case state</description>
-                <header name="header">
-                    <record name="HeaderRec" optional="false">
-                        <fixed_field name="MessageID" optional="false"
-                            interpretation="Two byte field to hold message ID"
-                            field_type="unsigned short integer"
-                            field_units="one"/>
-                    </record>
-                </header>
-                <body name="body">
-                    <record name="transferCaseState" optional="false">
-                        <fixed_field name="TransferCaseState"
-                            optional="false" field_type="byte"
-                            field_units="one">
-                            <value_set offset_to_lower_limit="false">
-                                <value_enum enum_index="0"
-                                   enum_const="DEFAULT"/>
-                                <value_enum enum_index="1"
-                                   enum_const="FWD"/>
-                                <value_enum enum_index="2"
-                                   enum_const="FWD_AUTO"/>
-                                <value_enum enum_index="3"
-                                   enum_const="FWD_MANUAL_LOW"/>
-                                <value_enum enum_index="4"
-                                   enum_const="FWD_MANUAL_HIGH"/>
-                                <value_enum enum_index="5"
-                                   enum_const="AWD_LOW"/>
-                                <value_enum enum_index="6"
-                                   enum_const="AWD_HIGH"/>
-                            </value_set>
-                        </fixed_field>
-                    </record>
-                </body>
-                <footer name="footer"/>
-            </message_def>
-            <message_def name="ReportTransmissionCapabilities"
-                message_id="4511" is_command="false">
-                <description xml:space="preserve">Returns a bitfield of valid gears and transfer 
+            <header name="header">
+               <record name="HeaderRec" optional="false">
+                  <fixed_field name="MessageID" optional="false"
+                     interpretation="Two byte field to hold message ID"
+                     field_type="unsigned short integer" field_units="one"/>
+               </record>
+            </header>
+            <body name="body"/>
+            <footer name="footer"/>
+         </message_def>
+      </input_set>
+      <output_set>
+         <message_def name="ReportTransmissionState" message_id="4509" is_command="false">
+            <description xml:space="preserve">Returns current transmission state</description>
+            <header name="header">
+               <record name="HeaderRec" optional="false">
+                  <fixed_field name="MessageID" optional="false"
+                     interpretation="Two byte field to hold message ID"
+                     field_type="unsigned short integer" field_units="one"/>
+               </record>
+            </header>
+            <body name="body">
+               <record name="reportTransmissionStateRec" optional="false">
+                  <fixed_field name="RequestedTransmissionState" optional="false"
+                     field_type="unsigned byte" field_units="one">
+                     <value_set offset_to_lower_limit="false">
+                        <value_enum enum_index="0" enum_const="DEFAULT"/>
+                        <value_enum enum_index="1" enum_const="PARK"/>
+                        <value_enum enum_index="2" enum_const="NEUTRAL"/>
+                        <value_enum enum_index="3" enum_const="REVERSE"/>
+                        <value_enum enum_index="4" enum_const="DRIVE"/>
+                        <value_enum enum_index="5" enum_const="OVERDRIVE"/>
+                        <value_enum enum_index="6" enum_const="L1"/>
+                        <value_enum enum_index="7" enum_const="L2"/>
+                        <value_enum enum_index="8" enum_const="L3"/>
+                        <value_enum enum_index="9" enum_const="L4"/>
+                        <value_enum enum_index="10" enum_const="L5"/>
+                        <value_enum enum_index="11" enum_const="L6"/>
+                        <value_enum enum_index="12" enum_const="L7"/>
+                        <value_enum enum_index="13" enum_const="L8"/>
+                        <value_enum enum_index="14" enum_const="L9"/>
+                        <value_enum enum_index="15" enum_const="L10"/>
+                     </value_set>
+                  </fixed_field>
+                  <fixed_field name="ActualTransmissionState" optional="false"
+                     field_type="unsigned byte" field_units="one">
+                     <value_set offset_to_lower_limit="false">
+                        <value_enum enum_index="0" enum_const="DEFAULT"/>
+                        <value_enum enum_index="1" enum_const="PARK"/>
+                        <value_enum enum_index="2" enum_const="NEUTRAL"/>
+                        <value_enum enum_index="3" enum_const="REVERSE"/>
+                        <value_enum enum_index="4" enum_const="Reserved"/>
+                        <value_enum enum_index="5" enum_const="Reserved"/>
+                        <value_enum enum_index="6" enum_const="L1"/>
+                        <value_enum enum_index="7" enum_const="L2"/>
+                        <value_enum enum_index="8" enum_const="L3"/>
+                        <value_enum enum_index="9" enum_const="L4"/>
+                        <value_enum enum_index="10" enum_const="L5"/>
+                        <value_enum enum_index="11" enum_const="L6"/>
+                        <value_enum enum_index="12" enum_const="L7"/>
+                        <value_enum enum_index="13" enum_const="L8"/>
+                        <value_enum enum_index="14" enum_const="L9"/>
+                        <value_enum enum_index="15" enum_const="L10"/>
+                     </value_set>
+                  </fixed_field>
+               </record>
+            </body>
+            <footer name="footer"/>
+         </message_def>
+         <message_def name="ReportTransferCaseState" message_id="4510" is_command="false">
+            <description xml:space="preserve">Returns current transfer case state
+                   for Front Wheel Drive or All Wheel Drive vehicles</description>
+            <header name="header">
+               <record name="HeaderRec" optional="false">
+                  <fixed_field name="MessageID" optional="false"
+                     interpretation="Two byte field to hold message ID"
+                     field_type="unsigned short integer" field_units="one"/>
+               </record>
+            </header>
+            <body name="body">
+               <record name="transferCaseState" optional="false">
+                  <fixed_field name="TransferCaseState" optional="false" field_type="unsigned byte"
+                     field_units="one">
+                     <value_set offset_to_lower_limit="false">
+                        <value_enum enum_index="0" enum_const="DEFAULT"/>
+                        <value_enum enum_index="1" enum_const="FWD"/>
+                        <value_enum enum_index="2" enum_const="FWD_AUTO"/>
+                        <value_enum enum_index="3" enum_const="FWD_MANUAL_LOW"/>
+                        <value_enum enum_index="4" enum_const="FWD_MANUAL_HIGH"/>
+                        <value_enum enum_index="5" enum_const="AWD_LOW"/>
+                        <value_enum enum_index="6" enum_const="AWD_HIGH"/>
+                     </value_set>
+                  </fixed_field>
+               </record>
+            </body>
+            <footer name="footer"/>
+         </message_def>
+         <message_def name="ReportTransmissionCapabilities" message_id="4511" is_command="false">
+            <description xml:space="preserve">Returns a bitfield of valid gears and transfer 
                     case settings</description>
-                <header name="header">
-                    <record name="HeaderRec" optional="false">
-                        <fixed_field name="MessageID" optional="false"
-                            interpretation="Two byte field to hold message ID"
-                            field_type="unsigned short integer"
-                            field_units="one"/>
-                    </record>
-                </header>
-                <body name="body">
-                    <record name="transmissionCapabilities"
-                        optional="false">
-                        <bit_field name="transmissionBF"
-                            optional="false"
-                            field_type_unsigned="unsigned short integer">
-                            <sub_field name="transmissionCapablities">
-                                <bit_range from_index="0"
-                                   to_index="15"/>
-                                <value_set
-                                   offset_to_lower_limit="false">
-                                   <value_range lower_limit="0"
-                                   lower_limit_type="inclusive"
-                                   upper_limit="65535"
-                                   upper_limit_type="inclusive"/>
-                                </value_set>
-                            </sub_field>
-                        </bit_field>
-                        <bit_field name="transferCaseBF"
-                            optional="false"
-                            field_type_unsigned="unsigned byte">
-                            <sub_field name="remissionCapablities">
-                                <bit_range from_index="0" to_index="7"/>
-                                <value_set
-                                   offset_to_lower_limit="false">
-                                   <value_range lower_limit="0"
-                                   lower_limit_type="inclusive"
-                                   upper_limit="255"
-                                   upper_limit_type="inclusive"/>
-                                </value_set>
-                            </sub_field>
-                        </bit_field>
-                    </record>
-                </body>
-                <footer name="footer"/>
-            </message_def>
-        </output_set>
-    </message_set>
-    <internal_events_set/>
-    <protocol_behavior>
-        <start
-            state_machine_name="management.accessControl.events.transport.ReceiveFSM"
-            state_name="Receiving.Ready.NotControlled.StateA"/>
-        <start
-            state_machine_name="management.accessControl.events.transport.SendFSM"
-            state_name="Sending"/>
-        <state_machine
-            name="management.accessControl.events.transport.ReceiveFSM">
-            <state name="Receiving" initial_state="Ready">
-                <state name="Ready" initial_state="NotControlled">
-                    <state name="NotControlled" initial_state="StateA">
-                        <state name="StateA" initial_state="Init">
-                            <state name="Standby"/>
-                            <state name="Init"/>
-                            <state name="Failure"/>
-                            <state name="Shutdown"/>
-                            <state name="Emergency"/>
-                            <default_state>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryTransmissionState"
-                                   value="msg"
-                                   interpretation="enveloped query                      
-                                   transmission state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportTransmissionState"
-                                   interpretation="Send a Report                     
-                                   Transmission State message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryTransferCaseState"
-                                   value="msg"
-                                   interpretation="enveloped query                      
-                                   transfer case state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportTransferCaseState"
-                                   interpretation="Send a Report                     
-                                   Transfer Case State message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryTransmissionCapabilities"
-                                   value="msg"
-                                   interpretation="enveloped query                      
-                                   transmission capabililities message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportTransmissionCapabilities"
-                                   interpretation="Send a Report                     Transmission Capabilities message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                            </default_state>
-                        </state>
-                    </state>
-                    <state name="Controlled" initial_state="StateB">
-                        <state name="StateB" initial_state="Standby">
-                            <state name="Standby"/>
-                            <state name="Ready">
-                                <exit>
-                                   <action name="shiftToPark"
-                                   interpretation="When leaving the Ready state,                      
-                                   the transmission should switch to Park once the vehicle has safely stopped."
-                                   />
-                                </exit>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="SetTransmissionState"
-                                   value="msg"
-                                   interpretation="enveloped set transmission                     state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <guard
-                                   condition="isControllingClient( transportData ) &amp;&amp; isSupported( msg )"
-                                   interpretation="True if the message that triggered the transition is received from the                      
-                                   client that is in control of this service AND the specified transmission mode is supported by                     
-                                   the service."/>
-                                   <ns3:internal/>
-                                   <action name="setTransmissionState"
-                                   interpretation="Set the specified transmission state.">
-                                   <argument value="msg"/>
-                                   </action>
-                                </transition>
-                            </state>
-                            <state name="Emergency"/>
-                            <default_state>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="SetTransmissionState"
-                                   value="msg"
-                                   interpretation="enveloped set transmission                     state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <guard
-                                   condition="isControllingClient( transportData ) &amp;&amp; isPark( msg )"
-                                   interpretation="True if the message that triggered the transition is received from the                      
-                                   client that is in control of this service AND the message is a request to shift to the 'Park'                     
-                                   state."/>
-                                   <ns3:internal/>
-                                   <action name="setTransmissionState"
-                                   interpretation="Set the specified transmission state.">
-                                   <argument value="msg"/>
-                                   </action>
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="SetTransferCaseState"
-                                   value="msg"
-                                   interpretation="enveloped set transfer case                     state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <guard
-                                   condition="isControllingClient( transportData ) &amp;&amp; isSupported( msg )"
-                                   interpretation="True if the message that triggered the transition is received from the                      
-                                   client that is in control of this service AND the specified transmission mode is supported by                    
-                                   the service."/>
-                                   <ns3:internal/>
-                                   <action name="setTransferCaseState"
-                                   interpretation="Set the specified transfer case state.">
-                                   <argument value="msg"/>
-                                   </action>
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryTransmissionState"
-                                   value="msg"
-                                   interpretation="enveloped query transmission state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportTransmissionState"
-                                   interpretation="Send a Report Transmission State message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryTransferCaseState"
-                                   value="msg"
-                                   interpretation="enveloped query transfer case state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportTransferCaseState"
-                                   interpretation="Send a Report Transfer Case State message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryTransmissionCapabilities"
-                                   value="msg"
-                                   interpretation="enveloped query transmission capabililities message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportTransmissionCapabilities"
-                                   interpretation="Send a Report Transmission Capabilities message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                            </default_state>
-                        </state>
-                    </state>
-                    <default_state/>
-                </state>
+            <header name="header">
+               <record name="HeaderRec" optional="false">
+                  <fixed_field name="MessageID" optional="false"
+                     interpretation="Two byte field to hold message ID"
+                     field_type="unsigned short integer" field_units="one"/>
+               </record>
+            </header>
+            <body name="body">
+               <record name="transmissionCapabilities" optional="false">
+                  <bit_field name="transmissionBF" optional="false"
+                     field_type_unsigned="unsigned short integer">
+                     <sub_field name="Park">
+                        <bit_range from_index="0" to_index="0"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="Neutral">
+                        <bit_range from_index="1" to_index="1"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="Reverse">
+                        <bit_range from_index="2" to_index="2"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="Drive">
+                        <bit_range from_index="3" to_index="3"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="Overdrive">
+                        <bit_range from_index="4" to_index="4"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="L1">
+                        <bit_range from_index="5" to_index="5"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="L2">
+                        <bit_range from_index="6" to_index="6"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="L3">
+                        <bit_range from_index="7" to_index="7"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="L4">
+                        <bit_range from_index="8" to_index="8"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="L5">
+                        <bit_range from_index="9" to_index="9"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="L6">
+                        <bit_range from_index="10" to_index="10"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="L7">
+                        <bit_range from_index="11" to_index="11"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="L8">
+                        <bit_range from_index="12" to_index="12"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="L9">
+                        <bit_range from_index="13" to_index="13"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="L10">
+                        <bit_range from_index="14" to_index="14"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="Reserved">
+                        <bit_range from_index="15" to_index="15"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                  </bit_field>
+                  <bit_field name="transferCaseBF" optional="false"
+                     field_type_unsigned="unsigned byte">
+                     <sub_field name="FWD">
+                        <bit_range from_index="0" to_index="0"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="FWD_AUTO">
+                        <bit_range from_index="1" to_index="1"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="FWD_MANUAL_LOW">
+                        <bit_range from_index="2" to_index="2"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="FWD_MANUAL_HIGH">
+                        <bit_range from_index="3" to_index="3"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="AWD_LOW">
+                        <bit_range from_index="4" to_index="4"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="AWD_HIGH">
+                        <bit_range from_index="5" to_index="5"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="Reserved_For_Future_Use">
+                        <bit_range from_index="6" to_index="6"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                     <sub_field name="Reserved_For_User_Defined_Use">
+                        <bit_range from_index="7" to_index="7"/>
+                        <value_set offset_to_lower_limit="false">
+                           <value_enum enum_const="Unsupported" enum_index="0"/>
+                           <value_enum enum_const="Supported" enum_index="1"/>
+                        </value_set>
+                     </sub_field>
+                  </bit_field>
+               </record>
+            </body>
+            <footer name="footer"/>
+         </message_def>
+      </output_set>
+   </message_set>
+   <internal_events_set/>
+   <protocol_behavior>
+      <start state_machine_name="management.accessControl.events.transport.ReceiveFSM"
+         state_name="Receiving.Ready.NotControlled"/>
+      <state_machine name="management.accessControl.events.transport.ReceiveFSM">
+         <state name="Receiving" initial_state="Ready">
+            <state name="Ready" initial_state="NotControlled">
+               <state name="NotControlled">
+                  <default_state>
+                     <transition name="management.accessControl.events.transport.Receive">
+                        <parameter type="QueryTransmissionState" value="msg"
+                           interpretation="enveloped query                      
+                                transmission state message"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                           interpretation="transport data"/>
+                        <simple/>
+                        <action name="sendReportTransmissionState"
+                           interpretation="Send a Report                     
+                                Transmission State message">
+                           <argument value="msg"/>
+                           <argument value="transportData"/>
+                        </action>
+                     </transition>
+                     <transition name="management.accessControl.events.transport.Receive">
+                        <parameter type="QueryTransferCaseState" value="msg"
+                           interpretation="enveloped query                      
+                                transfer case state message"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                           interpretation="transport data"/>
+                        <simple/>
+                        <action name="sendReportTransferCaseState"
+                           interpretation="Send a Report                     
+                                Transfer Case State message">
+                           <argument value="msg"/>
+                           <argument value="transportData"/>
+                        </action>
+                     </transition>
+                     <transition name="management.accessControl.events.transport.Receive">
+                        <parameter type="QueryTransmissionCapabilities" value="msg"
+                           interpretation="enveloped query                      
+                                transmission capabililities message"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                           interpretation="transport data"/>
+                        <simple/>
+                        <action name="sendReportTransmissionCapabilities"
+                           interpretation="Send a Report                     
+                                Transmission Capabilities message">
+                           <argument value="msg"/>
+                           <argument value="transportData"/>
+                        </action>
+                     </transition>
+                  </default_state>
+               </state>
+               <state name="Controlled" initial_state="Available">
+                  <state name="Available" initial_state="Standby">
+                     <state name="Ready">
+                        <exit>
+                           <action name="shiftToPark"
+                              interpretation="When leaving the Ready state,                      
+                                the transmission should switch to Park once the vehicle has safely stopped."
+                           />
+                        </exit>
+                        <transition name="management.accessControl.events.transport.Receive">
+                           <parameter type="SetTransmissionState" value="msg"
+                              interpretation="enveloped set transmission state message"/>
+                           <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                              interpretation="transport data"/>
+                           <guard
+                              condition="isControllingClient( transportData ) &amp;&amp; isSupported( msg )"
+                              interpretation="True if the message that triggered the transition is received from the                      
+                                client that is in control of this service AND the specified transmission mode is supported by                     
+                                the service."/>
+                           <simple/>
+                           <action name="setTransmissionState"
+                              interpretation="Set the specified transmission state.">
+                              <argument value="msg"/>
+                           </action>
+                        </transition>
+                     </state>
+                  </state>
+                  <default_state>
+                     <transition name="management.accessControl.events.transport.Receive">
+                        <parameter type="SetTransmissionState" value="msg"
+                           interpretation="enveloped set transmission state message"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                           interpretation="transport data"/>
+                        <guard
+                           condition="isControllingClient( transportData ) &amp;&amp; isPark( msg )"
+                           interpretation="True if the message that triggered the transition is received from the                      
+                             client that is in control of this service AND the message is a request to shift to the 'Park'                     
+                             state.  If 'Park' is not supported, this condition is considered true for any transmission
+                             state that would prevent or inhibit motion."/>
+                        <simple/>
+                        <action name="setTransmissionState"
+                           interpretation="Set the specified transmission state.">
+                           <argument value="msg"/>
+                        </action>
+                     </transition>
+                     <transition name="management.accessControl.events.transport.Receive">
+                        <parameter type="SetTransferCaseState" value="msg"
+                           interpretation="enveloped set transfer case state message"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                           interpretation="transport data"/>
+                        <guard
+                           condition="isControllingClient( transportData ) &amp;&amp; isSupported( msg )"
+                           interpretation="True if the message that triggered the transition is received from the                      
+                             client that is in control of this service AND the specified transmission mode is supported by                    
+                             the service."/>
+                        <simple/>
+                        <action name="setTransferCaseState"
+                           interpretation="Set the specified transfer case state.">
+                           <argument value="msg"/>
+                        </action>
+                     </transition>
+                     <transition name="management.accessControl.events.transport.Receive">
+                        <parameter type="QueryTransmissionState" value="msg"
+                           interpretation="enveloped query transmission state message"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                           interpretation="transport data"/>
+                        <simple/>
+                        <action name="sendReportTransmissionState"
+                           interpretation="Send a Report Transmission State message">
+                           <argument value="msg"/>
+                           <argument value="transportData"/>
+                        </action>
+                     </transition>
+                     <transition name="management.accessControl.events.transport.Receive">
+                        <parameter type="QueryTransferCaseState" value="msg"
+                           interpretation="enveloped query transfer case state message"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                           interpretation="transport data"/>
+                        <simple/>
+                        <action name="sendReportTransferCaseState"
+                           interpretation="Send a Report Transfer Case State message">
+                           <argument value="msg"/>
+                           <argument value="transportData"/>
+                        </action>
+                     </transition>
+                     <transition name="management.accessControl.events.transport.Receive">
+                        <parameter type="QueryTransmissionCapabilities" value="msg"
+                           interpretation="enveloped query transmission capabililities message"/>
+                        <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                           interpretation="transport data"/>
+                        <simple/>
+                        <action name="sendReportTransmissionCapabilities"
+                           interpretation="Send a Report Transmission Capabilities message">
+                           <argument value="msg"/>
+                           <argument value="transportData"/>
+                        </action>
+                     </transition>
+                  </default_state>
+               </state>
             </state>
-        </state_machine>
-        <state_machine
-            name="management.accessControl.events.transport.SendFSM">
-            <state name="Sending"/>
-        </state_machine>
-    </protocol_behavior>
+         </state>
+      </state_machine>
+   </protocol_behavior>
 </service_def>

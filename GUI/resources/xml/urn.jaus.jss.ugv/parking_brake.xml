@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<service_def name="ParkingBrakeDriver"
-    id="urn:jaus:jss:ugv:ParkingBrakeDriver" version="1.0"
-    xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
+<?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<service_def name="ParkingBrakeDriver" id="urn:jaus:jss:ugv:ParkingBrakeDriver"
+    version="1.0" xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
     xmlns:ns3="urn:jaus:jsidl:1.1">
     <description xml:space="preserve">The ParkingBrakeDriver provides the means to control Parking Brakes</description>
     <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
     <references>
-        <inherits_from name="management"
-            id="urn:jaus:jss:core:Management" version="1.0"/>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management"
+            version="1.1"/>
     </references>
     <message_set>
         <input_set>
-            <message_def name="SetParkingBrakeState" message_id="0512"
+            <message_def name="SetParkingBrake" message_id="0512"
                 is_command="true">
-                <description xml:space="preserve">Sets parking brake state</description>
+                <description xml:space="preserve">Sets parking brake to the specified level of engagement.</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
                         <fixed_field name="MessageID" optional="false"
@@ -24,21 +24,19 @@
                 </header>
                 <body name="body">
                     <record name="parkingBrakeRec" optional="false">
-                        <fixed_field name="parkingBrake"
-                            optional="false"
-                            field_type="unsigned byte"
-                            field_units="one">
-                          <scale_range real_lower_limit="0.0"
-                            real_upper_limit="100"
-                            integer_function="round"/>
+                        <fixed_field name="parkingBrake" optional="false"
+                            field_type="unsigned byte" field_units="one">
+                            <scale_range real_lower_limit="0.0"
+                                real_upper_limit="100" integer_function="round"
+                            />
                         </fixed_field>
                     </record>
                 </body>
                 <footer name="footer"/>
             </message_def>
-            <message_def name="QueryParkingBrakeState"
-                message_id="2512" is_command="false">
-                <description xml:space="preserve">Queries current parking brake state</description>
+            <message_def name="QueryParkingBrake" message_id="2512"
+                is_command="false">
+                <description xml:space="preserve">Queries current parking brake level</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
                         <fixed_field name="MessageID" optional="false"
@@ -52,9 +50,9 @@
             </message_def>
         </input_set>
         <output_set>
-            <message_def name="ReportParkingBrakeState"
-                message_id="4512" is_command="false">
-                <description xml:space="preserve">Reports current parking brake state</description>
+            <message_def name="ReportParkingBrake" message_id="4512"
+                is_command="false">
+                <description xml:space="preserve">Reports current parking brake level</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
                         <fixed_field name="MessageID" optional="false"
@@ -65,13 +63,18 @@
                 </header>
                 <body name="body">
                     <record name="parkingBrakeRec" optional="false">
-                        <fixed_field name="parkingBrake"
-                            optional="false"
-                            field_type="unsigned byte"
+                        <fixed_field name="commandedParkingBrake"
+                            optional="false" field_type="unsigned byte"
                             field_units="one">
-                          <scale_range real_lower_limit="0.0"
-                          real_upper_limit="100"
-                          integer_function="round"/>
+                            <scale_range real_lower_limit="0.0"
+                                real_upper_limit="100" integer_function="round"
+                            />
+                        </fixed_field>
+                        <fixed_field name="actualParkingBrake" optional="false"
+                            field_type="unsigned byte" field_units="one">
+                            <scale_range real_lower_limit="0.0"
+                                real_upper_limit="100" integer_function="round"
+                            />
                         </fixed_field>
                     </record>
                 </body>
@@ -83,127 +86,98 @@
     <protocol_behavior>
         <start
             state_machine_name="management.accessControl.events.transport.ReceiveFSM"
-            state_name="Receiving.Ready.NotControlled.StateA"/>
-        <start
-            state_machine_name="management.accessControl.events.transport.SendFSM"
-            state_name="Sending"/>
+            state_name="Receiving.Ready.NotControlled"/>
         <state_machine
             name="management.accessControl.events.transport.ReceiveFSM">
             <state name="Receiving" initial_state="Ready">
                 <state name="Ready" initial_state="NotControlled">
-                    <state name="NotControlled" initial_state="StateA">
-                        <state name="StateA" initial_state="Init">
-                            <state name="Standby"/>
-                            <state name="Init"/>
-                            <state name="Failure"/>
-                            <state name="Shutdown"/>
-                            <state name="Emergency"/>
-                            <default_state>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryParkingBrakeState"
-                                   value="msg"
-                                   interpretation="enveloped query                      
-                                   parking brake state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportParkingBrakeState"
-                                   interpretation="Send a Report                     
-                                   Parking Brake State message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                            </default_state>
-                        </state>
+                    <state name="NotControlled">
+                        <default_state>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryParkingBrake" value="msg"
+                                    interpretation="enveloped query                      
+                               parking brake state message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
+                                <action name="sendReportParkingBrake"
+                                    interpretation="Send a Report                     
+                               Parking Brake State message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
                     </state>
-                    <state name="Controlled" initial_state="StateB">
-                        <state name="StateB" initial_state="Standby">
-                            <state name="Standby"/>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
                             <state name="Ready">
                                 <exit>
-                                   <action name="engageBrake"
-                                   interpretation="When leaving the Ready state,                      
+                                    <action name="engageBrake"
+                                        interpretation="When leaving the Ready state,                      
                                    engage the parking brake."
-                                   />
+                                    />
                                 </exit>
                                 <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="SetParkingBrakeState"
-                                   value="msg"
-                                   interpretation="enveloped set parking                     
+                                    name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetParkingBrake"
+                                        value="msg"
+                                        interpretation="enveloped set parking                     
                                    brake state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <guard
-                                   condition="isControllingClient( transportData ) &amp;&amp; ! isEngage( msg )"
-                                   interpretation="True if the message that triggered the transition is received from the                      
-                                   client that is in control of this service AND the message is NOT a request to engage the brake"/>
-                                   <ns3:internal/>
-                                   <action name="disengageBrake"
-                                   interpretation="Disengage the parking brake"
-                                   />
+                                    <parameter type="Receive.Body.ReceiveRec"
+                                        value="transportData"
+                                        interpretation="transport data"/>
+                                    <guard
+                                        condition="isControllingClient( transportData )"
+                                        interpretation="True if the message that triggered the transition is received from the                      
+                                   client that is in control of this service."/>
+                                    <simple/>
+                                    <action name="setBrakeLevel"
+                                        interpretation="Set the parking brake to the specified level"
+                                    />
                                 </transition>
                             </state>
-                            <state name="Emergency"/>
-                            <default_state>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="SetParkingBrakeState"
-                                   value="msg"
-                                   interpretation="enveloped set parking                     brake state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <guard
-                                   condition="isControllingClient( transportData ) &amp;&amp; isEngage( msg )"
-                                   interpretation="True if the message that triggered the transition is received from the                      
-                                   client that is in control of this service AND the message is a request to engage the brake"/>
-                                   <ns3:internal/>
-                                   <action name="engageBrake"
-                                   interpretation="Engage the parking brake"
-                                   />
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryParkingBrakeState"
-                                   value="msg"
-                                   interpretation="enveloped query                      
-                                   parking brake state message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportParkingBrakeState"
-                                   interpretation="Send a Report                     
-                                   Parking Brake State message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                            </default_state>
                         </state>
+                        <default_state>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetParkingBrake" value="msg"
+                                    interpretation="enveloped set parking brake state message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <guard
+                                    condition="isControllingClient( transportData ) &amp;&amp; isEngage( msg )"
+                                    interpretation="True if the message that triggered the transition is received from the                      
+                               client that is in control of this service AND the message is a request to engage the brake
+                               to a level greater than the current setting (more braking)."/>
+                                <simple/>
+                                <action name="setBrakeLevel"
+                                    interpretation="Set the parking brake to the specified level"
+                                />
+                            </transition>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryParkingBrake" value="msg"
+                                    interpretation="enveloped query                      
+                               parking brake state message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
+                                <action name="sendReportParkingBrake"
+                                    interpretation="Send a Report                     
+                               Parking Brake State message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
                     </state>
-                    <default_state/>
                 </state>
             </state>
-        </state_machine>
-        <state_machine
-            name="management.accessControl.events.transport.SendFSM">
-            <state name="Sending"/>
         </state_machine>
     </protocol_behavior>
 </service_def>

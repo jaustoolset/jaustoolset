@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<service_def name="SkidSteerDriver"
-    id="urn:jaus:jss:ugv:SkidSteerDriver" version="1.0"
-    xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
+<?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<service_def name="SkidSteerDriver" id="urn:jaus:jss:ugv:SkidSteerDriver"
+    version="1.0" xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
     xmlns:ns3="urn:jaus:jsidl:1.1">
     <description xml:space="preserve">The SkidSteer Driver provides the means to control skid steer vehicles</description>
     <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
     <references>
-        <inherits_from name="management"
-            id="urn:jaus:jss:core:Management" version="1.0"/>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management"
+            version="1.1"/>
     </references>
     <message_set>
         <input_set>
@@ -26,16 +26,14 @@
                     <record name="skidSteerData" optional="false"
                         interpretation="Negative is reverse, positive is forward">
                         <fixed_field name="LeftSidePropulsiveEffort"
-                            optional="false"
-                            field_type="unsigned short integer"
+                            optional="false" field_type="unsigned short integer"
                             field_units="one">
                             <scale_range real_lower_limit="-100.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>
                         </fixed_field>
                         <fixed_field name="RightSidePropulsiveEffort"
-                            optional="false"
-                            field_type="unsigned short integer"
+                            optional="false" field_type="unsigned short integer"
                             field_units="one">
                             <scale_range real_lower_limit="-100.0"
                                 real_upper_limit="100.0"
@@ -61,9 +59,9 @@
             </message_def>
         </input_set>
         <output_set>
-            <message_def name="ReportSkidSteerEffort"
-                message_id="4501" is_command="false">
-                <description xml:space="preserve">Reports skid steer driver data</description>
+            <message_def name="ReportSkidSteerEffort" message_id="4501"
+                is_command="false">
+                <description xml:space="preserve">Reports the commanded effort</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
                         <fixed_field name="MessageID" optional="false"
@@ -76,16 +74,14 @@
                     <record name="skidSteerData" optional="false"
                         interpretation="Negative is reverse, positive is forward">
                         <fixed_field name="LeftSidePropulsiveEffort"
-                            optional="false"
-                            field_type="unsigned short integer"
+                            optional="false" field_type="unsigned short integer"
                             field_units="one">
                             <scale_range real_lower_limit="-100.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>
                         </fixed_field>
                         <fixed_field name="RightSidePropulsiveEffort"
-                            optional="false"
-                            field_type="unsigned short integer"
+                            optional="false" field_type="unsigned short integer"
                             field_units="one">
                             <scale_range real_lower_limit="-100.0"
                                 real_upper_limit="100.0"
@@ -101,110 +97,85 @@
     <protocol_behavior>
         <start
             state_machine_name="management.accessControl.events.transport.ReceiveFSM"
-            state_name="Receiving.Ready.NotControlled.StateA"/>
-        <start
-            state_machine_name="management.accessControl.events.transport.SendFSM"
-            state_name="Sending"/>
+            state_name="Receiving.Ready.NotControlled"/>
         <state_machine
             name="management.accessControl.events.transport.ReceiveFSM">
             <state name="Receiving" initial_state="Ready">
                 <state name="Ready" initial_state="NotControlled">
-                    <state name="NotControlled" initial_state="StateA">
-                        <state name="StateA" initial_state="Init">
-                            <state name="Standby"/>
-                            <state name="Init"/>
-                            <state name="Failure"/>
-                            <state name="Shutdown"/>
-                            <state name="Emergency"/>
-                            <default_state>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QuerySkidSteerEffort"
-                                   value="msg"
-                                   interpretation="enveloped query skid                     
-                                   steer effort message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportSkidSteerEffort"
-                                   interpretation="Send a Report                     
-                                   Skid Steer Effort message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                            </default_state>
-                        </state>
+                    <state name="NotControlled">
+                        <default_state>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="QuerySkidSteerEffort"
+                                    value="msg"
+                                    interpretation="enveloped query skid                     
+                               steer effort message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
+                                <action name="sendReportSkidSteerEffort"
+                                    interpretation="Send a Report                     
+                               Skid Steer Effort message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
                     </state>
-                    <state name="Controlled" initial_state="StateB">
-                        <state name="StateB" initial_state="Standby">
-                            <state name="Standby"/>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
                             <state name="Ready">
                                 <exit>
-                                   <action name="stopMotion"
-                                   interpretation="When leaving the Ready state,                      
+                                    <action name="stopMotion"
+                                        interpretation="When leaving the Ready state,                      
                                    stop motion on all tracks."
-                                   />
+                                    />
                                 </exit>
                                 <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="SetSkidSteerEffort"
-                                   value="msg"
-                                   interpretation="enveloped set skid steer                     
+                                    name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetSkidSteerEffort"
+                                        value="msg"
+                                        interpretation="enveloped set skid steer                     
                                    effort message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <guard
-                                   condition="isControllingClient( transportData )"
-                                   interpretation="True if the message that triggered the transition is received from the                      
+                                    <parameter type="Receive.Body.ReceiveRec"
+                                        value="transportData"
+                                        interpretation="transport data"/>
+                                    <guard
+                                        condition="isControllingClient( transportData )"
+                                        interpretation="True if the message that triggered the transition is received from the                      
                                    client that is in control of this service"/>
-                                   <ns3:internal/>
-                                   <action name="setSkidSteerEffort"
-                                   interpretation="Set the actuator effort level for each                      
+                                    <simple/>
+                                    <action name="setSkidSteerEffort"
+                                        interpretation="Set the actuator effort level for each                      
                                    track of the vehicle.">
-                                   <argument value="msg"/>
-                                   </action>
+                                        <argument value="msg"/>
+                                    </action>
                                 </transition>
                             </state>
-                            <state name="Emergency"/>
-                            <default_state>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QuerySkidSteerEffort"
-                                   value="msg"
-                                   interpretation="enveloped query skid                     
-                                   steer effort message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportSkidSteerEffort"
-                                   interpretation="Send a Report                     
-                                   Skid Steer Effort message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                            </default_state>
                         </state>
+                        <default_state>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="QuerySkidSteerEffort"
+                                    value="msg"
+                                    interpretation="enveloped query skid                     
+                               steer effort message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
+                                <action name="sendReportSkidSteerEffort"
+                                    interpretation="Send a Report                     
+                               Skid Steer Effort message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
                     </state>
-                    <default_state/>
                 </state>
             </state>
-        </state_machine>
-        <state_machine
-            name="management.accessControl.events.transport.SendFSM">
-            <state name="Sending"/>
         </state_machine>
     </protocol_behavior>
 </service_def>

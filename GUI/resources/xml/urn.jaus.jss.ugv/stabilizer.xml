@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<service_def name="StabilizerDriver"
-    id="urn:jaus:jss:ugv:StabilizerDriver" version="1.0"
-    xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
+<?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
+<service_def name="StabilizerDriver" id="urn:jaus:jss:ugv:StabilizerDriver"
+    version="1.0" xmlns:ns2="urn:jaus:jsidl:plus" xmlns="urn:jaus:jsidl:1.0"
     xmlns:ns3="urn:jaus:jsidl:1.1">
-    <description xml:space="preserve">The StabilizerDriver provides the means to platform 
+    <description xml:space="preserve">The StabilizerDriver provides the means to control platform 
         stabilizers, such as flippers</description>
     <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
     <references>
-        <inherits_from name="management"
-            id="urn:jaus:jss:core:Management" version="1.0"/>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management"
+            version="1.1"/>
     </references>
     <message_set>
         <input_set>
-            <message_def name="QueryStabilizerEffort"
-                message_id="2503" is_command="false">
+            <message_def name="QueryStabilizerEffort" message_id="2503"
+                is_command="false">
                 <description xml:space="preserve">Requests commanded Stabilizer effort</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
@@ -27,19 +27,16 @@
                     <list name="stabilizerID" optional="false">
                         <count_field min_count="0" max_count="255"
                             field_type_unsigned="unsigned byte"/>
-                        <record name="queryStabilizerRec"
-                            optional="false">
-                            <fixed_field name="StabilizerID"
-                                optional="false"
-                                field_type="unsigned byte"
-                                field_units="one"/>
+                        <record name="queryStabilizerRec" optional="false">
+                            <fixed_field name="StabilizerID" optional="false"
+                                field_type="unsigned byte" field_units="one"/>
                         </record>
                     </list>
                 </body>
                 <footer name="footer"/>
             </message_def>
-            <message_def name="QueryStabilizerCapabilities"
-                message_id="2505" is_command="false">
+            <message_def name="QueryStabilizerCapabilities" message_id="2505"
+                is_command="false">
                 <description xml:space="preserve">Requests vehicle stabilizer configuration</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
@@ -67,27 +64,23 @@
                     <list name="stabilizerEffort" optional="false">
                         <count_field min_count="0" max_count="255"
                             field_type_unsigned="unsigned byte"/>
-                        <record name="stabilizerEffortRec"
-                            optional="false">
-                            <fixed_field name="StabilizerID"
-                                optional="false"
-                                field_type="unsigned byte"
-                                field_units="one"/>
-                            <fixed_field name="Effort"
-                                optional="false"
+                        <record name="stabilizerEffortRec" optional="false">
+                            <fixed_field name="StabilizerID" optional="false"
+                                field_type="unsigned byte" field_units="one"/>
+                            <fixed_field name="Effort" optional="false"
                                 field_type="unsigned short integer"
                                 field_units="one">
                                 <scale_range real_lower_limit="-100.0"
-                                   real_upper_limit="100.0"
-                                   integer_function="round"/>
+                                    real_upper_limit="100.0"
+                                    integer_function="round"/>
                             </fixed_field>
                         </record>
                     </list>
                 </body>
                 <footer name="footer"/>
             </message_def>
-            <message_def name="SetStabilizerPosition"
-                message_id="0504" is_command="true">
+            <message_def name="SetStabilizerPosition" message_id="0504"
+                is_command="true">
                 <description xml:space="preserve">Sets Stabilizer position</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
@@ -101,28 +94,23 @@
                     <list name="stabilizerPosition" optional="false">
                         <count_field min_count="0" max_count="255"
                             field_type_unsigned="unsigned byte"/>
-                        <record name="stabilizerPositionRec"
-                            optional="false">
-                            <fixed_field name="StabilizerID"
-                                optional="false"
-                                field_type="unsigned byte"
-                                field_units="one"/>
-                            <fixed_field name="Position"
-                                optional="false"
+                        <record name="stabilizerPositionRec" optional="false">
+                            <fixed_field name="StabilizerID" optional="false"
+                                field_type="unsigned byte" field_units="one"/>
+                            <fixed_field name="Position" optional="false"
                                 field_type="unsigned short integer"
                                 field_units="radian">
-                                <scale_range
-                                   real_lower_limit="-3.14159"
-                                   real_upper_limit="3.14159"
-                                   integer_function="round"/>
+                                <scale_range real_lower_limit="-3.14159"
+                                    real_upper_limit="3.14159"
+                                    integer_function="round"/>
                             </fixed_field>
                         </record>
                     </list>
                 </body>
                 <footer name="footer"/>
             </message_def>
-            <message_def name="QueryStabilizerPosition"
-                message_id="2504" is_command="false">
+            <message_def name="QueryStabilizerPosition" message_id="2504"
+                is_command="false">
                 <description xml:space="preserve">Requests commanded Stabilizer position</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
@@ -136,12 +124,9 @@
                     <list name="stabilizerID" optional="false">
                         <count_field min_count="0" max_count="255"
                             field_type_unsigned="unsigned byte"/>
-                        <record name="queryStabilizerRec"
-                            optional="false">
-                            <fixed_field name="StabilizerID"
-                                optional="false"
-                                field_type="unsigned byte"
-                                field_units="one"/>
+                        <record name="queryStabilizerRec" optional="false">
+                            <fixed_field name="StabilizerID" optional="false"
+                                field_type="unsigned byte" field_units="one"/>
                         </record>
                     </list>
                 </body>
@@ -149,9 +134,9 @@
             </message_def>
         </input_set>
         <output_set>
-            <message_def name="ReportStabilizerPosition"
-                message_id="4504" is_command="false">
-                <description xml:space="preserve">Reports commanded Stabilizer position</description>
+            <message_def name="ReportStabilizerPosition" message_id="4504"
+                is_command="false">
+                <description xml:space="preserve">Reports commanded and actual stabilizer position</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
                         <fixed_field name="MessageID" optional="false"
@@ -164,28 +149,31 @@
                     <list name="stabilizerPosition" optional="false">
                         <count_field min_count="0" max_count="255"
                             field_type_unsigned="unsigned byte"/>
-                        <record name="stabilizerPositionRec"
-                            optional="false">
-                            <fixed_field name="StabilizerID"
-                                optional="false"
-                                field_type="unsigned byte"
-                                field_units="one"/>
-                            <fixed_field name="Position"
+                        <record name="stabilizerPositionRec" optional="false">
+                            <fixed_field name="StabilizerID" optional="false"
+                                field_type="unsigned byte" field_units="one"/>
+                            <fixed_field name="CommandedPosition"
                                 optional="false"
                                 field_type="unsigned short integer"
                                 field_units="radian">
-                                <scale_range
-                                   real_lower_limit="-3.14159"
-                                   real_upper_limit="3.14159"
-                                   integer_function="round"/>
+                                <scale_range real_lower_limit="-3.14159"
+                                    real_upper_limit="3.14159"
+                                    integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="ActualPosition" optional="false"
+                                field_type="unsigned short integer"
+                                field_units="radian">
+                                <scale_range real_lower_limit="-3.14159"
+                                    real_upper_limit="3.14159"
+                                    integer_function="round"/>
                             </fixed_field>
                         </record>
                     </list>
                 </body>
                 <footer name="footer"/>
             </message_def>
-            <message_def name="ReportStabilizerCapabilities"
-                message_id="4505" is_command="false">
+            <message_def name="ReportStabilizerCapabilities" message_id="4505"
+                is_command="false">
                 <description xml:space="preserve">Reports vehicle stabilizer configuration</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
@@ -196,8 +184,7 @@
                     </record>
                 </header>
                 <body name="body">
-                    <list name="stabilizerCapabilities"
-                        optional="false">
+                    <list name="stabilizerCapabilities" optional="false">
                         <count_field min_count="0" max_count="255"
                             field_type_unsigned="unsigned byte"/>
                         <sequence name="stabilizerCapabilitiesSeq"
@@ -205,57 +192,51 @@
                             <record name="stabilizerCapabilitiesRec"
                                 optional="false">
                                 <fixed_field name="StabilizerID"
-                                   optional="false"
-                                   field_type="unsigned byte"
-                                   field_units="one"/>
+                                    optional="false" field_type="unsigned byte"
+                                    field_units="one"/>
                                 <fixed_field name="MaximumUpAngle"
-                                   optional="false"
-                                   field_type="unsigned short integer"
-                                   field_units="radian">
-                                   <scale_range real_lower_limit="0.0"
-                                   real_upper_limit="3.14159"
-                                   integer_function="round"/>
+                                    optional="false"
+                                    field_type="unsigned short integer"
+                                    field_units="radian">
+                                    <scale_range real_lower_limit="0.0"
+                                        real_upper_limit="3.14159"
+                                        integer_function="round"/>
                                 </fixed_field>
                                 <fixed_field name="MaximumDownAngle"
-                                   optional="false"
-                                   field_type="unsigned short integer"
-                                   field_units="radian">
-                                   <scale_range
-                                   real_lower_limit="-3.14158"
-                                   real_upper_limit="0.0"
-                                   integer_function="round"/>
+                                    optional="false"
+                                    field_type="unsigned short integer"
+                                    field_units="radian">
+                                    <scale_range real_lower_limit="-3.14158"
+                                        real_upper_limit="0.0"
+                                        integer_function="round"/>
                                 </fixed_field>
                             </record>
                             <list name="stabilizerDimensionsList"
                                 optional="false">
-                                <count_field min_count="0"
-                                   max_count="255"
-                                   field_type_unsigned="unsigned byte"/>
+                                <count_field min_count="0" max_count="255"
+                                    field_type_unsigned="unsigned byte"/>
                                 <record name="points" optional="false">
-                                   <fixed_field name="PointX"
-                                   optional="false"
-                                   field_type="unsigned short integer"
-                                   field_units="one">
-                                   <scale_range real_lower_limit="0"
-                                   real_upper_limit="30.0"
-                                   integer_function="round"/>
-                                   </fixed_field>
-                                   <fixed_field name="PointY"
-                                   optional="false"
-                                   field_type="unsigned short integer"
-                                   field_units="one">
-                                   <scale_range real_lower_limit="0"
-                                   real_upper_limit="30.0"
-                                   integer_function="round"/>
-                                   </fixed_field>
-                                   <fixed_field name="PointZ"
-                                   optional="false"
-                                   field_type="unsigned short integer"
-                                   field_units="one">
-                                   <scale_range real_lower_limit="0"
-                                   real_upper_limit="30.0"
-                                   integer_function="round"/>
-                                   </fixed_field>
+                                    <fixed_field name="PointX" optional="false"
+                                        field_type="unsigned short integer"
+                                        field_units="meter">
+                                        <scale_range real_lower_limit="-30.0"
+                                        real_upper_limit="30.0"
+                                        integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="PointY" optional="false"
+                                        field_type="unsigned short integer"
+                                        field_units="meter">
+                                        <scale_range real_lower_limit="-30.0"
+                                        real_upper_limit="30.0"
+                                        integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="PointZ" optional="false"
+                                        field_type="unsigned short integer"
+                                        field_units="meter">
+                                        <scale_range real_lower_limit="-30.0"
+                                        real_upper_limit="30.0"
+                                        integer_function="round"/>
+                                    </fixed_field>
                                 </record>
                             </list>
                         </sequence>
@@ -263,8 +244,8 @@
                 </body>
                 <footer name="footer"/>
             </message_def>
-            <message_def name="ReportStabilizerEffort"
-                message_id="4503" is_command="false">
+            <message_def name="ReportStabilizerEffort" message_id="4503"
+                is_command="false">
                 <description xml:space="preserve">Reports commanded Stabilizer effort</description>
                 <header name="header">
                     <record name="HeaderRec" optional="false">
@@ -278,19 +259,15 @@
                     <list name="stabilizerEffort" optional="false">
                         <count_field min_count="0" max_count="255"
                             field_type_unsigned="unsigned byte"/>
-                        <record name="stabilizerEffortRec"
-                            optional="false">
-                            <fixed_field name="StabilizerID"
-                                optional="false"
-                                field_type="unsigned byte"
-                                field_units="one"/>
-                            <fixed_field name="Effort"
-                                optional="false"
+                        <record name="stabilizerEffortRec" optional="false">
+                            <fixed_field name="StabilizerID" optional="false"
+                                field_type="unsigned byte" field_units="one"/>
+                            <fixed_field name="Effort" optional="false"
                                 field_type="unsigned short integer"
                                 field_units="one">
                                 <scale_range real_lower_limit="-100.0"
-                                   real_upper_limit="100.0"
-                                   integer_function="round"/>
+                                    real_upper_limit="100.0"
+                                    integer_function="round"/>
                             </fixed_field>
                         </record>
                     </list>
@@ -303,202 +280,162 @@
     <protocol_behavior>
         <start
             state_machine_name="management.accessControl.events.transport.ReceiveFSM"
-            state_name="Receiving.Ready.NotControlled.StateA"/>
-        <start
-            state_machine_name="management.accessControl.events.transport.SendFSM"
-            state_name="Sending"/>
+            state_name="Receiving.Ready.NotControlled"/>
         <state_machine
             name="management.accessControl.events.transport.ReceiveFSM">
             <state name="Receiving" initial_state="Ready">
                 <state name="Ready" initial_state="NotControlled">
-                    <state name="NotControlled" initial_state="StateA">
-                        <state name="StateA" initial_state="Init">
-                            <state name="Standby"/>
-                            <state name="Init"/>
-                            <state name="Failure"/>
-                            <state name="Shutdown"/>
-                            <state name="Emergency"/>
-                            <default_state>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryStabilizerCapabilities"
-                                   value="msg"
-                                   interpretation="enveloped query Stabilizer capabilities message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportStabilizerCapabilities"
-                                   interpretation="Send a Report Stabilizer Capabilities message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryStabilizerEffort"
-                                   value="msg"
-                                   interpretation="enveloped query
-                                   Stabilizer effort message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportStabilizerEffort"
-                                   interpretation="Send a Report Stabilizer Effort message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryStabilizerPosition"
-                                   value="msg"
-                                   interpretation="enveloped query Stabilizer configuration message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportStabilizerPosition"
-                                   interpretation="Send a Report Stabilizer Position message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                            </default_state>
-                        </state>
+                    <state name="NotControlled">
+                        <default_state>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryStabilizerCapabilities"
+                                    value="msg"
+                                    interpretation="enveloped query Stabilizer capabilities message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
+                                <action name="sendReportStabilizerCapabilities"
+                                    interpretation="Send a Report Stabilizer Capabilities message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryStabilizerEffort"
+                                    value="msg"
+                                    interpretation="enveloped query
+                               Stabilizer effort message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
+                                <action name="sendReportStabilizerEffort"
+                                    interpretation="Send a Report Stabilizer Effort message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryStabilizerPosition"
+                                    value="msg"
+                                    interpretation="enveloped query Stabilizer configuration message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
+                                <action name="sendReportStabilizerPosition"
+                                    interpretation="Send a Report Stabilizer Position message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
                     </state>
-                    <state name="Controlled" initial_state="StateB">
-                        <state name="StateB" initial_state="Standby">
-                            <state name="Standby"/>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
                             <state name="Ready">
                                 <exit>
-                                   <action name="stopMotion"
-                                   interpretation="When leaving the Ready state, stop motion on all Stabilizers."
-                                   />
+                                    <action name="stopMotion"
+                                        interpretation="When leaving the Ready state, stop motion on all Stabilizers."
+                                    />
                                 </exit>
                                 <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="SetStabilizerEffort"
-                                   value="msg"
-                                   interpretation="enveloped set Stabilizer effort message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <guard
-                                   condition="isControllingClient(
+                                    name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetStabilizerEffort"
+                                        value="msg"
+                                        interpretation="enveloped set Stabilizer effort message"/>
+                                    <parameter type="Receive.Body.ReceiveRec"
+                                        value="transportData"
+                                        interpretation="transport data"/>
+                                    <guard
+                                        condition="isControllingClient(
                                    transportData ) &amp;&amp; stabilizersExist( msg )"
-                                   interpretation="True if the message that triggered the transition is received from the                      
+                                        interpretation="True if the message that triggered the transition is received from the                      
                                    client that is in control of this service AND the message contains only valid Stabilizer IDs."/>
-                                   <ns3:internal/>
-                                   <action name="setStabilizerEffort"
-                                   interpretation="Set the actuator effort levels for the specified Stabilizers.">
-                                   <argument value="msg"/>
-                                   </action>
+                                    <simple/>
+                                    <action name="setStabilizerEffort"
+                                        interpretation="Set the actuator effort levels for the specified Stabilizers.">
+                                        <argument value="msg"/>
+                                    </action>
                                 </transition>
                                 <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="SetStabilizerPosition"
-                                   value="msg"
-                                   interpretation="enveloped set Stabilizer position message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <guard
-                                   condition="isControllingClient(
+                                    name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetStabilizerPosition"
+                                        value="msg"
+                                        interpretation="enveloped set Stabilizer position message"/>
+                                    <parameter type="Receive.Body.ReceiveRec"
+                                        value="transportData"
+                                        interpretation="transport data"/>
+                                    <guard
+                                        condition="isControllingClient(
                                    transportData ) &amp;&amp; stabilizersExist( msg )                      
                                    &amp;&amp; areReachable( msg )"
-                                   interpretation="True if the message that triggered the transition                     
+                                        interpretation="True if the message that triggered the transition                     
                                    is received from the client that is in control of this service AND the message contains                      
                                    only valid Stabilizer IDs AND the positions specified in the message are within each Stabilizers                     
                                    reachable workspace."/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="setStabilizerPosition"
-                                   interpretation="Set the position for the specified Stabilizers.">
-                                   <argument value="msg"/>
-                                   </action>
+                                    <simple/>
+                                    <action name="setStabilizerPosition"
+                                        interpretation="Set the position for the specified Stabilizers.">
+                                        <argument value="msg"/>
+                                    </action>
                                 </transition>
                             </state>
-                            <state name="Emergency"/>
-                            <default_state>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryStabilizerCapabilities"
-                                   value="msg"
-                                   interpretation="enveloped query Stabilizer capabilities message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportStabilizerCapabilities"
-                                   interpretation="Send a Report Stabilizer Capabilities message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryStabilizerEffort"
-                                   value="msg"
-                                   interpretation="enveloped query Stabilizer effort message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportStabilizerEffort"
-                                   interpretation="Send a Report Stabilizer Effort message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                                <transition
-                                   name="management.accessControl.events.transport.Receive">
-                                   <parameter
-                                   type="QueryStabilizerPosition"
-                                   value="msg"
-                                   interpretation="enveloped query Stabilizer configuration message"/>
-                                   <parameter
-                                   type="Receive.Body.ReceiveRec"
-                                   value="transportData"
-                                   interpretation="transport data"/>
-                                   <ns3:internal/>
-                                   <action
-                                   name="sendReportStabilizerPosition"
-                                   interpretation="Send a Report Stabilizer Position message">
-                                   <argument value="msg"/>
-                                   <argument value="transportData"/>
-                                   </action>
-                                </transition>
-                            </default_state>
                         </state>
+                        <default_state>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryStabilizerCapabilities"
+                                    value="msg"
+                                    interpretation="enveloped query Stabilizer capabilities message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
+                                <action name="sendReportStabilizerCapabilities"
+                                    interpretation="Send a Report Stabilizer Capabilities message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryStabilizerEffort"
+                                    value="msg"
+                                    interpretation="enveloped query Stabilizer effort message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
+                                <action name="sendReportStabilizerEffort"
+                                    interpretation="Send a Report Stabilizer Effort message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition
+                                name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryStabilizerPosition"
+                                    value="msg"
+                                    interpretation="enveloped query Stabilizer configuration message"/>
+                                <parameter type="Receive.Body.ReceiveRec"
+                                    value="transportData"
+                                    interpretation="transport data"/>
+                                <simple/>
+                                <action name="sendReportStabilizerPosition"
+                                    interpretation="Send a Report Stabilizer Position message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
                     </state>
-                    <default_state/>
                 </state>
             </state>
-        </state_machine>
-        <state_machine
-            name="management.accessControl.events.transport.SendFSM">
-            <state name="Sending"/>
         </state_machine>
     </protocol_behavior>
 </service_def>
