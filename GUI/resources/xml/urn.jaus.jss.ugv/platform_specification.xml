@@ -57,6 +57,11 @@
                                         real_upper_limit="30"
                                         integer_function="round"/>
                                 </fixed_field>
+                                <fixed_field name="DriveWheelRadius" optional="true"
+                                    field_type="unsigned short integer" field_units="meter">
+                                    <scale_range real_lower_limit="0"
+                                        real_upper_limit="30" integer_function="round"/>
+                                </fixed_field>
                             </record>
                             <record name="Ackermann" optional="false"
                                 interpretation="Minimum and maximum steering angle. Left is negative, right is positive.  
@@ -87,6 +92,11 @@
                                     <scale_range real_lower_limit="0"
                                         real_upper_limit="30"
                                         integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="DriveWheelRadius" optional="true"
+                                    field_type="unsigned short integer" field_units="meter">
+                                    <scale_range real_lower_limit="0"
+                                        real_upper_limit="30" integer_function="round"/>
                                 </fixed_field>
                             </record>
                         </variant>

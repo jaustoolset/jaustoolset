@@ -168,6 +168,13 @@
                                     <value_enum enum_index="1" enum_const="ON"/>
                                 </value_set>
                             </sub_field>
+                            <sub_field name="HazardLights">
+                                <bit_range from_index="27" to_index="27"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="OFF"/>
+                                    <value_enum enum_index="1" enum_const="ON"/>
+                                </value_set>
+                            </sub_field>
                         </bit_field>
                     </record>
                 </body>
@@ -298,6 +305,13 @@
                             </sub_field>
                             <sub_field name="FogLights">
                                 <bit_range from_index="26" to_index="26"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="OFF"/>
+                                    <value_enum enum_index="1" enum_const="ON"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="HazardLights">
+                                <bit_range from_index="27" to_index="27"/>
                                 <value_set offset_to_lower_limit="false">
                                     <value_enum enum_index="0" enum_const="OFF"/>
                                     <value_enum enum_index="1" enum_const="ON"/>
@@ -451,6 +465,15 @@
                             </sub_field>
                             <sub_field name="FogLights">
                                 <bit_range from_index="14" to_index="14"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0"
+                                        enum_const="NotSupported"/>
+                                    <value_enum enum_index="1"
+                                        enum_const="Supported"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="HazardLights">
+                                <bit_range from_index="15" to_index="15"/>
                                 <value_set offset_to_lower_limit="false">
                                     <value_enum enum_index="0"
                                         enum_const="NotSupported"/>
