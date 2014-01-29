@@ -7,7 +7,7 @@
     version="1.1" />
   <declared_type_set_ref name="manipulatorTypes" id="urn:jaus:jss:manipulator:MessageSet:BasicManipulatorTypes"
     version="2.0" />
-  <message_def name="SetJointEfforts" message_id="0601" is_command="true">
+  <message_def name="SetJointEffort" message_id="0601" is_command="true">
     <description xml:space="preserve">
       This message is used to control joint actuators in an open loop fashion. The command states the percentage
       level of effort that each actuator should exercise in order to move its corresponding joint. The message must
@@ -29,7 +29,7 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="SetJointVelocities" message_id="0603" is_command="true">
+  <message_def name="SetJointVelocity" message_id="0603" is_command="true">
     <description xml:space="preserve">
       This message sets the desired joint velocity values.  The message must contain a velocity command for each joint in the manipulator.
     </description>
@@ -49,13 +49,13 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="SetMotionProfile" message_id="0607" is_command="true">
+  <message_def name="SetJointMotionProfile" message_id="0607" is_command="true">
     <description xml:space="preserve">
       This message sets maximum speeds, acceleration, and deceleration rates for each joint of the manipulator.  The message must contain a profile for each joint in the manipulator.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body">
-      <declared_list name="MotionProfileList" optional="false" declared_type_ref="manipulatorTypes.MotionProfileList" />
+      <declared_list name="JointMotionProfileList" optional="false" declared_type_ref="manipulatorTypes.JointMotionProfileList" />
     </body>
     <footer name="Footer" />
   </message_def>
@@ -89,7 +89,7 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="SetPanTiltJointEfforts" message_id="0621" is_command="true">
+  <message_def name="SetPanTiltJointEffort" message_id="0621" is_command="true">
     <description xml:space="preserve">
       This message is used to control the two joint actuators for a pan tilt mechanism in an open loop fashion. The command states the percentage level of effort that each actuator should exercise in order to move its corresponding joint.
     </description>
@@ -109,13 +109,13 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="SetPanTiltJointVelocities" message_id="0623" is_command="true">
+  <message_def name="SetPanTiltJointVelocity" message_id="0623" is_command="true">
     <description xml:space="preserve">
       This message sets the desired joint velocity values for a pan tilt mechanism.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body">
-      <declared_record name="PanTiltJointVelocitiesRec" optional="false" declared_type_ref="manipulatorTypes.PanTiltJointVelocitiesRec" />
+      <declared_record name="PanTiltJointVelocityRec" optional="false" declared_type_ref="manipulatorTypes.PanTiltJointVelocityRec" />
     </body>
     <footer name="Footer" />
   </message_def>

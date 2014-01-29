@@ -1,15 +1,15 @@
 <?xml version="1.1" encoding="UTF-8"?> <?oxygen RNGSchema="../../schema/JSIDL/jsidl.rnc" type="compact"?>
-<service_def name="ManipulatorJointVelocitiesDriver"
-  id="urn:jaus:jss:manipulator:ManipulatorJointVelocitiesDriver" version="2.0"
+<service_def name="PanTiltJointVelocityDriver"
+  id="urn:jaus:jss:manipulator:PanTiltJointVelocityDriver" version="2.0"
   xmlns="urn:jaus:jsidl:1.0" xmlns:ns1="urn:jaus:jsidl:1.1">
   <description xml:space="preserve">
-    The function of the Joint Velocity Driver is to perform closed-loop joint velocity 
-    control.  The input is the desired instantaneous joint velocities.  It is assumed 
-    that the manipulator begins motion immediately after receiving the “SET JOINT 
-    VELOCITY” message. To ensure backward compatibility with 1.0 implementations of 
-    this service, it is recommended that this service be co-located on the same 
-    component as a Manipulator Definition Service and a Manipulator Joint Motion 
-    Profile Service.
+    The function of The Pan Tilt Joint Velocity Driver is to perform closed-loop joint 
+    velocity control.  The input is the desired instantaneous desired joint velocities 
+    for the pan tilt mechanism.  It is assumed that the pan tilt mechanism begins motion 
+    immediately after receiving the Set Pan Tilt Joint Velocity message. To ensure 
+    backward compatibility with 1.0 implementations of this service, it is recommended 
+    that this service be co-located on the same component as a Pan Tilt Specification 
+    Service and a Pan Tilt Motion Profile Service.
   </description>
   <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
   <references>
@@ -21,14 +21,15 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="SetJointVelocities"
-        declared_type_ref="manipulator.commandClass.SetJointVelocities"/>
-      <declared_message_def name="QueryCommandedJointVelocities"
-        declared_type_ref="manipulator.queryClass.QueryCommandedJointVelocities"/>
+      <declared_message_def name="SetPanTiltJointVelocity"
+        declared_type_ref="manipulator.commandClass.SetPanTiltJointVelocity"/>
+      <declared_message_def name="QueryCommandedPanTiltJointVelocity"
+        declared_type_ref="manipulator.queryClass.QueryCommandedPanTiltJointVelocity"/>
     </input_set>
     <output_set>
-      <declared_message_def name="ReportCommandedJointVelocities"
-        declared_type_ref="manipulator.informClass.ReportCommandedJointVelocities"/>
+      <declared_message_def name="ReportCommandedPanTiltJointVelocity"
+        declared_type_ref="manipulator.informClass.ReportCommandedPanTiltJointVelocity"
+      />
     </output_set>
   </message_set>
   <internal_events_set/>
@@ -45,14 +46,14 @@
 
             <default_state>
               <transition name="management.accessControl.events.transport.Receive">
-                <parameter type="QueryCommandedJointVelocities" value="msg"
-                  interpretation="enveloped query commanded joint velocities message"/>
+                <parameter type="QueryCommandedPanTiltJointVelocity" value="msg"
+                  interpretation="enveloped query commanded Pan Tilt joint velocities message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
                 <simple/>
                 <action name="management.accessControl.events.transport.Send"
-                  interpretation="Send a Report Commanded joint velocities message">
-                  <argument value=" 'ReportCommandedJointVelocities' "/>
+                  interpretation="Send a Report Commanded Pan Tilt joint velocities message">
+                  <argument value=" 'ReportCommandedPanTiltJointVelocity' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>
@@ -64,38 +65,39 @@
               <state name="Ready">
                 <exit>
                   <action name="stopMotion"
-                    interpretation="Stop motion of the manipulator."/>
+                    interpretation="Stop motion of the pan tilt unit."/>
                 </exit>
                 <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="SetJointVelocities" value="msg"
-                    interpretation="enveloped set joint velocities message"/>
+                  <parameter type="SetPanTiltJointVelocity" value="msg"
+                    interpretation="enveloped set Pan Tilt joint velocities message"/>
                   <parameter type="Receive.Body.ReceiveRec" value="transportData"
                     interpretation="transport data"/>
                   <guard
                     condition="management.accessControl.isControllingClient(transportData) 
-                    &amp;&amp; motionProfileExists()"
+                    &amp;&amp; panTiltMotionProfileExists()"
                     interpretation="True if the message that triggered the transition 
                     is received from the client that is in control of this service AND
                     True if a motion profile has already been received"/>
                   <simple/>
-                  <action name="setJointVelocities"
-                    interpretation="Set the desired velocities for the individual joints
-                    of the manipulator">
-                    <argument value="msg"/>
+                  <action name="setPanTiltJointVelocity"
+                    interpretation="Set the desired velocities for the individual joints 
+                    of the Pan Tilt mechanism">
+                    <argument value=" 'SetPanTiltJointVelocity' "/>
+                    <argument value="transportData"/>
                   </action>
                 </transition>
               </state>
             </state>
             <default_state>
               <transition name="management.accessControl.events.transport.Receive">
-                <parameter type="QueryCommandedJointVelocities" value="msg"
-                  interpretation="enveloped query commanded joint velocities message"/>
+                <parameter type="QueryCommandedPanTiltJointVelocity" value="msg"
+                  interpretation="enveloped query commanded Pan Tilt joint velocities message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
                 <simple/>
                 <action name="management.accessControl.events.transport.Send"
-                  interpretation="Send a Report Commanded joint velocities message">
-                  <argument value=" 'ReportCommandedJointVelocities' "/>
+                  interpretation="Send a Report Commanded Pan Tilt joint velocities message">
+                  <argument value=" 'ReportCommandedPanTiltJointVelocity' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>

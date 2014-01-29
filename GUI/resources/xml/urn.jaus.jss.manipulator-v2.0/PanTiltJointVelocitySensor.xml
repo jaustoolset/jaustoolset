@@ -6,7 +6,7 @@
     The function of the Pan Tilt Joint Velocity Sensor Service is to report the values 
     of the two joint velocities of the pan tilt mechanism when queried. To ensure 
     backward compatibility with 1.0 implementations of this service, it is recommended 
-    that this service be co-located on the same component as a Pan Tilt Definition 
+    that this service be co-located on the same component as a Pan Tilt Specification 
     Service.
   </description>
   <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
@@ -19,12 +19,12 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryPanTiltJointVelocities"
-        declared_type_ref="manipulator.queryClass.QueryPanTiltJointVelocities"/>
+      <declared_message_def name="QueryPanTiltJointVelocity"
+        declared_type_ref="manipulator.queryClass.QueryPanTiltJointVelocity"/>
     </input_set>
     <output_set>
-      <declared_message_def name="ReportPanTiltJointVelocities"
-        declared_type_ref="manipulator.informClass.ReportPanTiltJointVelocities"/>
+      <declared_message_def name="ReportPanTiltJointVelocity"
+        declared_type_ref="manipulator.informClass.ReportPanTiltJointVelocity"/>
     </output_set>
   </message_set>
   <internal_events_set/>
@@ -37,15 +37,15 @@
         <state name="Ready">
           <default_state>
             <transition name="events.transport.Receive">
-              <parameter type="QueryPanTiltJointVelocities" value="msg"
+              <parameter type="QueryPanTiltJointVelocity" value="msg"
                 interpretation="enveloped query Pan Tiltjoint velocities message"/>
               <parameter type="Receive.Body.ReceiveRec" value="transportData"
                 interpretation="transport data"/>
               <simple/>
               <action name="events.transport.Send"
-                interpretation="Send Report Pan Tilt Joint Velocities message to the 
+                interpretation="Send Report Pan Tilt Joint Velocity message to the 
                 service that sent the query">
-                <argument value=" 'ReportPanTiltJointVelocities' "/>
+                <argument value=" 'ReportPanTiltJointVelocity' "/>
                 <argument value="transportData"/>
               </action>
             </transition>

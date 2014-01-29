@@ -8,7 +8,7 @@
     manipulator base coordinate system. The sequence of targets is specified by one or 
     more SetElement messages, as defined by the List Manager Service [AS6009]. To ensure 
     backward compatibility with 1.0 implementations of this service, it is recommended 
-    that this service be co-located on the same component as a Manipulator Definition 
+    that this service be co-located on the same component as a Manipulator Specification 
     Service, a Manipulator Tool Offset Service, and a Manipulator Joint Motion Profile 
     Service.  
   </description>

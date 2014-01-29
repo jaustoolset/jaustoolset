@@ -9,7 +9,7 @@
     system. It is assumed that the manipulator begins motion immediately after receiving 
     the “Set End Effector Pose” message. To ensure backward compatibility with 1.0 
     implementations of this service, it is recommended that this service be co-located 
-    on the same component as a Manipulator Definition Service, a Manipulator Tool Offset 
+    on the same component as a Manipulator Specification Service, a Manipulator Tool Offset 
     Service, and a Manipulator Joint Motion Profile Service.
   </description>
   <assumptions> Messages may be delayed, lost, or reordered. </assumptions>

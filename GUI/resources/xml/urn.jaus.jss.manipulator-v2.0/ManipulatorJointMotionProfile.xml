@@ -20,14 +20,14 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryMotionProfile"
-        declared_type_ref="manipulator.queryClass.QueryMotionProfile"/>
-      <declared_message_def name="SetMotionProfile"
-        declared_type_ref="manipulator.commandClass.SetMotionProfile"/>
+      <declared_message_def name="QueryJointMotionProfile"
+        declared_type_ref="manipulator.queryClass.QueryJointMotionProfile"/>
+      <declared_message_def name="SetJointMotionProfile"
+        declared_type_ref="manipulator.commandClass.SetJointMotionProfile"/>
     </input_set>
     <output_set>
-      <declared_message_def name="ReportMotionProfile"
-        declared_type_ref="manipulator.informClass.ReportMotionProfile"/>
+      <declared_message_def name="ReportJointMotionProfile"
+        declared_type_ref="manipulator.informClass.ReportJointMotionProfile"/>
     </output_set>
   </message_set>
   <internal_events_set/>
@@ -43,7 +43,7 @@
           <state name="NotControlled" interpretation="redefine state in order to extend">
             <default_state>
               <transition name="accessControl.events.transport.Receive">
-                <parameter type="QueryMotionProfile" value="msg"
+                <parameter type="QueryJointMotionProfile" value="msg"
                   interpretation="enveloped query motion profile message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
@@ -52,7 +52,7 @@
                 <simple/>
                 <action name="accessControl.events.transport.Send"
                   interpretation="Send a Report Motion Profile message">
-                  <argument value=" 'ReportMotionProfile' "/>
+                  <argument value=" 'ReportJointMotionProfile' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>
@@ -61,7 +61,7 @@
           <state name="Controlled" interpretation="redefine state in order to extend">
             <default_state>
               <transition name="accessControl.events.transport.Receive">
-                <parameter type="QueryMotionProfile" value="msg"
+                <parameter type="QueryJointMotionProfile" value="msg"
                   interpretation="enveloped query motion profile message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
@@ -70,12 +70,12 @@
                 <simple/>
                 <action name="accessControl.events.transport.Send"
                   interpretation="Send a Report Motion Profile message">
-                  <argument value=" 'ReportMotionProfile' "/>
+                  <argument value=" 'ReportJointMotionProfile' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>
               <transition name="accessControl.events.transport.Receive">
-                <parameter type="SetMotionProfile" value="msg"
+                <parameter type="SetJointMotionProfile" value="msg"
                   interpretation="enveloped query motion profile message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
@@ -83,7 +83,7 @@
                   interpretation="True if the message that triggered the transition is 
                   received from the client that is in control of this service."/>
                 <simple/>
-                <action name="setMotionProfile"
+                <action name="setJointMotionProfile"
                   interpretation="Set the motion profile parameters for the manipulator.">
                   <argument value="msg"/>
                 </action>

@@ -7,7 +7,7 @@
     control (for a prismatic actuator) and closed-loop torque control (for a revolute 
     actuator). To ensure backward compatibility with 1.0 implementations of this service, 
     it is recommended that this service be co-located on the same component as a 
-    Manipulator Definition Service.
+    Manipulator Specification Service.
   </description>
   <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
   <references>

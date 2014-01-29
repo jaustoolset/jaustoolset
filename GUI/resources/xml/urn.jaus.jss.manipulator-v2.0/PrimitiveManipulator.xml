@@ -9,7 +9,7 @@
     
     To ensure backward compatibility with 1.0 implementations of this service, it is 
     recommended that this service be co-located on the same component as a Manipulator 
-    Definition Service.
+    Specification Service.
   </description>
   <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
   <references>
@@ -21,14 +21,14 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryJointEfforts"
-        declared_type_ref="manipulator.queryClass.QueryJointEfforts"/>
-      <declared_message_def name="SetJointEfforts"
-        declared_type_ref="manipulator.commandClass.SetJointEfforts"/>
+      <declared_message_def name="QueryJointEffort"
+        declared_type_ref="manipulator.queryClass.QueryJointEffort"/>
+      <declared_message_def name="SetJointEffort"
+        declared_type_ref="manipulator.commandClass.SetJointEffort"/>
     </input_set>
     <output_set>
-      <declared_message_def name="ReportJointEfforts"
-        declared_type_ref="manipulator.informClass.ReportJointEfforts"/>
+      <declared_message_def name="ReportJointEffort"
+        declared_type_ref="manipulator.informClass.ReportJointEffort"/>
     </output_set>
   </message_set>
   <internal_events_set/>
@@ -44,14 +44,14 @@
           <state name="NotControlled" interpretation="redefine state in order to extend">
             <default_state>
               <transition name="management.accessControl.events.transport.Receive">
-                <parameter type="QueryJointEfforts" value="msg"
+                <parameter type="QueryJointEffort" value="msg"
                   interpretation="enveloped query joint efforts message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
                 <simple/>
                 <action name="management.accessControl.events.transport.Send"
                   interpretation="Send a report joint efforts message">
-                  <argument value=" 'ReportJointEfforts' "/>
+                  <argument value=" 'ReportJointEffort' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>
@@ -61,7 +61,7 @@
             <state name="Available" initial_state="Standby">
               <state name="Ready">
                 <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="SetJointEfforts" value="msg"
+                  <parameter type="SetJointEffort" value="msg"
                     interpretation="enveloped set joint efforts message"/>
                   <parameter type="Receive.Body.ReceiveRec" value="transportData"
                     interpretation="transport data"/>
@@ -70,7 +70,7 @@
                     interpretation="True if the message that triggered the transition is 
                     received from the client that is in control of this service"/>
                   <simple/>
-                  <action name="setJointEfforts"
+                  <action name="setJointEffort"
                     interpretation="Set the joint motion efforts for the manipulator.  The 
                     manipulator joints move accordingly">
                     <argument value="msg"/>
@@ -80,14 +80,14 @@
             </state>
             <default_state>
               <transition name="management.accessControl.events.transport.Receive">
-                <parameter type="QueryJointEfforts" value="msg"
+                <parameter type="QueryJointEffort" value="msg"
                   interpretation="enveloped query joint efforts message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
                 <simple/>
                 <action name="management.accessControl.events.transport.Send"
                   interpretation="Send a report joint efforts message">
-                  <argument value=" 'ReportJointEfforts' "/>
+                  <argument value=" 'ReportJointEffort' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>

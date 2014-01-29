@@ -103,16 +103,16 @@
                          optional="true"
                          field_type="unsigned integer"
                          field_units="radian">
-              <scale_range real_lower_limit="-25.13274122871834590768"
-                           real_upper_limit="25.13274122871834590768"
+              <scale_range real_lower_limit="-8*basicConsts.PI"
+                           real_upper_limit="8*basicConsts.PI"
                            integer_function="round"/>
             </fixed_field>
             <fixed_field name="Joint1MaxValue"
                          optional="true"
                          field_type="unsigned integer"
                          field_units="radian">
-              <scale_range real_lower_limit="-25.13274122871834590768"
-                           real_upper_limit="25.13274122871834590768"
+              <scale_range real_lower_limit="-8*basicConsts.PI"
+                           real_upper_limit="8*basicConsts.PI"
                            integer_function="round"/>
             </fixed_field>
             <fixed_field name="Joint1MaxSpeed"
@@ -120,7 +120,7 @@
                          field_type="unsigned integer"
                          field_units="radian per second">
               <scale_range real_lower_limit="0"
-                           real_upper_limit="31.4159265358979323846"
+                           real_upper_limit="10*basicConsts.PI"
                            integer_function="round"/>
             </fixed_field>
             <fixed_field name="Joint1MaxTorque"
@@ -139,8 +139,8 @@
                          optional="false"
                          field_type="unsigned short integer"
                          field_units="radian">
-              <scale_range real_lower_limit="-3.14159265358979323846"
-                           real_upper_limit="3.14159265358979323846"
+              <scale_range real_lower_limit="-basicConsts.PI"
+                           real_upper_limit="basicConsts.PI"
                            integer_function="round"/>
             </fixed_field>
             <fixed_field name="Joint1MinValue"
@@ -204,8 +204,8 @@
                            interpretation="Twist Angle"
                            field_type="unsigned short integer"
                            field_units="radian">
-                <scale_range real_lower_limit="-3.14159265358979323846"
-                             real_upper_limit="3.14159265358979323846"
+                <scale_range real_lower_limit="-basicConsts.PI"
+                             real_upper_limit="basicConsts.PI"
                              integer_function="round"/>
               </fixed_field>
               <fixed_field name="JointOffset"
@@ -221,16 +221,16 @@
                            optional="true"
                            field_type="unsigned integer"
                            field_units="radian">
-                <scale_range real_lower_limit="-25.13274122871834590768"
-                             real_upper_limit="25.13274122871834590768"
+                <scale_range real_lower_limit="-8*basicConsts.PI"
+                             real_upper_limit="8*basicConsts.PI"
                              integer_function="round"/>
               </fixed_field>
               <fixed_field name="MaxValue"
                            optional="true"
                            field_type="unsigned integer"
                            field_units="radian">
-                <scale_range real_lower_limit="-25.13274122871834590768"
-                             real_upper_limit="25.13274122871834590768"
+                <scale_range real_lower_limit="-8*basicConsts.PI"
+                             real_upper_limit="8*basicConsts.PI"
                              integer_function="round"/>
               </fixed_field>
               <fixed_field name="MaxSpeed"
@@ -238,7 +238,7 @@
                            field_type="unsigned integer"
                            field_units="radian per second">
                 <scale_range real_lower_limit="0"
-                             real_upper_limit="31.4159265358979323846"
+                             real_upper_limit="10*basicConsts.PI"
                              integer_function="round"/>
               </fixed_field>
               <fixed_field name="MaxTorque"
@@ -266,16 +266,16 @@
                            optional="false"
                            field_type="unsigned short integer"
                            field_units="radian">
-                <scale_range real_lower_limit="-3.14159265358979323846"
-                             real_upper_limit="3.14159265358979323846"
+                <scale_range real_lower_limit="-basicConsts.PI"
+                             real_upper_limit="basicConsts.PI"
                              integer_function="round"/>
               </fixed_field>
               <fixed_field name="JointAngle"
                            optional="false"
                            field_type="unsigned short integer"
                            field_units="radian">
-                <scale_range real_lower_limit="-3.14159265358979323846"
-                             real_upper_limit="3.14159265358979323846"
+                <scale_range real_lower_limit="-basicConsts.PI"
+                             real_upper_limit="basicConsts.PI"
                              integer_function="round"/>
               </fixed_field>
               <fixed_field name="MinValue"
@@ -327,7 +327,7 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="ReportJointEfforts" message_id="4601" is_command="false">
+  <message_def name="ReportJointEffort" message_id="4601" is_command="false">
     <description xml:space="preserve">
       This message is used to provide the receiver the percent effort that is currently being applied to the individual manipulator joints.
     </description>
@@ -347,7 +347,7 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="ReportJointVelocities" message_id="4603" is_command="false">
+  <message_def name="ReportJointVelocity" message_id="4603" is_command="false">
     <description xml:space="preserve">
       This message provides the receiver with the current values of the joint velocities.
     </description>
@@ -377,13 +377,13 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="ReportMotionProfile" message_id="4607" is_command="false">
+  <message_def name="ReportJointMotionProfile" message_id="4607" is_command="false">
     <description xml:space="preserve">
       This message provides the receiver with the current motion profile.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body">
-      <declared_list name="MotionProfileList" optional="false" declared_type_ref="manipulatorTypes.MotionProfileList" />
+      <declared_list name="JointMotionProfileList" optional="false" declared_type_ref="manipulatorTypes.JointMotionProfileList" />
     </body>
     <footer name="Footer" />
   </message_def>
@@ -407,7 +407,7 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="ReportCommandedJointVelocities" message_id="4611" is_command="false">
+  <message_def name="ReportCommandedJointVelocity" message_id="4611" is_command="false">
     <description xml:space="preserve">
       This message provides the receiver with the commanded joint velocities for the manipulator.
     </description>
@@ -498,34 +498,34 @@
           <scale_range real_lower_limit="-1" real_upper_limit="1" integer_function="round" />
         </fixed_field>
         <fixed_field name="Joint1MinValue" field_type="unsigned integer" field_units="radian" optional="false">
-          <scale_range real_lower_limit="-25.13274122871834590768" real_upper_limit="25.13274122871834590768"
+          <scale_range real_lower_limit="-8*basicConsts.PI" real_upper_limit="8*basicConsts.PI"
             integer_function="round" />
         </fixed_field>
         <fixed_field name="Joint1MaxValue" field_type="unsigned integer" field_units="radian" optional="false">
-          <scale_range real_lower_limit="-25.13274122871834590768" real_upper_limit="25.13274122871834590768"
+          <scale_range real_lower_limit="-8*basicConsts.PI" real_upper_limit="8*basicConsts.PI"
             integer_function="round" />
         </fixed_field>
         <fixed_field name="Joint1MaxSpeed" field_type="unsigned integer" field_units="radian per second"
           optional="false">
-          <scale_range real_lower_limit="0" real_upper_limit="31.4159265358979323846" integer_function="round" />
+          <scale_range real_lower_limit="0" real_upper_limit="10*basicConsts.PI" integer_function="round" />
         </fixed_field>
         <fixed_field name="Joint2MinValue" field_type="unsigned integer" field_units="radian" optional="false">
-          <scale_range real_lower_limit="-25.13274122871834590768" real_upper_limit="25.13274122871834590768"
+          <scale_range real_lower_limit="-8*basicConsts.PI" real_upper_limit="8*basicConsts.PI"
             integer_function="round" />
         </fixed_field>
         <fixed_field name="Joint2MaxValue" field_type="unsigned integer" field_units="radian" optional="false">
-          <scale_range real_lower_limit="-25.13274122871834590768" real_upper_limit="25.13274122871834590768"
+          <scale_range real_lower_limit="-8*basicConsts.PI" real_upper_limit="8*basicConsts.PI"
             integer_function="round" />
         </fixed_field>
         <fixed_field name="Joint2MaxSpeed" field_type="unsigned integer" field_units="radian per second"
           optional="false">
-          <scale_range real_lower_limit="0" real_upper_limit="31.4159265358979323846" integer_function="round" />
+          <scale_range real_lower_limit="0" real_upper_limit="10*basicConsts.PI" integer_function="round" />
         </fixed_field>
       </record>
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="ReportPanTiltJointEfforts" message_id="4621" is_command="false">
+  <message_def name="ReportPanTiltJointEffort" message_id="4621" is_command="false">
     <description xml:space="preserve">
       This message is used to provide the receiver the percent effort that is currently being applied to the two joints of the pan tilt mechanism.
     </description>
@@ -546,14 +546,14 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="ReportPanTiltJointVelocities" message_id="4623" is_command="false">
+  <message_def name="ReportPanTiltJointVelocity" message_id="4623" is_command="false">
     <description xml:space="preserve">
       This message provides the receiver with the current values of the joint velocities for a pan tilt mechanism.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body">
-      <declared_record name="PanTiltJointVelocitiesRec" optional="false"
-        declared_type_ref="manipulatorTypes.PanTiltJointVelocitiesRec" />
+      <declared_record name="PanTiltJointVelocityRec" optional="false"
+        declared_type_ref="manipulatorTypes.PanTiltJointVelocityRec" />
     </body>
     <footer name="Footer" />
   </message_def>
@@ -577,14 +577,14 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="ReportCommandedPanTiltJointVelocities" message_id="4631" is_command="false">
+  <message_def name="ReportCommandedPanTiltJointVelocity" message_id="4631" is_command="false">
     <description xml:space="preserve">
       This message provides the receiver with the commanded joint velocities for the pan tilt mechanism.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body">
-      <declared_record name="PanTiltJointVelocitiesRec" optional="false"
-        declared_type_ref="manipulatorTypes.PanTiltJointVelocitiesRec" />
+      <declared_record name="PanTiltJointVelocityRec" optional="false"
+        declared_type_ref="manipulatorTypes.PanTiltJointVelocityRec" />
     </body>
     <footer name="Footer" />
   </message_def>
@@ -596,7 +596,7 @@
     <body name="Body">
       <record name="ReportEndEffectorSpecificationRec" optional="false">
         <fixed_field name="ParentId" field_type="unsigned integer" field_units="one" optional="false"
-          interpretation="4 byte identifier of the manipulator on which this end effector is mounted" />
+          interpretation="4 byte JAUS identifier of the manipulator on which this end effector is mounted" />
       </record>
     </body>
     <footer name="Footer" />

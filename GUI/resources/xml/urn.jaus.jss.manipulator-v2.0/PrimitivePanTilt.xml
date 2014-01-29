@@ -7,7 +7,7 @@
   	message.  In this message, each actuator is commanded to move with a percentage of 
   	maximum effort.  To ensure backward compatibility with 1.0 implementations of this 
   	service, it is recommended that this service be co-located on the same component 
-  	as a Pan Tilt Definition Service.  
+  	as a Pan Tilt Specification Service.  
   </description>
   <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
   <references>
@@ -19,14 +19,14 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryPanTiltJointEfforts"
-        declared_type_ref="manipulator.queryClass.QueryPanTiltJointEfforts"/>
-      <declared_message_def name="SetPanTiltJointEfforts"
-        declared_type_ref="manipulator.commandClass.SetPanTiltJointEfforts"/>
+      <declared_message_def name="QueryPanTiltJointEffort"
+        declared_type_ref="manipulator.queryClass.QueryPanTiltJointEffort"/>
+      <declared_message_def name="SetPanTiltJointEffort"
+        declared_type_ref="manipulator.commandClass.SetPanTiltJointEffort"/>
     </input_set>
     <output_set>
-      <declared_message_def name="ReportPanTiltJointEfforts"
-        declared_type_ref="manipulator.informClass.ReportPanTiltJointEfforts"/>
+      <declared_message_def name="ReportPanTiltJointEffort"
+        declared_type_ref="manipulator.informClass.ReportPanTiltJointEffort"/>
     </output_set>
   </message_set>
   <internal_events_set/>
@@ -43,14 +43,14 @@
 
             <default_state>
               <transition name="management.accessControl.events.transport.Receive">
-                <parameter type="QueryPanTiltJointEfforts" value="msg"
+                <parameter type="QueryPanTiltJointEffort" value="msg"
                   interpretation="enveloped query Pan Tilt joint efforts message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
                 <simple/>
                 <action name="management.accessControl.events.transport.Send"
                   interpretation="Send a report Pan Tilt joint efforts message">
-                  <argument value=" 'ReportPanTiltJointEfforts' "/>
+                  <argument value=" 'ReportPanTiltJointEffort' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>
@@ -61,7 +61,7 @@
             <state name="Available" initial_state="Standby">
               <state name="Ready">
                 <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="SetPanTiltJointEfforts" value="msg"
+                  <parameter type="SetPanTiltJointEffort" value="msg"
                     interpretation="enveloped set Pan Tilt joint efforts message"/>
                   <parameter type="Receive.Body.ReceiveRec" value="transportData"
                     interpretation="transport data"/>
@@ -70,7 +70,7 @@
                     interpretation="True if the message that triggered the transition is 
                     received from the client that is in control of this service"/>
                   <simple/>
-                  <action name="setPanTiltJointEfforts"
+                  <action name="setPanTiltJointEffort"
                     interpretation="Set the joint motion efforts for the two joints of the 
                     pan tilt mechanism">
                     <argument value="msg"/>
@@ -80,14 +80,14 @@
             </state>
             <default_state>
               <transition name="management.accessControl.events.transport.Receive">
-                <parameter type="QueryPanTiltJointEfforts" value="msg"
+                <parameter type="QueryPanTiltJointEffort" value="msg"
                   interpretation="enveloped query Pan Tilt joint efforts message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
                 <simple/>
                 <action name="management.accessControl.events.transport.Send"
                   interpretation="Send a report Pan Tilt joint efforts message">
-                  <argument value=" 'ReportPanTiltJointEfforts' "/>
+                  <argument value=" 'ReportPanTiltJointEffort' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>

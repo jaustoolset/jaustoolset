@@ -21,9 +21,9 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="QueryJointEfforts" message_id="2601" is_command="false">
+  <message_def name="QueryJointEffort" message_id="2601" is_command="false">
     <description xml:space="preserve">
-      This message shall cause the receiving service to reply to the requestor with a ID 4601h: ReportJointEfforts message.
+      This message shall cause the receiving service to reply to the requestor with a ID 4601h: ReportJointEffort message.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body" />
@@ -37,9 +37,9 @@
     <body name="Body" />
     <footer name="Footer" />
   </message_def>
-  <message_def name="QueryJointVelocities" message_id="2603" is_command="false">
+  <message_def name="QueryJointVelocity" message_id="2603" is_command="false">
     <description xml:space="preserve">
-      This message shall cause the receiving service to reply to the requestor with a ID 4603h: ReportJointVelocities message.
+      This message shall cause the receiving service to reply to the requestor with a ID 4603h: ReportJointVelocity message.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body" />
@@ -61,7 +61,7 @@
     <body name="Body" />
     <footer name="Footer" />
   </message_def>
-  <message_def name="QueryMotionProfile" message_id="2607" is_command="false">
+  <message_def name="QueryJointMotionProfile" message_id="2607" is_command="false">
     <description xml:space="preserve">
       This message shall cause the receiving service to reply to the requestor with a ID 4607h: ReportMotionProfile message.
     </description>
@@ -85,9 +85,9 @@
     <body name="Body" />
     <footer name="Footer" />
   </message_def>
-  <message_def name="QueryCommandedJointVelocities" message_id="2611" is_command="false">
+  <message_def name="QueryCommandedJointVelocity" message_id="2611" is_command="false">
     <description xml:space="preserve">
-      This message shall cause the receiving service to reply to the requestor with a ID 4611h: ReportCommandedJointVelocities message.
+      This message shall cause the receiving service to reply to the requestor with a ID 4611h: ReportCommandedJointVelocity message.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body" />
@@ -137,9 +137,9 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="QueryPanTiltJointEfforts" message_id="2621" is_command="false">
+  <message_def name="QueryPanTiltJointEffort" message_id="2621" is_command="false">
     <description xml:space="preserve">
-      This message shall cause the receiving service to reply to the requestor with a ID 4621h: ReportPanTiltJointEfforts message.
+      This message shall cause the receiving service to reply to the requestor with a ID 4621h: ReportPanTiltJointEffort message.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body" />
@@ -153,9 +153,9 @@
     <body name="Body" />
     <footer name="Footer" />
   </message_def>
-  <message_def name="QueryPanTiltJointVelocities" message_id="2623" is_command="false">
+  <message_def name="QueryPanTiltJointVelocity" message_id="2623" is_command="false">
     <description xml:space="preserve">
-      This message shall cause the receiving service to reply to the requestor with a ID 4623h: ReportPanTiltJointVelocities message.
+      This message shall cause the receiving service to reply to the requestor with a ID 4623h: ReportPanTiltJointVelocity message.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body" />
@@ -177,9 +177,9 @@
     <body name="Body" />
     <footer name="Footer" />
   </message_def>
-  <message_def name="QueryCommandedPanTiltJointVelocities" message_id="2631" is_command="false">
+  <message_def name="QueryCommandedPanTiltJointVelocity" message_id="2631" is_command="false">
     <description xml:space="preserve">
-      This message shall cause the receiving service to reply to the requestor with a ID 4631h: ReportCommandedPanTiltJointVelocities message.
+      This message shall cause the receiving service to reply to the requestor with a ID 4631h: ReportCommandedPanTiltJointVelocity message.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body" />

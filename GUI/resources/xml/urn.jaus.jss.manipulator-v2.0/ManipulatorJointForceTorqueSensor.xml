@@ -8,7 +8,7 @@
     that are applied at the individual joints of the manipulator kinematic model 
     when queried.  To ensure backward compatibility with 1.0 implementations of 
     this service, it is recommended that this service be co-located on the same 
-    component as a Manipulator Definition Service.
+    component as a Manipulator Specification Service.
   </description>
   <assumptions> Messages may be delayed, lost, or reordered. </assumptions>
   <references>

@@ -9,7 +9,7 @@
     coordinate system and the linear velocity of the tool tip as measured with respect 
     to the manipulator base coordinate system.  To ensure backward compatibility with 
     1.0 implementations of this service, it is recommended that this service be 
-    co-located on the same component as a Manipulator Definition Service and a 
+    co-located on the same component as a Manipulator Specification Service and a 
     Manipulator Tool Offset Service.
   </description>
   <assumptions> Messages may be delayed, lost, or reordered. </assumptions>

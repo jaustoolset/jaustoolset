@@ -57,11 +57,11 @@
       <scale_range real_lower_limit="-15" real_upper_limit="15" integer_function="round" />
     </fixed_field>
   </record>
-  <list name="MotionProfileList" optional="false">
+  <list name="JointMotionProfileList" optional="false">
     <count_field field_type_unsigned="unsigned byte" />
     <variant name="JointType" optional="false">
       <vtag_field field_type_unsigned="unsigned byte" />
-      <record name="RevoluteMotionProfileRec" optional="false">
+      <record name="RevoluteJointMotionProfileRec" optional="false">
         <fixed_field name="JointMaxSpeed" field_type="unsigned integer" field_units="radian per second"
           optional="false">
           <scale_range real_lower_limit="0" real_upper_limit="10*basicConsts.PI" integer_function="round" />
@@ -75,7 +75,7 @@
           <scale_range real_lower_limit="0" real_upper_limit="10*basicConsts.PI" integer_function="round" />
         </fixed_field>
       </record>
-      <record name="PrismaticMotionProfileRec" optional="false">
+      <record name="PrismaticJointMotionProfileRec" optional="false">
         <fixed_field name="JointMaxSpeed" field_type="unsigned integer" field_units="meter per second"
           optional="false">
           <scale_range real_lower_limit="0" real_upper_limit="5" integer_function="round" />
@@ -181,7 +181,7 @@
       <scale_range real_lower_limit="-8*basicConsts.PI" real_upper_limit="8*basicConsts.PI" integer_function="round" />
     </fixed_field>
   </record>
-  <record name="PanTiltJointVelocitiesRec" optional="false">
+  <record name="PanTiltJointVelocityRec" optional="false">
     <fixed_field name="Joint1Velocity" field_type="unsigned integer" field_units="radian per second"
       optional="false">
       <scale_range real_lower_limit="-10*basicConsts.PI" real_upper_limit="10*basicConsts.PI"
