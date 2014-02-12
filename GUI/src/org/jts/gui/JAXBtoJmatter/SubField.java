@@ -84,7 +84,7 @@ public class SubField
 		// Interpretation
 		if(jxBitRange.getInterpretation() != null)
 		{
-			String interpretation = jxSubField.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
+			String interpretation = jxBitRange.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
 			if(interpretation.length() > 255)
 			{
 				String temp = interpretation.substring(0, 255);
