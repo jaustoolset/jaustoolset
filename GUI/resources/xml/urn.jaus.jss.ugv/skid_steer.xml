@@ -27,14 +27,16 @@
                         interpretation="Negative is reverse, positive is forward">
                         <fixed_field name="LeftSidePropulsiveEffort"
                             optional="false" field_type="unsigned short integer"
-                            field_units="one">
+                            field_units="one" interpretation="As a percent of maximum.  Positive 
+                            results in forward thrust, while negative results in backward thrust.">
                             <scale_range real_lower_limit="-100.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>
                         </fixed_field>
                         <fixed_field name="RightSidePropulsiveEffort"
                             optional="false" field_type="unsigned short integer"
-                            field_units="one">
+                            field_units="one" interpretation="As a percent of maximum.  Positive 
+                            results in forward thrust, while negative results in backward thrust.">
                             <scale_range real_lower_limit="-100.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>
@@ -75,14 +77,16 @@
                         interpretation="Negative is reverse, positive is forward">
                         <fixed_field name="LeftSidePropulsiveEffort"
                             optional="false" field_type="unsigned short integer"
-                            field_units="one">
+                            field_units="one" interpretation="As a percent of maximum.  Positive 
+                            implies forward thrust, while negative results in backward thrust.">
                             <scale_range real_lower_limit="-100.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>
                         </fixed_field>
                         <fixed_field name="RightSidePropulsiveEffort"
                             optional="false" field_type="unsigned short integer"
-                            field_units="one">
+                            field_units="one" interpretation="As a percent of maximum.  Positive 
+                            implies forward thrust, while negative results in backward thrust.">
                             <scale_range real_lower_limit="-100.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>

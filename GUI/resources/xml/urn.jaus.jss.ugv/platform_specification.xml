@@ -52,7 +52,8 @@
                                 <fixed_field name="TrackSeparation"
                                     optional="true"
                                     field_type="unsigned short integer"
-                                    field_units="meter">
+                                    field_units="meter" interpretation="Distance 
+                                    between the two tracks ">
                                     <scale_range real_lower_limit="0"
                                         real_upper_limit="30"
                                         integer_function="round"/>
@@ -60,21 +61,27 @@
                                 <fixed_field name="DriveWheelRadius"
                                     optional="true"
                                     field_type="unsigned short integer"
-                                    field_units="meter">
+                                    field_units="meter" interpretation="Radius 
+                                    of the drive wheel (distance from center 
+                                    of the drive shaft to the outer edge of 
+                                    the drive wheel) in meters ">
                                     <scale_range real_lower_limit="0"
                                         real_upper_limit="10"
                                         integer_function="round"/>
                                 </fixed_field>
                             </record>
-                            <record name="Ackermann" optional="false"
-                                interpretation="Minimum and maximum steering angle. Left is negative, right is positive.  
-                                This variant is used to hold platform-specific specifications">
+                            <record name="Ackermann" optional="false">
                                 <presence_vector
                                     field_type_unsigned="unsigned byte"/>
                                 <fixed_field name="SteeringAngleRange"
                                     optional="true"
                                     field_type="unsigned short integer"
-                                    field_units="radian">
+                                    field_units="radian" interpretation="The 
+                                    maximum achievable steering angles, as 
+                                    measured by a virtual wheel at the center 
+                                    of the front axle. Negative values cause 
+                                    the vehicle to turn left; positive values 
+                                    cause the vehicle to turn right. ">
                                     <scale_range
                                         real_lower_limit="-1.57079632679489661923"
                                         real_upper_limit="1.57079632679489661923"
@@ -83,7 +90,8 @@
                                 <fixed_field name="MinTurnRadius"
                                     optional="true"
                                     field_type="unsigned short integer"
-                                    field_units="meter">
+                                    field_units="meter" interpretation="The radius 
+                                    of the smallest turn the vehicle is able to make.">
                                     <scale_range real_lower_limit="0.0"
                                         real_upper_limit="25.0"
                                         integer_function="round"/>
@@ -91,7 +99,8 @@
                                 <fixed_field name="WheelSeparation"
                                     optional="true"
                                     field_type="unsigned short integer"
-                                    field_units="meter">
+                                    field_units="meter" interpretation="Distance 
+                                    between the centers of the left and right wheels ">
                                     <scale_range real_lower_limit="0"
                                         real_upper_limit="30"
                                         integer_function="round"/>
@@ -99,7 +108,10 @@
                                 <fixed_field name="DriveWheelRadius"
                                     optional="true"
                                     field_type="unsigned short integer"
-                                    field_units="meter">
+                                    field_units="meter" interpretation="Radius 
+                                    of the drive wheel (distance from center 
+                                    of the drive shaft to the outer edge of 
+                                    the drive wheel) in meters ">
                                     <scale_range real_lower_limit="0"
                                         real_upper_limit="10"
                                         integer_function="round"/>
@@ -162,81 +174,98 @@
                                     integer_function="round"/>
                             </fixed_field>
                         </record>
-                        <record name="platformSpec" optional="false"
-                            interpretation="This is the main container for the ReportPlatformSpecs message">
+                        <record name="platformSpec" optional="false">
                             <presence_vector
                                 field_type_unsigned="unsigned short integer"/>
                             <variable_length_string name="MobilityPlatformName"
-                                optional="false">
+                                optional="false" interpretation="A human-readable 
+                                string for the vehicle.">
                                 <count_field min_count="0" max_count="255"
                                     field_type_unsigned="unsigned byte"/>
                             </variable_length_string>
                             <fixed_field name="Front" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="meter">
+                                field_units="meter" interpretation="Measured 
+                                along the positive X axis of the vehicle 
+                                coordinate frame">
                                 <scale_range real_lower_limit="0"
                                     real_upper_limit="30"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Back" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="meter">
+                                field_units="meter" interpretation="Measured 
+                                along the negative X axis of the vehicle 
+                                coordinate frame">
                                 <scale_range real_lower_limit="0"
                                     real_upper_limit="30"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Right" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="meter">
+                                field_units="meter" interpretation="Measured 
+                                along the positive Y axis of the vehicle 
+                                coordinate frame">
                                 <scale_range real_lower_limit="0"
                                     real_upper_limit="30"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Left" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="meter">
+                                field_units="meter" interpretation="Measured 
+                                along the negative Y axis of the vehicle 
+                                coordinate frame">
                                 <scale_range real_lower_limit="0"
                                     real_upper_limit="30"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Bottom" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="meter">
+                                field_units="meter" interpretation="Measured 
+                                along the positive Z axis of the vehicle 
+                                coordinate frame">
                                 <scale_range real_lower_limit="0"
                                     real_upper_limit="30"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Top" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="meter">
+                                field_units="meter" interpretation="Measured 
+                                along the negative Z axis of the vehicle 
+                                coordinate frame">
                                 <scale_range real_lower_limit="0"
                                     real_upper_limit="30"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Xcg" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="meter">
+                                field_units="meter" interpretation="Measured 
+                                from the vehicle coordinate frame">
                                 <scale_range real_lower_limit="-30"
                                     real_upper_limit="30"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Ycg" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="meter">
+                                field_units="meter" interpretation="Measured 
+                                from the vehicle coordinate frame">
                                 <scale_range real_lower_limit="-30"
                                     real_upper_limit="30"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="Zcg" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="meter">
+                                field_units="meter" interpretation="Measured 
+                                from the vehicle coordinate frame">
                                 <scale_range real_lower_limit="-30"
                                     real_upper_limit="30"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="WheelBase" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="meter">
+                                field_units="meter" interpretation="Distance 
+                                between the center of the frontmost wheel 
+                                and the center of the rearmost wheel.">
                                 <scale_range real_lower_limit="0"
                                     real_upper_limit="60"
                                     integer_function="round"/>
@@ -266,21 +295,27 @@
                             </fixed_field>
                             <fixed_field name="ApproachAngle" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="radian">
+                                field_units="radian" interpretation="The angle 
+                                formed by an imaginary line from the front 
+                                bumper to the bottom of the front tire ">
                                 <scale_range real_lower_limit="0"
                                     real_upper_limit="3.14159265358979323846/2"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="DepartureAngle" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="radian">
+                                field_units="radian" interpretation="The angle 
+                                formed by an imaginary line from the bottom 
+                                of the rear tire to rear bumper. ">
                                 <scale_range real_lower_limit="0"
                                     real_upper_limit="3.14159265358979323846/2"
                                     integer_function="round"/>
                             </fixed_field>
                             <fixed_field name="BreakOverAngle" optional="true"
                                 field_type="unsigned short integer"
-                                field_units="radian">
+                                field_units="radian" interpretation="The angle 
+                                formed by an imaginary line from the bottom of 
+                                the tires to the center of the vehicle’s underside. ">
                                 <scale_range real_lower_limit="0"
                                     real_upper_limit="3.14159265358979323846/2"
                                     integer_function="round"/>

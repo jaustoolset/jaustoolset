@@ -27,7 +27,14 @@
                         <presence_vector field_type_unsigned="unsigned byte"/>
                         <fixed_field name="SteeringAngle" optional="false"
                             field_type="unsigned short integer"
-                            field_units="radian">
+                            field_units="radian" interpretation="The desired effective 
+                            steering angle of the vehicle, as measured by a virtual 
+                            wheel at the center of the front axle. Negative values 
+                            cause the platform to turn left; positive values cause 
+                            the vehice to turn right.  Control systems that attach 
+                            directly to the steering wheel/column may need to convert 
+                            this value to a steering wheel position that achieves 
+                            the desired steering angle.">
                             <scale_range
                                 real_lower_limit="-1.57079632679489661923"
                                 real_upper_limit="1.57079632679489661923"
@@ -35,28 +42,34 @@
                         </fixed_field>
                         <fixed_field name="ThrottleEffort" optional="false"
                             field_type="unsigned short integer"
-                            field_units="one">
+                            field_units="one" interpretation="As a percent of maximum.">
                             <scale_range real_lower_limit="0.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>
                         </fixed_field>
                         <fixed_field name="BrakeEffort" optional="false"
                             field_type="unsigned short integer"
-                            field_units="one">
+                            field_units="one" interpretation="As a percent of maximum.">
                             <scale_range real_lower_limit="0.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>
                         </fixed_field>
                         <fixed_field name="MaxSteeringRate" optional="true"
                             field_type="unsigned short integer"
-                            field_units="radian per second">
+                            field_units="radian per second" interpretation="The absolute 
+                            value of the maximum rate of change in the steering angle.  
+                            Lower values result in more gradual steering changes.">
                             <scale_range real_lower_limit="0.0"
                                 real_upper_limit="32.767"
                                 integer_function="round"/>
                         </fixed_field>
                         <fixed_field name="MaxSteeringTorque" optional="true"
                             field_type="unsigned short integer"
-                            field_units="newton meter">
+                            field_units="newton meter" interpretation="The absolute 
+                            value of the maximum torque allowed to effect a change 
+                            in steering angle, as experienced at the steering wheel.  
+                            Lower values allow a human operator to override 
+                            remote commands">
                             <scale_range real_lower_limit="0.0"
                                 real_upper_limit="500" integer_function="round"
                             />
@@ -97,7 +110,15 @@
                         <presence_vector field_type_unsigned="unsigned byte"/>
                         <fixed_field name="SteeringAngle" optional="false"
                             field_type="unsigned short integer"
-                            field_units="radian">
+                            field_units="radian" interpretation="The desired 
+                            effective steering angle of the vehicle, as measured 
+                            by a virtual wheel at the center of the front axle. 
+                            Negative values cause the platform to turn left; 
+                            positive values cause the vehice to turn right.  
+                            Control systems that attach directly to the steering 
+                            wheel/column may need to convert this value to a 
+                            steering wheel position that achieves the desired 
+                            steering angle.">
                             <scale_range
                                 real_lower_limit="-1.57079632679489661923"
                                 real_upper_limit="1.57079632679489661923"
@@ -105,28 +126,33 @@
                         </fixed_field>
                         <fixed_field name="ThrottleEffort" optional="false"
                             field_type="unsigned short integer"
-                            field_units="one">
+                            field_units="one" interpretation="As a percent of maximum.">
                             <scale_range real_lower_limit="0.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>
                         </fixed_field>
                         <fixed_field name="BrakeEffort" optional="false"
                             field_type="unsigned short integer"
-                            field_units="one">
+                            field_units="one" interpretation="As a percent of maximum.">
                             <scale_range real_lower_limit="0.0"
                                 real_upper_limit="100.0"
                                 integer_function="round"/>
                         </fixed_field>
                         <fixed_field name="SteeringRate" optional="true"
                             field_type="unsigned short integer"
-                            field_units="radian per second">
+                            field_units="radian per second" interpretation="The current 
+                            rate of change in the steering angle. Negative values 
+                            indicate the vehicle is trying to turn left.">
                             <scale_range real_lower_limit="-32.767"
                                 real_upper_limit="32.768"
                                 integer_function="round"/>
                         </fixed_field>
                         <fixed_field name="SteeringTorque" optional="true"
                             field_type="unsigned short integer"
-                            field_units="newton meter">
+                            field_units="newton meter" interpretation="The current 
+                            torque allowed to effect a change in steering angle, 
+                            as experienced at the steering wheel.  Negative values 
+                            indicate the vehicle is trying to turn left.">
                             <scale_range real_lower_limit="-500.0"
                                 real_upper_limit="500" integer_function="round"
                             />

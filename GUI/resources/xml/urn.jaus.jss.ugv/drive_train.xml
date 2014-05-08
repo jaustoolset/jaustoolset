@@ -210,7 +210,9 @@
             <body name="body">
                <record name="transmissionCapabilities" optional="false">
                   <bit_field name="transmissionBF" optional="false"
-                     field_type_unsigned="unsigned short integer">
+                     field_type_unsigned="unsigned short integer"
+                     interpretation="When the bit is set high, the vehicle 
+                     supports the specified mode.  Otherwise, it is not supported.">
                      <sub_field name="PARK">
                         <bit_range from_index="0" to_index="0"/>
                         <value_set offset_to_lower_limit="false">
@@ -325,7 +327,9 @@
                      </sub_field>
                   </bit_field>
                   <bit_field name="transferCaseBF" optional="false"
-                     field_type_unsigned="unsigned byte">
+                     field_type_unsigned="unsigned byte" interpretation="When the 
+                     bit is set high, the vehicle supports the specified mode.  
+                     Otherwise, it is not supported.">
                      <sub_field name="FWD">
                         <bit_range from_index="0" to_index="0"/>
                         <value_set offset_to_lower_limit="false">

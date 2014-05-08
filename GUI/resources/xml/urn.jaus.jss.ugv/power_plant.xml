@@ -31,7 +31,10 @@
                             <record name="powerPlantID" optional="false">
                                 <fixed_field name="powerPlantID"
                                     optional="false" field_type="unsigned byte"
-                                    field_units="one">
+                                    field_units="one" interpretation="This is a 
+                                    unique ID for each powerplant and is provided 
+                                    by 4507 Report PowerPlant Capabilities 
+                                    message.">
                                     <value_set offset_to_lower_limit="false">
                                         <value_range lower_limit="0"
                                         lower_limit_type="inclusive"
@@ -63,10 +66,13 @@
                                     </fixed_field>
                                     <fixed_field name="rpm" optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one"/>
+                                        field_units="one" interpretation="Rotations 
+                                        per minute.  Units here are one since 
+                                        JSIDL does not support RPM natively."/>
                                     <fixed_field name="throttle" optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one">
+                                        field_units="one" interpretation="As a 
+                                        percent of maximum">
                                         <scale_range real_lower_limit="0"
                                         real_upper_limit="100"
                                         integer_function="round"/>
@@ -91,10 +97,13 @@
                                     </fixed_field>
                                     <fixed_field name="rpm" optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one"/>
+                                        field_units="one" interpretation="Rotations 
+                                        per minute.  Units here are one since JSIDL 
+                                        does not support RPM natively."/>
                                     <fixed_field name="throttle" optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one">
+                                        field_units="one" interpretation="As a 
+                                        percent of maximum">
                                         <scale_range real_lower_limit="0"
                                         real_upper_limit="100"
                                         integer_function="round"/>
@@ -183,7 +192,10 @@
                             field_type_unsigned="unsigned byte"/>
                         <record name="powerPlantID" optional="false">
                             <fixed_field name="powerPlantID" optional="false"
-                                field_type="unsigned byte" field_units="one">
+                                field_type="unsigned byte" field_units="one"
+                                interpretation="A list of IDs to query.  
+                                If the list is empty (count_field=0), all 
+                                vehicle powerplants will be returned.">
                                 <value_set offset_to_lower_limit="false">
                                     <value_range lower_limit="0"
                                         lower_limit_type="inclusive"
@@ -213,7 +225,10 @@
                             field_type_unsigned="unsigned byte"/>
                         <record name="powerPlantID" optional="false">
                             <fixed_field name="powerPlantID" optional="false"
-                                field_type="unsigned byte" field_units="one">
+                                field_type="unsigned byte" field_units="one"
+                                interpretation="A list of IDs to query.  If the 
+                                list is empty (count_field=0), all vehicle 
+                                powerplants will be returned.">
                                 <value_set offset_to_lower_limit="false">
                                     <value_range lower_limit="0"
                                         lower_limit_type="inclusive"
@@ -243,7 +258,10 @@
                             field_type_unsigned="unsigned byte"/>
                         <record name="powerPlantID" optional="false">
                             <fixed_field name="powerPlantID" optional="false"
-                                field_type="unsigned byte" field_units="one">
+                                field_type="unsigned byte" field_units="one"
+                                interpretation="A list of IDs to query.  If 
+                                the list is empty (count_field=0), all vehicle 
+                                powerplants will be returned.">
                                 <value_set offset_to_lower_limit="false">
                                     <value_range lower_limit="0"
                                         lower_limit_type="inclusive"
@@ -278,7 +296,9 @@
                             <record name="powerPlantID" optional="false">
                                 <fixed_field name="powerPlantID"
                                     optional="false" field_type="unsigned byte"
-                                    field_units="one">
+                                    field_units="one" interpretation="This is a unique 
+                                    ID for each powerplant and is provided by 
+                                    4507 Report PowerPlant Capabilities message.">
                                     <value_set offset_to_lower_limit="false">
                                         <value_range lower_limit="0"
                                         lower_limit_type="inclusive"
@@ -310,10 +330,13 @@
                                     </fixed_field>
                                     <fixed_field name="rpm" optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one"/>
+                                        field_units="one" interpretation="Rotations 
+                                        per minute.  Units here are one since JSIDL 
+                                        does not support RPM natively."/>
                                     <fixed_field name="throttle" optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one">
+                                        field_units="one" interpretation="As a 
+                                        percent of maximum">
                                         <scale_range real_lower_limit="0"
                                         real_upper_limit="100"
                                         integer_function="round"/>
@@ -338,10 +361,13 @@
                                     </fixed_field>
                                     <fixed_field name="rpm" optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one"/>
+                                        field_units="one" interpretation="Rotations 
+                                        per minute.  Units here are one since JSIDL 
+                                        does not support RPM natively."/>
                                     <fixed_field name="throttle" optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one">
+                                        field_units="one" interpretation="As a 
+                                        percent of maximum">
                                         <scale_range real_lower_limit="0"
                                         real_upper_limit="100"
                                         integer_function="round"/>
@@ -433,10 +459,13 @@
                             <record name="PowerPlantDescRec" optional="false">
                                 <fixed_field name="powerPlantID"
                                     optional="false" field_type="unsigned byte"
-                                    field_units="one"/>
+                                    field_units="one" interpretation="Each powerplant 
+                                    has a unique ID associated with it.  This ID 
+                                    is used in subsequent messages."/>
                                 <variable_length_string name="description"
                                     optional="false"
-                                    interpretation="A human-readable string that can be used to disambiguate multiple powerplants.">
+                                    interpretation="A human-readable string that can 
+                                    be used to disambiguate multiple powerplants.">
                                     <count_field min_count="0" max_count="255"
                                         field_type_unsigned="unsigned byte"/>
                                 </variable_length_string>
@@ -683,10 +712,14 @@
                             <record name="PowerPlantDescRec" optional="false">
                                 <fixed_field name="powerPlantID"
                                     optional="false" field_type="unsigned byte"
-                                    field_units="one"/>
+                                    field_units="one" interpretation="This is a unique 
+                                    ID for each powerplant and is provided by 
+                                    4507 Report PowerPlant Capabilities message."/>
                                 <variable_length_string name="description"
                                     optional="false"
-                                    interpretation="A human-readable string that can be used to describe power plant status, including but not limited to error conditions.">
+                                    interpretation="A human-readable string that can 
+                                    be used to describe power plant status, including 
+                                    but not limited to error conditions.">
                                     <count_field min_count="0" max_count="255"
                                         field_type_unsigned="unsigned byte"/>
                                 </variable_length_string>
@@ -708,7 +741,9 @@
                                     <fixed_field name="percentOilPressure"
                                         optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one">
+                                        field_units="one" interpretation="Pressure 
+                                        greater than 100% represents an overpressure 
+                                        situation.">
                                         <scale_range real_lower_limit="0.0"
                                         real_upper_limit="200.0"
                                         integer_function="round"/>
@@ -739,10 +774,13 @@
                                     <fixed_field name="engineHours"
                                         optional="true"
                                         field_type="unsigned integer"
-                                        field_units="hour"/>
+                                        field_units="hour" interpretation="The total 
+                                        runtime of the engine in its lifetime."/>
                                     <fixed_field name="tachometer"
                                         optional="true"
-                                        interpretation="measured in rotations per minute"
+                                        interpretation="Rotations per minute.  
+                                        Units here are one since JSIDL does not 
+                                        support RPM natively"
                                         field_type="unsigned short integer"
                                         field_units="one"/>
                                     <fixed_field name="coolantLevel"
@@ -801,7 +839,8 @@
                                     <fixed_field name="percentOilPressure"
                                         optional="true"
                                         field_type="unsigned byte"
-                                        field_units="one">
+                                        field_units="one" interpretation="Pressure greater 
+                                        than 100% represents an overpressure situation.">
                                         <scale_range real_lower_limit="0.0"
                                         real_upper_limit="200.0"
                                         integer_function="round"/>
@@ -832,10 +871,13 @@
                                     <fixed_field name="engineHours"
                                         optional="true"
                                         field_type="unsigned integer"
-                                        field_units="hour"/>
+                                        field_units="hour" interpretation="The total 
+                                        runtime of the engine in its lifetime"/>
                                     <fixed_field name="tachometer"
                                         optional="true"
-                                        interpretation="measured in rotations per minute"
+                                        interpretation="Rotations per minute.  
+                                        Units here are one since JSIDL does 
+                                        not support RPM natively"
                                         field_type="unsigned short integer"
                                         field_units="one"/>
                                     <fixed_field name="coolantLevel"
@@ -898,7 +940,8 @@
                                         name="percentChargeRemaining"
                                         optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one">
+                                        field_units="one" 
+                                        interpretation="Percent of maximum.">
                                         <scale_range real_lower_limit="0"
                                         real_upper_limit="100"
                                         integer_function="round"/>
@@ -929,7 +972,8 @@
                                         </fixed_field>
                                         <fixed_field name="batteryHours"
                                         optional="true"
-                                        interpretation="total runtime of the battery in its lifetime"
+                                        interpretation="The total runtime of the 
+                                        battery in its lifetime"
                                         field_type="unsigned integer"
                                         field_units="hour"/>
                                     </record>
@@ -948,7 +992,8 @@
                                     <fixed_field name="percentFluidPressure"
                                         optional="true"
                                         field_type="unsigned short integer"
-                                        field_units="one">
+                                        field_units="one" interpretation="Pressure greater 
+                                        than 100% represents an overpressure situation.">
                                         <scale_range real_lower_limit="0"
                                         real_upper_limit="200"
                                         integer_function="round"/>
@@ -963,7 +1008,8 @@
                                     </fixed_field>
                                     <fixed_field name="totalHours"
                                         optional="true"
-                                        interpretation="total runtime of the hydraulic system in its lifetime"
+                                        interpretation="The total runtime of 
+                                        the hydraulic system in its lifetime"
                                         field_type="unsigned integer"
                                         field_units="hour"/>
                                 </record>
@@ -980,7 +1026,8 @@
                                     </fixed_field>
                                     <fixed_field name="totalHours"
                                         optional="true"
-                                        interpretation="total runtime of the fuel cell in its lifetime"
+                                        interpretation="The total runtime 
+                                        of the fuel cell in its lifetime"
                                         field_type="unsigned integer"
                                         field_units="hour"/>
                                 </record>

@@ -69,7 +69,8 @@
                                 field_type="unsigned byte" field_units="one"/>
                             <fixed_field name="Effort" optional="false"
                                 field_type="unsigned short integer"
-                                field_units="one">
+                                field_units="one" interpretation="As a percent of maximum.  
+                                Positive effort moves the stabilizer upward.">
                                 <scale_range real_lower_limit="-100.0"
                                     real_upper_limit="100.0"
                                     integer_function="round"/>
@@ -218,21 +219,24 @@
                                 <record name="points" optional="false">
                                     <fixed_field name="PointX" optional="false"
                                         field_type="unsigned short integer"
-                                        field_units="meter">
+                                        field_units="meter" interpretation="Measured 
+                                        from the vehicle coordinate frame">
                                         <scale_range real_lower_limit="-32.768"
                                         real_upper_limit="32.767"
                                         integer_function="round"/>
                                     </fixed_field>
                                     <fixed_field name="PointY" optional="false"
                                         field_type="unsigned short integer"
-                                        field_units="meter">
+                                        field_units="meter" interpretation="Measured 
+                                        from the vehicle coordinate frame">
                                         <scale_range real_lower_limit="-32.768"
                                             real_upper_limit="32.767"
                                             integer_function="round"/>
                                     </fixed_field>
                                     <fixed_field name="PointZ" optional="false"
                                         field_type="unsigned short integer"
-                                        field_units="meter">
+                                        field_units="meter" interpretation="Measured 
+                                        from the vehicle coordinate frame">
                                         <scale_range real_lower_limit="-32.768"
                                             real_upper_limit="32.767"
                                             integer_function="round"/>
@@ -264,7 +268,8 @@
                                 field_type="unsigned byte" field_units="one"/>
                             <fixed_field name="Effort" optional="false"
                                 field_type="unsigned short integer"
-                                field_units="one">
+                                field_units="one" interpretation="As a percent of maximum.  
+                                Positive effort moves the stabilizer upward.">
                                 <scale_range real_lower_limit="-100.0"
                                     real_upper_limit="100.0"
                                     integer_function="round"/>

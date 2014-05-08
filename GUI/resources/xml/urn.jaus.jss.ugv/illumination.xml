@@ -54,7 +54,11 @@
                 <body name="body">
                     <record name="illuminationRec" optional="false">
                         <bit_field name="illumination" optional="false"
-                            field_type_unsigned="unsigned integer">
+                            field_type_unsigned="unsigned integer"
+                            interpretation="When a bit is set to the 
+                            high (on, 1) value the service shall turn 
+                            the light ON. Variable-power illumination 
+                            settings may support up to four power levels.">
                             <sub_field name="VariableLight3">
                                 <bit_range from_index="16" to_index="19"/>
                                 <value_set offset_to_lower_limit="false">
@@ -196,7 +200,11 @@
                 <body name="body">
                     <record name="illuminationRec" optional="false">
                         <bit_field name="illumination" optional="false"
-                            field_type_unsigned="unsigned integer">
+                            field_type_unsigned="unsigned integer"
+                            interpretation="When a bit is set to the 
+                            high (on, 1) value the service shall turn 
+                            the light ON. Variable-power illumination 
+                            settings may support up to four power levels.">
                             <sub_field name="VariableLight3">
                                 <bit_range from_index="16" to_index="19"/>
                                 <value_set offset_to_lower_limit="false">
@@ -336,7 +344,10 @@
                 <body name="body">
                     <record name="illuminatorTypes" optional="false">
                         <bit_field name="types" optional="false"
-                            field_type_unsigned="unsigned integer">
+                            field_type_unsigned="unsigned integer"
+                            interpretation="For each illuminator supported 
+                            by the service, the corresponding bit shall be 
+                            set to the high (on, 1) value.">
                             <sub_field name="Headlights">
                                 <bit_range from_index="0" to_index="0"/>
                                 <value_set offset_to_lower_limit="false">

@@ -25,10 +25,11 @@
                 <body name="body">
                     <record name="parkingBrakeRec" optional="false">
                         <fixed_field name="parkingBrake" optional="false"
-                            field_type="unsigned byte" field_units="one">
+                            field_type="unsigned byte" field_units="one" 
+                            interpretation="Percentage of application.  Zero 
+                            means off, while 100% mean fully engaged.">
                             <scale_range real_lower_limit="0.0"
-                                real_upper_limit="100" integer_function="round"
-                            />
+                              real_upper_limit="100" integer_function="round"/>
                         </fixed_field>
                     </record>
                 </body>
@@ -65,16 +66,18 @@
                     <record name="parkingBrakeRec" optional="false">
                         <fixed_field name="commandedParkingBrake"
                             optional="false" field_type="unsigned byte"
-                            field_units="one">
+                            field_units="one" interpretation="Percentage of 
+                            application.  Zero means off, while 100% mean fully engaged.">
                             <scale_range real_lower_limit="0.0"
                                 real_upper_limit="100" integer_function="round"
                             />
                         </fixed_field>
                         <fixed_field name="actualParkingBrake" optional="false"
-                            field_type="unsigned byte" field_units="one">
+                            field_type="unsigned byte" field_units="one" 
+                            interpretation="Percentage of application.  Zero 
+                            means off, while 100% mean fully engaged.">
                             <scale_range real_lower_limit="0.0"
-                                real_upper_limit="100" integer_function="round"
-                            />
+                              real_upper_limit="100" integer_function="round"/>
                         </fixed_field>
                     </record>
                 </body>

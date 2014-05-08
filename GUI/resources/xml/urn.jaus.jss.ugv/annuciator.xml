@@ -26,7 +26,10 @@
                 <body name="body">
                     <record name="annunciatorRec" optional="false">
                         <bit_field name="annunciator" optional="false"
-                            field_type_unsigned="unsigned integer">
+                            field_type_unsigned="unsigned integer"
+                            interpretation="Each supported annunciator 
+                            is specified by a bitfield.  A value of zero 
+                            is off.  A value of 15 is maximum volume.">
                             <sub_field name="Horn">
                                 <bit_range from_index="0" to_index="3"/>
                                 <value_set offset_to_lower_limit="false">
@@ -130,7 +133,12 @@
                 <body name="body">
                     <record name="annunciatorRec" optional="false">
                         <bit_field name="annunciator" optional="false"
-                            field_type_unsigned="unsigned integer">
+                            field_type_unsigned="unsigned integer"
+                            interpretation="Each supported annunciator is 
+                            specified by a bitfield.  A value of zero is 
+                            off.  A value of 15 is maximum volume.  
+                            Unsupported annunciators will always be 
+                            reported as zero (off).">
                             <sub_field name="Horn">
                                 <bit_range from_index="0" to_index="3"/>
                                 <value_set offset_to_lower_limit="false">
@@ -204,7 +212,11 @@
                 <body name="body">
                     <record name="typesRec" optional="false">
                         <bit_field name="types" optional="false"
-                            field_type_unsigned="unsigned byte">
+                            field_type_unsigned="unsigned byte"
+                            interpretation="For each annunciator 
+                            supported by the service, the 
+                            corresponding bit shall be set to the 
+                            high (on, 1) value.">
                             <sub_field name="Horn">
                                 <bit_range from_index="0" to_index="0"/>
                                 <value_set offset_to_lower_limit="false">
