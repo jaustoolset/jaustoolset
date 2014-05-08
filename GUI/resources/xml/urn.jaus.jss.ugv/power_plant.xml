@@ -601,7 +601,7 @@
                                         </fixed_field>
                                         <fixed_field name="maxCharge"
                                         optional="true"
-                                        field_type="unsigned short integer"
+                                        field_type="unsigned integer"
                                         field_units="coulomb">
                                         <scale_range real_lower_limit="0.0"
                                         real_upper_limit="3600000.0"
@@ -625,23 +625,23 @@
                                         optional="true"
                                         field_type="unsigned short integer"
                                         field_units="liter">
-                                        <scale_range real_lower_limit="0"
-                                        real_upper_limit="256"
+                                        <scale_range real_lower_limit="0.0"
+                                        real_upper_limit="256.0"
                                         integer_function="round"/>
                                     </fixed_field>
                                     <fixed_field name="maxPressure"
                                         optional="true"
                                         field_type="unsigned short integer"
                                         field_units="bar">
-                                        <scale_range real_lower_limit="0"
-                                        real_upper_limit="512"
+                                        <scale_range real_lower_limit="0.0"
+                                        real_upper_limit="512.0"
                                         integer_function="round"/>
                                     </fixed_field>
                                     <fixed_field name="maxTemp" optional="true"
                                         field_type="unsigned short integer"
                                         field_units="degree Celsius">
-                                        <scale_range real_lower_limit="-75"
-                                        real_upper_limit="180"
+                                        <scale_range real_lower_limit="-75.0"
+                                        real_upper_limit="180.0"
                                         integer_function="round"/>
                                     </fixed_field>
                                 </record>
@@ -653,8 +653,8 @@
                                         optional="true"
                                         field_type="unsigned short integer"
                                         field_units="kilogram">
-                                        <scale_range real_lower_limit="0"
-                                        real_upper_limit="256"
+                                        <scale_range real_lower_limit="0.0"
+                                        real_upper_limit="256.0"
                                         integer_function="round"/>
                                     </fixed_field>
                                 </record>

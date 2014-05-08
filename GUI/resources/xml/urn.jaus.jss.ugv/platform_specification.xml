@@ -62,7 +62,7 @@
                                     field_type="unsigned short integer"
                                     field_units="meter">
                                     <scale_range real_lower_limit="0"
-                                        real_upper_limit="30"
+                                        real_upper_limit="10"
                                         integer_function="round"/>
                                 </fixed_field>
                             </record>
@@ -101,7 +101,7 @@
                                     field_type="unsigned short integer"
                                     field_units="meter">
                                     <scale_range real_lower_limit="0"
-                                        real_upper_limit="30"
+                                        real_upper_limit="10"
                                         integer_function="round"/>
                                 </fixed_field>
                             </record>

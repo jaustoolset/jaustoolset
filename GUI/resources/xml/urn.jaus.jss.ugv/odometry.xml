@@ -77,6 +77,15 @@
                 </header>
                 <body name="body">
                     <record name="odometryRec" optional="false">
+                        <fixed_field name="odom" optional="false"
+                            field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="1" enum_const="PLATFORM"/>
+                                <value_enum enum_index="2" enum_const="TRIP_A"/>
+                                <value_enum enum_index="3" enum_const="TRIP_B"/>
+                                <value_enum enum_index="4" enum_const="TRIP_C"/>
+                            </value_set>
+                        </fixed_field>
                         <fixed_field name="odometry" optional="false"
                             field_type="unsigned integer" field_units="meter"/>
                     </record>

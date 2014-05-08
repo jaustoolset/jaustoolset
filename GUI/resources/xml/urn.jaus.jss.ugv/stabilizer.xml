@@ -219,23 +219,23 @@
                                     <fixed_field name="PointX" optional="false"
                                         field_type="unsigned short integer"
                                         field_units="meter">
-                                        <scale_range real_lower_limit="-30.0"
-                                        real_upper_limit="30.0"
+                                        <scale_range real_lower_limit="-32.768"
+                                        real_upper_limit="32.767"
                                         integer_function="round"/>
                                     </fixed_field>
                                     <fixed_field name="PointY" optional="false"
                                         field_type="unsigned short integer"
                                         field_units="meter">
-                                        <scale_range real_lower_limit="-30.0"
-                                        real_upper_limit="30.0"
-                                        integer_function="round"/>
+                                        <scale_range real_lower_limit="-32.768"
+                                            real_upper_limit="32.767"
+                                            integer_function="round"/>
                                     </fixed_field>
                                     <fixed_field name="PointZ" optional="false"
                                         field_type="unsigned short integer"
                                         field_units="meter">
-                                        <scale_range real_lower_limit="-30.0"
-                                        real_upper_limit="30.0"
-                                        integer_function="round"/>
+                                        <scale_range real_lower_limit="-32.768"
+                                            real_upper_limit="32.767"
+                                            integer_function="round"/>
                                     </fixed_field>
                                 </record>
                             </list>
