@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schema/AS5684/jaus_service_interface_definition_language.rnc" type="application/relax-ng-compact-syntax"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="Keyboard" id="urn:jaus:jss:HMI:Keyboard" version="1.0">
+    <description>An operator interface that has a keyboard device attached may implement the Keyboard Service to return key strokes to the remote asset.
+        The remote asset may create an Event for the operator interface to send Report Keyboard Action messages.  It is highly recommended that this Event should be upon a change and not periodic frequency.</description>
+    <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="Events" id="urn:jaus:jss:core:Events" version="1.0"/>
+    </references>
+    <declared_type_set name="Types">
+        <declared_type_set_ref name="HMI" id="urn:jaus:jss:HMI:MessageSet" version="1.0"/>
+    </declared_type_set>
+    <message_set>
+        <input_set>
+            <declared_message_def name="QueryKeyboardAction" declared_type_ref="HMI.queryClass.QueryKeyboardAction"/>
+        </input_set>
+        <output_set>
+            <declared_message_def name="ReportKeyboardAction" declared_type_ref="HMI.informClass.ReportKeyboardAction"/>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <state_machine name="events.transport.ReceiveFSM" interpretation="extending ReceiveFSM of base service (transport)">
+            <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+                <state name="Ready" >
+                    
+                        <default_state>
+                            <transition name="events.transport.Receive">
+                                <parameter type="QueryKeyboardAction" value="msg" interpretation="query keyboard action message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="keyboardExists( msg )" interpretation="True if a keyboard exists on the client interface"/>
+                                <simple/>
+                                <action name="events.transport.Send" interpretation="send a report keyboard action message">
+                                    <argument value="'sendReportKeyboardAction'"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    
+                </state>
+            </state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

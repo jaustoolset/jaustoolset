@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="file:/C:/Documents%20and%20Settings/afrl/Desktop/sae%20work/as5684/schema/schema/schema_modules/jaus_service_interface_definition_language.rnc" type="compact"?>
+<declared_type_set name="BasicMissionSpoolerTypes" xmlns="urn:jaus:jsidl:1.0"
+  id="urn:jaus:jss:missionSpooler:MessageSet:BasicMissionSpoolerTypes"
+  version="1.0">
+  <!-- Unique ID -->
+  <fixed_field name="UID" field_type="unsigned short integer" field_units="one"
+    optional="false"/>
+</declared_type_set>

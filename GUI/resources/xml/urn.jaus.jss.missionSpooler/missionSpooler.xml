@@ -1,0 +1,1674 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schema/AS5684/jaus_service_interface_definition_language.rnc" type="application/relax-ng-compact-syntax"?>
+<service_def name="MissionSpooler"
+  id="urn:jaus:jss:missionSpooler:MissionSpooler" version="1.0"
+  xmlns="urn:jaus:jsidl:1.0">
+  <description xml:space="preserve">
+  	The Mission Spooler Service is responsible for storing and spooling missions.  A mission is a set of SAE JAUS messages (e.g. Set Global Waypoint [AS6009]) to be performed by one or more Services of one or more unmanned systems.  The mission structure is an N-ary tree, which allows for parallel, sequential, iterative, and coordinated missions.  Each mission has a unique ID allowing for multiple missions.  A mission is made up of tasks, which contain JAUS messages, and/or children tasks. 
+   A JAUS message within a mission plan can be blocking (synchronous) or non-blocking (asynchoronous).  The Mission Spooler shall not spool messages beyond a blocking SAE JAUS message until the unmanned system has completed the action associated with the blocking SAE JAUS message.  Payload commands are a good example of where blocking messages may be used.  Some payloads can only perform their functions when the unmanned system is stationary (e.g. soil sampling, video image) while other payloads can perform their functions (e.g. start mine flail) while in motion.  The blocking flag ensures that no other messages are spooled until the blocking message is complete.  
+   Since a mission spooler may be a client of itself, one mission spooler can delegate a part of a mission to another mission spooler.
+  </description>
+  <assumptions> Messages may be delayed, lost or reordered. All the messages
+    that make up the mission are command messages belonging to services that
+    inherit from the Events service with service ID “urn:jaus:jss:core:Events”
+    and version “1.1”, or any other backwards compatible version. </assumptions>
+  <references>
+    <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl"
+      version="1.1"/>
+    <client_of name="missionSpooler"
+      id="urn:jaus:jss:missionSpooler:MissionSpooler" version="1.0"/>
+  </references>
+  <declared_type_set name="types">
+    <declared_type_set_ref name="messageSet"
+      id="urn:jaus:jss:missionSpooler:MessageSet" version="1.0"/>
+  </declared_type_set>
+  <message_set>
+    <input_set>
+      <declared_message_def name="SpoolMission"
+        declared_type_ref="messageSet.commandClass.SpoolMission"/>
+      <declared_message_def name="RunMission"
+        declared_type_ref="messageSet.commandClass.RunMission"/>
+      <declared_message_def name="AbortMission"
+        declared_type_ref="messageSet.commandClass.AbortMission"/>
+      <declared_message_def name="PauseMission"
+        declared_type_ref="messageSet.commandClass.PauseMission"/>
+      <declared_message_def name="ResumeMission"
+        declared_type_ref="messageSet.commandClass.ResumeMission"/>
+      <declared_message_def name="RemoveMessages"
+        declared_type_ref="messageSet.commandClass.RemoveMessages"/>
+      <declared_message_def name="InsertMessages"
+        declared_type_ref="messageSet.commandClass.InsertMessages"/>
+      <declared_message_def name="RemoveMissionTask"
+        declared_type_ref="messageSet.commandClass.RemoveMissionTask"/>
+      <declared_message_def name="InsertMissionTask"
+        declared_type_ref="messageSet.commandClass.InsertMissionTask"/>
+      <declared_message_def name="QuerySpoolingPreferences"
+        declared_type_ref="messageSet.queryClass.QuerySpoolingPreferences"/>
+      <declared_message_def name="QueryMissionStatus"
+        declared_type_ref="messageSet.queryClass.QueryMissionStatus"/>
+      <declared_message_def name="QueryStoredMissions"
+        declared_type_ref="messageSet.queryClass.QueryStoredMissions"/>
+      <declared_message_def name="QueryMissionPlan"
+        declared_type_ref="messageSet.queryClass.QueryMissionPlan"/>
+    </input_set>
+    <output_set>
+      <declared_message_def name="ReportSpoolingPreferences"
+        declared_type_ref="messageSet.informClass.ReportSpoolingPreferences"/>
+      <declared_message_def name="ReportMissionStatus"
+        declared_type_ref="messageSet.informClass.ReportMissionStatus"/>
+      <declared_message_def name="ReportStoredMissions"
+        declared_type_ref="messageSet.informClass.ReportStoredMissions"/>
+      <declared_message_def name="ReportMissionPlan"
+        declared_type_ref="messageSet.informClass.ReportMissionPlan"/>
+    </output_set>
+  </message_set>
+  <internal_events_set>
+    <event_def name="NextMessage">
+      <description>Invoked by the runIteration transition action and occurs when
+        the next message in the mission is ready for processing. If the end of
+        the mission has been reached, this internal event will contain no data. </description>
+      <header name="Header"/>
+      <body name="Body"/>
+      <footer name="Footer"/>
+    </event_def>
+    <event_def name="MissionCompleted">
+      <description>Invoked by the updateMission transition action and occurs
+        when either a ReportMissionStatus message or a events.CommandEvent
+        message has been received for every single message in the mission
+        indicating that the message has been executed to (successful or
+        unsuccessful) completion. </description>
+      <header name="Header"/>
+      <body name="Body"/>
+      <footer name="Footer"/>
+    </event_def>
+    <event_def name="Timeout">
+      <description>Occurs after the SetTimer action is called</description>
+      <header name="Header"/>
+      <body name="Body"/>
+      <footer name="Footer"/>
+    </event_def>
+  </internal_events_set>
+  <protocol_behavior is_stateless="false">
+    <start state_machine_name="accessControl.events.transport.ReceiveFSM"
+      state_name="Receiving.Ready.NotControlled.Available"/>
+    <state_machine name="accessControl.events.transport.ReceiveFSM"
+      interpretation="extending ReceiveFSM of base service (transport)">
+      <state name="Receiving" initial_state="Ready" interpretation="redefine
+        state in order to extend">
+        <state name="Ready" initial_state="NotControlled"
+          interpretation="redefine state in order to extend">
+          <state name="NotControlled" initial_state="Available"
+            interpretation="redefine state in order to extend">
+            <state name="Available"
+              interpretation="redefine state in order to extend">
+              <!-- Label B -->
+              <transition name="accessControl.events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request control message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="accessControl.isDefaultAuthorityGreater(msg)"
+                  interpretation="True if the default authority code of this
+                  service is greater than the authority code of the client
+                  service that triggered the corresponding transition"/>
+                <simple/>
+                <action name="accessControl.events.transport.Send"
+                  interpretation="Send a confirm control message with the
+                  specified response code to requesting client">
+                  <argument value=" 'accessControl.ConfirmControl' "/>
+                  <argument value=" 'INSUFFICIENT_AUTHORITY' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <!-- Label D1 -->
+              <transition name="accessControl.events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request control message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="! accessControl.isDefaultAuthorityGreater(msg)
+                  &amp;&amp; ! isMissionSpooled()" interpretation="True
+                  if the default authority code of this service is greater than
+                  the authority code of the client service that triggered the
+                  corresponding transition AND True if mission is already
+                  spooled"/>
+                <simple>
+                  <end_state state="Receiving.Ready.Controlled.Available.Init"/>
+                </simple>
+                <action name="accessControl.StoreAddress" interpretation="Store
+                  the address of the client that sent the message that caused
+                  this action to be executed">
+                  <argument value="transportData"/>
+                </action>
+                <action name="accessControl.SetAuthority" interpretation="Set
+                  the current authority value of this service to the specified
+                  authority">
+                  <argument value="msg"/>
+                </action>
+                <action name="accessControl.ResetTimer" interpretation="Reset
+                  the timer"/>
+                <action name="accessControl.events.transport.Send"
+                  interpretation="Send a confirm control message with the
+                  specified response code to requesting client">
+                  <argument value=" 'accessControl.ConfirmControl' "/>
+                  <argument value=" 'CONTROL_ACCEPTED' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <!-- Label D2 -->
+              <transition name="accessControl.events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request control message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="! accessControl.isDefaultAuthorityGreater(msg)
+                  &amp;&amp; isMissionSpooled()" interpretation="True if
+                  the default authority code of this service is greater than the
+                  authority code of the client service that triggered the
+                  corresponding transition AND True if mission is already
+                  spooled"/>
+                <simple>
+                  <end_state
+                    state="Receiving.Ready.Controlled.Available.Pending"/>
+                </simple>
+                <action name="accessControl.StoreAddress" interpretation="Store
+                  the address of the client that sent the message that caused
+                  this action to be executed">
+                  <argument value="transportData"/>
+                </action>
+                <action name="accessControl.SetAuthority" interpretation="Set
+                  the current authority value of this service to the specified
+                  authority">
+                  <argument value="msg"/>
+                </action>
+                <action name="accessControl.ResetTimer" interpretation="Reset
+                  the timer"/>
+                <action name="accessControl.events.transport.Send"
+                  interpretation="Send a confirm control message with the
+                  specified response code to requesting client">
+                  <argument value=" 'accessControl.ConfirmControl' "/>
+                  <argument value=" 'CONTROL_ACCEPTED' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <default_state>
+                <!-- Label P -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QuerySpoolingPreferences" value="msg"
+                    interpretation="enveloped query spooling preferences
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report spooling preferences message">
+                    <argument value=" 'ReportSpoolingPreferences' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryMissionStatus" value="msg"
+                    interpretation="enveloped query mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report mission status message">
+                    <argument value=" 'ReportMissionStatus' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryStoredMissions" value="msg"
+                    interpretation="enveloped query stored missions message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report stored missions message">
+                    <argument value=" 'ReportStoredMissions' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryMissionPlan" value="msg"
+                    interpretation="enveloped query mission plan message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report stored missions message">
+                    <argument value=" 'ReportMissionPlan' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+            </state>
+          </state>
+          <state name="Controlled" initial_state="Available"
+            interpretation="redefine state in order to extend">
+            <state name="Available" initial_state="Init"
+              interpretation="redefine state in order to extend">
+              <!-- Label H -->
+              <transition name="accessControl.events.transport.Receive">
+                <parameter type="ReleaseControl" value="msg"
+                  interpretation="enveloped release control message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="accessControl.isControllingClient(msg)
+                  &amp;&amp; ! isMissionDelegated()"
+                  interpretation="True if the message that triggered the
+                  transition is received from the client that is in control of
+                  this service AND True if a part of this mission has been
+                  delegated to other mission spoolers"/>
+                <simple>
+                  <end_state state="Receiving.Ready.NotControlled.Available"/>
+                </simple>
+                <action name="pauseCurrentMissionExecution"
+                  interpretation="Pause the execution of the message that is
+                  currently being executed by the mission spooler with the
+                  intent of continuing its execution when the mission execution
+                  is resumed"/>
+                <action name="events.transport.Send" interpretation="Send a
+                  Reject Control message to the client requesting release">
+                  <argument value=" 'accessControl.RejectControl' "/>
+                  <argument value=" 'CONTROL_RELEASED' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <transition name="accessControl.events.transport.Receive">
+                <parameter type="RequestControl" value="msg"
+                  interpretation="enveloped request control message"/>
+                <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                  interpretation="transport data"/>
+                <guard condition="accessControl.isDefaultAuthorityGreater(msg)
+                  &amp;&amp; accessControl.isControllingClient(msg)"
+                  interpretation="True if the default authority code of this
+                  service is greater than the authority code of the client
+                  service that triggered the corresponding transition AND True
+                  if the message that triggered the transition is received from
+                  the client that is in control of this service"/>
+                <simple>
+                  <end_state state="Receiving.Ready.NotControlled.Available"/>
+                </simple>
+                <action name="events.transport.Send" interpretation="Send a
+                  Reject Control message to the controlling Client requesting
+                  release">
+                  <argument value=" 'accessControl.RejectControlToController' "/>
+                  <argument value=" 'CONTROL_RELEASED' "/>
+                  <argument value="transportData"/>
+                </action>
+              </transition>
+              <state name="Init">
+                <!-- Label A -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="SpoolMission" value="msg"
+                    interpretation="enveloped spool mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service"/>
+                  <simple>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Pending"/>
+                  </simple>
+                  <action name="storeMission" interpretation="Store the mission">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="storeAddress" interpretation="Store the address
+                    of the parent mission spooler">
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </state>
+              <state name="Pending">
+                <!-- Label E -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RunMission" value="msg"
+                    interpretation="enveloped run mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service"/>
+                  <simple>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Running"/>
+                  </simple>
+                  <action name="runIteration" interpretation="Invoke the
+                    internal event called NextMessage from the location
+                    specified by the RunMission message">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ResumeMission" value="msg"
+                    interpretation="enveloped resume mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service"/>
+                  <simple>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Running"/>
+                  </simple>
+                  <action name="runIteration" interpretation="Invoke the
+                    internal event called NextMessage from the point where the
+                    mission was paused">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <!-- Label Q -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="AbortMission" value="msg"
+                    interpretation="enveloped abort mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; ! isMissionDelegated()"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service AND True is a part of this mission has been
+                    delegated to other mission spoolers"/>
+                  <simple>
+                    <end_state state="Receiving.Ready.Controlled.Available.Init"
+                    />
+                  </simple>
+                  <action name="clearMission" interpretation="Clear the mission">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value=" 'ABORTED' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="MissionCompleted">
+                  <simple>
+                    <end_state state="Receiving.Ready.Controlled.Available.Init"
+                    />
+                  </simple>
+                  <action name="clearMission" interpretation="Clear the mission"/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                  </action>
+                </transition>
+              </state>
+              <state name="Paused">
+                <!-- Label E -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RunMission" value="msg"
+                    interpretation="enveloped run mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service"/>
+                  <pop/>
+                  <action name="runIteratioin" interpretation="Invoke the
+                    internal event called NextMessage from the location
+                    specified by the RunMission message">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ResumeMission" value="msg"
+                    interpretation="enveloped resume mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service"/>
+                  <pop/>
+                  <action name="runIteratioin" interpretation="Invoke the
+                    internal event called NextMessage from the point where the
+                    mission was paused">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <!-- Label O -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RemoveMessages" value="msg"
+                    interpretation="enveloped remove messages message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="InsertMessages" value="msg"
+                    interpretation="enveloped replace messages message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RemoveMissionTask" value="msg"
+                    interpretation="enveloped remove mission task message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="InsertMissionTask" value="msg"
+                    interpretation="enveloped insert mission task message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ReportMissionStatus" value="msg"
+                    interpretation="enveloped report mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="CommandEvent"
+                    value="msg" interpretation="enveloped command event message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <!-- Label R -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="AbortMission" value="msg"
+                    interpretation="enveloped abort mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isMissionDelegated()"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service AND True is a part of this mission has been
+                    delegated to other mission spoolers"/>
+                  <simple>
+                    <end_state
+                      state="Receiving.Ready.Controlled.NotAvailable.Aborting"/>
+                  </simple>
+                  <action name="sendAbortMission" interpretation="Send the
+                    AbortMission message to all other mission spoolers to which
+                    a part of the mission was spooled. This action will require
+                    this service to acquire control of the other mission
+                    spoolers.">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <!-- Label Q -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="AbortMission" value="msg"
+                    interpretation="enveloped abort mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; ! isMissionDelegated()"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service AND True is a part of this mission has been
+                    delegated to other mission spoolers"/>
+                  <simple>
+                    <end_state state="Receiving.Ready.Controlled.Available.Init"
+                    />
+                  </simple>
+                  <action name="clearMission" interpretation="Clear the mission">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value=" 'ABORTED' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="MissionCompleted">
+                  <simple>
+                    <end_state state="Receiving.Ready.Controlled.Available.Init"
+                    />
+                  </simple>
+                  <action name="clearMission" interpretation="Clear the mission"/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                  </action>
+                </transition>
+              </state>
+              <state name="Running">
+                <!-- Label I -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="PauseMission" value="msg"
+                    interpretation="enveloped pause mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isMissionDelegated()"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service AND True is a part of this mission has been
+                    delegated to other mission spoolers"/>
+                  <push>
+                    <end_state
+                      state="Receiving.Ready.Controlled.NotAvailable.Pausing"/>
+                  </push>
+                  <action name="pauseCurrentMessageExecution"
+                    interpretation="Pause the execution of the message that is
+                    currently being executed by the mission spooler with the
+                    intent of continueing its execution when the mission
+                    execution is resumed"/>
+                  <action name="sendPauseMission" interpretation="Send the
+                    PauseMission message to all other mission spoolers to which
+                    a part of the mission was spooled. This action will require
+                    this service to acquire control of the other mission
+                    spoolers"> </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RequestControl" value="msg"
+                    interpretation="enveloped request control message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="! accessControl.isControllingClient(msg)
+                    &amp;&amp; isMissionDelegated() &amp;&amp;
+                    accessControl.isCurrentAuthorityLess(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True is a part of this mission has been delegated to other
+                    mission spoolers AND                       True if the
+                    current authority value of this service is less than the
+                    authority code of the client service that triggered the
+                    corresponding transition"/>
+                  <push>
+                    <end_state
+                      state="Receiving.Ready.Controlled.NotAvailable.Pausing"/>
+                  </push>
+                  <action name="pauseCurrentMessageExecution"
+                    interpretation="Pause the execution of the message that is
+                    currently being executed by the mission spooler with the
+                    intent of continueing its execution when the mission
+                    execution is resumed"/>
+                  <action name="setRequestControlPending" interpretation="Store
+                    the RequestControl until the service has finished
+                    transitioning to the Paused state">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="sendPauseMission" interpretation="Send the
+                    PauseMission message to all other mission spoolers to which
+                    a part of the mission was spooled. This action will require
+                    this service to acquire control of the other mission
+                    spoolers"> </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ReleaseControl" value="msg"
+                    interpretation="enveloped release control message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isMissionDelegated()"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service AND                       True is a part of
+                    this mission has been delegated to other mission spoolers"/>
+                  <push>
+                    <end_state
+                      state="Receiving.Ready.Controlled.NotAvailable.Pausing"/>
+                  </push>
+                  <action name="pauseCurrentMessageExecution"
+                    interpretation="Pause the execution of the message that is
+                    currently being executed by the mission spooler with the
+                    intent of continueing its execution when the mission
+                    execution is resumed"/>
+                  <action name="setReleaseControlPending" interpretation="Store
+                    the ReleaseControl until the service has finished
+                    transitioning to the Paused state">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="sendPauseMission" interpretation="Send the
+                    PauseMission message to all other mission spoolers to which
+                    a part of the mission was spooled. This action will require
+                    this service to acquire control of the other mission
+                    spoolers"> </action>
+                </transition>
+                <!-- Label J -->
+                <transition name="NextMessage">
+                  <guard condition="! isEndOfMission() &amp;&amp; !
+                    isBlocking() &amp;&amp; ! isSpoolerPresent()"
+                    interpretation="True if the iterator has reached the end of
+                    the mission AND True if the next message is a blocking
+                    message AND                       True if the destination
+                    endpoint of the next message in the mission tree is a remote
+                    endpoint and a spooler is present at this destination
+                    subsystem, node or component"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Add the encapsulated command message to the
+                    input message queue of this service so that it can be
+                    received and processed by the extensions of this service
+                    (derived services)">
+                    <argument value=" 'accessControl.events.CreateCommandEvent'
+                      "/>
+                  </action>
+                  <action name="runIteration" interpretation="Invoke the
+                    NextMessage internal event on the next message to be
+                    executed in the mission">
+                    <argument value=" 'NextMessage' "/>
+                  </action>
+                </transition>
+                <transition name="NextMessage">
+                  <guard condition="! isEndOfMission() &amp;&amp; !
+                    isBlocking() &amp;&amp; isSpoolerPresent()"
+                    interpretation="True if the iterator has reached the end of
+                    the mission AND True if the next message is a blocking
+                    message AND                       True if the destination
+                    endpoint of the next message in the mission tree is a remote
+                    endpoint and a spooler is present at this destination
+                    subsystem, node or component"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a SpoolMission message with as much of
+                    the remaining mission that can be delegated to the Mission
+                    spooler that is present on the next message’s destination
+                    subsystem, node or component. This action will require this
+                    service to acquire control of the other mission spoolers">
+                    <argument value=" 'SpoolMission' "/>
+                  </action>
+                  <action name="runIteration" interpretation="Invoke the
+                    NextMessage internal event on the next message to be
+                    executed in the mission">
+                    <argument value=" 'NextMessage' "/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="CommandEvent"
+                    value="msg" interpretation="enveloped command event message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="isValidEvent(msg)" interpretation="True if
+                    the CommandEvent message is reporting the status of an event
+                    that was created by this mission spooler"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ReportMissionStatus" value="msg"
+                    interpretation="enveloped report mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RemoveMessages" value="msg"
+                    interpretation="enveloped remove messages message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isUpdateValid(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True if the part of the mission that is being updated is not
+                    being executed currently"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="InsertMessages" value="msg"
+                    interpretation="enveloped replace messages message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isUpdateValid(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True if the part of the mission that is being updated is not
+                    being executed currently"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RemoveMissionTask" value="msg"
+                    interpretation="enveloped remove mission task message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isUpdateValid(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True if the part of the mission that is being updated is not
+                    being executed currently"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="InsertMissionTask" value="msg"
+                    interpretation="enveloped insert mission task message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isUpdateValid(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True if the part of the mission that is being updated is not
+                    being executed currently"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <!-- Label K -->
+                <transition name="NextMessage">
+                  <guard condition="! isEndOfMission() &amp;&amp;
+                    isBlocking() &amp;&amp; ! isSpoolerPresent()"
+                    interpretation="True if the iterator has reached the end of
+                    the mission AND True if the next message is a blocking
+                    message AND                       True if the destination
+                    endpoint of the next message in the mission tree is a remote
+                    endpoint and a spooler is present at this destination
+                    subsystem, node or component"/>
+                  <simple>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Blocked"/>
+                  </simple>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Update the mission with the information
+                    specified by the received message and invoke the
+                    missionCompleted internal event if it is found that the
+                    entire mission has been executed to completion">
+                    <argument value=" 'accessControl.events.CreateCommandEvent'
+                      "/>
+                  </action>
+                </transition>
+                <transition name="NextMessage">
+                  <guard condition="! isEndOfMission() &amp;&amp;
+                    isBlocking() &amp;&amp; isSpoolerPresent()"
+                    interpretation="True if the iterator has reached the end of
+                    the mission AND True if the next message is a blocking
+                    message AND                       True if the destination
+                    endpoint of the next message in the mission tree is a remote
+                    endpoint and a spooler is present at this destination
+                    subsystem, node or component"/>
+                  <simple>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Blocked"/>
+                  </simple>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a SpoolMission message with as much of
+                    the remaining mission that can be delegated to the Mission
+                    spooler that is present on the next message’s destination
+                    subsystem, node or component. This action will require this
+                    service to acquire control of the other mission spoolers">
+                    <argument value=" 'SpoolMission' "/>
+                  </action>
+                </transition>
+                <!-- Label V -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="PauseMission" value="msg"
+                    interpretation="enveloped pause mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; ! isMissionDelegated()"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service AND                       True is a part of
+                    this mission has been delegated to other mission spoolers"/>
+                  <push>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Paused"/>
+                  </push>
+                  <action name="pauseCurrentMessageExecution"
+                    interpretation="Pause the execution of the message that is
+                    currently being executed by the mission spooler with the
+                    intent of continueing its execution when the mission
+                    execution is resumed">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value=" 'PAUSED' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RequestControl" value="msg"
+                    interpretation="enveloped request control message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="! accessControl.isControllingClient(msg)
+                    &amp;&amp; ! isMissionDelegated() &amp;&amp;
+                    accessControl.isCurrentAuthorityLess(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True is a part of this mission has been delegated to other
+                    mission spoolers AND                       True if the
+                    current authority value of this service is less than the
+                    authority code of the client service that triggered the
+                    corresponding transition"/>
+                  <push>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Paused"/>
+                  </push>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a RejectControlToController message to
+                    parent client">
+                    <argument value=" 'accessControl.RejectControlToController'
+                      "/>
+                    <argument value=" 'CONTROL_RELEASED' "/>
+                  </action>
+                  <action name="accessControl.storeAddress"
+                    interpretation="Store the address of the parent client"/>
+                  <action name="accessControl.setAuthority" interpretation="Set
+                    Authority"/>
+                  <action name="accessControl.resetTimer" interpretation="Reset
+                    Timer"/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ConfirmControl message to parent
+                    client">
+                    <argument value=" 'accessControl.ConfirmControl' "/>
+                    <argument value=" 'CONTROL_ACCEPTED' "/>
+                  </action>
+                </transition>
+                <!-- Label X -->
+                <transition name="MissionCompleted">
+                  <simple>
+                    <end_state state="Receiving.Ready.Controlled.Available.Init"
+                    />
+                  </simple>
+                  <action name="clearMission" interpretation="Clear the mission"/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                  </action>
+                </transition>
+              </state>
+              <state name="Blocked">
+                <!-- Label I -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="PauseMission" value="msg"
+                    interpretation="enveloped pause mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isMissionDelegated()"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service AND                       True is a part of
+                    this mission has been delegated to other mission spoolers"/>
+                  <push>
+                    <end_state
+                      state="Receiving.Ready.Controlled.NotAvailable.Pausing"/>
+                  </push>
+                  <action name="pauseCurrentMessageExecution"
+                    interpretation="Pause the execution of the message that is
+                    currently being executed by the mission spooler with the
+                    intent of continueing its execution when the mission
+                    execution is resumed">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="sendPauseMission" interpretation="Send the
+                    PauseMission message to all other mission spoolers to which
+                    a part of the mission was spooled. This action will require
+                    this service to acquire control of the other mission
+                    spoolers">
+                    <argument value=" 'PauseMission' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RequestControl" value="msg"
+                    interpretation="enveloped request control message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="! accessControl.isControllingClient(msg)
+                    &amp;&amp; isMissionDelegated() &amp;&amp;
+                    accessControl.isCurrentAuthorityLess(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True is a part of this mission has been delegated to other
+                    mission spoolers AND                       True if the
+                    current authority value of this service is less than the
+                    authority code of the client service that triggered the
+                    corresponding transition"/>
+                  <push>
+                    <end_state
+                      state="Receiving.Ready.Controlled.NotAvailable.Pausing"/>
+                  </push>
+                  <action name="setRequestControlPending" interpretation="Store
+                    the RequestControl until the service has finished
+                    transitioning to the Paused state">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <!-- Label M -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="CommandEvent"
+                    value="msg" interpretation="enveloped command event message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="! isBlockingEvent(msg)" interpretation="True
+                    if the CommandEvent message is reporting the status of the
+                    event on which the mission spooler is currently blocked"/>
+                  <simple/>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ReportMissionStatus" value="msg"
+                    interpretation="enveloped report mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="! isBlockingMissionOrTask()"
+                    interpretation="True if the ReportMissionStatus message is
+                    reporting the status of the mission or task on which the
+                    mission spooler is currently blocked"/>
+                  <simple/>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RemoveMessages" value="msg"
+                    interpretation="enveloped remove messages message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isUpdateValid(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True if the part of the mission that is being updated is not
+                    being executed currently"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="InsertMessages" value="msg"
+                    interpretation="enveloped replace messages message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isUpdateValid(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True if the part of the mission that is being updated is not
+                    being executed currently"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RemoveMissionTask" value="msg"
+                    interpretation="enveloped remove mission task message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isUpdateValid(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True if the part of the mission that is being updated is not
+                    being executed currently"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="InsertMissionTask" value="msg"
+                    interpretation="enveloped insert mission task message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isUpdateValid(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True if the part of the mission that is being updated is not
+                    being executed currently"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <!-- Label N -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="CommandEvent"
+                    value="msg" interpretation="enveloped command event message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="isBlockingEvent(msg)" interpretation="True
+                    if the CommandEvent message is reporting the status of the
+                    event on which the mission spooler is currently blocked"/>
+                  <simple>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Running"/>
+                  </simple>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value="transportData"/>
+                  </action>
+                  <action name="runIteration" interpretation="Invoke the
+                    NextMessage internal event on the next message to be
+                    executed in the mission">
+                    <argument value=" 'NextMessage' "/>
+                  </action>
+                </transition>
+                <!-- Label V -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="PauseMission" value="msg"
+                    interpretation="enveloped pause mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; ! isMissionDelegated()"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service AND                       True is a part of
+                    this mission has been delegated to other mission spoolers"/>
+                  <push>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Paused"/>
+                  </push>
+                  <action name="pauseCurrentMessageExecution"
+                    interpretation="Pause the execution of the message that is
+                    currently being executed by the mission spooler with the
+                    intent of continueing its execution when the mission
+                    execution is resumed">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value=" 'PAUSED' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="RequestControl" value="msg"
+                    interpretation="enveloped request control message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="! accessControl.isControllingClient(msg)
+                    &amp;&amp; ! isMissionDelegated() &amp;&amp;
+                    accessControl.isCurrentAuthorityLess(msg)" interpretation="True
+                    if the message that triggered the transition is received
+                    from the client that is in control of this service AND
+                    True is a part of this mission has been delegated to other
+                    mission spoolers AND                       True if the
+                    current authority value of this service is less than the
+                    authority code of the client service that triggered the
+                    corresponding transition"/>
+                  <push>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Paused"/>
+                  </push>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a RejectControlToController message to
+                    parent client">
+                    <argument value=" 'accessControl.RejectControlToController'
+                      "/>
+                    <argument value=" 'CONTROL_RELEASED' "/>
+                  </action>
+                  <action name="accessControl.storeAddress"
+                    interpretation="Store the address of the parent client"/>
+                  <action name="accessControl.setAuthority" interpretation="Set
+                    Authority"/>
+                  <action name="accessControl.resetTimer" interpretation="Reset
+                    Timer"/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ConfirmControl message to parent
+                    client">
+                    <argument value=" 'accessControl.ConfirmControl' "/>
+                    <argument value=" 'CONTROL_ACCEPTED' "/>
+                  </action>
+                </transition>
+              </state>
+              <default_state>
+                <!-- Label P -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QuerySpoolingPreferences" value="msg"
+                    interpretation="enveloped query spooling preferences
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report spooling preferences message">
+                    <argument value=" 'ReportSpoolingPreferences' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryMissionStatus" value="msg"
+                    interpretation="enveloped query mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report mission status message">
+                    <argument value=" 'ReportMissionStatus' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryStoredMissions" value="msg"
+                    interpretation="enveloped query stored missions message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report stored missions message">
+                    <argument value=" 'ReportStoredMissions' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryMissionPlan" value="msg"
+                    interpretation="enveloped query mission plan message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report stored missions message">
+                    <argument value=" 'ReportMissionPlan' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+            </state>
+            <state name="NotAvailable" initial_state="Pausing"
+              interpretation="redefine state in order to extend">
+              <state name="Aborting">
+                <!-- Label Y -->
+                <entry>
+                  <action name="SetTimer" interpretation=""/>
+                </entry>
+                <!-- Label C -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ReportMissionStatus" value="msg"
+                    interpretation="enveloped report mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="isAbortComplete()" interpretation="True if
+                    all other mission spoolers to which a part of the mission
+                    has been spooled have reported back confirming that they
+                    have aborted the mission"/>
+                  <simple>
+                    <end_state state="Receiving.Ready.Controlled.Available.Init"
+                    />
+                  </simple>
+                  <action name="clearMission" interpretation="Clear the mission"/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value=" 'ABORTED' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <!-- Label T -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ReportMissionStatus" value="msg"
+                    interpretation="enveloped report mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="! isAbortComplete()" interpretation="True if
+                    all other mission spoolers to which a part of the mission
+                    has been spooled have reported back confirming that they
+                    have aborted the mission"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="Timeout">
+                  <guard condition="! isAbortComplete()" interpretation="True if
+                    all other mission spoolers to which a part of the mission
+                    has been spooled have reported back confirming that they
+                    have aborted the mission"/>
+                  <simple/>
+                  <action name="sendAbortMission" interpretation="Send the
+                    AbortMission message to all other mission spoolers to which
+                    a part of the mission was spooled. This action will require
+                    this service to acquire control of the other mission
+                    spoolers.">
+                  </action>
+                </transition>
+              </state>
+              <state name="Pausing">
+                <!-- Label Y -->
+                <entry>
+                  <action name="SetTimer" interpretation=""/>
+                </entry>
+                <!-- Label U -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ReportMissionStatus" value="msg"
+                    interpretation="enveloped report mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="! isPauseComplete()" interpretation="True if
+                    all other mission spoolers to which a part of the mission
+                    has been spooled have reported back confirming that they
+                    have paused the mission"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="CommandEvent"
+                    value="msg" interpretation="enveloped command event message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="updateMission" interpretation="Update the
+                    mission with the information specified by the received
+                    message and invoke the missionCompleted internal event if it
+                    is found that the entire mission has been executed to
+                    completion">
+                    <argument value="msg"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="Timeout">
+                  <guard condition="! isPauseComplete()" interpretation="True if
+                    all other mission spoolers to which a part of the mission
+                    has been spooled have reported back confirming that they
+                    have paused the mission"/>
+                  <simple/>
+                  <action name="sendPauseMission" interpretation="Send the
+                    PauseMission message to all other mission spoolers to which
+                    a part of the mission was spooled. This action will require
+                    this service to acquire control of the other mission
+                    spoolers.">
+                  </action>
+                </transition>
+                <transition name="Timeout">
+                  <guard condition="isPauseComplete()" interpretation="True if
+                    all other mission spoolers to which a part of the mission
+                    has been spooled have reported back confirming that they
+                    have paused the mission"/>
+                  <pop/>
+                </transition>
+                <!-- Label S -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ReportMissionStatus" value="msg"
+                    interpretation="enveloped report mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="isPauseComplete() &amp;&amp;
+                    isRequestControlPending()" interpretation="True if all other
+                    mission spoolers to which a part of the mission has been
+                    spooled have reported back confirming that they have paused
+                    the mission, and control has been requested by a higher
+                    level authority"/>
+                  <simple>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Paused"/>
+                  </simple>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value=" 'PAUSED' "/>
+                    <argument value="transportData"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a RejectControlToController message to
+                    parent client">
+                    <argument value=" 'accessControl.RejectControlToController'
+                      "/>
+                    <argument value=" 'CONTROL_RELEASED' "/>
+                  </action>
+                  <action name="accessControl.storeAddress"
+                    interpretation="Store the address of the parent client"/>
+                  <action name="accessControl.setAuthority" interpretation="Set
+                    Authority"/>
+                  <action name="accessControl.resetTimer" interpretation="Reset
+                    Timer"/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ConfirmControl message to parent
+                    client">
+                    <argument value=" 'accessControl.ConfirmControl' "/>
+                    <argument value=" 'CONTROL_ACCEPTED' "/>
+                  </action>
+                  <action name="releaseRequestControlPending"
+                    interpretation="Clear the RequestControl request that was
+                    stored as a result of the action setRequestControlPending"/>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ReportMissionStatus" value="msg"
+                    interpretation="enveloped report mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="isPauseComplete()" interpretation="True if
+                    all other mission spoolers to which a part of the mission
+                    has been spooled have reported back confirming that they
+                    have paused the mission"/>
+                  <simple>
+                    <end_state
+                      state="Receiving.Ready.Controlled.Available.Paused"/>
+                  </simple>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value=" 'PAUSED' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <!-- Label Z -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="ReportMissionStatus" value="msg"
+                    interpretation="enveloped report mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="isPauseComplete() &amp;&amp;
+                    isReleaseControlPending()" interpretation="True if all other
+                    mission spoolers to which a part of the mission has been
+                    spooled have reported back confirming that they have paused
+                    the mission"/>
+                  <simple>
+                    <end_state state="Receiving.Ready.NotControlled.Available"/>
+                  </simple>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value=" 'PAUSED' "/>
+                    <argument value="transportData"/>
+                  </action>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a RejectControlToController message to
+                    parent client">
+                    <argument value=" 'accessControl.RejectControlToController'
+                      "/>
+                    <argument value=" 'CONTROL_RELEASED' "/>
+                  </action>
+                  <action name="releaseReleaseControlPending"
+                    interpretation="Clear the ReleaseControl request that was
+                    stored as a result of the action setReleaseControlPending"/>
+                </transition>
+              </state>
+              <default_state>
+                <!-- Label F -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="AbortMission" value="msg"
+                    interpretation="enveloped abort mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; isMissionDelegated()"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service AND                       True is a part of
+                    this mission has been delegated to other mission spoolers"/>
+                  <simple>
+                    <end_state
+                      state="Receiving.Ready.Controlled.NotAvailable.Aborting"/>
+                  </simple>
+                  <action name="sendAbortMission" interpretation="Send the
+                    AbortMission message to all other mission spoolers to which
+                    a part of the mission was spooled. This action will require
+                    this service to acquire control of the other mission
+                    spoolers.">
+                    <argument value="msg"/>
+                  </action>
+                </transition>
+                <!-- Label G -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="AbortMission" value="msg"
+                    interpretation="enveloped abort mission message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <guard condition="accessControl.isControllingClient(msg)
+                    &amp;&amp; ! isMissionDelegated()"
+                    interpretation="True if the message that triggered the
+                    transition is received from the client that is in control of
+                    this service AND                       True is a part of
+                    this mission has been delegated to other mission spoolers"/>
+                  <simple>
+                    <end_state state="Receiving.Ready.Controlled.Available.Init"
+                    />
+                  </simple>
+                  <action name="clearMission" interpretation="Clear the mission"/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                    <argument value=" 'ABORTED' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="MissionCompleted">
+                  <simple>
+                    <end_state state="Receiving.Ready.Controlled.Available.Init"
+                    />
+                  </simple>
+                  <action name="clearMission" interpretation="Clear the mission"/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a ReportMissionStatus message to parent
+                    client">
+                    <argument value=" 'ReportMissionStatusToParent' "/>
+                  </action>
+                </transition>
+                <!-- Label P -->
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QuerySpoolingPreferences" value="msg"
+                    interpretation="enveloped query spooling preferences
+                    message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report spooling preferences message">
+                    <argument value=" 'ReportSpoolingPreferences' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryMissionStatus" value="msg"
+                    interpretation="enveloped query mission status message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report mission status message">
+                    <argument value=" 'ReportMissionStatus' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryStoredMissions" value="msg"
+                    interpretation="enveloped query stored missions message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report stored missions message">
+                    <argument value=" 'ReportStoredMissions' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+                <transition name="accessControl.events.transport.Receive">
+                  <parameter type="QueryMissionPlan" value="msg"
+                    interpretation="enveloped query mission plan message"/>
+                  <parameter type="Receive.Body.ReceiveRec" value="transportData"
+                    interpretation="transport data"/>
+                  <simple/>
+                  <action name="accessControl.events.transport.Send"
+                    interpretation="Send a report stored missions message">
+                    <argument value=" 'ReportMissionPlan' "/>
+                    <argument value="transportData"/>
+                  </action>
+                </transition>
+              </default_state>
+            </state>
+          </state>
+        </state>
+      </state>
+    </state_machine>
+  </protocol_behavior>
+</service_def>

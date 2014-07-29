@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../schema/AS5684/jaus_service_interface_definition_language.rnc" type="application/relax-ng-compact-syntax"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="MessageSet" id="urn:jaus:jss:HMI:MessageSet" version="1.0">
+  <declared_type_set_ref name="commandClass" id="urn:jaus:jss:HMI:MessageSet:CommandClass" version="1.0"/>
+  <declared_type_set_ref name="informClass" id="urn:jaus:jss:HMI:MessageSet:InformClass" version="1.0"/>
+  <declared_type_set_ref name="queryClass" id="urn:jaus:jss:HMI:MessageSet:QueryClass" version="1.0"/>
+</declared_type_set>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="file:/C:/Documents%20and%20Settings/afrl/Desktop/sae%20work/as5684/schema/schema/schema_modules/jaus_service_interface_definition_language.rnc" type="compact"?>
+<declared_type_set name="QueryClass" xmlns="urn:jaus:jsidl:1.0"
+  id="urn:jaus:jss:missionSpooler:MessageSet:QueryClass" version="1.0">
+  <declared_type_set_ref name="basicTypes"
+    id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.1"/>
+  <declared_type_set_ref name="missionSpoolerTypes"
+    id="urn:jaus:jss:missionSpooler:MessageSet:BasicMissionSpoolerTypes"
+    version="1.0"/>
+  <message_def name="QuerySpoolingPreferences" message_id="2E00"
+    is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with the ReportSpoolingPreferences message.  The spooling component shall send this message to every component utilized in a mission plan that is ready to be spooled.  Spooling preferences indicate how components want the commands spooled to them.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryMissionStatus" message_id="2E01" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with the ReportMissionStatus message.  The Query can be narrowed to a particular Mission, Task, and/or Message.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="QueryMissionStatusRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <declared_fixed_field name="MissionID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="true"
+          interpretation="Unique Mission ID"/>
+        <declared_fixed_field name="TaskID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="true"
+          interpretation="Unique task ID"/>
+        <declared_fixed_field name="UID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="true"
+          interpretation="Unique Message ID"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryStoredMissions" message_id="2E02" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a Code 4E02h: ReportStoredMissions message.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryMissionPlan" message_id="2E03" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a Code 4E03h: ReportMissionPlan message.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="QueryMissionPlanRec" optional="false">
+        <declared_fixed_field name="MissionID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="false"
+          interpretation="Unique Mission ID"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+</declared_type_set>

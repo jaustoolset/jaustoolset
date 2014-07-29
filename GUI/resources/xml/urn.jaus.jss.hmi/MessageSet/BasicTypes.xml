@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../schema/AS5684/jaus_service_interface_definition_language.rnc" type="application/relax-ng-compact-syntax"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="HMITypes" id="urn:jaus:jss:HMI:MessageSet:HMITypes" version="1.0">
+  <declared_type_set_ref name="basicTypes" id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.0"/>
+  <!-- Composite -->
+  <variant name="Composite" optional="false">
+    <vtag_field field_type_unsigned="unsigned byte" min_count="0" max_count="1"/>
+    <record name="Literal" optional="false">
+      <fixed_field name="Value" optional="false" field_type="integer" field_units="one"/>
+    </record>
+    <record name="Reference" optional="false">
+      <fixed_field name="Structure" optional="false" field_type="unsigned short integer" field_units="one"/>
+      <fixed_field name="Field" optional="false" field_type="unsigned short integer" field_units="one"/>
+    </record>
+  </variant>
+</declared_type_set>

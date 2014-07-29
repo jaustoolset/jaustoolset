@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="file:/C:/Documents%20and%20Settings/afrl/Desktop/sae%20work/as5684/schema/schema/schema_modules/jaus_service_interface_definition_language.rnc" type="compact"?>
+<declared_type_set name="InformClass" xmlns="urn:jaus:jsidl:1.0"
+  id="urn:jaus:jss:missionSpooler:MessageSet:InformClass" version="1.0">
+  <declared_type_set_ref name="basicTypes"
+    id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.1"/>
+  <declared_type_set_ref name="missionSpoolerTypes"
+    id="urn:jaus:jss:missionSpooler:MessageSet:BasicMissionSpoolerTypes"
+    version="1.0"/>
+  <message_def name="ReportSpoolingPreferences" message_id="4E00"
+    is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver a response to a QuerySpoolingPreferences message.  This message indicates how components want missions to be spooled to them.  A discrete number of commands or a desired distance worth of commands can be spooled.  If the Spool Type is set to Count, then the data field indicates how many commands to send in each Spool Mission message.  If the Spool Type is set to Distance, then the data field indicates how many meters worth of commands to send in each Spool Mission message.  If the Spool Type is set to Time, then the data field indicates how many seconds worth of commands to send in each Spool Mission message.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="SpoolingPreferencesRec" optional="false">
+        <variable_field name="Data" optional="false" interpretation="Indicates
+          how many messages a component prefers, or the distance in meters a
+          component prefers.">
+          <type_and_units_field>
+            <type_and_units_enum name="USHORT" index="0" field_type="unsigned short integer"
+              field_units="one"/>
+            <type_and_units_enum name="UINT" index="1" field_type="unsigned integer"
+              field_units="meter">
+              <scale_range real_lower_limit="0" real_upper_limit="35000"
+                integer_function="round"/>
+            </type_and_units_enum>
+          </type_and_units_field>
+        </variable_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportMissionStatus" message_id="4E01" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the status of a Mission, Task, or Message. The Type field indicates whether the status refers to a Mission, Task, or Message.  The following fields indicate the specific Mission, Task, or Message the status refers to.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="MissionStatusRec" optional="false">
+        <fixed_field name="Type" field_type="unsigned byte" field_units="one"
+          optional="false" interpretation="Type">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Mission"/>
+            <value_enum enum_index="1" enum_const="Task"/>
+            <value_enum enum_index="2" enum_const="Message"/>
+            <value_range lower_limit="3" lower_limit_type="inclusive"
+              upper_limit="255" upper_limit_type="inclusive"
+              interpretation="Reserved"/>
+          </value_set>
+        </fixed_field>
+        <fixed_field name="ID" field_type="unsigned short integer"
+          field_units="one" optional="false" interpretation="ID of the type
+          specified in field 1"/>
+        <fixed_field name="Status" field_type="unsigned byte" field_units="one"
+          optional="false" interpretation="Status">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Init"/>
+            <value_enum enum_index="1" enum_const="Running"/>
+            <value_enum enum_index="2" enum_const="Pausing"/>
+            <value_enum enum_index="3" enum_const="Paused"/>
+            <value_enum enum_index="4" enum_const="Aborting"/>
+            <value_enum enum_index="5" enum_const="Aborted"/>
+            <value_enum enum_index="6" enum_const="Blocked"/>
+            <value_enum enum_index="7" enum_const="Finished"/>
+            <value_range lower_limit="8" lower_limit_type="inclusive"
+              upper_limit="255" upper_limit_type="inclusive"
+              interpretation="Reserved"/>
+          </value_set>
+        </fixed_field>
+        <fixed_field name="SecondaryStatus" field_type="unsigned byte"
+          field_units="one" optional="false" interpretation="Secondary Status">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Non-error Condition"/>
+            <value_enum enum_index="1" enum_const="Lost Component Control"/>
+            <value_enum enum_index="2" enum_const="Tolerance Not Met"/>
+            <value_enum enum_index="3" enum_const="Internal Failure"/>
+            <value_range lower_limit="4" lower_limit_type="inclusive"
+              upper_limit="255" upper_limit_type="inclusive"
+              interpretation="Reserved"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportStoredMissions" message_id="4E02" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver with a list of missions stored in the Mission Spooler. The creator of the mission must always be the client that sent the mission to the mission spooler. In other words, if a client sends a mission to a mission spooler, which in turn sends the mission to a second mission spooler, the creator of the mission as seen by the second mission spooler will be its client, the first mission spooler.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <list name="MissionList" optional="false">
+        <count_field field_type_unsigned="unsigned short integer"/>
+        <record name="MissionInfo" optional="false">
+          <declared_fixed_field name="MissionID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique Mission ID"/>
+          <declared_bit_field name="CreatorID"
+            declared_type_ref="basicTypes.JausID" optional="false"
+            interpretation="Identifier of destination to send the message"/>
+        </record>
+      </list>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportMissionPlan" message_id="4E03" is_command="false">
+    <description xml:space="preserve">
+      For the mission ID specified in the corresponding query message, this message reports that part of the mission plan that remains to be executed. That is, the portion of the mission plan that has already been executed is not included. The reported mission plan reflects any changes that have been made to the mission after the mission was spooled. If the mission with the specified id has been executed to completion, or it does not exist, then an empty MissionPlan is reported.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <sequence name="MissionPlan" optional="false">
+        <record name="MissionInfo" optional="false">
+          <declared_fixed_field name="MissionID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique Mission ID"/>
+          <declared_bit_field name="SourceID"
+            declared_type_ref="basicTypes.JausID" optional="false"
+            interpretation="Identifier of destination to send the message"/>
+        </record>
+        <sequence name="Task" optional="false">
+          <sequence name="TaskData" optional="false">
+            <record name="TaskInfo" optional="false">
+              <declared_fixed_field name="TaskID"
+                declared_type_ref="missionSpoolerTypes.UID" optional="false"
+                interpretation="Unique task ID"/>
+            </record>
+            <list name="JAUSMessages" optional="false">
+              <count_field field_type_unsigned="unsigned short integer"/>
+              <record name="MessageData" optional="false">
+                <declared_fixed_field name="UID"
+                  declared_type_ref="missionSpoolerTypes.UID" optional="false"
+                  interpretation="Unique identifier for each JAUS message"/>
+                <declared_bit_field name="DestinationID"
+                  declared_type_ref="basicTypes.JausID" optional="false"
+                  interpretation="Identifier of destination to send the message"/>
+                <variable_length_field name="JausMessage" field_format="JAUS
+                  Message" optional="false" interpretation="JAUS message to be
+                  spooled.">
+                  <count_field field_type_unsigned="unsigned integer"/>
+                </variable_length_field>
+                <fixed_field name="Blocking" field_type="unsigned byte"
+                  field_units="one" optional="false" interpretation="Blocking">
+                  <value_set offset_to_lower_limit="true">
+                    <value_enum enum_index="0" enum_const="non-blocking"/>
+                    <value_enum enum_index="1" enum_const="blocking"/>
+                    <value_range lower_limit="2" lower_limit_type="inclusive"
+                      upper_limit="255" upper_limit_type="inclusive"
+                      interpretation="Reserved"/>
+                  </value_set>
+                </fixed_field>
+              </record>
+            </list>
+          </sequence>
+          <list name="SubTasks" optional="false">
+            <count_field field_type_unsigned="unsigned short integer"/>
+            <record name="SubTaskIndex" optional="false">
+              <fixed_field name="ChildTaskIndex" field_type="unsigned short
+                integer" field_units="one" optional="false"
+                interpretation="Index into the MissionPlan List that points to a
+                task making it a subtask of the encapsulating Task"/>
+            </record>
+          </list>
+        </sequence>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+</declared_type_set>

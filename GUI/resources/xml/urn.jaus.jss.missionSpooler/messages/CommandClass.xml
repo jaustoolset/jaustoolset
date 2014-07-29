@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="file:/C:/Documents%20and%20Settings/afrl/Desktop/sae%20work/as5684/schema/schema/schema_modules/jaus_service_interface_definition_language.rnc" type="compact"?>
+<declared_type_set name="CommandClass" xmlns="urn:jaus:jsidl:1.0"
+  id="urn:jaus:jss:missionSpooler:MessageSet:CommandClass" version="1.0">
+  <declared_type_set_ref name="basicTypes"
+    id="urn:jaus:jss:core:MessageSet:BasicTypes" version="1.1"/>
+  <declared_type_set_ref name="missionSpoolerTypes"
+    id="urn:jaus:jss:missionSpooler:MessageSet:BasicMissionSpoolerTypes"
+    version="1.0"/>
+  <message_def name="SpoolMission" message_id="0E00" is_command="true">
+    <description xml:space="preserve">
+      This message is used to communicate missions to a Mission Spooler service.  The amount of data in one Spool Mission message is determined by the receiving service’s spooling preferences.  For example, if a service can handle ten (10) JAUS messages at a time, then the spooler shall send a Spool Mission message with no more than ten (10) messages.  The Mission ID field shall be an ID that is unique to the system and its time of execution to allow for spooling and manipulating multiple current missions per system execution. 
+      The remaining fields define the mission, where the mission structure is an N-ary tree defined by the list called MissionPlan. Each element in the list is a node of the n-ary tree, where each node is called a Task. A Task contains a list of JAUS messages and/or subtasks that are identified by a list of indices that point to tasks contained in the MissionPlan.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <sequence name="SpoolMission" optional="false">
+        <record name="MissionInfo" optional="false">
+          <declared_fixed_field name="MissionID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique Mission ID"/>
+          <declared_bit_field name="SourceID"
+            declared_type_ref="basicTypes.JausID" optional="false"
+            interpretation="Identifier of destination to send the message"/>
+        </record>
+        <list name="MissionPlan" optional="false">
+          <count_field field_type_unsigned="unsigned short integer"/>
+          <sequence name="Task" optional="false">
+            <sequence name="TaskData" optional="false">
+              <record name="TaskInfo" optional="false">
+                <declared_fixed_field name="TaskID"
+                  declared_type_ref="missionSpoolerTypes.UID" optional="false"
+                  interpretation="Unique Task ID"/>
+              </record>
+              <list name="JAUSMessages" optional="false">
+                <count_field field_type_unsigned="unsigned short integer"/>
+                <record name="MessageData" optional="false">
+                  <declared_fixed_field name="UID"
+                    declared_type_ref="missionSpoolerTypes.UID" optional="false"
+                    interpretation="Unique identifier for each JAUS message"/>
+                  <declared_bit_field name="DestinationID"
+                    declared_type_ref="basicTypes.JausID" optional="false"
+                    interpretation="Identifier of destination to send the
+                    message"/>
+                  <variable_length_field name="JausMessage" field_format="JAUS
+                    Message" optional="false" interpretation="JAUS message to be
+                    spooled.">
+                    <count_field field_type_unsigned="unsigned integer"/>
+                  </variable_length_field>
+                  <fixed_field name="Blocking" field_type="unsigned byte"
+                    field_units="one" optional="false" interpretation="Blocking">
+                    <value_set offset_to_lower_limit="true">
+                      <value_enum enum_index="0" enum_const="non-blocking"/>
+                      <value_enum enum_index="1" enum_const="blocking"/>
+                      <value_range lower_limit="2" lower_limit_type="inclusive"
+                        upper_limit="255" upper_limit_type="inclusive"
+                        interpretation="Reserved"/>
+                    </value_set>
+                  </fixed_field>
+                </record>
+              </list>
+            </sequence>
+            <list name="SubTasks" optional="false">
+              <count_field field_type_unsigned="unsigned short integer"/>
+              <record name="SubTaskIndex" optional="false">
+                <fixed_field name="ChildTaskIndex" field_type="unsigned short
+                  integer" field_units="one" optional="false"
+                  interpretation="Index into the MissionPlan List that points to
+                  a task making it a subtask of the encapsulating Task"/>
+              </record>
+            </list>
+          </sequence>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="RunMission" message_id="0E01" is_command="true">
+    <description xml:space="preserve">
+      This message is used to begin execution of the mission with Mission ID.  If the mission ID, task ID, and message UID are not specified, then all missions must begin execution starting with the first child tasks in each mission. If a task ID and a message UID are specified, then mission execution must begin at the specified task ID and message UID.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="RunMissionRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <declared_fixed_field name="MissionID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="true"
+          interpretation="Unique Mission ID"/>
+        <declared_fixed_field name="TaskID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="true"
+          interpretation="Unique task ID"/>
+        <declared_fixed_field name="MessageUID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="true"
+          interpretation="Unique ID of the message within the task with the
+          specified task ID"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="AbortMission" message_id="0E02" is_command="true">
+    <description xml:space="preserve">
+      This message is used to abort the mission with Mission ID.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="AbortMissionRec" optional="false">
+        <declared_fixed_field name="MissionID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="false"
+          interpretation="Unique Mission ID"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="PauseMission" message_id="0E03" is_command="true">
+    <description xml:space="preserve">
+      This message is used to pause the mission with the specified mission ID, after the task with the specified Task ID has been executed. If the mission ID and task ID are not specified, then it implies that all missions that are in execution must be paused immediately. If the mission ID is specified and the task ID is not specified, then it implies that only the mission with the specified mission ID must be paused immediately. Conversely, if the task ID is specified and the mission ID is not specified, it implies that all missions that are in execution must be paused after the tasks with the specified task ID has been executed.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="PauseMissionRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <declared_fixed_field name="MissionID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="true"
+          interpretation="Unique Mission ID"/>
+        <declared_fixed_field name="TaskID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="true"
+          interpretation="Unique task ID at which to pause the mission"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ResumeMission" message_id="0E04" is_command="true">
+    <description xml:space="preserve">
+      This message is used to resume a paused mission from the point where execution was paused.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <record name="ResumeMissionRec" optional="false">
+        <declared_fixed_field name="MissionID"
+          declared_type_ref="missionSpoolerTypes.UID" optional="false"
+          interpretation="Unique Mission ID"/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="RemoveMessages" message_id="0E05" is_command="true">
+    <description xml:space="preserve">
+      This message is used to remove any number of messages from an existing mission and task with Mission ID and Task ID. The message(s) to be removed are referenced by their Unique ID.  The JAUS message corresponding to each unique ID in the mission shall be removed.  If a message to be removed no longer exists in the mission, no action occurs as this indicates that the JAUS message has already been removed (or completed) from the mission. If the removal of a set of messages results in an empty mission and/or task, then that mission and/or task is also removed automatically.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <sequence name="RemoveData" optional="false">
+        <record name="MissionInfo" optional="false">
+          <declared_fixed_field name="MissionID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique Mission ID"/>
+          <declared_fixed_field name="TaskID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique task ID"/>
+        </record>
+        <list name="MessageList" optional="false">
+          <count_field field_type_unsigned="unsigned short integer"/>
+          <record name="MessageInfo" optional="false">
+            <declared_fixed_field name="UID"
+              declared_type_ref="missionSpoolerTypes.UID" optional="false"
+              interpretation="Unique ID of the message to be removed"/>
+          </record>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="InsertMessages" message_id="0E06" is_command="true">
+    <description xml:space="preserve">
+      This message is used to insert any number of new messages into the mission and task with the specified Mission ID and Task ID.  Field #4 of MissionAndTaskInfo determines if the messages are to be inserted before or after the message with the specified UID in field #3 of MissionAndTaskInfo.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <sequence name="InsertData" optional="false">
+        <record name="MissionAndTaskInfo" optional="false">
+          <declared_fixed_field name="MissionID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique Mission ID"/>
+          <declared_fixed_field name="TaskID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique task ID"/>
+          <declared_fixed_field name="UID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique ID of the message before/after which new
+            messages must be inserted"/>
+          <fixed_field name="InsertLocation" field_type="unsigned byte"
+            field_units="one" optional="false" interpretation="Insert Location">
+            <value_set offset_to_lower_limit="true">
+              <value_enum enum_index="0" enum_const="insert before UID in field
+                3"/>
+              <value_enum enum_index="1" enum_const="insert after UID in field
+                3"/>
+              <value_range lower_limit="2" lower_limit_type="inclusive"
+                upper_limit="255" upper_limit_type="inclusive"
+                interpretation="Reserved"/>
+            </value_set>
+          </fixed_field>
+        </record>
+        <list name="InsertMessageList" optional="false">
+          <count_field field_type_unsigned="unsigned short integer"/>
+          <record name="InsertMessageInfo" optional="false">
+            <declared_fixed_field name="UID"
+              declared_type_ref="missionSpoolerTypes.UID" optional="false"
+              interpretation="Unique ID of the message to be inserted"/>
+            <declared_bit_field name="DestinationID"
+              declared_type_ref="basicTypes.JausID" optional="false"
+              interpretation="Identifier of destination to send the message"/>
+            <variable_length_field name="JausMessage" field_format="JAUS
+              Message" optional="false" interpretation="JAUS message to insert">
+              <count_field field_type_unsigned="unsigned integer"/>
+            </variable_length_field>
+            <fixed_field name="Blocking" field_type="unsigned byte"
+              field_units="one" optional="false" interpretation="Blocking">
+              <value_set offset_to_lower_limit="true">
+                <value_enum enum_index="0" enum_const="non-blocking"/>
+                <value_enum enum_index="1" enum_const="blocking"/>
+                <value_range lower_limit="2" lower_limit_type="inclusive"
+                  upper_limit="255" upper_limit_type="inclusive"
+                  interpretation="Reserved"/>
+              </value_set>
+            </fixed_field>
+          </record>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="RemoveMissionTask" message_id="0E07" is_command="true">
+    <description xml:space="preserve">
+      This message removes the task specified in field #2 from the mission.  Any child of the task to be removed can be promoted to be a new child of the removed task's parent by specifying its task ID in the RemoveTaskInfo list.  Childern not being promoted – their task IDs are not in the RemoveTaskInfo list – are also removed from the mission.  If the RemoveTaskInfo list is empty, the task specified in field #2, including all its children, is removed.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <sequence name="RemoveData" optional="false">
+        <record name="MissionAndTaskInfo" optional="false">
+          <declared_fixed_field name="MissionID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique Mission ID"/>
+          <declared_fixed_field name="TaskID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique task ID"/>
+        </record>
+        <list name="RemoveTaskList" optional="false">
+          <count_field field_type_unsigned="unsigned short integer"/>
+          <record name="RemoveTaskInfo" optional="false">
+            <declared_fixed_field name="TaskID"
+              declared_type_ref="missionSpoolerTypes.UID" optional="false"
+              interpretation="ID of a promoted child task"/>
+          </record>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="InsertMissionTask" message_id="0E08" is_command="true">
+    <description xml:space="preserve">
+      This message inserts a task before or after the task identified by the ID provided in field #2 of MissionAndTaskInfo. Field #3 of MissionAndTaskInfo identifies the new parent for the task specified in field #2. If the new task has no children, the new task is the new parent to the task specified in field #2. Otherwise, the new parent is one of the new task’s children, and must be specified in the message.
+    </description>
+    <declared_header name="AppHeader"
+      declared_type_ref="basicTypes.JAUSMessageHeader"/>
+    <body name="Body">
+      <sequence name="InsertMission" optional="false">
+        <record name="MissionAndTaskInfo" optional="false">
+          <declared_fixed_field name="MissionID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique Mission ID"/>
+          <declared_fixed_field name="TaskID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="Unique task ID before/after which the new task will
+            be inserted"/>
+          <fixed_field name="InsertLocation" field_type="unsigned byte"
+            field_units="one" optional="false" interpretation="Insert Location">
+            <value_set offset_to_lower_limit="true">
+              <value_enum enum_index="0" enum_const="Insert before task ID in
+                field 2"/>
+              <value_enum enum_index="1" enum_const="Insert after task ID in
+                field 2"/>
+              <value_range lower_limit="2" lower_limit_type="inclusive"
+                upper_limit="255" upper_limit_type="inclusive"
+                interpretation="Reserved"/>
+            </value_set>
+          </fixed_field>
+          <declared_fixed_field name="NewParentTaskID"
+            declared_type_ref="missionSpoolerTypes.UID" optional="false"
+            interpretation="New parent to the task in field #2 if inserting
+            before field #2"/>
+        </record>
+        <sequence name="Task" optional="false">
+          <sequence name="TaskData" optional="false">
+            <record name="TaskInfo" optional="false">
+              <declared_fixed_field name="TaskID"
+                declared_type_ref="missionSpoolerTypes.UID" optional="false"
+                interpretation="Unique task ID of the task to be inserted"/>
+            </record>
+            <list name="TaskMessages" optional="false">
+              <count_field field_type_unsigned="unsigned short integer"/>
+              <record name="MessageData" optional="false">
+                <declared_fixed_field name="UID"
+                  declared_type_ref="missionSpoolerTypes.UID" optional="false"
+                  interpretation="Unique identifier for each JAUS message"/>
+                <declared_bit_field name="DestinationID"
+                  declared_type_ref="basicTypes.JausID" optional="false"
+                  interpretation="Identifier of destination to send the message"/>
+                <variable_length_field name="JausMessage" field_format="JAUS
+                  Message" optional="false" interpretation="JAUS message to be
+                  inserted">
+                  <count_field field_type_unsigned="unsigned integer"/>
+                </variable_length_field>
+                <fixed_field name="Blocking" field_type="unsigned byte"
+                  field_units="one" optional="false" interpretation="Blocking">
+                  <value_set offset_to_lower_limit="true">
+                    <value_enum enum_index="0" enum_const="non-blocking"/>
+                    <value_enum enum_index="1" enum_const="blocking"/>
+                    <value_range lower_limit="2" lower_limit_type="inclusive"
+                      upper_limit="255" upper_limit_type="inclusive"
+                      interpretation="Reserved"/>
+                  </value_set>
+                </fixed_field>
+              </record>
+            </list>
+          </sequence>
+          <list name="SubTasks" optional="false">
+            <count_field field_type_unsigned="unsigned short integer"/>
+            <record name="SubTaskIndex" optional="false">
+              <fixed_field name="ChildTaskIndex" field_type="unsigned short
+                integer" field_units="one" optional="false"
+                interpretation="Index into the MissionTree that points at
+                subtasks of this MissionTask"/>
+            </record>
+          </list>
+        </sequence>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+</declared_type_set>

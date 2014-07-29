@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../schema/AS5684/jaus_service_interface_definition_language.rnc" type="application/relax-ng-compact-syntax"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="CommandClass" id="urn:jaus:jss:HMI:MessageSet:CommandClass" version="1.0">
+  <declared_type_set_ref name="HMITypes" id="urn:jaus:jss:HMI:MessageSet:HMITypes" version="1.0"/>
+  <message_def name="SetDCM" message_id="0706" is_command="true">
+    <description xml:space="preserve">
+      This message shall set the digital control style on the operator interface.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="DCMRec" optional="false">
+        <fixed_field name="DCMReference" field_type="unsigned short integer" field_units="one" optional="false" interpretation="Unique reference to the digital control."/>
+        <bit_field name="DCMStateCode" field_type_unsigned="unsigned byte" optional="false" interpretation="The state of the digital control.">
+          <sub_field name="Updown">
+            <bit_range from_index="0" to_index="0"/>
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_index="0" enum_const="Released"/>
+              <value_enum enum_index="1" enum_const="Pressed"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="Active">
+            <bit_range from_index="1" to_index="1"/>
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_index="0" enum_const="Inactive"/>
+              <value_enum enum_index="1" enum_const="Active"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="Flash">
+            <bit_range from_index="2" to_index="2"/>
+            <value_set offset_to_lower_limit="false">
+              <value_enum enum_index="0" enum_const="Steady"/>
+              <value_enum enum_index="1" enum_const="Flashing"/>
+            </value_set>
+          </sub_field>
+          <sub_field name="FlashRate" interpretation="Rate at which to flash the digital control in Hz.  Only valid for Flashing state.">
+            <bit_range from_index="3" to_index="4"/>
+            <value_set offset_to_lower_limit="false">
+              <value_range lower_limit="0" upper_limit="3" lower_limit_type="inclusive" upper_limit_type="inclusive"/>
+            </value_set>
+          </sub_field>
+        </bit_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+</declared_type_set>

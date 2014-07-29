@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../schema/AS5684/jaus_service_interface_definition_language.rnc" type="application/relax-ng-compact-syntax"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="QueryClass" id="urn:jaus:jss:HMI:MessageSet:QueryClass" version="1.0">
+  <declared_type_set_ref name="HMITypes" id="urn:jaus:jss:HMI:MessageSet:HMITypes" version="1.0"/>
+  <message_def name="QueryDrawingDefinition" message_id="2700" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a
+      ID 4700h: ReportDrawingDefinition message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryDataDefinition" message_id="2701" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a
+      ID 4701h: ReportDataDefinition message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryData" message_id="2702" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a
+      ID 4702h: ReportData message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryDataRec" optional="false">
+        <fixed_field name="DataStructureReference" field_type="unsigned short integer" field_units="one" optional="false" interpretation="Unique reference to the required data structure used in the system."/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryPointingDeviceMovement" message_id="2703" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a
+      ID 4703h: ReportPointingDeviceMovement message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryPointingDeviceAction" message_id="2704" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a
+      ID 4704h: ReportPointingDeviceAction message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryKeyboardAction" message_id="2705" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a
+      ID 4705h: ReportKeyboardAction message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryDCM" message_id="2706" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a
+      ID 4706h: ReportDCM message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryAnalogDevices" message_id="2707" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a
+      ID 4707h: ReportAnalogDevices message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body"/>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="QueryAnalogAction" message_id="2708" is_command="false">
+    <description xml:space="preserve">
+      This message shall cause the receiving component to reply to the requestor with a
+      ID 4708h: ReportAnalogAction message.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="QueryAnalogActionRec" optional="false">
+        <fixed_field name="PresenceVector" field_type="byte" field_units="one" optional="false" interpretation="See Report Analog Action Message"/>
+        <fixed_field name="AnalogReference" field_type="unsigned short integer" field_units="one" optional="false" interpretation="Unique reference to the analog device used in the system."/>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+</declared_type_set>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schema/AS5684/jaus_service_interface_definition_language.rnc" type="application/relax-ng-compact-syntax"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="AnalogControl" id=" urn:jaus:jss:HMI:AnalogControl" version="1.0">
+    <description>The Analog Control Service is used to for the generation of analog operator interactions.  Six fields represent the proportion of movement of an analog device in linear and rotational movement of the three cardinal axis.
+        The Analog Control Service does not define co-ordinate systems.  However, the interpretation of operator inputs shall assume the following orientation of movement.  The longitudinal axis is positive in the forward direction, lateral movement is positive to the right and vertical movement is positive downwards.  Rotational axial values increase in a clockwise direction when looking along the axis towards the greater positive value.  Roll is rotation around the longitudinal axis, pitch around the lateral axis and yaw around the vertical axis.
+        The remote asset may create an Event for the operator interface to send Report Analog Action messages.  This event can either be upon a change or at a periodic frequency.  Upon receipt of this event creation, the operator interface shall return Report Analog Action messages at the requested interval.</description>
+    <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="Events" id="urn:jaus:jss:core:Events" version="1.0"/>
+    </references>
+    <declared_type_set name="Types">
+        <declared_type_set_ref name="HMI" id="urn:jaus:jss:HMI:MessageSet" version="1.0"/>
+    </declared_type_set>
+    <message_set>
+        <input_set>
+            <declared_message_def name="QueryAnalogDevices" declared_type_ref="HMI.queryClass.QueryAnalogDevices"/>
+            <declared_message_def name="QueryAnalogAction" declared_type_ref="HMI.queryClass.QueryAnalogAction"/>
+        </input_set>
+        <output_set>
+            <declared_message_def name="ReportAnalogDevices" declared_type_ref="HMI.informClass.ReportAnalogDevices"/>
+            <declared_message_def name="ReportAnalogAction" declared_type_ref="HMI.informClass.ReportAnalogAction"/>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <state_machine name="events.transport.ReceiveFSM" interpretation="extending ReceiveFSM of base service (transport)">
+            <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+                <state name="Ready" interpretation="redefine state in order to extend">
+                    <default_state>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryAnalogDevices" value="msg" interpretation="query analog devices message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                            <simple/>
+                            <action name="events.transport.Send" interpretation="send a report analog devices message">
+                                <argument value="'sendReportAnalogDevices'"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryAnalogAction" value="msg" interpretation="query analog action message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                            <simple/>
+                            <action name="events.transport.Send" interpretation="send a report analog action message">
+                                <argument value="'sendReportAnalogAction'"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                    </default_state>
+                </state>
+            </state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

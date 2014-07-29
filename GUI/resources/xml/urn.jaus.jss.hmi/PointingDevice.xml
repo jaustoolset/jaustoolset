@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schema/AS5684/jaus_service_interface_definition_language.rnc" type="application/relax-ng-compact-syntax"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="PointingDevice" id=" urn:jaus:jss:HMI:PointingDevice" version="1.0">
+    <description>The Pointing Device Movement Service is used to detect mouse, or other similar pointing device coordinate position on the Graphics Viewport.  The Pointing Device Movement Service is used in conjunction with the Drawing Service.
+        The remote asset may create an Event for the operator interface to send Report Pointing Device Movement messages.  This Event can either be upon a change or at a periodic frequency.  Upon receipt of this Event creation, the operator interface shall return Report Pointing Device Movement messages at the requested interval.
+        The remote asset may create an Event for the operator interface to send Report Pointing Device Action messages.  This Event can either be upon a change or at a periodic frequency.  Upon receipt of this Event creation, the operator interface shall return Report Pointing Device Action messages at the requested interval.</description>
+    <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="Events" id="urn:jaus:jss:core:Events" version="1.0"/>
+    </references>
+    <declared_type_set name="Types">
+        <declared_type_set_ref name="HMI" id="urn:jaus:jss:HMI:MessageSet" version="1.0"/>
+    </declared_type_set>
+    <message_set>
+        <input_set>
+            <declared_message_def name="QueryPointingDeviceMovement" declared_type_ref="HMI.queryClass.QueryPointingDeviceMovement"/>
+            <declared_message_def name="QueryPointingDeviceAction" declared_type_ref="HMI.queryClass.QueryPointingDeviceAction"/>
+        </input_set>
+        <output_set>
+            <declared_message_def name="ReportPointingDeviceMovement" declared_type_ref="HMI.informClass.ReportPointingDeviceMovement"/>
+            <declared_message_def name="ReportPointingDeviceAction" declared_type_ref="HMI.informClass.ReportPointingDeviceAction"/>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <state_machine name="events.transport.ReceiveFSM" interpretation="extending ReceiveFSM of base service (transport)">
+            <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+                <state name="Ready" interpretation="redefine state in order to extend">
+                    <default_state>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryPointingDeviceMovement" value="msg" interpretation="query pointing device movement message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                            <guard condition="pointingDeviceExists( msg )" interpretation="True if a pointing device exists on the client interface"/>
+                            <simple/>
+                            <action name="events.transport.Send" interpretation="send a report pointing device message">
+                                <argument value="'sendReportPointingDeviceMovement'"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryPointingDeviceAction" value="msg" interpretation="query pointing device action message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                            <guard condition="pointingDeviceExists( msg )" interpretation="True if a pointing device exists on the client interface"/>
+                            <simple/>
+                            <action name="events.transport.Send" interpretation="send a report pointing device action message">
+                                <argument value="'sendReportPointingDeviceAction'"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                    </default_state>
+                </state>
+            </state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

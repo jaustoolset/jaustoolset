@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schema/AS5684/jaus_service_interface_definition_language.rnc" type="application/relax-ng-compact-syntax"?>
+<service_def xmlns="urn:jaus:jsidl:1.0" name="Drawing" id=" urn:jaus:jss:HMI:Drawing" version="1.0">
+    <description>The Drawing Service allows remote assets to define a graphical output to an operator interface.  A remote asset creates a Drawing Definition that it shall send to the operator interface.  The Drawing Definition message consists of a series of commands that allow the remote asset to create a graphical representation and offer mechanisms for its control.
+        Variable data can be represented in a Drawing Definition to allow the remote asset to update aspects of the display on the operator interface using a mechanism of Data Definition messages.  Data Definition messages allow a remote asset to define a data structure that can be updated independent of the Drawing Definition.  This may be used to update information such as joint angles reflecting the correct position and orientation displayed on the operator interface.  Variable data is indicated within a Drawing Definition by the use of the Composite data type (section 3.2).  A reference to a data structure element is substituted for the literal value if the Composite type has been set as variable data.  A remote asset can then send Data messages that correspond with the Data Definition reference, allowing the operator interface to read the data and update the display accordingly.
+        It is highly recommended that the operator interface creates an Event for the remote asset to send Report Drawing Definition and Report Data messages upon a change to receive any updates that may occur.</description>
+    <assumptions>Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="Events" id="urn:jaus:jss:core:Events" version="1.0"/>
+    </references>
+    <declared_type_set name="Types">
+        <declared_type_set_ref name="HMI" id="urn:jaus:jss:HMI:MessageSet" version="1.0"/>
+    </declared_type_set>
+    <message_set>
+        <input_set>
+            <declared_message_def name="QueryDrawingDefinition" declared_type_ref="HMI.queryClass.QueryDrawingDefinition"/>
+            <declared_message_def name="QueryDataDefinition" declared_type_ref="HMI.queryClass.QueryDataDefinition"/>
+            <declared_message_def name="QueryData" declared_type_ref="HMI.queryClass.QueryData"/>
+        </input_set>
+        <output_set>
+            <declared_message_def name="ReportDrawingDefinition" declared_type_ref="HMI.informClass.ReportDrawingDefinition"/>
+            <declared_message_def name="ReportDataDefinition" declared_type_ref="HMI.informClass.ReportDataDefinition"/>
+            <declared_message_def name="ReportData" declared_type_ref="HMI.informClass.ReportData"/>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <state_machine name="events.transport.ReceiveFSM" interpretation="extending ReceiveFSM of base service (transport)">
+            <state name="Receiving" initial_state="Ready" interpretation="redefine state in order to extend">
+                <state name="Ready" >
+                    
+                        <default_state>
+                            <transition name="events.transport.Receive">
+                                <parameter type="QueryDrawingDefinition" value="msg" interpretation="query drawing definition message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <simple/>
+                                <action name="events.transport.Send" interpretation="send a report drawing definition message">
+                                    <argument value=" 'sendReportDrawingDefinition'"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="events.transport.Receive">
+                                <parameter type="QueryDataDefinition" value="msg" interpretation="query data definition message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <simple/>
+                                <action name="events.transport.Send" interpretation="send a report data definition message">
+                                    <argument value="'sendReportDataDefinition'"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="events.transport.Receive">
+                                <parameter type="QueryData" value="msg" interpretation="query data message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <simple/>
+                                <action name="events.transport.Send" interpretation="send a report data message">
+                                    <argument value="'sendReportData'"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    
+                </state>
+            </state>
+        </state_machine>
+    </protocol_behavior>
+</service_def>	

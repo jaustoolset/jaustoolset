@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../schema/AS5684/jaus_service_interface_definition_language.rnc" type="application/relax-ng-compact-syntax"?>
+<declared_type_set xmlns="urn:jaus:jsidl:1.0" name="InformClass" id="urn:jaus:jss:HMI:MessageSet:InformClass" version="1.0">
+  <declared_type_set_ref name="HMITypes" id="urn:jaus:jss:HMI:MessageSet:HMITypes" version="1.0"/>
+  <message_def name="ReportDrawingDefinition" message_id="4700" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide a Drawing Definition containing one or more Graphic Commands and associated data.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <sequence name="ReportDrawingDefinitionSeq" optional="false">
+        <record name="ReferenceFieldRec" optional="false">
+          <fixed_field name="DrawingDefinitionReference" field_type="unsigned short integer" field_units="one" optional="false" interpretation="Unique reference to the Drawing Definition used in the system."/>
+        </record>
+        <list name="GraphicsCommandList" optional="false">
+          <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+          <variant name="GraphicsCommandsVar" optional="false">
+            <vtag_field field_type_unsigned="unsigned byte"/>
+            <sequence name="PageSeq" optional="false" interpretation="The Page command defines the limits of the coordinate system used by the remote asset for the Graphics Viewport.  Operator interfaces shall interpret this definition and adjust the limits such that the actual limits retain a 1:1 ratio with the physical dimensions of the operator interface Graphics Viewport.  Any adjustments required to the page command coordinates will retain the center position on the operator interface Graphics Viewport.  The page command shall appear first in a Drawing Definition.">
+              <declared_variant name="MinimumX" declared_type_ref="HMITypes.Composite" interpretation="User defined minimum X coordinate of the display frame" optional="false"/>
+              <declared_variant name="MinimumY" declared_type_ref="HMITypes.Composite" interpretation="User defined minimum Y coordinate of the display frame" optional="false"/>
+              <declared_variant name="MaximumX" declared_type_ref="HMITypes.Composite" interpretation="User defined maximum X coordinate of the display frame" optional="false"/>
+              <declared_variant name="MaximumY" declared_type_ref="HMITypes.Composite" interpretation="User defined maximum Y coordinate of the display frame" optional="false"/>
+            </sequence>
+            <record name="BackgroundRec" optional="false" interpretation="The Background command allows the background color of the drawing area to be set.  Limited color displays shall suitably convert the RGB value.  By default, the background color shall be white RGB (255, 255, 255).">
+              <fixed_field name="RedColor" field_type="byte" field_units="one" optional="false" interpretation="Red value of the background color of drawing area"/>
+              <fixed_field name="GreenColor" field_type="byte" field_units="one" optional="false" interpretation="Green value of the background color of drawing area"/>
+              <fixed_field name="BlueColor" field_type="byte" field_units="one" optional="false" interpretation="Blue value of the background color of drawing area"/>
+            </record>
+            <record name="PenRec" optional="false" interpretation="The Pen command allows the definition of the active pen color for drawing.  Limited color displays shall suitably convert the RGB value.  By default, the pen color shall be black RGB (0, 0, 0).">
+              <fixed_field name="RedColor" field_type="byte" field_units="one" optional="false" interpretation="Red value of the new pen color"/>
+              <fixed_field name="GreenColor" field_type="byte" field_units="one" optional="false" interpretation="Green value of the new pen color"/>
+              <fixed_field name="BlueColor" field_type="byte" field_units="one" optional="false" interpretation="Blue value of the new pen color"/>
+            </record>
+            <record name="PenWidthRec" optional="false" interpretation="Defines the active drawing pen line width.  By default, the pen width shall be 1 pixel.">
+              <fixed_field name="Width" field_type="byte" field_units="one" optional="false" interpretation="Width of drawing pen in pixels"/>
+            </record>
+            <record name="BrushRec" optional="false" interpretation="The Brush command defines the fill color for drawing filled shapes.  Limited color displays shall suitably convert the RGB value.  By default, the brush color shall be black RGB (0, 0, 0).">
+              <fixed_field name="RedColor" field_type="byte" field_units="one" optional="false" interpretation="Red value of the new brush color"/>
+              <fixed_field name="GreenColor" field_type="byte" field_units="one" optional="false" interpretation="Green value of the new brush color"/>
+              <fixed_field name="BlueColor" field_type="byte" field_units="one" optional="false" interpretation="Blue value of the new brush color"/>
+            </record>
+            <record name="DigitalControlRec" optional="false" interpretation="The Digital Control command allows the remote asset to define a digital control at a position on the screen.  The operator interface defines the size of the digital control determined by guidelines or standards for the application domain.  The Drawing Service defines the digital controls outside the Graphics Viewport in four Digital Control Groups.  Each Digital Control Group can contain five digital controls.">
+              <fixed_field name="Reference" field_type="unsigned short integer" field_units="one" optional="false" interpretation="Reference to the digital control used to define the state of the digital control in DCM messages"/>
+              <fixed_field name="Group" field_type="byte" field_units="one" optional="false">
+                <value_set offset_to_lower_limit="false">
+                  <value_enum enum_index="0" enum_const="Top"/>
+                  <value_enum enum_index="1" enum_const="Left"/>
+                  <value_enum enum_index="2" enum_const="Right"/>
+                  <value_enum enum_index="3" enum_const="Bottom"/>
+                </value_set>
+              </fixed_field>
+              <fixed_field name="DigitalControlRec" field_type="byte" field_units="one" optional="false" interpretation="Digital Control position within Group. 0 = Top/Left … 4 = Lower/Right">
+                <value_set offset_to_lower_limit="false">
+                  <value_range lower_limit_type="inclusive" lower_limit="0" upper_limit="4" upper_limit_type="inclusive"/>
+                </value_set>
+              </fixed_field>
+              <fixed_length_string name="Label" string_length="12" optional="false" interpretation="The text to label the digital control in a null terminated ASCII String"/>
+            </record>
+            <record name="DigitalControlGroupRec" optional="false" interpretation="The Digital Control Group command assigns a label to one of the four Digital Control Groups.  The Digital Control Group text may be used on displays that cannot display 20 digital controls simultaneously.">
+              <fixed_field name="Group" field_type="byte" field_units="one" optional="false">
+                <value_set offset_to_lower_limit="false">
+                  <value_enum enum_index="0" enum_const="Top"/>
+                  <value_enum enum_index="1" enum_const="Left"/>
+                  <value_enum enum_index="2" enum_const="Right"/>
+                  <value_enum enum_index="3" enum_const="Bottom"/>
+                </value_set>
+              </fixed_field>
+              <fixed_length_string name="Label" string_length="12" optional="false" interpretation="The text to label the digital control in a null terminated ASCII String"/>
+            </record>
+            <sequence name="LabelSeq" optional="false" interpretation="The Label command allows the remote asset to create output only text onto the display.  The text is displayed at the current transform rotation.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="Y coordinate in User Space" optional="false"/>
+              <record name="AlignmentRec" optional="false">
+                <fixed_field name="Alignment" field_type="byte" field_units="one" optional="false">
+                  <value_set offset_to_lower_limit="false">
+                    <value_enum enum_index="0" enum_const="Top Left"/>
+                    <value_enum enum_index="1" enum_const="Middle Left"/>
+                    <value_enum enum_index="2" enum_const="Bottom Left"/>
+                    <value_enum enum_index="3" enum_const="Middle Center"/>
+                    <value_enum enum_index="4" enum_const="Middle Right"/>
+                    <value_enum enum_index="5" enum_const="Bottom Center"/>
+                    <value_enum enum_index="6" enum_const="Bottom Right"/>
+                    <value_enum enum_index="7" enum_const="Top Center"/>
+                    <value_enum enum_index="8" enum_const="Top Right"/>
+                  </value_set>
+                </fixed_field>
+              </record>
+              <declared_variant name="Size" declared_type_ref="HMITypes.Composite" interpretation="Font point size (72 points per inch)" optional="false"/>
+              <record name="TextRec" optional="false">
+                <variable_length_string name="Text" optional="false" interpretation="Text of label in a null terminated ASCII String">
+                  <count_field field_type_unsigned="unsigned byte"/>
+                </variable_length_string>
+              </record>
+            </sequence>
+            <sequence name="ValueSeq" optional="false" interpretation="The Value command allows the remote asset to display a variable value on the operator interface Graphics Viewport.  The variable Reference defines the text displayed.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="Y coordinate in User Space" optional="false"/>
+              <record name="AlignmentRec" optional="false">
+                <fixed_field name="Alignment" field_type="byte" field_units="one" optional="false">
+                  <value_set offset_to_lower_limit="false">
+                    <value_enum enum_index="0" enum_const="Top Left"/>
+                    <value_enum enum_index="1" enum_const="Middle Left"/>
+                    <value_enum enum_index="2" enum_const="Bottom Left"/>
+                    <value_enum enum_index="3" enum_const="Middle Center"/>
+                    <value_enum enum_index="4" enum_const="Middle Right"/>
+                    <value_enum enum_index="5" enum_const="Bottom Center"/>
+                    <value_enum enum_index="6" enum_const="Bottom Right"/>
+                    <value_enum enum_index="7" enum_const="Top Center"/>
+                    <value_enum enum_index="8" enum_const="Top Right"/>
+                  </value_set>
+                </fixed_field>
+              </record>
+              <declared_variant name="Size" declared_type_ref="HMITypes.Composite" interpretation="Font point size (72 points per inch)" optional="false"/>
+              <declared_variant name="DataReference" declared_type_ref="HMITypes.Composite" interpretation="Text of label in a null terminated ASCII String" optional="false"/>
+            </sequence>
+            <sequence name="RotateSeq" optional="false" interpretation="The Rotate command defines an angular rotation of the graphics transformation matrix.  Positive angles are a clockwise rotation.  By default, the rotation angle shall be 0 micro-radians from the horizontal.">
+              <declared_variant name="Angle" declared_type_ref="HMITypes.Composite" interpretation="The angular rotation in micro-radians" optional="false"/>
+            </sequence>
+            <sequence name="AntiRotateSeq" optional="false" interpretation="The Anti-rotate command defines a rotation in an anti-clockwise direction, to complement the ‘Rotate’ command above.">
+              <declared_variant name="Angle" declared_type_ref="HMITypes.Composite" interpretation="The negative angular rotation in micro-radians" optional="false"/>
+            </sequence>
+            <sequence name="TranslateSeq" optional="false" interpretation="The Translate command defines a positional shift of the graphics transformation matrix.  By default, the translation shall be (0, 0) from the origin.">
+              <declared_variant name="TX" declared_type_ref="HMITypes.Composite" interpretation="The X transformation in User Space" optional="false"/>
+              <declared_variant name="TY" declared_type_ref="HMITypes.Composite" interpretation="The Y transformation in User Space" optional="false"/>
+            </sequence>
+            <sequence name="AntiTranslateSeq" optional="false" interpretation="The Anti-translate command defines a positional shift in the opposite direction to the Translate command above.  This allows the same variable references to be used to obtain an opposite action to a translate command.">
+              <declared_variant name="TX" declared_type_ref="HMITypes.Composite" interpretation="The negative X transformation in User Space" optional="false"/>
+              <declared_variant name="TY" declared_type_ref="HMITypes.Composite" interpretation="The negative Y transformation in User Space" optional="false"/>
+            </sequence>
+            <sequence name="RectangleSeq" optional="false" interpretation="The Rectangle command specifies a box drawing.  X, Y defines the lower left corner (assuming 0, 0) of the rectangle.  Width and height may be positive or negative.  The border of the rectangle is drawn using the active Pen color.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="The X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="The Y coordinate in User Space" optional="false"/>
+              <declared_variant name="Width" declared_type_ref="HMITypes.Composite" interpretation="The width value in User Space" optional="false"/>
+              <declared_variant name="Height" declared_type_ref="HMITypes.Composite" interpretation="The height value in User Space" optional="false"/>
+            </sequence>
+            <sequence name="FilledRectangleSeq" optional="false" interpretation="The Filled Rectangle command specifies a box drawing.  X, Y defines the lower left corner (assuming 0, 0) of the rectangle.  Width and height may be positive or negative.  The border of the rectangle is drawn using the active Pen color and filled with the active Brush color.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="The X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="The Y coordinate in User Space" optional="false"/>
+              <declared_variant name="Width" declared_type_ref="HMITypes.Composite" interpretation="The width value in User Space" optional="false"/>
+              <declared_variant name="Height" declared_type_ref="HMITypes.Composite" interpretation="The height value in User Space" optional="false"/>
+            </sequence>
+            <sequence name="CircleSeq" optional="false" interpretation="The Circle command defines a circle drawing.  X and Y define the center of the circle.  All values are in user coordinate space.  The border of the circle is drawn using the active Pen color.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="The X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="The Y coordinate in User Space" optional="false"/>
+              <declared_variant name="Radius" declared_type_ref="HMITypes.Composite" interpretation="The radius of the circle in User Space" optional="false"/>
+            </sequence>
+            <sequence name="FilledCircleSeq" optional="false" interpretation="The Filled Circle command defines a circle drawing.  The X and Y fields define the center of the circle.  The border of the circle is drawn using the active Pen color and filled with the active Brush color.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="The X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="The Y coordinate in User Space" optional="false"/>
+              <declared_variant name="Radius" declared_type_ref="HMITypes.Composite" interpretation="The radius of the circle in User Space" optional="false"/>
+            </sequence>
+            <sequence name="EllipseSeq" optional="false" interpretation="The Ellipse command defines an ellipse drawing.  X and Y define the bottom left corner of the ellipse and the width and height parameters define the size of the ellipse.  The border of the ellipse is drawn using the active Pen color.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="The X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="The Y coordinate in User Space" optional="false"/>
+              <declared_variant name="Width" declared_type_ref="HMITypes.Composite" interpretation="The width of the ellipse in User Space" optional="false"/>
+              <declared_variant name="Height" declared_type_ref="HMITypes.Composite" interpretation="The height of the ellipse in User Space" optional="false"/>
+            </sequence>
+            <sequence name="FilledEllipseSeq" optional="false" interpretation="The Filled Ellipse command defines an ellipse drawing.  X and Y define the center of the circle.  The border of the ellipse is drawn using the active Pen color and filled with the active Brush color.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="The X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="The Y coordinate in User Space" optional="false"/>
+              <declared_variant name="Width" declared_type_ref="HMITypes.Composite" interpretation="The width of the ellipse in User Space" optional="false"/>
+              <declared_variant name="Height" declared_type_ref="HMITypes.Composite" interpretation="The height of the ellipse in User Space" optional="false"/>
+            </sequence>
+            <sequence name="LineSeq" optional="false" interpretation="The Line command allows the user to define two points joined by a line to be drawn in the current Pen color and width.">
+              <declared_variant name="X1" declared_type_ref="HMITypes.Composite" interpretation="The start X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y1" declared_type_ref="HMITypes.Composite" interpretation="The start Y coordinate in User Space" optional="false"/>
+              <declared_variant name="X2" declared_type_ref="HMITypes.Composite" interpretation="The end X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y2" declared_type_ref="HMITypes.Composite" interpretation="The end Y coordinate in User Space" optional="false"/>
+            </sequence>
+            <list name="PolylineList" optional="false" interpretation="Draws a sequence of connected lines defined by arrays of X and Y coordinates.  Each pair of (X, Y) coordinates defines a point.  The figure shall not close if the first point differs from the last point.  The first X, Y pair in the list is the start point.  The polyline is drawn in the current Pen color and width.">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <sequence name="PolylineSeq" optional="false">
+                <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="X coordinate in User Space" optional="false"/>
+                <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="Y coordinate in User Space" optional="false"/>
+              </sequence>
+            </list>
+            <list name="PolygonList" optional="false" interpretation="Draws a sequence of connected lines defined by arrays of X and Y coordinates.  Each pair of (X, Y) coordinates defines a point.  The figure shall not close if the first point differs from the last point.  The first X, Y pair in the list is the start point.  The polygon is drawn in the current Pen color and width.">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <sequence name="PolygonSeq" optional="false">
+                <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="X coordinate in User Space" optional="false"/>
+                <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="Y coordinate in User Space" optional="false"/>
+              </sequence>
+            </list>
+            <list name="FilledPolygonList" optional="false" interpretation="Draws a closed polygon defined by arrays of X and Y coordinates.  Each pair of (X, Y) coordinates defines a point.  The figure closes automatically by drawing a line connecting the final point to the first point, if those points are different.  The first X, Y pair in the list is the start point.  The border of the polygon is drawn using the active Pen color and filled with the active Brush color.">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <sequence name="FilledPolygonSeq" optional="false">
+                <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="X coordinate in User Space" optional="false"/>
+                <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="Y coordinate in User Space" optional="false"/>
+              </sequence>
+            </list>
+            <sequence name="ArcSeq" optional="false" interpretation="Draws the outline of a circular or elliptical arc covering the specified rectangle.  The resulting arc begins at StartAngle and extends for ArcAngle degrees.  Angles are interpreted such that 0 degrees is at the 3 o'clock position. A positive value indicates a counter-clockwise rotation while a negative value indicates a clockwise rotation.  The center of the arc is the center of the rectangle whose origin is (X, Y).  The polygon is drawn in the current Pen color and width.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="The X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="The Y coordinate in User Space" optional="false"/>
+              <declared_variant name="Width" declared_type_ref="HMITypes.Composite" interpretation="The width of the arc to be drawn in User Space" optional="false"/>
+              <declared_variant name="Height" declared_type_ref="HMITypes.Composite" interpretation="The height of the arc to be drawn in User Space" optional="false"/>
+              <declared_variant name="StartAngle" declared_type_ref="HMITypes.Composite" interpretation="The beginning angle" optional="false"/>
+              <declared_variant name="ArcAngle" declared_type_ref="HMITypes.Composite" interpretation="The angular extent of the arc, relative to the start angle" optional="false"/>
+            </sequence>
+            <sequence name="FilledArcSec" optional="false" interpretation="Fills a circular or elliptical arc covering the specified rectangle.  The resulting arc begins at StartAngle and extends for ArcAngle degrees. Angles are interpreted such that 0 degrees is at the 3 o'clock position. A positive value indicates a counter-clockwise rotation while a negative value indicates a clockwise rotation.  The center of the arc is the center of the rectangle whose origin is (X, Y).  The border of the arc is drawn using the active Pen color and filled with the active Brush color.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="The X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="The Y coordinate in User Space" optional="false"/>
+              <declared_variant name="Width" declared_type_ref="HMITypes.Composite" interpretation="The width of the arc to be drawn in User Space" optional="false"/>
+              <declared_variant name="Height" declared_type_ref="HMITypes.Composite" interpretation="The height of the arc to be drawn in User Space" optional="false"/>
+              <declared_variant name="StartAngle" declared_type_ref="HMITypes.Composite" interpretation="The beginning angle" optional="false"/>
+              <declared_variant name="ArcAngle" declared_type_ref="HMITypes.Composite" interpretation="The angular extent of the arc, relative to the start angle" optional="false"/>
+            </sequence>
+            <variant name="PushVar" optional="false" interpretation="The Push command increases the stack level of the graphics transformation matrix stack, copying the current top-level matrix.  There are no parameters for this definition.">
+              <vtag_field field_type_unsigned="unsigned byte" interpretation="Set to 0"/>
+            </variant>
+            <variant name="PopVar" optional="false" interpretation="The Pop command decreases the stack level of the graphics transformation matrix stack, removing the current top-level matrix and returning to the transformation defined prior to the previous Push.  There are no parameters for this definition.">
+              <vtag_field field_type_unsigned="unsigned byte" interpretation="Set to 0"/>
+            </variant>
+            <declared_variant name="IfVar" declared_type_ref="HMITypes.Composite" interpretation="The If command starts a conditional block. Variable to test for true/false. Non-zero = false" optional="false"/>
+            <declared_variant name="ElseIfVar" declared_type_ref="HMITypes.Composite" interpretation="The Else If command starts an alternative conditional block. Variable to test for true/false. Non-zero = false" optional="false"/>
+            <variant name="ElseVar" optional="false" interpretation="The Else command starts a block of definitions for execution if preceding If and Else If statements were false.  There are no parameters for this definition.">
+              <vtag_field field_type_unsigned="unsigned byte" interpretation="Set to 0"/>
+            </variant>
+            <variant name="EndIfVar" optional="false" interpretation="Terminates a conditional block.  There are no parameters for this definition.">
+              <vtag_field field_type_unsigned="unsigned byte" interpretation="Set to 0"/>
+            </variant>
+            <declared_variant name="SelectVar" declared_type_ref="HMITypes.Composite" interpretation="Starts a case statement. Reference to value to be evaluated for each Case statement" optional="false"/>
+            <declared_variant name="CaseVar" declared_type_ref="HMITypes.Composite" interpretation="Starts a block of conditional commands executed if the specific value of the Case statement matches the current value of the Select statement. The value to be compared to the reference data in the Select statement" optional="false"/>
+            <variant name="DefaultVar" optional="false" interpretation="Starts a block for execution if no other Case statement command blocks were executed within a Select block.  There are no parameters for this definition.">
+              <vtag_field field_type_unsigned="unsigned byte" interpretation="Set to 0"/>
+            </variant>
+            <variant name="EndSelectVar" optional="false" interpretation="The End Select statement terminates a Select block.  There are no parameters for this definition.">
+              <vtag_field field_type_unsigned="unsigned byte" interpretation="Set to 0"/>
+            </variant>
+            <sequence name="ImageSeq" optional="false" interpretation="The Image statement defines an area where a static image can be displayed.  The image shall be scaled to fit within the defined area.  X, Y defines the lower left corner (assuming 0, 0) of the image.">
+              <declared_variant name="X" declared_type_ref="HMITypes.Composite" interpretation="The X coordinate in User Space" optional="false"/>
+              <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="The Y coordinate in User Space" optional="false"/>
+              <declared_variant name="Width" declared_type_ref="HMITypes.Composite" interpretation="The width of the image to be drawn in User Space" optional="false"/>
+              <declared_variant name="Height" declared_type_ref="HMITypes.Composite" interpretation="The height of the image to be drawn in User Space" optional="false"/>
+              <declared_variant name="Reference" declared_type_ref="HMITypes.Composite" interpretation="Reference to the data of image to display. Characterize flag will always be set to 1 (reference value)" optional="false"/>
+              <record name="ImageTypeRec" optional="false">
+                <fixed_field name="ImageType" field_type="byte" field_units="one" optional="false" interpretation="The encoding type of the image.">
+                  <value_set offset_to_lower_limit="false">
+                    <value_enum enum_index="0" enum_const="Portable PixMap (PPM)"/>
+                    <value_enum enum_index="1" enum_const="Joint Photographic Experts Group (JPEG)"/>
+                    <value_enum enum_index="2" enum_const="Tagged Image File Format (TIFF)"/>
+                    <value_enum enum_index="3" enum_const="National Imagery Transmission Format (NITFS)"/>
+                    <value_enum enum_index="4" enum_const="Bitmap (BMP)"/>
+                  </value_set>
+                </fixed_field>
+              </record>
+            </sequence>
+          </variant>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportDataDefinition" message_id="4701" is_command="false">
+    <description xml:space="preserve">
+      This message is used to allow a remote asset to define the content of data structures transmitted using Report Data messages for use within the Drawing Definition </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <sequence name="ReportDataDefinitionSeq" optional="false">
+        <record name="ReferenceRec" optional="false">
+          <fixed_field name="DataStructureReference" field_type="unsigned short integer" field_units="one" optional="false"/>
+        </record>
+        <list name="PrimitiveDataDefinitionList" optional="false">
+          <count_field field_type_unsigned="unsigned short integer"/>
+          <record name="PrimitiveDataDefinitionRec" optional="false">
+            <fixed_field name="PrimitiveDataDefinition" field_type="unsigned byte" field_units="one" optional="false">
+              <value_set offset_to_lower_limit="false">
+                <value_enum enum_index="0" enum_const="Byte"/>
+                <value_enum enum_index="1" enum_const="Short Integer"/>
+                <value_enum enum_index="2" enum_const="Integer"/>
+                <value_enum enum_index="3" enum_const="Long Integer"/>
+                <value_enum enum_index="4" enum_const="Unsigned Short Integer"/>
+                <value_enum enum_index="5" enum_const="Unsigned Integer"/>
+                <value_enum enum_index="6" enum_const="Unsigned Long Integer"/>
+                <value_enum enum_index="7" enum_const="Float"/>
+                <value_enum enum_index="8" enum_const="Long Float"/>
+                <value_enum enum_index="9" enum_const="Character"/>
+                <value_enum enum_index="10" enum_const="List of Bytes"/>
+                <value_enum enum_index="11" enum_const="List of Short Integers"/>
+                <value_enum enum_index="12" enum_const="List of Integers"/>
+                <value_enum enum_index="13" enum_const="List of Long Integers"/>
+                <value_enum enum_index="14" enum_const="List of Unsigned Short Integers"/>
+                <value_enum enum_index="15" enum_const="List of Unsigned Integers"/>
+                <value_enum enum_index="16" enum_const="List of Unsigned Long Integers"/>
+                <value_enum enum_index="17" enum_const="List of Floats"/>
+                <value_enum enum_index="18" enum_const="List of Long Floats"/>
+                <value_enum enum_index="19" enum_const="List of Characters"/>
+              </value_set>
+            </fixed_field>
+          </record>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportData" message_id="4702" is_command="false">
+    <description xml:space="preserve">
+      This message is used to pass blocks of data in a pre-determined format to the operator interface for use within the Drawing Definition</description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <sequence name="ReportDataSeq" optional="false">
+        <record name="ReportDataRec" optional="false">
+          <fixed_field name="DataStructureReference" field_type="unsigned short integer" field_units="one" optional="false" interpretation=" Unique reference to the data structure."/>
+        </record>
+        <list name="DataList" optional="false">
+          <count_field field_type_unsigned="unsigned short integer" min_count="0" max_count="65535"/>
+          <variant name="StructureFieldVar" optional="false">
+            <vtag_field field_type_unsigned="unsigned byte"/>
+            <record name="ByteRec" optional="false">
+              <fixed_field name="Data" field_type="unsigned byte" field_units="one" optional="false"/>
+            </record>
+            <record name="ShortIntRec" optional="false">
+              <fixed_field name="Data" field_type="short integer" field_units="one" optional="false"/>
+            </record>
+            <record name="IntegerRec" optional="false">
+              <fixed_field name="Data" field_type="integer" field_units="one" optional="false"/>
+            </record>
+            <record name="LongIntRec" optional="false">
+              <fixed_field name="Data" field_type="long integer" field_units="one" optional="false"/>
+            </record>
+            <record name="UShortIntRec" optional="false">
+              <fixed_field name="Data" field_type="unsigned short integer" field_units="one" optional="false"/>
+            </record>
+            <record name="UIntegerRec" optional="false">
+              <fixed_field name="Data" field_type="unsigned integer" field_units="one" optional="false"/>
+            </record>
+            <record name="ULongIntRec" optional="false">
+              <fixed_field name="Data" field_type="unsigned long integer" field_units="one" optional="false"/>
+            </record>
+            <record name="FloatRec" optional="false">
+              <fixed_field name="Data" field_type="float" field_units="one" optional="false"/>
+            </record>
+            <record name="LongFloatRec" optional="false">
+              <fixed_field name="Data" field_type="long float" field_units="one" optional="false"/>
+            </record>
+            <list name="ByteList" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="ByteRec" optional="false">
+                <fixed_field name="Data" field_type="unsigned byte" field_units="one" optional="false"/>
+              </record>
+            </list>
+            <list name="ShortIntList" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="ShortIntRec" optional="false">
+                <fixed_field name="Data" field_type="short integer" field_units="one" optional="false"/>
+              </record>
+            </list>
+            <list name="IntegerList" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="IntegerRec" optional="false">
+                <fixed_field name="Data" field_type="integer" field_units="one" optional="false"/>
+              </record>
+            </list>
+            <list name="LongIntList" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="LongIntRec" optional="false">
+                <fixed_field name="Data" field_type="long integer" field_units="one" optional="false"/>
+              </record>
+            </list>
+            <list name="UShortIntList" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="UShortIntRec" optional="false">
+                <fixed_field name="Data" field_type="unsigned short integer" field_units="one" optional="false"/>
+              </record>
+            </list>
+            <list name="UIntegerList" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="UIntegerRec" optional="false">
+                <fixed_field name="Data" field_type="unsigned integer" field_units="one" optional="false"/>
+              </record>
+            </list>
+            <list name="ULongIntList" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="ULongIntRec" optional="false">
+                <fixed_field name="Data" field_type="unsigned long integer" field_units="one" optional="false"/>
+              </record>
+            </list>
+            <list name="FloatList" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="FloatRec" optional="false">
+                <fixed_field name="Data" field_type="float" field_units="one" optional="false"/>
+              </record>
+            </list>
+            <list name="LongFloatList" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="LongFloatRec" optional="false">
+                <fixed_field name="Data" field_type="long float" field_units="one" optional="false"/>
+              </record>
+            </list>
+            <list name="CharList" optional="false">
+              <count_field field_type_unsigned="unsigned byte"/>
+              <record name="ByteRec" optional="false">
+                <fixed_field name="Data" field_type="unsigned byte" field_units="one" optional="false"/>
+              </record>
+            </list>
+          </variant>
+        </list>
+      </sequence>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportPointingDeviceMovement" message_id="4703" is_command="false">
+    <description xml:space="preserve">
+      This message is used to return the coordinates of the pointing device in the Graphics Viewport</description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportPointingDeviceMovementRec" optional="false">
+        <fixed_field name="X" field_type="integer" field_units="one" optional="false" interpretation="The X coordinate in user values"/>
+        <fixed_field name="Y" field_type="integer" field_units="one" optional="false" interpretation="The Y coordinate in user values"/>
+        <fixed_field name="Valid" field_type="byte" field_units="one" optional="false" interpretation="Determines if the pointing device is within the Graphics Viewport">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Invalid" interpretation="Cursor is outside the graphics viewport"/>
+            <value_enum enum_index="1" enum_const="Valid" interpretation="Cursor is within the graphics viewport"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportPointingDeviceAction" message_id="4704" is_command="false">
+    <description xml:space="preserve">
+      This message is used to return the pointing device coordinates and the state of the button</description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportPointingDeviceActionRec" optional="false">
+        <fixed_field name="Button" field_type="byte" field_units="one" optional="false" interpretation="Button code. 0=Left, 1=Middle, 2=Right">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Left"/>
+            <value_enum enum_index="1" enum_const="Middle"/>
+            <value_enum enum_index="2" enum_const="Right"/>
+          </value_set>
+        </fixed_field>
+        <fixed_field name="State" field_type="byte" field_units="one" optional="false" interpretation="The state of the button position. 0=Up, 1=Down">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Up"/>
+            <value_enum enum_index="1" enum_const="Down"/>
+          </value_set>
+        </fixed_field>
+        <fixed_field name="X" field_type="integer" field_units="one" optional="false" interpretation="The X coordinate in user values"/>
+        <fixed_field name="Y" field_type="integer" field_units="one" optional="false" interpretation="The Y coordinate in user values"/>
+        <fixed_field name="Valid" field_type="byte" field_units="one" optional="false" interpretation="Determines if the pointing device is within the Graphics Viewport">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Invalid" interpretation="Cursor is outside the graphics viewport"/>
+            <value_enum enum_index="1" enum_const="Valid" interpretation="Cursor is within the graphics viewport"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportKeyboardAction" message_id="4705" is_command="false">
+    <description xml:space="preserve">
+      This message is used to return keyboard presses</description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportKeyboardActionRec" optional="false">
+        <fixed_field name="Key" field_type="short integer" field_units="one" optional="false" interpretation="The 16-Bit Unicode value of the key."/>
+        <fixed_field name="KeyState" field_type="byte" field_units="one" optional="false" interpretation="If the key is pressed this value is set to 1. If the key is subsequently released this value is set to 0.">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Released"/>
+            <value_enum enum_index="1" enum_const="Pressed"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportDCM" message_id="4706" is_command="false">
+    <description xml:space="preserve">
+      This message is used to return digital control presses</description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportDCMRec" optional="false">
+        <fixed_field name="DCMReference" field_type="unsigned short integer" field_units="one" optional="false" interpretation="Unique reference to the digital control."/>
+        <fixed_field name="DCMStateCode" field_type="byte" field_units="one" optional="false" interpretation="Bit 0 set for down or pressed, bit clear for up or released.">
+          <value_set offset_to_lower_limit="false">
+            <value_enum enum_index="0" enum_const="Pressed"/>
+            <value_enum enum_index="1" enum_const="Released"/>
+          </value_set>
+        </fixed_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportAnalogDevices" message_id="4707" is_command="false">
+    <description xml:space="preserve">
+      This message is used to return a list of analog control devices on the operator interface</description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <list name="ReportAnalogDevicesList" optional="false" interpretation="List of reported analog devices">
+        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+        <record name="ReportAnalogDevicesRec" optional="false">
+          <fixed_field name="Reference" field_type="unsigned short integer" field_units="one" optional="false" interpretation="Unique reference to the analog device"/>
+          <variable_length_string name="Name" optional="false" interpretation="Textural identifier for the analog device in a null terminated ASCII String">
+            <count_field field_type_unsigned="unsigned byte"/>
+          </variable_length_string>
+        </record>
+      </list>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+  <message_def name="ReportAnalogAction" message_id="4708" is_command="false">
+    <description xml:space="preserve">
+      This message is used to provide the receiver the current deflection of an analog device.
+    </description>
+    <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader"/>
+    <body name="Body">
+      <record name="ReportAnalogActionRec" optional="false">
+        <presence_vector field_type_unsigned="unsigned byte"/>
+        <fixed_field name="Reference" field_type="unsigned short integer" field_units="one" optional="false" interpretation="Unique reference to the analog device"/>
+        <variable_field name="Longitudinal" interpretation="The forward demand. Positive forward." optional="true">
+          <type_and_units_field>
+            <type_and_units_enum index="0" field_type="byte" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="1" field_type="short integer" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="2" field_type="integer" field_units="one" name="rename_me"/>
+          </type_and_units_field>
+        </variable_field>
+        <variable_field name="Lateral" interpretation="The sideways demand. Positive right." optional="true">
+          <type_and_units_field>
+            <type_and_units_enum index="0" field_type="byte" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="1" field_type="short integer" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="2" field_type="integer" field_units="one" name="rename_me"/>
+          </type_and_units_field>
+        </variable_field>
+        <variable_field name="Vertical" interpretation="The vertical demand. Positive down." optional="true">
+          <type_and_units_field>
+            <type_and_units_enum index="0" field_type="byte" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="1" field_type="short integer" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="2" field_type="integer" field_units="one" name="rename_me"/>
+          </type_and_units_field>
+        </variable_field>
+        <variable_field name="Roll" interpretation="The roll demand. Positive clockwise." optional="true">
+          <type_and_units_field>
+            <type_and_units_enum index="0" field_type="byte" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="1" field_type="short integer" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="2" field_type="integer" field_units="one" name="rename_me"/>
+          </type_and_units_field>
+        </variable_field>
+        <variable_field name="Pitch" interpretation="The pitch demand. Positive nose up." optional="true">
+          <type_and_units_field>
+            <type_and_units_enum index="0" field_type="byte" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="1" field_type="short integer" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="2" field_type="integer" field_units="one" name="rename_me"/>
+          </type_and_units_field>
+        </variable_field>
+        <variable_field name="Yaw" interpretation="The yaw demand. Positive nose right." optional="true">
+          <type_and_units_field>
+            <type_and_units_enum index="0" field_type="byte" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="1" field_type="short integer" field_units="one" name="rename_me"/>
+            <type_and_units_enum index="2" field_type="integer" field_units="one" name="rename_me"/>
+          </type_and_units_field>
+        </variable_field>
+      </record>
+    </body>
+    <footer name="Footer"/>
+  </message_def>
+</declared_type_set>
