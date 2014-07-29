@@ -86,7 +86,7 @@
                   </value_set>
                 </fixed_field>
               </record>
-              <declared_variant name="Size" declared_type_ref="HMITypes.Composite" interpretation="Font point size (72 points per inch)" optional="false"/>
+              <declared_variant name="FontSize" declared_type_ref="HMITypes.Composite" interpretation="Font point size (72 points per inch)" optional="false"/>
               <record name="TextRec" optional="false">
                 <variable_length_string name="Text" optional="false" interpretation="Text of label in a null terminated ASCII String">
                   <count_field field_type_unsigned="unsigned byte"/>
@@ -111,7 +111,7 @@
                   </value_set>
                 </fixed_field>
               </record>
-              <declared_variant name="Size" declared_type_ref="HMITypes.Composite" interpretation="Font point size (72 points per inch)" optional="false"/>
+              <declared_variant name="FontSize" declared_type_ref="HMITypes.Composite" interpretation="Font point size (72 points per inch)" optional="false"/>
               <declared_variant name="DataReference" declared_type_ref="HMITypes.Composite" interpretation="Text of label in a null terminated ASCII String" optional="false"/>
             </sequence>
             <sequence name="RotateSeq" optional="false" interpretation="The Rotate command defines an angular rotation of the graphics transformation matrix.  Positive angles are a clockwise rotation.  By default, the rotation angle shall be 0 micro-radians from the horizontal.">
@@ -232,7 +232,7 @@
               <declared_variant name="Y" declared_type_ref="HMITypes.Composite" interpretation="The Y coordinate in User Space" optional="false"/>
               <declared_variant name="Width" declared_type_ref="HMITypes.Composite" interpretation="The width of the image to be drawn in User Space" optional="false"/>
               <declared_variant name="Height" declared_type_ref="HMITypes.Composite" interpretation="The height of the image to be drawn in User Space" optional="false"/>
-              <declared_variant name="Reference" declared_type_ref="HMITypes.Composite" interpretation="Reference to the data of image to display. Characterize flag will always be set to 1 (reference value)" optional="false"/>
+              <declared_variant name="ReferenceToData" declared_type_ref="HMITypes.Composite" interpretation="Reference to the data of image to display. Characterize flag will always be set to 1 (reference value)" optional="false"/>
               <record name="ImageTypeRec" optional="false">
                 <fixed_field name="ImageType" field_type="byte" field_units="one" optional="false" interpretation="The encoding type of the image.">
                   <value_set offset_to_lower_limit="false">
