@@ -55,6 +55,7 @@ public class RecordRepresentation extends StructureElementRepresentation {
     public RecordRepresentation(Record sourceRecord) {
         xAfterBold = 0;
         nameString = "name = " + sourceRecord.getName();
+		if (sourceRecord.isOptional()) nameString += " (optional=true)";
     }
 
     /**

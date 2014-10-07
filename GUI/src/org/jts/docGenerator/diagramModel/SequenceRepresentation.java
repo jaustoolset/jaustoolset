@@ -64,6 +64,7 @@ public class SequenceRepresentation extends StructureElementRepresentation {
     public SequenceRepresentation(Sequence sourceSequence) {
 
         nameString = "name = " + sourceSequence.getName();
+		if (sourceSequence.isOptional()) nameString += " (optional=true)";
         contents = new ArrayList<StructureElementRepresentation>();
 
         // sequence contains a list of one or more elements that may be records, lists, variants, or sequences, in any

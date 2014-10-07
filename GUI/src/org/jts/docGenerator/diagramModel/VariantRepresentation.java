@@ -71,6 +71,7 @@ public class VariantRepresentation extends StructureElementRepresentation {
         contents = new ArrayList<StructureElementRepresentation>();
         attributeFieldTypeString = sourceVariant.getVtagField().getFieldTypeUnsigned();
         nameString = "name = " + sourceVariant.getName();
+		if (sourceVariant.isOptional()) nameString += " (optional=true)";
 
         if (sourceVariant.getVtagField() != null
                 && sourceVariant.getVtagField().getFieldTypeUnsigned() != null) {

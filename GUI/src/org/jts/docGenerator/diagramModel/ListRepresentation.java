@@ -56,6 +56,7 @@ public class ListRepresentation extends StructureElementRepresentation {
      */
     public ListRepresentation(List sourceList) {
         nameString = "name = " + sourceList.getName();
+		if (sourceList.isOptional()) nameString += " (optional=true)";
 
         if (sourceList.getCountField() != null
                 && sourceList.getCountField().getFieldTypeUnsigned() != null) {
