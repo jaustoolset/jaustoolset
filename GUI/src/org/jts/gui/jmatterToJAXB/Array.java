@@ -51,7 +51,8 @@ public class Array {
     aa.setOptional( array.getOptional().booleanValue() );
      
      // interpretation
-    Conversion.setNonEmptyDescription(aa, array);
+	 if (!array.getInterpretation().toString().isEmpty())
+		aa.setInterpretation( array.getInterpretation().toString() );
      
      // dimensions 
     List dimensionList = array.getDimensions().getItems();

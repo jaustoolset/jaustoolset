@@ -280,7 +280,8 @@
           destdir="${build.classes.dir}"
           classpathref="class.path"
           listfiles="true"
-          target="1.5"
+          target="1.7"
+          source="1.7"
           debug="on" deprecation="on" />
         <java classname="org.jts.gui.autoUpdateCode.AllUpdates" classpathref="class.path" fork="true"/>
     </target>
@@ -289,7 +290,8 @@
 			destdir="${build.classes.dir}"
 			classpathref="class.path"
 			listfiles="true"
-			target="1.5"
+			target="1.7"
+          source="1.7"
 			debug="on" deprecation="on" />
 		
         <make-persistclasses template="${src.dir}/persistClasses.st"

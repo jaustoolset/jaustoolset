@@ -75,18 +75,18 @@ public class Array
 		    if(jxArray.getInterpretation() != null)
 		    {
 		    	String interpretation = jxArray.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-				if(interpretation.length() > 255)
-				{
-					String temp = interpretation.substring(0, 255);
-					jmArray.getInterpretation().setValue(temp);
-					
-					ImportMessages importMsgs = ImportMessages.getInstance();
-					importMsgs.add(ImportMessages.MessageType.WARNING, "Array ("+jxArray.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
-				}
-				else
-				{
+				//if(interpretation.length() > 255)
+				//{
+				//	String temp = interpretation.substring(0, 255);
+				//	jmArray.getInterpretation().setValue(temp);
+				//	
+				//	ImportMessages importMsgs = ImportMessages.getInstance();
+				//	importMsgs.add(ImportMessages.MessageType.WARNING, "Array ("+jxArray.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
+				//}
+				//else
+				//{
 					jmArray.getInterpretation().setValue(interpretation);
-				}
+				//}
 		    }
 
 		    // Array Field Type
