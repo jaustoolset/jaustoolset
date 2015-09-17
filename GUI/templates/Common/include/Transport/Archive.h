@@ -324,7 +324,7 @@ inline void Archive::removeAt( int index, int length )
 {
     // Shift the tail data forward and reduce the count.
     char* tail = &data[index + length]; 
-    memcpy( &data[index], tail, data_length - length - index);
+    memmove( &data[index], tail, data_length - length - index);
     data_length -= length;
 }
 
