@@ -417,7 +417,7 @@ public class VariableLengthStringGenerator
                 methodCode.add(tempVariableName+"[" + variableName + "Length] = '\\0';");
                 methodCode.add(variableName + " = " + tempVariableName + ";");
                 methodCode.add("pos += " + variableName + "Length ;");
-                methodCode.add("delete " + tempVariableName + ";");
+                methodCode.add("delete[] " + tempVariableName + ";");
 
                 if (vlString.isOptional())
                 {
