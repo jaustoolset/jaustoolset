@@ -18,6 +18,7 @@ env.Append( BINPATH = '#./bin')
 
 
 # Some stuff is platform specific
+extra_libs = []
 if env['PLATFORM'] == 'cygwin':
 	print 'scons: Building for CYGWIN...'
 	env.Append( CCFLAGS = ['-D__CYGWIN__'] )
@@ -33,9 +34,10 @@ elif env['PLATFORM'] == 'darwin':
 elif os.name == 'posix':
 	env.Append( LINKFLAGS = ['-lpthread', '-lrt'] )
 	env.Append( CPPFLAGS = ['-g', '-Wno-write-strings'])
+	extra_libs = ['pthread', 'rt']
 Export('env')
 
 # Build the common library then the NM executable
 SConscript([common_dir + '/Sconstruct'])
-env.Program('./bin/NodeManager', 'Build/main.cpp', LIBS='Common')
+env.Program('./bin/NodeManager', 'Build/main.cpp', LIBS=['Common', extra_libs])
 env.Install('./bin', 'src/nm.cfg' )

@@ -195,7 +195,7 @@ public class SconstructGenerator
 			}
 			buf.append("'").append(lib).append("'");
 		}
-		buf.append("])");
+		buf.append(", extra_libs])");
 		    	
     	return buf.toString();
     }
@@ -260,6 +260,7 @@ public class SconstructGenerator
 		buf.append("env.Append( BINPATH = '#./bin')").append(System.getProperty("line.separator"));
 		buf.append("").append(System.getProperty("line.separator"));
 		buf.append("# Some stuff is platform specific").append(System.getProperty("line.separator"));
+        buf.append("extra_libs = []").append(System.getProperty("line.separator"));
 		buf.append("if env['PLATFORM'] == 'cygwin':").append(System.getProperty("line.separator"));
 		buf.append("\tprint 'scons: Building for CYGWIN...'").append(System.getProperty("line.separator"));
 		buf.append("\tenv.Append( CCFLAGS = ['-D__CYGWIN__'] )").append(System.getProperty("line.separator"));
@@ -275,6 +276,7 @@ public class SconstructGenerator
 		buf.append("elif os.name == 'posix':").append(System.getProperty("line.separator"));
 		buf.append("\tenv.Append( LINKFLAGS = ['-lpthread', '-lrt'] )").append(System.getProperty("line.separator"));
 		buf.append("\tenv.Append( CPPFLAGS = ['-g', '-Wno-write-strings'])").append(System.getProperty("line.separator"));
+        buf.append("\textra_libs = ['pthread', 'rt']").append(System.getProperty("line.separator"));
 		buf.append("Export('env')").append(System.getProperty("line.separator"));
 		buf.append(System.getProperty("line.separator"));			
 		
