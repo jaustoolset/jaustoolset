@@ -302,10 +302,10 @@
                              real_upper_limit="5"
                              integer_function="round"/>
               </fixed_field>
-              <fixed_field name="MaxTorque"
+              <fixed_field name="MaxForce"
                            optional="true"
                            field_type="unsigned integer"
-                           field_units="newton meter">
+                           field_units="newton">
                 <scale_range real_lower_limit="0"
                              real_upper_limit="5000"
                              integer_function="round"/>
