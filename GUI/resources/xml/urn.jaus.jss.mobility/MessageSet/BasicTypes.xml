@@ -177,7 +177,7 @@
   <!-- GlobalVector -->
   <record name="GlobalVectorRec" optional="false">
     <presence_vector field_type_unsigned="unsigned byte"/>
-    <declared_fixed_field name="Speed" declared_type_ref="Speed" optional="false"/> 
+    <declared_fixed_field name="Speed" declared_type_ref="Speed" optional="true"/> 
     <fixed_field name="Altitude" field_type="unsigned integer" field_units="meter" optional="true">
       <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
     </fixed_field>
@@ -194,7 +194,7 @@
   <!-- LocalVector -->
   <record name="LocalVectorRec" optional="false">
     <presence_vector field_type_unsigned="unsigned byte"/>
-    <declared_fixed_field name="Speed" declared_type_ref="Speed" optional="false"/> 
+    <declared_fixed_field name="Speed" declared_type_ref="Speed" optional="true"/> 
     <fixed_field name="Z" field_type="unsigned integer" field_units="meter" optional="true">
       <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
     </fixed_field>
