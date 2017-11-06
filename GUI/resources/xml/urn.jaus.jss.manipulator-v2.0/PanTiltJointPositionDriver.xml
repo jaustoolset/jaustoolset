@@ -22,8 +22,8 @@
     <input_set>
       <declared_message_def name="QueryCommandedPanTiltJointPositions"
         declared_type_ref="manipulator.queryClass.QueryCommandedPanTiltJointPositions"/>
-      <declared_message_def name="SetPanTiltJointPositions"
-        declared_type_ref="manipulator.commandClass.SetPanTiltJointPositions"/>
+      <declared_message_def name="SetPanTiltJointPosition"
+        declared_type_ref="manipulator.commandClass.SetPanTiltJointPosition"/>
     </input_set>
     <output_set>
       <declared_message_def name="ReportCommandedPanTiltJointPositions"
@@ -66,7 +66,7 @@
                     interpretation="Stop motion of the pan tilt unit."/>
                 </exit>
                 <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="SetPanTiltJointPositions" value="msg"
+                  <parameter type="SetPanTiltJointPosition" value="msg"
                     interpretation="enveloped set Pan Tilt joint efforts message"/>
                   <parameter type="Receive.Body.ReceiveRec" value="transportData"
                     interpretation="transport data"/>

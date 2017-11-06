@@ -377,7 +377,7 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="ReportCommandedJointPositions" message_id="4608" is_command="false">
+  <message_def name="ReportCommandedJointPosition" message_id="4608" is_command="false">
     <description xml:space="preserve">
       This message provides the receiver with the commanded joint positions.
     </description>

@@ -20,14 +20,14 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryCommandedJointPositions"
-        declared_type_ref="manipulator.queryClass.QueryCommandedJointPositions"/>
-      <declared_message_def name="SetJointPositions"
-        declared_type_ref="manipulator.commandClass.SetJointPositions"/>
+      <declared_message_def name="QueryCommandedJointPosition"
+        declared_type_ref="manipulator.queryClass.QueryCommandedJointPosition"/>
+      <declared_message_def name="SetJointPosition"
+        declared_type_ref="manipulator.commandClass.SetJointPosition"/>
     </input_set>
     <output_set>
-      <declared_message_def name="ReportCommandedJointPositions"
-        declared_type_ref="manipulator.informClass.ReportCommandedJointPositions"/>
+      <declared_message_def name="ReportCommandedJointPosition"
+        declared_type_ref="manipulator.informClass.ReportCommandedJointPosition"/>
     </output_set>
   </message_set>
   <internal_events_set/>
@@ -44,14 +44,14 @@
 
             <default_state>
               <transition name="management.accessControl.events.transport.Receive">
-                <parameter type="QueryCommandedJointPositions" value="msg"
-                  interpretation="enveloped query commanded Joint Positions message"/>
+                <parameter type="QueryCommandedJointPosition" value="msg"
+                  interpretation="enveloped query commanded Joint Position message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
                 <simple/>
                 <action name="management.accessControl.events.transport.Send"
-                  interpretation="Send a Report Commanded Joint Positions message">
-                  <argument value=" 'ReportCommandedJointPositions' "/>
+                  interpretation="Send a Report Commanded Joint Position message">
+                  <argument value=" 'ReportCommandedJointPosition' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>
@@ -66,7 +66,7 @@
                     interpretation="Stop motion of the manipulator."/>
                 </exit>
                 <transition name="management.accessControl.events.transport.Receive">
-                  <parameter type="SetJointPositions" value="msg"
+                  <parameter type="SetJointPosition" value="msg"
                     interpretation="enveloped set joint efforts message"/>
                   <parameter type="Receive.Body.ReceiveRec" value="transportData"
                     interpretation="transport data"/>
@@ -87,14 +87,14 @@
             </state>
             <default_state>
               <transition name="management.accessControl.events.transport.Receive">
-                <parameter type="QueryCommandedJointPositions" value="msg"
-                  interpretation="enveloped query commanded Joint Positions message"/>
+                <parameter type="QueryCommandedJointPosition" value="msg"
+                  interpretation="enveloped query commanded Joint Position message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
                 <simple/>
                 <action name="management.accessControl.events.transport.Send"
-                  interpretation="Send a Report Commanded Joint Positions message">
-                  <argument value=" 'ReportCommandedJointPositions' "/>
+                  interpretation="Send a Report Commanded Joint Position message">
+                  <argument value=" 'ReportCommandedJointPosition' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>

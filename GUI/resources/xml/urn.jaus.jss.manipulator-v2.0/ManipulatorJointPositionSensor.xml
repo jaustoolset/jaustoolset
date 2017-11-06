@@ -18,12 +18,12 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryJointPositions"
-        declared_type_ref="manipulator.queryClass.QueryJointPositions"/>
+      <declared_message_def name="QueryJointPosition"
+        declared_type_ref="manipulator.queryClass.QueryJointPosition"/>
     </input_set>
     <output_set>
-      <declared_message_def name="ReportJointPositions"
-        declared_type_ref="manipulator.informClass.ReportJointPositions"/>
+      <declared_message_def name="ReportJointPosition"
+        declared_type_ref="manipulator.informClass.ReportJointPosition"/>
     </output_set>
   </message_set>
   <internal_events_set/>
@@ -36,7 +36,7 @@
         <state name="Ready">
           <default_state>
             <transition name="events.transport.Receive">
-              <parameter type="QueryJointPositions" value="msg"
+              <parameter type="QueryJointPosition" value="msg"
                 interpretation="enveloped query joint positions message"/>
               <parameter type="Receive.Body.ReceiveRec" value="transportData"
                 interpretation="transport data"/>
@@ -44,7 +44,7 @@
               <action name="events.transport.Send"
                 interpretation="Send Report Joint Positions message to the service 
                 that sent the query">
-                <argument value=" 'ReportJointPositions' "/>
+                <argument value=" 'ReportJointPosition' "/>
                 <argument value="transportData"/>
               </action>
             </transition>

@@ -69,9 +69,9 @@
     <body name="Body" />
     <footer name="Footer" />
   </message_def>
-  <message_def name="QueryCommandedJointPositions" message_id="2608" is_command="false">
+  <message_def name="QueryCommandedJointPosition" message_id="2608" is_command="false">
     <description xml:space="preserve">
-      This message shall cause the receiving service to reply to the requestor with a ID 4608h: ReportCommandedJointPositions message.
+      This message shall cause the receiving service to reply to the requestor with a ID 4608h: ReportCommandedJointPosition message.
     </description>
     <declared_header name="AppHeader" declared_type_ref="basicTypes.JAUSApplicationLayerHeader" />
     <body name="Body" />
