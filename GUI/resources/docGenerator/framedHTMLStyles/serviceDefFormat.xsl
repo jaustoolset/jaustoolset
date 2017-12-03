@@ -1037,8 +1037,55 @@
 	</xsl:template>
 	
 	<xsl:template match="array">
-		<image src="images/branch.gif" width="15" height="14"/> array name = <xsl:value-of select="@name"/>
-		<br/>
+		<tr>
+			<td align="center">
+				<div>
+					<xsl:value-of select="@name"/>
+					<br/>
+					(array)
+				</div>
+			</td>
+			<td align="center">
+				<div>
+					<xsl:text>Array of </xsl:text>
+					<xsl:choose>
+						<!-- if child has a field_type attrib, use type info there -->
+						<xsl:when test="child::*/@field_type">
+							<xsl:value-of select="child::*/@field_type"/>
+						</xsl:when>
+						<!-- if child has a field_type_unsigned attrib, use type info there -->
+						<xsl:when test="child::*/@field_type_unsigned">
+							<xsl:value-of select="child::*/@field_type_unsigned"/>
+						</xsl:when>
+					</xsl:choose>
+				</div>
+			</td>
+			<td align="center">
+				<div>
+					<xsl:value-of select="@field_units"/>
+				</div>
+			</td>
+			<td align="center">
+				<div>
+					<xsl:value-of select="@optional"/>
+				</div>
+			</td>
+			<td align="left">
+				<div>
+					<xsl:if test="@interpretation">
+						<xsl:value-of select="@interpretation"/>
+						<br/>
+					</xsl:if>
+					<!-- output dimension info -->
+					<xsl:for-each select="child::dimension">
+						<font-resize font-size="8pt">
+							<xsl:text>dimension size = </xsl:text><xsl:value-of select="@size"/>
+						</font-resize>
+						<br/>
+					</xsl:for-each>
+				</div>
+			</td>
+		</tr>
 	</xsl:template>
 	
 	<xsl:template match="declared_array">

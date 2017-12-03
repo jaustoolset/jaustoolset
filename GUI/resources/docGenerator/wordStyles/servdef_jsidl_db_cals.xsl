@@ -78,7 +78,7 @@
       id=<xsl:value-of select="@id"/>
       </para>
 
-      <xsl:apply-templates select="jaus:description | jaus:assumptions" />
+      <xsl:apply-templates select="jaus:description | jaus:assumptions | jaus:references" />
       
       <section>
         <title>Vocabulary</title>
@@ -395,6 +395,34 @@
       <para>
         <xsl:value-of select="."/>
       </para>
+    </section>
+  </xsl:template>
+
+  <xsl:template match="jaus:references">
+    <section>
+      <title>References</title>
+
+      <xsl:if test="count(jaus:inherits_from) > 0">
+        <para>
+          Inherits-from=<xsl:value-of select="jaus:inherits_from/@name"/>
+          <xsl:processing-instruction name="linebreak"/>
+          version=<xsl:value-of select="jaus:inherits_from/@version"/>
+          <xsl:processing-instruction name="linebreak"/>
+          id=<xsl:value-of select="jaus:inherits_from/@id"/>
+          <xsl:processing-instruction name="linebreak"/>
+        </para>
+      </xsl:if>
+
+      <xsl:if test="count(jaus:client_of) > 0">
+        <para>
+          Client-of=<xsl:value-of select="jaus:client_of/@name"/>
+          <xsl:processing-instruction name="linebreak"/>
+          version=<xsl:value-of select="jaus:client_of/@version"/>
+          <xsl:processing-instruction name="linebreak"/>
+          id=<xsl:value-of select="jaus:client_of/@id"/>
+          <xsl:processing-instruction name="linebreak"/>
+        </para>
+      </xsl:if>
     </section>
   </xsl:template>
 
@@ -1150,7 +1178,9 @@
 
   <!-- used by variable_fields via type_and_units_field.  1 or more of them may exist -->
   <xsl:template match="jaus:type_and_units_enum" mode="cell">
-    <xsl:text>Index = </xsl:text><xsl:value-of select="@index"/><xsl:processing-instruction name="linebreak"/>
+    <xsl:text>Index = </xsl:text><xsl:value-of select="@index"/>
+    <xsl:text>  </xsl:text><xsl:value-of select="@name"/>
+    <xsl:processing-instruction name="linebreak"/>
     <xsl:if test="@field_type">
       <font-resize font-size="8pt">
       <xsl:text>Field Type = </xsl:text><xsl:value-of select="@field_type"/>
@@ -1471,6 +1501,9 @@
      <xsl:text>..</xsl:text>
      <xsl:value-of select="jaus:bit_range/@to_index"/>
      <xsl:text>, </xsl:text>
+     <xsl:value-of select="@name"/>
+      <xsl:text>: </xsl:text>
+      <xsl:value-of select="@interpretation"/>
     </font-resize>
     <xsl:processing-instruction name="linebreak"/>
     <xsl:apply-templates select="jaus:value_set" mode="cell"/>
