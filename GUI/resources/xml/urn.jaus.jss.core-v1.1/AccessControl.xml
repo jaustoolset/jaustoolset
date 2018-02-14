@@ -199,7 +199,6 @@
                     Reject Control message with the specified response code to
                     the                     client that currently has control."/>
                   <argument value=" 'CONTROL_RELEASED' "/>
-                  <argument value="transportData"/>
                 </action>
                 <action name="StoreAddress" interpretation="Store the address of
                   the client that                 sent                   the
@@ -369,7 +368,7 @@
               </transition>
               <transition name="Timedout">
                 <internal xmlns="urn:jaus:jsidl:1.1"/>
-                <action name="resetTimer" interpretation="reset the timer"/>
+                <action name="ResetTimer" interpretation="reset the timer"/>
               </transition>
             </state>
           </state>
