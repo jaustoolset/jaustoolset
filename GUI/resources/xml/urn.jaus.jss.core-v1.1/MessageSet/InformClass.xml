@@ -164,6 +164,7 @@
           field_units="minute" optional="false">
           <value_set offset_to_lower_limit="false">
             <value_enum enum_index="0" enum_const="TIMEOUT_FEATURE _DISABLED"/>
+            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
           </value_set>
         </fixed_field>
       </record>
