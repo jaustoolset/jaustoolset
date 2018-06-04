@@ -19,7 +19,7 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="SetJointPositions" message_id="0602" is_command="true">
+  <message_def name="SetJointPosition" message_id="0602" is_command="true">
     <description xml:space="preserve">
       This message sets the desired joint position values.  The message must contain a position command for each joint in the manipulator.
     </description>
@@ -99,7 +99,7 @@
     </body>
     <footer name="Footer" />
   </message_def>
-  <message_def name="SetPanTiltJointPositions" message_id="0622" is_command="true">
+  <message_def name="SetPanTiltJointPosition" message_id="0622" is_command="true">
     <description xml:space="preserve">
       This message sets the desired joint position values for a pan tilt mechanism.
     </description>

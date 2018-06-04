@@ -21,12 +21,12 @@
   </declared_type_set>
   <message_set>
     <input_set>
-      <declared_message_def name="QueryCommandedJointPositions"
-        declared_type_ref="manipulator.queryClass.QueryCommandedJointPositions"/>
+      <declared_message_def name="QueryCommandedJointPosition"
+        declared_type_ref="manipulator.queryClass.QueryCommandedJointPosition"/>
     </input_set>
     <output_set>
-      <declared_message_def name="ReportCommandedJointPositions"
-        declared_type_ref="manipulator.informClass.ReportCommandedJointPositions"/>
+      <declared_message_def name="ReportCommandedJointPosition"
+        declared_type_ref="manipulator.informClass.ReportCommandedJointPosition"/>
     </output_set>
   </message_set>
   <internal_events_set/>
@@ -45,7 +45,7 @@
             <default_state>
               <transition
                 name="manipulatorListDriver.listManager.management.accessControl.events.transport.Receive">
-                <parameter type="QueryCommandedJointPositions" value="msg"
+                <parameter type="QueryCommandedJointPosition" value="msg"
                   interpretation="enveloped query commanded Joint Positions message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
@@ -55,7 +55,7 @@
                 <action
                   name="manipulatorListDriver.listManager.management.accessControl.events.transport.Send"
                   interpretation="Send a Report Commanded Joint Positions message">
-                  <argument value=" 'ReportCommandedJointPositions' "/>
+                  <argument value=" 'ReportCommandedJointPosition' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>
@@ -93,7 +93,7 @@
             <default_state>
               <transition
                 name="manipulatorListDriver.listManager.management.accessControl.events.transport.Receive">
-                <parameter type="QueryCommandedJointPositions" value="msg"
+                <parameter type="QueryCommandedJointPosition" value="msg"
                   interpretation="enveloped query commanded Joint Positions message"/>
                 <parameter type="Receive.Body.ReceiveRec" value="transportData"
                   interpretation="transport data"/>
@@ -103,7 +103,7 @@
                 <action
                   name="manipulatorListDriver.listManager.management.accessControl.events.transport.Send"
                   interpretation="Send a Report Commanded Joint Positions message">
-                  <argument value=" 'ReportCommandedJointPositions' "/>
+                  <argument value=" 'ReportCommandedJointPosition' "/>
                   <argument value="transportData"/>
                 </action>
               </transition>
