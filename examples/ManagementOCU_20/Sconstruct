@@ -18,6 +18,7 @@ env.Append( INSTALL_LIB = '#./lib')
 env.Append( BINPATH = '#./bin')
 
 # Some stuff is platform specific
+extra_libs=[]
 if env['PLATFORM'] == 'cygwin':
 	print 'scons: Building for CYGWIN...'
 	env.Append( CCFLAGS = ['-D__CYGWIN__'] )
@@ -33,7 +34,8 @@ elif env['PLATFORM'] == 'darwin':
 elif os.name == 'posix':
 	env.Append( LINKFLAGS = ['-lpthread', '-lrt'] )
 	env.Append( CPPFLAGS = ['-g', '-Wno-write-strings'])
+	extra_libs.append(['pthread', 'rt'])
 Export('env')
 
 SConscript([common_dir + '/Sconstruct' , 'src/urn_jts_example_management_ocu_1_0/Sconstruct'])
-env.Program('./bin/ManagementOCU_20', sources, LIBS=['ManagementOCUService', 'Common'])
+env.Program('./bin/ManagementOCU_20', sources, LIBS=['ManagementOCUService', 'Common', extra_libs])

@@ -18,6 +18,7 @@ env.Append( INSTALL_LIB = '#./lib')
 env.Append( BINPATH = '#./bin')
 
 # Some stuff is platform specific
+extra_libs=[]
 if env['PLATFORM'] == 'cygwin':
 	print 'scons: Building for CYGWIN...'
 	env.Append( CCFLAGS = ['-D__CYGWIN__'] )
@@ -33,7 +34,8 @@ elif env['PLATFORM'] == 'darwin':
 elif os.name == 'posix':
 	env.Append( LINKFLAGS = ['-lpthread', '-lrt'] )
 	env.Append( CPPFLAGS = ['-g', '-Wno-write-strings'])
+	extra_libs.append(['pthread', 'rt'])
 Export('env')
 
 SConscript([common_dir + '/Sconstruct' , 'src/urn_jaus_jss_core_AccessControl_1_0/Sconstruct', 'src/urn_jaus_jss_core_Events_1_0/Sconstruct', 'src/urn_jaus_jss_core_Transport_1_0/Sconstruct', 'src/urn_jaus_jss_environmentSensing_StillImage_1_0/Sconstruct', 'src/urn_jaus_jss_environmentSensing_VisualSensor_1_0/Sconstruct'])
-env.Program('./bin/StillImageServer_200', sources, LIBS=['TransportService', 'EventsService', 'AccessControlService', 'VisualSensorService', 'StillImageService', 'Common'])
+env.Program('./bin/StillImageServer_200', sources, LIBS=['TransportService', 'EventsService', 'AccessControlService', 'VisualSensorService', 'StillImageService', 'Common', extra_libs])
