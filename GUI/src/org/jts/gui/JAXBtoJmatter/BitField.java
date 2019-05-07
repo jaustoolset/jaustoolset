@@ -33,8 +33,10 @@ POSSIBILITY OF SUCH DAMAGE.
 package org.jts.gui.JAXBtoJmatter;
 
 import org.jts.gui.importJSIDL.ImportMessages;
+import org.jts.gui.util.SubFieldComparator;
 
 import com.u2d.app.Context;
+import java.util.Collections;
 
 import java.util.List;
 
@@ -94,6 +96,9 @@ public class BitField
 		    List jxList = jxBitField.getSubField();
 		    if(jxList != null)
 		    {
+        	        // Sort the SubFields first by BitRange, then by name.
+	                Collections.sort(jxList, new SubFieldComparator());
+
 		    	List jmList = jmBitField.getSubFields().getItems();
 		    	for(int i = 0; i < jxList.size(); i++)
 		    	{

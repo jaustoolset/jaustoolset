@@ -32,9 +32,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.jts.gui.jmatterToJAXB;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jts.gui.util.Conversion;
+import org.jts.gui.util.SubFieldComparator;
 
 /* Converts JMatter BitField to a JAXB BitField.
 */
@@ -63,6 +65,7 @@ public class BitField {
      {
     	 jxList.add(org.jts.gui.jmatterToJAXB.SubField.convert((com.u2d.generated.SubField)jmList.get(ii)));
      }
+     Collections.sort(jxList, new SubFieldComparator());
       
      return bf;
   }
