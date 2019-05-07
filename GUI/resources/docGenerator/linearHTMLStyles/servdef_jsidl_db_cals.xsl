@@ -1145,7 +1145,11 @@
   
   <!-- used by variable_fields via type_and_units_field.  1 or more of them may exist -->
   <xsl:template match="jaus:type_and_units_enum" mode="cell">
-    <xsl:text>Index = </xsl:text><xsl:value-of select="@index"/><xsl:processing-instruction name="linebreak"/>
+    <xsl:text>Index = </xsl:text><xsl:value-of select="@index"/>
+    <xsl:if test="@name">
+        <xsl:text>: </xsl:text><xsl:value-of select="@name"/>
+    </xsl:if>
+    <xsl:processing-instruction name="linebreak"/>
     <xsl:if test="@field_type">
         <xsl:text>Field Type = </xsl:text><xsl:value-of select="@field_type"/>
       <xsl:processing-instruction name="linebreak"/>
@@ -1448,6 +1452,9 @@
      <xsl:value-of select="jaus:bit_range/@from_index"/>
      <xsl:text>..</xsl:text>
      <xsl:value-of select="jaus:bit_range/@to_index"/>
+     <xsl:if test="@name">
+        <xsl:text>: </xsl:text><xsl:value-of select="@name"/>
+    </xsl:if>
      <xsl:text>, </xsl:text>
     <xsl:processing-instruction name="linebreak"/>
     <xsl:apply-templates select="jaus:value_set" mode="cell"/>
