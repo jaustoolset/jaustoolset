@@ -625,7 +625,7 @@ void ReportServices::Body::NodeListResponse::NodeSeqResponse::ComponentListRespo
 	m_URITemp[length] = '\0';
 	m_URI = m_URITemp;
 	pos += length ;
-	delete m_URITemp;
+	delete[] m_URITemp;
 	jUnsignedByte m_MajorVersionNumberTemp;
 	
 	memcpy(&m_MajorVersionNumberTemp, bytes + pos, sizeof(jUnsignedByte));
