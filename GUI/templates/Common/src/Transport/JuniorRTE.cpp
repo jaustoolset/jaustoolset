@@ -362,4 +362,5 @@ int DllExport RunJuniorRTE(std::string config_file)
     JrInfo << "Shutting down Junior RTE...\n";
     for (_iter = _transports.begin(); _iter != _transports.end(); ++_iter)
         delete (*_iter);
+    return 0;
 }
