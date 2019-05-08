@@ -49,7 +49,12 @@ public class TypeAndUnitsEnum
 		
 		com.u2d.generated.TypeAndUnitsEnum jmTypeAndUnitsEnum = new com.u2d.generated.TypeAndUnitsEnum();
 		
-		jmTypeAndUnitsEnum.getName().setValue("MUST_RENAME");
+                String name = jxTypeAndUnitsEnum.getName();
+                if(name == null || name.isEmpty()) {
+		  jmTypeAndUnitsEnum.getName().setValue("MUST_RENAME");
+                } else {
+                  jmTypeAndUnitsEnum.getName().setValue(name);
+                }
 		
 		// Index
 		jmTypeAndUnitsEnum.getIndex().setValue(jxTypeAndUnitsEnum.getIndex());

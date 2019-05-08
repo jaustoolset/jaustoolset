@@ -46,7 +46,12 @@ public class FormatEnum
 		// NOTE: There is nothing significant in a FormatEnum's definition that would allow it to be looked up in the db
 		com.u2d.generated.FormatEnum jmFormatEnum = new com.u2d.generated.FormatEnum();
 		
-		jmFormatEnum.getName().setValue("MUST_RENAME");
+                String name = jxFormatEnum.getFieldFormat();
+                if(name == null || name.isEmpty()) {
+                    jmFormatEnum.getName().setValue("MUST_RENAME");
+                } else {
+                    jmFormatEnum.getName().setValue(name);
+                }
 		
 		// Index
 		jmFormatEnum.getIndex().setValue(jxFormatEnum.getIndex());
