@@ -43,8 +43,8 @@ public  class BitRange extends AbstractComplexEObject_JTS{
     public IntEO getToIndex() { return toIndex;}
 
     // ******    interpretation   ******
-    private final StringEO interpretation = new StringEO();
-    public StringEO getInterpretation() { return interpretation;}
+    private final TextEO interpretation = new TextEO();
+    public TextEO getInterpretation() { return interpretation;}
 
    
  

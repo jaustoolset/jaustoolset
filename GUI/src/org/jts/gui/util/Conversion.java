@@ -12,6 +12,7 @@ import com.u2d.app.Context;
 import com.u2d.generated.Array;
 import com.u2d.type.atom.BooleanEO;
 import com.u2d.type.atom.StringEO;
+import com.u2d.type.atom.TextEO;
 
 public class Conversion
 {
@@ -33,11 +34,24 @@ public class Conversion
 			Method getInterpretation = inputClass.getMethod("getInterpretation");
 			Method setInterpretation = outputClass.getMethod("setInterpretation", String.class);
 			
-			StringEO interpretationEO = (StringEO)getInterpretation.invoke( input );
-			Method toString = StringEO.class.getMethod("toString");
-			
-			String interpretation = (String)toString.invoke(interpretationEO);
-			
+                        String interpretation = "";
+                        if (getInterpretation.getReturnType().equals(StringEO.class)) {
+                            StringEO interpretationEO = (StringEO) getInterpretation.invoke(input);
+                            if (interpretationEO != null) {
+                                interpretation = interpretationEO.toString();
+                            }
+                        } else if (getInterpretation.getReturnType().equals(TextEO.class)) {
+                            TextEO interpretationEO = (TextEO) getInterpretation.invoke(input);
+                            if (interpretationEO != null) {
+                                interpretation = interpretationEO.toString();
+                            }
+                        } else if (getInterpretation.getReturnType().equals(String.class)) {
+                            String interpretationEO = (String) getInterpretation.invoke(input);
+                            if(interpretationEO != null) {
+                                interpretation = interpretationEO;
+                            }
+                        }
+                        
 			if( !interpretation.isEmpty() )
 			{
 				setInterpretation.invoke( output, interpretation );

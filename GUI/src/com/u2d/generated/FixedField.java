@@ -51,8 +51,8 @@ public  class FixedField extends SimpleField {
     public SIUnit getUnits() { return units;}
 
     // ******    interpretation   ******
-    private final StringEO interpretation = new StringEO();
-    public StringEO getInterpretation() { return interpretation;}
+    private final TextEO interpretation = new TextEO();
+    public TextEO getInterpretation() { return interpretation;}
 
     // ******    scaleRange   ******
     private final ScaleRange scaleRange = new ScaleRange();

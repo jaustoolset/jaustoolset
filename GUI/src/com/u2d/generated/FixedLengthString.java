@@ -47,8 +47,8 @@ public  class FixedLengthString extends SimpleField {
     public IntEO getStringLength() { return stringLength;}
 
     // ******    interpretation   ******
-    private final StringEO interpretation = new StringEO();
-    public StringEO getInterpretation() { return interpretation;}
+    private final TextEO interpretation = new TextEO();
+    public TextEO getInterpretation() { return interpretation;}
 
    
  

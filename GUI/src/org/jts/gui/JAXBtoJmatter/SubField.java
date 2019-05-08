@@ -57,18 +57,18 @@ public class SubField
 	    if(jxSubField.getInterpretation() != null)
 	    {
 	    	String interpretation = jxSubField.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-			if(interpretation.length() > 255)
-			{
-				String temp = interpretation.substring(0, 255);
-				jmSubField.getInterpretation().setValue(temp);
-
-				ImportMessages importMsgs = ImportMessages.getInstance();
-				importMsgs.add(ImportMessages.MessageType.WARNING, "SubField ("+jxSubField.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
-			}
-			else
-			{
+//			if(interpretation.length() > 255)
+//			{
+//				String temp = interpretation.substring(0, 255);
+//				jmSubField.getInterpretation().setValue(temp);
+//
+//				ImportMessages importMsgs = ImportMessages.getInstance();
+//				importMsgs.add(ImportMessages.MessageType.WARNING, "SubField ("+jxSubField.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
+//			}
+//			else
+//			{
 				jmSubField.getInterpretation().setValue(interpretation);
-			}
+//			}
 	    }
 
 	    // BitRange
@@ -85,18 +85,18 @@ public class SubField
 		if(jxBitRange.getInterpretation() != null)
 		{
 			String interpretation = jxBitRange.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-			if(interpretation.length() > 255)
-			{
-				String temp = interpretation.substring(0, 255);
-				jmBitRange.getInterpretation().setValue(temp);
-
-				ImportMessages importMsgs = ImportMessages.getInstance();
-				importMsgs.add(ImportMessages.MessageType.WARNING, "BitRange interpretation attribute was truncated to: \"" + temp +"\"");
-			}
-			else
-			{
+//			if(interpretation.length() > 255)
+//			{
+//				String temp = interpretation.substring(0, 255);
+//				jmBitRange.getInterpretation().setValue(temp);
+//
+//				ImportMessages importMsgs = ImportMessages.getInstance();
+//				importMsgs.add(ImportMessages.MessageType.WARNING, "BitRange interpretation attribute was truncated to: \"" + temp +"\"");
+//			}
+//			else
+//			{
 				jmBitRange.getInterpretation().setValue(interpretation);
-			}
+//			}
 		}
 		
 		// Value Set

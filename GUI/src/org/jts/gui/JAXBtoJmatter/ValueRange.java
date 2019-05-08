@@ -72,18 +72,18 @@ public class ValueRange
 		    if(jxValueRange.getInterpretation() != null)
 		    {
 		    	String interpretation = jxValueRange.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-				if(interpretation.length() > 255)
-				{
-					String temp = interpretation.substring(0, 255);
-					jmValueRange.getInterpretation().setValue(temp);
-
-					ImportMessages importMsgs = ImportMessages.getInstance();
-					importMsgs.add(ImportMessages.MessageType.WARNING, "ValueRange interpretation attribute was truncated to: \"" + temp +"\"");
-				}
-				else
-				{
+//				if(interpretation.length() > 255)
+//				{
+//					String temp = interpretation.substring(0, 255);
+//					jmValueRange.getInterpretation().setValue(temp);
+//
+//					ImportMessages importMsgs = ImportMessages.getInstance();
+//					importMsgs.add(ImportMessages.MessageType.WARNING, "ValueRange interpretation attribute was truncated to: \"" + temp +"\"");
+//				}
+//				else
+//				{
 					jmValueRange.getInterpretation().setValue(interpretation);
-				}
+//				}
 		    }
 			
 			// Lower Limit
