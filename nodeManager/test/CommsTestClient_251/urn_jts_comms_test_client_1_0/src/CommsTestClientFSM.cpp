@@ -246,7 +246,7 @@ void CommsTestClientFSM::sendCommsTestMsgAction()
 	sendJausMessage(comms_msg, server);
 
 	// Free the allocated buffers
-	delete data;
+	delete[] data;
 
 	// Start the timer....
 	timer->start();
