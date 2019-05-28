@@ -33,6 +33,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include "Transport/JausTransport.h"
 #include "Transport/JuniorAPI.h"
+#include "Transport/Types.h"
 
 namespace JTS
 {
@@ -109,9 +110,17 @@ void JausRouter::sendMessage(Send_1_0* msg)
 	}
 	// Otherwise, forward Message to NodeManager. 
 	else
+	{
+		int flags = 0;
+		int priority = msg->getBody()->getSendRec()->isPriorityValid() ?
+			(int) msg->getBody()->getSendRec()->getPriority() : 6;
+     
 		JrErrorCode ret = JrSend(jrHandle, destination.get(), 
-							 msg->getBody()->getSendRec()->getMessagePayload()->getLength(), 
-							 (const char*) msg->getBody()->getSendRec()->getMessagePayload()->getData());
+			msg->getBody()->getSendRec()->getMessagePayload()->getLength(), 
+			(const char*) msg->getBody()->getSendRec()->getMessagePayload()->getData(),
+			priority, 
+			flags);
+	}
 }
 
 void JausRouter::sendMessage(Send_1_1* msg)
@@ -135,9 +144,24 @@ void JausRouter::sendMessage(Send_1_1* msg)
 	}
 	// Otherwise, forward Message to NodeManager. 
 	else
+	{
+		int flags = 0;
+		int priority = msg->getBody()->getSendRec()->isPriorityValid() ?
+			(int) msg->getBody()->getSendRec()->getPriority() : 6;
+      
+		// If the destination is not broadcast and reliable, set GuaranteeDelivery
+		DeVivo::Junior::JAUS_ID destId(destination.get());
+		if(!destId.containsWildcards() && msg->getBody()->getSendRec()->getReliableDelivery())
+		{
+			flags |= GuaranteeDelivery;
+		}
+    
 		JrErrorCode ret = JrSend(jrHandle, destination.get(), 
-							 msg->getBody()->getSendRec()->getMessagePayload()->getLength(), 
-							 (const char*) msg->getBody()->getSendRec()->getMessagePayload()->getData());
+			msg->getBody()->getSendRec()->getMessagePayload()->getLength(), 
+			(const char*) msg->getBody()->getSendRec()->getMessagePayload()->getData(),
+			priority,
+			flags);
+	}
 }
 
 
