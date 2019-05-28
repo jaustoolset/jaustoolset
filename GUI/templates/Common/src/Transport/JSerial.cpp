@@ -105,7 +105,8 @@ Transport::TransportError JSerial::configureLink(ConfigData& config, int index)
     config.getValue(stopbits, "SerialStopBits", "Serial_Configuration", index);
     unsigned int software_dataflow = 0;
     config.getValue(software_dataflow, "SerialSoftwareFlowControl", "Serial_Configuration", index);
-
+    unsigned int dataflow_enabled = 1;
+    config.getValue(dataflow_enabled, "SerialFlowControlEnabled", "Serial_Configuration", index);
 
     // Check for valid parameters
     if ( !JrStrCaseCompare(parity, "odd") && 
@@ -122,9 +123,13 @@ Transport::TransportError JSerial::configureLink(ConfigData& config, int index)
     }
 
     // debug
-    JrDebug << "Serial configuration: ByteSize: 8  Parity: " << parity <<
-        "   Stop: " << (long) stopbits << "   Baud: " << baudrate << "   FlowControl: " <<
-        (software_dataflow ? "software" : "hardware") << std::endl;
+    JrDebug << "Serial configuration: ByteSize: 8"
+        << "  Parity: " << parity
+        << "   Stop: " << (long) stopbits 
+        << "   Baud: " << baudrate 
+        << "   FlowControl: " <<
+        (dataflow_enabled ? (software_dataflow ? "software" : "hardware") : "none")
+        << std::endl;
 
 
 #ifdef WINDOWS
@@ -146,18 +151,29 @@ Transport::TransportError JSerial::configureLink(ConfigData& config, int index)
         dcb.StopBits = TWOSTOPBITS;
     else
         dcb.StopBits = ONESTOPBIT;
-    if (software_dataflow)
+
+    // Configure flow control
+    if(dataflow_enabled)
     {
-        // Configure for software flow control (XOn/XOff)
-        dcb.fInX = 1; dcb.fOutX = 1;
-        dcb.fOutxCtsFlow = 0;
+      if (software_dataflow)
+      {
+          // Configure for software flow control (XOn/XOff)
+          dcb.fInX = 1; dcb.fOutX = 1;
+          dcb.fOutxCtsFlow = 0;
+      }
+      else
+      {
+          // Configure for hardware flow control (RTS-CTS)
+          dcb.fInX = 0; dcb.fOutX = 0;
+          dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
+          dcb.fOutxCtsFlow = 1;
+      }
     }
     else
     {
-        // Configure for hardware flow control (RTS-CTS)
-        dcb.fInX = 0; dcb.fOutX = 0;
-        dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
-        dcb.fOutxCtsFlow = 1;
+      // Configure for no flow control
+      dcb.fInX = 0; dcb.fOutX = 0;
+      dcb.fOutxCtsFlow = 0;
     }
     SetCommState(hComm, &dcb);
     
@@ -212,18 +228,29 @@ Transport::TransportError JSerial::configureLink(ConfigData& config, int index)
     // Set receiver and local modes
     options.c_cflag |= (CLOCAL | CREAD);
 
-    // flow control (hardware or software)
-    if (software_dataflow)
+    // Configure flow control
+    if(dataflow_enabled)
     {
-        // Configure for software flow control (XOn/XOff)
-        options.c_cflag &= ~CRTSCTS;
-        options.c_iflag |= (IXON | IXOFF | IXANY);
+      // flow control (hardware or software)
+      if (software_dataflow)
+      {
+          // Configure for software flow control (XOn/XOff)
+          options.c_cflag &= ~CRTSCTS;
+          options.c_iflag |= (IXON | IXOFF | IXANY);
+      }
+      else
+      {
+          // Configure for hardware flow control (RTS-CTS)
+          options.c_cflag |= CRTSCTS;
+          options.c_iflag &= ~(IXON | IXOFF | IXANY);
+      }
+
     }
     else
     {
-        // Configure for hardware flow control (RTS-CTS)
-        options.c_cflag |= CRTSCTS;
-        options.c_iflag &= ~(IXON | IXOFF | IXANY);
+      // Configure for no flow control
+      options.c_cflag &= ~CRTSCTS;
+      options.c_iflag &= ~(IXON | IXOFF | IXANY);
     }
 
     // enable raw mode (this prevent interpretation of
