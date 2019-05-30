@@ -807,12 +807,14 @@
       <xs:attributeGroup ref="ns1:attribute_field_format"/>
     </xs:complexType>
   </xs:element>
+  <!-- Name attribute added in REV_A of JSIDL 1.0 -->
   <xs:element name="value_set">
     <xs:complexType>
       <xs:choice maxOccurs="unbounded">
         <xs:element ref="ns1:value_range"/>
         <xs:element ref="ns1:value_enum"/>
       </xs:choice>
+      <xs:attribute name="name" type="ns1:identifier"/>
       <xs:attribute name="offset_to_lower_limit" use="required" type="xs:boolean"/>
     </xs:complexType>
   </xs:element>

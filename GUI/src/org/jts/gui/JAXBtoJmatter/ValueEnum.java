@@ -65,7 +65,12 @@ public class ValueEnum
 			jmValueEnum = new com.u2d.generated.ValueEnum();
 			
 			// set name
-		      jmValueEnum.getName().setValue("MUST_RENAME");
+                      String name = jxValueEnum.getEnumConst();
+                      if(name == null || name.isEmpty()) {
+                          jmValueEnum.getName().setValue("MUST_RENAME");
+                      } else {
+                          jmValueEnum.getName().setValue(name);
+                      }
 			
 			// Interpretation
 		    if(jxValueEnum.getInterpretation() != null)
