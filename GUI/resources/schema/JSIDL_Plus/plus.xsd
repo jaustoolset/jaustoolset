@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:jaus:jsidl:plus" xmlns:version_1_1="urn:jaus:jsidl:1.1" xmlns:plus="urn:jaus:jsidl:plus" xmlns:ns1="urn:jaus:jsidl:1.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:jaus:jsidl:plus" xmlns:plus="urn:jaus:jsidl:plus" xmlns:ns1="urn:jaus:jsidl:1.1">
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
-  <xs:import namespace="urn:jaus:jsidl:1.0" schemaLocation="jsidl_plus.xsd"/>
-  <xs:import namespace="urn:jaus:jsidl:1.1" schemaLocation="version_1_1.xsd"/>
+  <xs:import namespace="urn:jaus:jsidl:1.1" schemaLocation="jsidl_plus.xsd"/>
   <xs:element name="service_set">
     <xs:complexType>
       <xs:sequence>

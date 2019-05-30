@@ -7,22 +7,13 @@
   JSIDL+ only adds to JSIDL and does not modify or remove anything that already exists in JSIDL
   additions are the following:
   1. service_set element
-  2. In state and default_state, default_transition's multiplicity has been changed from ? to * to include the case of multiple guarded default transitions
-  3. Added internal_transition. 
-      Semantics: While a self transition is considered to be a change of state, an internal transition is not. 
-                        In a self transition, the source state and the target state are the same. In this case, all entry and exit actions are invoked, and a change of state is said to occur.
-                        In an internal transition, there is no target state. In this case, events can trigger actions on the transition, but no entry or exit actions are invoked, and no change of state will occur.
   4. Added mxCell element and sub-elements
-  5. changed parameter's type from identifier_ns to param_type to include primitive unsigned types
-  6. added a name attribute to type_and_units_enum
-  7. added the missing "optional" attribute to declared_variant
   8. added optional default_state to state_machine and converted multiplicity of  state in state_machine from one-or-more to zero-or-more 
       Semantics: state_machine may contain zero states IFF a default state is present 
   
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:jaus:jsidl:1.0" xmlns:version_1_1="urn:jaus:jsidl:1.1" xmlns:plus="urn:jaus:jsidl:plus" xmlns:ns1="urn:jaus:jsidl:1.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:jaus:jsidl:1.1" xmlns:plus="urn:jaus:jsidl:plus" xmlns:ns1="urn:jaus:jsidl:1.1">
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
-  <xs:import namespace="urn:jaus:jsidl:1.1" schemaLocation="version_1_1.xsd"/>
   <xs:import namespace="urn:jaus:jsidl:plus" schemaLocation="plus.xsd"/>
   <xs:element name="service_def">
     <xs:complexType>
@@ -39,6 +30,7 @@
       <xs:attribute name="name" use="required" type="ns1:identifier"/>
       <xs:attribute name="id" use="required" type="xs:anyURI"/>
       <xs:attribute name="version" use="required" type="ns1:version_num"/>
+      <xs:attribute name="deprecated" type="xs:boolean"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="description">
@@ -331,7 +323,8 @@
       </xs:sequence>
       <xs:attribute name="name" use="required" type="ns1:identifier"/>
       <xs:attribute name="message_id" use="required" type="xs:hexBinary"/>
-      <xs:attribute name="is_command" use="required" type="xs:boolean"/>
+      <xs:attribute name="is_command" type="xs:boolean"/>
+      <xs:attribute name="deprecated" type="xs:boolean"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="event_def">
@@ -352,6 +345,7 @@
         </xs:choice>
       </xs:sequence>
       <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="deprecated" type="xs:boolean"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="header">
@@ -713,11 +707,16 @@
           <xs:enumeration value="reciprocal meter"/>
           <xs:enumeration value="kilogram per cubic meter"/>
           <xs:enumeration value="cubic meter per kilogram"/>
+          <xs:enumeration value="liters per second"/>
+          <xs:enumeration value="liters per hour"/>
+          <xs:enumeration value="kilograms per second"/>
           <xs:enumeration value="ampere per square meter"/>
           <xs:enumeration value="ampere per meter"/>
           <xs:enumeration value="mole per cubic meter"/>
           <xs:enumeration value="candela per square meter"/>
           <xs:enumeration value="one"/>
+          <xs:enumeration value="percent"/>
+          <xs:enumeration value="kilogram-square meter"/>
           <xs:enumeration value="radian"/>
           <xs:enumeration value="steradian"/>
           <xs:enumeration value="hertz"/>
@@ -761,6 +760,12 @@
           <xs:enumeration value="gray per second"/>
           <xs:enumeration value="watt per square meter steradian"/>
           <xs:enumeration value="katal per cubic meter"/>
+          <xs:enumeration value="rotations per minute"/>
+          <xs:enumeration value="bits per second"/>
+          <xs:enumeration value="frames per second"/>
+          <xs:enumeration value="ampere hour"/>
+          <xs:enumeration value="parts per thousand"/>
+          <xs:enumeration value="parts per million"/>
           <xs:enumeration value="minute"/>
           <xs:enumeration value="hour"/>
           <xs:enumeration value="day"/>
@@ -793,6 +798,7 @@
         <xs:element ref="ns1:scale_range"/>
       </xs:choice>
       <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="interpretation"/>
       <xs:attribute name="index" use="required" type="xs:unsignedByte"/>
       <xs:attributeGroup ref="ns1:attribute_field_type"/>
       <xs:attributeGroup ref="ns1:attribute_field_units"/>
@@ -813,6 +819,7 @@
         <xs:element ref="ns1:value_range"/>
         <xs:element ref="ns1:value_enum"/>
       </xs:choice>
+      <xs:attribute name="name" type="ns1:identifier"/>
       <xs:attribute name="offset_to_lower_limit" use="required" type="xs:boolean"/>
     </xs:complexType>
   </xs:element>
@@ -949,7 +956,7 @@
       <xs:sequence>
         <xs:element minOccurs="0" ref="ns1:guard"/>
         <xs:choice>
-          <xs:element ref="version_1_1:internal"/>
+          <xs:element ref="ns1:internal"/>
           <xs:element ref="ns1:simple"/>
           <xs:element ref="ns1:push"/>
           <xs:element ref="ns1:pop"/>
@@ -987,7 +994,7 @@
         <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:parameter"/>
         <xs:element minOccurs="0" ref="ns1:guard"/>
         <xs:choice>
-          <xs:element ref="version_1_1:internal"/>
+          <xs:element ref="ns1:internal"/>
           <xs:element ref="ns1:simple"/>
           <xs:element ref="ns1:push"/>
           <xs:element ref="ns1:pop"/>
@@ -999,6 +1006,11 @@
         <xs:element minOccurs="0" ref="plus:mxCell"/>
       </xs:sequence>
       <xs:attribute name="name" use="required" type="ns1:identifier_ns"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="internal">
+    <xs:complexType>
       <xs:attribute name="interpretation"/>
     </xs:complexType>
   </xs:element>

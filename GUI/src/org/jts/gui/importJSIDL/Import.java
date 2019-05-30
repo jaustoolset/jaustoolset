@@ -40,6 +40,9 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.nio.file.Files;
+import java.nio.charset.Charset;
 
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Schema;
@@ -293,11 +296,33 @@ public class Import {
                 statusMonitor.updateStatus("Unmarshalling files...");
                 Element root = doc.getDocumentElement();
 
+                // This gets a little ugly, but to support JSIDL 1.0 and 1.1 at the same time, 
+                // we basically cheat.  If 1.0 namespace is found, change it to 1.1.  Read in 
+                // the file as a bytestream, convert to string, do the replacement, convert 
+                // back to bytestream, stuff that into an input stream, and parse that to
+                // replace the existing doc.  Once we've switched the namespace, the 
+                // regular import process can be used to parse the JSIDL.
                 if (root.getAttribute("xmlns").equals("urn:jaus:jsidl:1.0")) {
+                    try {
+                        String fileContents = new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset());
+                        fileContents = fileContents.replace("xmlns=\"urn:jaus:jsidl:1.0\"", "xmlns=\"urn:jaus:jsidl:1.1\"");
+                        doc = db.parse( new ByteArrayInputStream( fileContents.getBytes(Charset.defaultCharset())) );
+                        root = doc.getDocumentElement();
+                        System.out.println("Changing namespace for " + file.toString() + " to " + doc.getDocumentElement().getAttribute("xmlns"));
+                    } catch (final IOException ioe) {
+                        errorLogger.addError("Unable to read file" + fileName + " \n " + ioe.toString());
+                        continue;   // weaken import to allow bad files in target dir
+                    } catch (final SAXException saxe) {
+                        errorLogger.addError("Unable to parse file" + fileName + " \n " + saxe.toString());
+                        continue;    // weaken import to allow bad files in target dir
+                    }
+                }
+
+                if (root.getAttribute("xmlns").equals("urn:jaus:jsidl:1.1")) {
 
                     try {
                         objMap.put(root.getAttribute("id") + "-" + root.getAttribute("version"),
-                                um.unmarshal(file));
+                                um.unmarshal(doc));
                     } catch (final JAXBException jaxbe) {
                         errorLogger.addError("Unable to unmarshal file" + fileName + " \n " + jaxbe.toString());
                         continue;    // weaken import to allow bad files in target dir
