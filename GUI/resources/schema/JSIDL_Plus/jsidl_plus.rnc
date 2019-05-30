@@ -558,8 +558,10 @@ format_enum =
        attribute_field_format
    }
 
+# Name attribute added in REV_A of JSIDL 1.0
 value_set = 
    element value_set {
+      attribute name { identifier }?,
       attribute offset_to_lower_limit { xsd:boolean },
       (value_range | value_enum)+
    }

@@ -51,7 +51,12 @@ public class ValueSet
 		com.u2d.generated.ValueSet jmValueSet = new com.u2d.generated.ValueSet();
 		
 		// set name
-		jmValueSet.getName().setValue("MUST_RENAME");
+                String name = jxValueSet.getName();
+                if(name == null || name.isEmpty()) {
+                    jmValueSet.getName().setValue("MUST_RENAME");
+                } else {
+                    jmValueSet.getName().setValue(name);
+                }
 		
 		// Offset To Lower Limit
 		jmValueSet.getOffsetToLowerLimit().setValue(jxValueSet.isOffsetToLowerLimit());
