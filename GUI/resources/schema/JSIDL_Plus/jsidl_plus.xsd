@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  JAUS Service Interface Definition Language - Plus (JSIDL+v0.11)
+  JAUS Service Interface Definition Language - Plus (JSIDL+v1.1)
   
 -->
 <!--
   JSIDL+ only adds to JSIDL and does not modify or remove anything that already exists in JSIDL
   additions are the following:
   1. service_set element
-  4. Added mxCell element and sub-elements
-  8. added optional default_state to state_machine and converted multiplicity of  state in state_machine from one-or-more to zero-or-more 
-      Semantics: state_machine may contain zero states IFF a default state is present 
-  
+  2. Relaxes the requirement for optional flag on declared_variant, to permit import of JSIDL 1.0
+  4. Added mxCell element and sub-elements  
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:jaus:jsidl:1.1" xmlns:plus="urn:jaus:jsidl:plus" xmlns:ns1="urn:jaus:jsidl:1.1">
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
@@ -129,6 +127,7 @@
           <xs:element ref="ns1:sequence"/>
           <xs:element ref="ns1:fixed_field"/>
           <xs:element ref="ns1:variable_field"/>
+          <xs:element ref="ns1:value_set"/>
           <xs:element ref="ns1:bit_field"/>
           <xs:element ref="ns1:fixed_length_string"/>
           <xs:element ref="ns1:variable_length_string"/>
@@ -265,6 +264,11 @@
     <xs:complexType>
       <xs:attributeGroup ref="ns1:attribute_declared_type"/>
       <xs:attribute name="optional" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="declared_value_set">
+    <xs:complexType>
+      <xs:attributeGroup ref="ns1:attribute_declared_type"/>
     </xs:complexType>
   </xs:element>
   <!-- ==================== message definition ========================= -->
@@ -526,6 +530,7 @@
       <xs:choice minOccurs="0">
         <xs:element ref="ns1:scale_range"/>
         <xs:element ref="ns1:value_set"/>
+        <xs:element ref="ns1:declared_value_set"/>
       </xs:choice>
       <xs:attribute name="name" use="required" type="ns1:identifier"/>
       <xs:attributeGroup ref="ns1:attribute_field_type"/>
@@ -642,7 +647,10 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="ns1:bit_range"/>
-        <xs:element ref="ns1:value_set"/>
+        <xs:choice>
+          <xs:element ref="ns1:value_set"/>
+          <xs:element ref="ns1:declared_value_set"/>
+        </xs:choice>
       </xs:sequence>
       <xs:attribute name="name" use="required" type="ns1:identifier"/>
       <xs:attribute name="interpretation"/>
@@ -795,6 +803,7 @@
     <xs:complexType>
       <xs:choice minOccurs="0">
         <xs:element ref="ns1:value_set"/>
+        <xs:element ref="ns1:declared_value_set"/>
         <xs:element ref="ns1:scale_range"/>
       </xs:choice>
       <xs:attribute name="name" use="required" type="ns1:identifier"/>

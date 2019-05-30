@@ -1,7 +1,7 @@
-# JAUS Service Interface Definition Language (JSIDLv1.0)
+# JAUS Service Interface Definition Language (JSIDLv1.1)
 #
 
-default namespace = "urn:jaus:jsidl:1.0"
+default namespace = "urn:jaus:jsidl:1.1"
 datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes" 
 
 include "protocol_behavior.rnc"
@@ -14,6 +14,7 @@ service_def =
     attribute name { identifier },
     attribute id { xsd:anyURI },
     attribute version { version_num },
+    attribute deprecated { xsd:boolean }?,
     description,
     assumptions,
     references?,

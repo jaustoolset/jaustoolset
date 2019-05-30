@@ -38,6 +38,10 @@ public  class TypeAndUnitsEnum extends AbstractComplexEObject_JTS{
     private final StringEO name = new StringEO();
     public StringEO getName() { return name;}
 
+    // ******    interpretation   ******
+    private final StringEO interpretation = new StringEO();
+    public StringEO getInterpretation() { return interpretation;}
+
     // ******    index   ******
     private final IntEO index = new IntEO();
     public IntEO getIndex() { return index;}
@@ -72,7 +76,7 @@ public  class TypeAndUnitsEnum extends AbstractComplexEObject_JTS{
 
  
 /************** Uncomment the following as needed *****************************/
-      public static String[] fieldOrder  = {"name", "index", "type", "units", "scaleRange", "valueSet", "referencingVariableField"};
+      public static String[] fieldOrder  = {"name", "interpretation", "index", "type", "units", "scaleRange", "valueSet", "referencingVariableField"};
 //    public static String[] fieldOrder        = {"fieldname1", "fieldname2"};
 
       ;

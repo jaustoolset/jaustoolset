@@ -1,6 +1,6 @@
-# JAUS Service Interface Definition Language (JSIDLv1.0)
+# JAUS Service Interface Definition Language (JSIDLv1.1)
 #
-default namespace = "urn:jaus:jsidl:1.0"
+default namespace = "urn:jaus:jsidl:1.1"
 
 start = service_def | declared_type_set | declared_const_set
 
@@ -9,6 +9,7 @@ service_def =
     attribute name { identifier },
     attribute id { xsd:anyURI },
     attribute version { version_num },
+    attribute deprecated { xsd:boolean }?,
     description,
     assumptions,
     references?,
@@ -93,7 +94,7 @@ declared_type_set =
     ( message_def | header | body | footer | 
       array | record | \list | variant| sequence | 
       fixed_field | variable_field | bit_field |fixed_length_string | 
-      variable_length_string | variable_length_field |variable_format_field | 
+      variable_length_string | variable_length_field |variable_format_field | value_set |
       declared_message_def | declared_event_def | declared_header | declared_body | declared_footer | 
       declared_list | declared_sequence | declared_variant | declared_record | declared_array | 
       declared_fixed_field | declared_variable_field | declared_bit_field | declared_fixed_length_string | 
@@ -139,7 +140,8 @@ declared_footer =
 
 declared_variant =
    element declared_variant {
-      attribute_declared_type
+      attribute_declared_type,
+      attribute optional { xsd:boolean }
    }
 
 declared_sequence = 
@@ -207,6 +209,11 @@ declared_variable_format_field =
     attribute_declared_type, 
     attribute optional { xsd:boolean }
   }
+
+declared_value_set = 
+   element declared_value_set {
+      attribute_declared_type
+   }
   
 #==================== message definition =========================
 
@@ -238,7 +245,8 @@ message_def =
    element message_def {
       attribute name { identifier },
       attribute message_id { xsd:hexBinary },
-      attribute is_command { xsd:boolean },
+      attribute is_command { xsd:boolean }?,
+      attribute deprecated { xsd:boolean }?,
       element description {  attribute xml:space { "default" | "preserve" }?, text },
       (header | declared_header),
       (body | declared_body),
@@ -248,6 +256,7 @@ message_def =
 event_def =
    element event_def {
       attribute name { identifier },
+      attribute deprecated { xsd:boolean }?,
       element description {  attribute xml:space { "default" | "preserve" }?, text },
       (header | declared_header),
       (body | declared_body),
@@ -359,7 +368,7 @@ fixed_field =
       attribute name { identifier }, attribute_field_type, attribute_field_units, 
       attribute optional {xsd:boolean },
       attribute interpretation { text }?,  
-      (scale_range | value_set)? 
+      (scale_range | (value_set | declared_value_set))? 
    }
 
 variable_field = 
@@ -367,9 +376,7 @@ variable_field =
         attribute name { identifier }, 
         attribute optional {xsd:boolean },
         attribute interpretation { text }?,  
-        element type_and_units_field {
-            type_and_units_enum+ 
-        }    
+        type_and_units_field
     }
     
 bit_field =
@@ -433,10 +440,15 @@ vtag_field =
    
 sub_field = 
    element sub_field {
-      attribute name { identifier }, bit_range, value_set,
+      attribute name { identifier }, bit_range, (value_set | declared_value_set),
       attribute interpretation { text }?
    }   
-   
+
+type_and_units_field = 
+    element type_and_units_field {
+      type_and_units_enum+ 
+    }
+    
 format_field = 
    element format_field { 
       format_enum+ 
@@ -476,8 +488,9 @@ attribute_field_units =
 
 "square meter" | "cubic meter" |"meter per second" |"meter per second squared" | 
 "reciprocal meter" | "kilogram per cubic meter" | "cubic meter per kilogram" | 
+"liters per second" | "liters per hour" | "kilograms per second" |
 "ampere per square meter" |"ampere per meter" | "mole per cubic meter" | 
-"candela per square meter" | "one" |
+"candela per square meter" | "one" | "percent" | "kilogram-square meter" |
 
 # derived units with special names and symbols
 
@@ -491,6 +504,8 @@ attribute_field_units =
 "coulomb per square meter" | "farad per meter" | "henry per meter" |
 "joule per mole" | "joule per mole kelvin" | "coulomb per kilogram" |
 "gray per second" | "watt per square meter steradian" | "katal per cubic meter" |
+"rotations per minute" | "bits per second" | "frames per second" | "ampere hour" |
+"parts per thousand" | "parts per million" |
 
 # Non-SI units accepted for use with the International System
 
@@ -500,16 +515,18 @@ attribute_field_units =
 # unit of angle measurement
 "second" | 
 "liter" | "metric ton" |
-"neper" | "bel" | "nautical mile" | "knot" | "are" | "hectare" | "bar" | "�ngstro" |
+"neper" | "bel" | "nautical mile" | "knot" | "are" | "hectare" | "bar" | "ångstro" |
 "barn" | "curie" | "roentgen" | "rad" | "rem" 
    }
    
 type_and_units_enum = 
    element type_and_units_enum {
+     attribute name { identifier },
+     attribute interpretation { text }?,
      attribute index { xsd:unsignedByte },
      attribute_field_type, 
      attribute_field_units, 
-     (value_set | scale_range)? 
+     ((value_set | declared_value_set) | scale_range)? 
    }     
    
 attribute_field_format = 
@@ -527,6 +544,7 @@ format_enum =
 
 value_set = 
    element value_set {
+      attribute name { identifier }?,
       attribute offset_to_lower_limit { xsd:boolean },
       (value_range | value_enum)+
    }
@@ -581,7 +599,8 @@ state_machine =
    element state_machine {
      attribute name { identifier_ns },
      attribute interpretation { text }?,
-     state+
+     state+,
+     default_state?
    }
    
 state = 
@@ -592,7 +611,7 @@ state =
      entry?,
      exit?,
      transition*, 
-     default_transition?, 
+     default_transition*, 
      state*,
      default_state?
    }
@@ -601,14 +620,14 @@ default_state =
   element default_state {
      attribute interpretation { text }?,
      transition*,
-     default_transition? 
+     default_transition* 
   }
 
 default_transition =   
   element default_transition { 
     attribute interpretation { text }?,
     guard?,
-    (simple | push | pop),
+    (internal | simple | push | pop),
     (action | send_action)* 
   }
 
@@ -630,10 +649,15 @@ transition =
     attribute interpretation { text }?,
     parameter*,
     guard?,
-    (simple | push | pop),
+    (internal | simple | push | pop),
     (action | send_action)*
  }
    
+internal = 
+  element internal {
+    attribute interpretation { text }?
+  }
+
 simple = 
   element simple {
     attribute interpretation { text }?, 
@@ -674,7 +698,7 @@ end_state =
 
 parameter = 
   element parameter {
-    attribute type { identifier_ns }, 
+    attribute type { param_type }, 
     attribute value { text },
     attribute interpretation { text }?  
   }
@@ -693,15 +717,25 @@ send_action =
     argument*
   }
   
-  # An identifier is a sequence of letters and digits. The first character
+# An identifier is a sequence of letters and digits. The first character
 # must be a letter or the underscore character _. Upper and lower 
 # case letters are different, and identifiers may have any length.
 
 identifier |= xsd:string { pattern="[a-zA-Z_][a-zA-Z_0-9]*" }
  
-# namespaced identifier ( identifier(.identifier)* )
+# namespaced identifier ( identifier(.identifier)* ). Dot (“.”) is the namespace 
+# operator. It must be used to qualify a namespace. It must not be used 
+# as part of the identifier itself.
  
 identifier_ns |= xsd:string { pattern="[a-zA-Z_][a-zA-Z_0-9.]*" }
+
+# parameter type
+
+param_type |= "unsigned byte" 
+            | "unsigned short" 
+            | "unsigned int" 
+            | "unsigned long"   
+            | xsd:string { pattern="[a-zA-Z_][a-zA-Z_0-9.]*" }
 
 # M.N, where M and N are positive integers. 
 

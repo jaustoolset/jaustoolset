@@ -1,7 +1,7 @@
-# JAUS Service Interface Definition Language (JSIDLv1.0)
+# JAUS Service Interface Definition Language (JSIDLv1.1)
 #
 
-default namespace = "urn:jaus:jsidl:1.0"
+default namespace = "urn:jaus:jsidl:1.1"
 datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
 
 include "patterns.rnc"
@@ -24,7 +24,8 @@ state_machine =
    element state_machine {
      attribute name { identifier_ns },
      attribute interpretation { text }?,
-     state+
+     state+,
+     default_state?
    }
    
 state = 
@@ -35,7 +36,7 @@ state =
      entry?,
      exit?,
      transition*, 
-     default_transition?, 
+     default_transition*, 
      state*,
      default_state?
    }
@@ -44,14 +45,14 @@ default_state =
   element default_state {
      attribute interpretation { text }?,
      transition*,
-     default_transition? 
+     default_transition* 
   }
 
 default_transition =   
   element default_transition { 
     attribute interpretation { text }?,
     guard?,
-    (simple | push | pop),
+    (internal | simple | push | pop),
     (action | send_action)* 
   }
 
@@ -73,10 +74,15 @@ transition =
     attribute interpretation { text }?,
     parameter*,
     guard?,
-    (simple | push | pop),
+    (internal | simple | push | pop),
     (action | send_action)*
  }
    
+internal = 
+  element internal {
+    attribute interpretation { text }?
+  }
+
 simple = 
   element simple {
     attribute interpretation { text }?, 
@@ -117,9 +123,9 @@ end_state =
 
 parameter = 
   element parameter {
-    attribute type { identifier_ns }, 
+    attribute type { param_type }, 
     attribute value { text },
-    attribute interpretation { text }?  
+    attribute interpretation { text }?    
   }
   
 action = 
