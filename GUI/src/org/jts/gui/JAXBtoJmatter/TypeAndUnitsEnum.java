@@ -51,7 +51,7 @@ public class TypeAndUnitsEnum
 		
                 String name = jxTypeAndUnitsEnum.getName();
                 if(name == null || name.isEmpty()) {
-			jmTypeAndUnitsEnum.getName().setValue("MUST_RENAME");
+					jmTypeAndUnitsEnum.getName().setValue("MUST_RENAME");
                 } else {
                 	jmTypeAndUnitsEnum.getName().setValue(name);
                 }
