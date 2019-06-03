@@ -1,6 +1,7 @@
 # JAUS Service Interface Definition Language (JSIDLv1.1)
 #
 default namespace = "urn:jaus:jsidl:1.1"
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
 
 start = service_def | declared_type_set | declared_const_set
 
@@ -37,19 +38,19 @@ references =
   
 inherits_from = 
   element inherits_from {
-    attribute name { identifier },
-  attribute id { xsd:anyURI },
-  attribute version { version_num_ref },
-  attribute interpretation { text }?
+    ref_attr
   }
   
 client_of = 
   element client_of {
-    attribute name { identifier },
-  attribute id { xsd:anyURI },
-  attribute version { version_num_ref },
-  attribute interpretation { text }?
+    ref_attr
   }
+
+ref_attr =
+    attribute name { identifier },
+    attribute id { xsd:anyURI },
+    attribute version { version_num_ref },
+    attribute interpretation { text }?
 
   
   #==================== declared constants ===========================
