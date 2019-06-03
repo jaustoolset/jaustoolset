@@ -7,6 +7,7 @@ datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
 # additions are the following:
 # 1. service_set element
 # 2. Added mxCell element and sub-elements
+# 3. Updated variable_field to define type_and_units_field inline because defining it separately causes problems in the XSD. 
 
 namespace plus = "urn:jaus:jsidl:plus"
 
@@ -395,7 +396,9 @@ variable_field =
         attribute name { identifier }, 
         attribute optional {xsd:boolean },
         attribute interpretation { text }?,  
-        type_and_units_field
+        element type_and_units_field {
+          type_and_units_enum+
+        }
     }
     
 bit_field =
@@ -461,11 +464,6 @@ sub_field =
    element sub_field {
       attribute name { identifier }, bit_range, (value_set | declared_value_set),
       attribute interpretation { text }?
-   }   
-
-type_and_units_field = 
-    element type_and_units_field {
-      type_and_units_enum+ 
     }
     
 format_field = 

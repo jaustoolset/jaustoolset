@@ -8,6 +8,7 @@
   additions are the following:
   1. service_set element
   2. Added mxCell element and sub-elements
+  3. Updated variable_field to define type_and_units_field inline because defining it separately causes problems in the XSD. 
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:jaus:jsidl:1.1" xmlns:ns1="urn:jaus:jsidl:1.1" xmlns:plus="urn:jaus:jsidl:plus">
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
@@ -542,13 +543,19 @@
   </xs:element>
   <xs:element name="variable_field">
     <xs:complexType>
-      <xs:complexContent>
-        <xs:extension base="ns1:type_and_units_field">
-          <xs:attribute name="name" use="required" type="ns1:identifier"/>
-          <xs:attribute name="optional" use="required" type="xs:boolean"/>
-          <xs:attribute name="interpretation"/>
-        </xs:extension>
-      </xs:complexContent>
+      <xs:sequence>
+        <xs:element ref="ns1:type_and_units_field"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="ns1:identifier"/>
+      <xs:attribute name="optional" use="required" type="xs:boolean"/>
+      <xs:attribute name="interpretation"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="type_and_units_field">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ns1:type_and_units_enum"/>
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="bit_field">
@@ -649,18 +656,6 @@
       </xs:sequence>
       <xs:attribute name="name" use="required" type="ns1:identifier"/>
       <xs:attribute name="interpretation"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:complexType name="type_and_units_field">
-    <xs:sequence>
-      <xs:element ref="ns1:type_and_units_field"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="type_and_units_field">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="ns1:type_and_units_enum"/>
-      </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="format_field">
