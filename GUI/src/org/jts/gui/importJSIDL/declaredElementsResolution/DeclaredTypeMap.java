@@ -33,8 +33,11 @@ package org.jts.gui.importJSIDL.declaredElementsResolution;
 
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import org.jts.gui.util.SubFieldComparator;
 
 public class DeclaredTypeMap {
 
@@ -400,6 +403,9 @@ public class DeclaredTypeMap {
             element_copy.setFieldTypeUnsigned(element.getFieldTypeUnsigned());
             java.util.List<org.jts.jsidl.binding.SubField> list = element.getSubField();
             if (list != null) {
+                // Sort the SubFields first by BitRange, then by name.
+                Collections.sort(list, new SubFieldComparator());
+
                 java.util.List<org.jts.jsidl.binding.SubField> list_copy = element_copy.getSubField();
                 for (int ii = 0; ii < list.size(); ii++) {
                     list_copy.add(list.get(ii));
