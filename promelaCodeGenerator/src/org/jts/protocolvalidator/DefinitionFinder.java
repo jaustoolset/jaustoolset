@@ -331,7 +331,7 @@ public class DefinitionFinder {
         // getting the id from the file
         Element root = doc.getDocumentElement();
 
-        if (root.getAttribute("xmlns").equals("urn:jaus:jsidl:1.0")) {
+        if (root.getAttribute("xmlns").equals("urn:jaus:jsidl:1.1")) {
             id = root.getAttribute("id");
         }
 
@@ -420,7 +420,7 @@ public class DefinitionFinder {
             // getting the id from the file
             Element root = doc.getDocumentElement();
 
-            if (root.getAttribute("xmlns").equals("urn:jaus:jsidl:1.0")) {
+            if (root.getAttribute("xmlns").equals("urn:jaus:jsidl:1.1")) {
                 JSIDLReader reader = new JSIDLReader(fileName, schemaPath);
                 Object rootObj = reader.getRootElement();
                 if (rootObj instanceof ServiceDef) {

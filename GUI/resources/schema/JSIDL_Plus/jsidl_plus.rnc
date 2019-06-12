@@ -1,13 +1,13 @@
 # JAUS Service Interface Definition Language (JSIDLv1.1)
 #
 default namespace = "urn:jaus:jsidl:1.1"
-
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
 
 # JSIDL+ only adds to JSIDL and does not modify or remove anything that already exists in JSIDL
 # additions are the following:
 # 1. service_set element
-# 2. Relaxes the requirement for optional flag on declared_variant, to permit import of JSIDL 1.0
-# 4. Added mxCell element and sub-elements
+# 2. Added mxCell element and sub-elements
+# 3. Updated variable_field to define type_and_units_field inline because defining it separately causes problems in the XSD. 
 
 namespace plus = "urn:jaus:jsidl:plus"
 
@@ -57,19 +57,19 @@ references =
   
 inherits_from = 
   element inherits_from {
-    attribute name { identifier },
-  attribute id { xsd:anyURI },
-  attribute version { version_num_ref },
-  attribute interpretation { text }?
+    ref_attr
   }
   
 client_of = 
   element client_of {
-    attribute name { identifier },
-  attribute id { xsd:anyURI },
-  attribute version { version_num_ref },
-  attribute interpretation { text }?
+    ref_attr
   }
+
+ref_attr =
+    attribute name { identifier },
+    attribute id { xsd:anyURI },
+    attribute version { version_num_ref },
+    attribute interpretation { text }?
 
   
   #==================== declared constants ===========================
@@ -161,7 +161,7 @@ declared_footer =
 declared_variant =
    element declared_variant {
       attribute_declared_type,
-      attribute optional { xsd:boolean }?
+      attribute optional { xsd:boolean }
    }
 
 declared_sequence = 
@@ -396,7 +396,9 @@ variable_field =
         attribute name { identifier }, 
         attribute optional {xsd:boolean },
         attribute interpretation { text }?,  
-        type_and_units_field
+        element type_and_units_field {
+          type_and_units_enum+
+        }
     }
     
 bit_field =
@@ -462,11 +464,6 @@ sub_field =
    element sub_field {
       attribute name { identifier }, bit_range, (value_set | declared_value_set),
       attribute interpretation { text }?
-   }   
-
-type_and_units_field = 
-    element type_and_units_field {
-      type_and_units_enum+ 
     }
     
 format_field = 
@@ -619,7 +616,7 @@ state_machine =
    element state_machine {
      attribute name { identifier_ns },
      attribute interpretation { text }?,
-     state*, 
+     state+, 
      default_state?,
      pseudo_start_state?,
      mxCell?
@@ -810,7 +807,7 @@ identifier |= xsd:string { pattern="[a-zA-Z_][a-zA-Z_0-9]*" }
  
 identifier_ns |= xsd:string { pattern="[a-zA-Z_][a-zA-Z_0-9.]*" }
 
-# param type 
+# parameter type
  
 param_type |= "unsigned byte" 
                           | "unsigned short" 
