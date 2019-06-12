@@ -19,7 +19,7 @@
 <xsl:stylesheet
     xmlns="http://docbook.org/ns/docbook"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
-    xmlns:jaus="urn:jaus:jsidl:1.0"
+    xmlns:jaus="urn:jaus:jsidl:1.1"
     xmlns:x="http://www.w3.org/1999/xhtml">
 
   <!--

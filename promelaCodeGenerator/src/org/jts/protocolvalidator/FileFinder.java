@@ -214,7 +214,7 @@ public class FileFinder {
             Element root = doc.getDocumentElement();
             id = root.getAttribute("id");
 
-            if (root.getAttribute("xmlns").equals("urn:jaus:jsidl:1.0") && !id.isEmpty()) {
+            if (root.getAttribute("xmlns").equals("urn:jaus:jsidl:1.1") && !id.isEmpty()) {
                 fileMap.put(fileName, root.getAttribute("id"));
                 reverseFileMap.put(root.getAttribute("id"), fileName);
             }

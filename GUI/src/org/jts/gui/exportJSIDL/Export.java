@@ -307,11 +307,11 @@ public class Export {
             //Handle Eclipse plugin's handling of relative paths
             if(new File("plugins/org.jts.eclipse.data_1.0/resources").exists())
             {
-                schema =  sf.newSchema(new File("plugins/org.jts.eclipse.data_1.0/resources/schema/JSIDL_Plus/version_1_1.xsd"));
+                schema =  sf.newSchema(new File("plugins/org.jts.eclipse.data_1.0/resources/schema/JSIDL_Plus/jsidl_plus.xsd"));
             }
             else
             {
-                schema =  sf.newSchema(new File("resources/schema/JSIDL_Plus/version_1_1.xsd"));
+                schema =  sf.newSchema(new File("resources/schema/JSIDL_Plus/jsidl_plus.xsd"));
             }
 
             m.setSchema(schema);

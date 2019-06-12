@@ -31,7 +31,7 @@ POSSIBILITY OF SUCH DAMAGE.
 *********************  END OF LICENSE ***********************************/
 
 package org.jts.gui.jmatterToJAXB;
-
+import org.jts.gui.util.Conversion;
 import java.util.List;
 
 /* Converts JMatter TypeAndUnitsEnum to a JAXB TypeAndUnitsEnum.
@@ -49,6 +49,9 @@ public class TypeAndUnitsEnum {
     tue.setIndex( (short)typeAndUnitsEnum.getIndex().intValue() );
     tue.setFieldType( typeAndUnitsEnum.getType().toString() );
     tue.setFieldUnits( typeAndUnitsEnum.getUnits().toString() ); 
+
+    // interpretation
+    Conversion.setNonEmptyDescription(tue, typeAndUnitsEnum);
     
     // scale range
      org.jts.jsidl.binding.ScaleRange sr = ScaleRange.convert( typeAndUnitsEnum.getScaleRange() );

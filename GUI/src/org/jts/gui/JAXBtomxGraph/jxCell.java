@@ -62,6 +62,7 @@ public class jxCell {
 			String xmlStr = writer.toString();
 
 			xmlStr = xmlStr.replaceAll( jxUtil.JSIDL_URI, jxUtil.MXGRAPH_URI );
+			xmlStr = xmlStr.replaceAll( jxUtil.JSIDL_URI_1_1, jxUtil.MXGRAPH_URI );
 			xmlStr = xmlStr.replaceAll( "NEWLINE", "&#10;" );
 			xmlStr = xmlStr.replaceAll( "mxArray", "Array" );  // named different in jsidl_plus.rnc and mxGraph.rnc
 

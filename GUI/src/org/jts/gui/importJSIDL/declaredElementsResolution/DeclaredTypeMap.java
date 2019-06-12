@@ -266,12 +266,7 @@ public class DeclaredTypeMap {
             org.jts.jsidl.binding.Variant element_copy = new org.jts.jsidl.binding.Variant();
 
             element_copy.setName(declaredVariant.getName());
-            
-			if (declaredVariant.isOptional() != null) {
-                element_copy.setOptional(declaredVariant.isOptional());
-            } else {
-                element_copy.setOptional(element.isOptional());
-            }
+            element_copy.setOptional(declaredVariant.isOptional());
 
             if (declaredVariant.getInterpretation() != null) {
                 element_copy.setInterpretation(declaredVariant.getInterpretation());

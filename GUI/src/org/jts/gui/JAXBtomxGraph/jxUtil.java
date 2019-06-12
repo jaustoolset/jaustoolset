@@ -52,6 +52,7 @@ public class jxUtil {
   
   /* tbd: put these strings in a property file or something like that */
   public static final String JSIDL_URI = "urn:jaus:jsidl:1.0";
+  public static final String JSIDL_URI_1_1 = "urn:jaus:jsidl:1.1";
   public static final String MXGRAPH_URI = "urn:jaus:mxGraph:0.1";
   
   private static long id = 1;
