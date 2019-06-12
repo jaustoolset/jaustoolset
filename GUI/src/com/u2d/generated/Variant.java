@@ -43,8 +43,8 @@ public  class Variant extends ComplexField {
     public BooleanEO getOptional() { return optional;}
 
     // ******    interpretation   ******
-    private final StringEO interpretation = new StringEO();
-    public StringEO getInterpretation() { return interpretation;}
+    private final TextEO interpretation = new TextEO();
+    public TextEO getInterpretation() { return interpretation;}
 
    
 

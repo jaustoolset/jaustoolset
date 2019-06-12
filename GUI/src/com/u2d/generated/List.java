@@ -51,8 +51,8 @@ public  class List extends ComplexField {
     public LongEO getMaxSize() { return maxSize;}
 
     // ******    interpretation   ******
-    private final StringEO interpretation = new StringEO();
-    public StringEO getInterpretation() { return interpretation;}
+    private final TextEO interpretation = new TextEO();
+    public TextEO getInterpretation() { return interpretation;}
 
    
 

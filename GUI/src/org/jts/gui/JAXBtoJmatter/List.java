@@ -71,18 +71,18 @@ public class List
 		    if(jxList.getInterpretation() != null)
 		    {
 		    	String interpretation = jxList.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-				if(interpretation.length() > 255)
-				{
-					String temp = interpretation.substring(0, 255);
-					jmList.getInterpretation().setValue(temp);
-
-					ImportMessages importMsgs = ImportMessages.getInstance();
-					importMsgs.add(ImportMessages.MessageType.WARNING, "List ("+jxList.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
-				}
-				else
-				{
+//				if(interpretation.length() > 255)
+//				{
+//					String temp = interpretation.substring(0, 255);
+//					jmList.getInterpretation().setValue(temp);
+//
+//					ImportMessages importMsgs = ImportMessages.getInstance();
+//					importMsgs.add(ImportMessages.MessageType.WARNING, "List ("+jxList.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
+//				}
+//				else
+//				{
 					jmList.getInterpretation().setValue(interpretation);
-				}
+//				}
 		    }
 			
 			// Optional

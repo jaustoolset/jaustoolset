@@ -75,18 +75,18 @@ public class Dimension
 		    if(jxDimension.getInterpretation() != null)
 		    {
 		    	String interpretation = jxDimension.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-				if(interpretation.length() > 255)
-				{
-					String temp = interpretation.substring(0, 255);
-					jmDimension.getInterpretation().setValue(temp);
-
-					ImportMessages importMsgs = ImportMessages.getInstance();
-					importMsgs.add(ImportMessages.MessageType.WARNING, "Dimension ("+jxDimension.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
-				}
-				else
-				{
+//				if(interpretation.length() > 255)
+//				{
+//					String temp = interpretation.substring(0, 255);
+//					jmDimension.getInterpretation().setValue(temp);
+//
+//					ImportMessages importMsgs = ImportMessages.getInstance();
+//					importMsgs.add(ImportMessages.MessageType.WARNING, "Dimension ("+jxDimension.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
+//				}
+//				else
+//				{
 					jmDimension.getInterpretation().setValue(interpretation);
-				}
+//				}
 		    }
 
 			

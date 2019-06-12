@@ -76,18 +76,18 @@ public class FixedLengthString
 		    if(jxFixedLengthString.getInterpretation() != null)
 		    {
 		    	String interpretation = jxFixedLengthString.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-				if(interpretation.length() > 255)
-				{
-					String temp = interpretation.substring(0, 255);
-					jmFixedLengthString.getInterpretation().setValue(temp);
-
-					ImportMessages importMsgs = ImportMessages.getInstance();
-					importMsgs.add(ImportMessages.MessageType.WARNING, "FixedLengthString ("+jxFixedLengthString.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
-				}
-				else
-				{
+//				if(interpretation.length() > 255)
+//				{
+//					String temp = interpretation.substring(0, 255);
+//					jmFixedLengthString.getInterpretation().setValue(temp);
+//
+//					ImportMessages importMsgs = ImportMessages.getInstance();
+//					importMsgs.add(ImportMessages.MessageType.WARNING, "FixedLengthString ("+jxFixedLengthString.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
+//				}
+//				else
+//				{
 					jmFixedLengthString.getInterpretation().setValue(interpretation);
-				}
+//				}
 		    }
 
 		    // String Length

@@ -74,18 +74,18 @@ public class VariableFormatField
 		    if(jxVariableFormatField.getInterpretation() != null)
 		    {
 		    	String interpretation = jxVariableFormatField.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-				if(interpretation.length() > 255)
-				{
-					String temp = interpretation.substring(0, 255);
-					jmVariableFormatField.getInterpretation().setValue(temp);
-
-					ImportMessages importMsgs = ImportMessages.getInstance();
-					importMsgs.add(ImportMessages.MessageType.WARNING, "VariableFormatField ("+jxVariableFormatField.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
-				}
-				else
-				{
+//				if(interpretation.length() > 255)
+//				{
+//					String temp = interpretation.substring(0, 255);
+//					jmVariableFormatField.getInterpretation().setValue(temp);
+//
+//					ImportMessages importMsgs = ImportMessages.getInstance();
+//					importMsgs.add(ImportMessages.MessageType.WARNING, "VariableFormatField ("+jxVariableFormatField.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
+//				}
+//				else
+//				{
 					jmVariableFormatField.getInterpretation().setValue(interpretation);
-				}
+//				}
 		    }
 
 		    java.util.List jxList = jxVariableFormatField.getFormatField().getFormatEnum();

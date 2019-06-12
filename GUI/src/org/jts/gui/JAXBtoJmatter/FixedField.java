@@ -74,19 +74,19 @@ public class FixedField
 		    // Interpretation
 		    if(jxFixedField.getInterpretation() != null)
 		    {
-		    	String interpretation = jxFixedField.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-				if(interpretation.length() > 255)
-				{
-					String temp = interpretation.substring(0, 255);
-					jmFixedField.getInterpretation().setValue(temp);
-					
-					ImportMessages importMsgs = ImportMessages.getInstance();
-					importMsgs.add(ImportMessages.MessageType.WARNING, "FixedField ("+jxFixedField.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
-				}
-				else
-				{
+		    	String interpretation = jxFixedField.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();
+//				if(interpretation.length() > 255)
+//				{
+//					String temp = interpretation.substring(0, 255);
+//					jmFixedField.getInterpretation().setValue(temp);
+//					
+//					ImportMessages importMsgs = ImportMessages.getInstance();
+//					importMsgs.add(ImportMessages.MessageType.WARNING, "FixedField ("+jxFixedField.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
+//				}
+//				else
+//				{
 					jmFixedField.getInterpretation().setValue(interpretation);
-				}
+//				}
 		    }
 		    
 		    jmFixedField.getType().getCode().setValue(jxFixedField.getFieldType());
@@ -111,18 +111,18 @@ public class FixedField
 			    if(jxScaleRange.getInterpretation() != null)
 			    {
 			    	String interpretation = jxScaleRange.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-					if(interpretation.length() > 255)
-					{
-						String temp = interpretation.substring(0, 255);
-						jmScaleRange.getInterpretation().setValue(temp);
-
-						ImportMessages importMsgs = ImportMessages.getInstance();
-						importMsgs.add(ImportMessages.MessageType.WARNING, "FixedField ("+jxFixedField.getName()+") scaleRange interpretaion attribute was truncated to: \"" + temp +"\"");
-					}
-					else
-					{
+//					if(interpretation.length() > 255)
+//					{
+//						String temp = interpretation.substring(0, 255);
+//						jmScaleRange.getInterpretation().setValue(temp);
+//
+//						ImportMessages importMsgs = ImportMessages.getInstance();
+//						importMsgs.add(ImportMessages.MessageType.WARNING, "FixedField ("+jxFixedField.getName()+") scaleRange interpretaion attribute was truncated to: \"" + temp +"\"");
+//					}
+//					else
+//					{
 						jmScaleRange.getInterpretation().setValue(interpretation);
-					}
+//					}
 			    }
 		    }
 		    

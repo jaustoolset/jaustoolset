@@ -74,18 +74,18 @@ public class VariableLengthField
 			if(jxVariableLengthField.getInterpretation() != null)
 			{
 				String interpretation = jxVariableLengthField.getInterpretation().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
-				if(interpretation.length() > 255)
-				{
-					String temp = interpretation.substring(0, 255);
-					jmVariableLengthField.getInterpretation().setValue(temp);
-
-					ImportMessages importMsgs = ImportMessages.getInstance();
-					importMsgs.add(ImportMessages.MessageType.WARNING, "VariableLengthField ("+jxVariableLengthField.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
-				}
-				else
-				{
+//				if(interpretation.length() > 255)
+//				{
+//					String temp = interpretation.substring(0, 255);
+//					jmVariableLengthField.getInterpretation().setValue(temp);
+//
+//					ImportMessages importMsgs = ImportMessages.getInstance();
+//					importMsgs.add(ImportMessages.MessageType.WARNING, "VariableLengthField ("+jxVariableLengthField.getName()+") interpretation attribute was truncated to: \"" + temp +"\"");
+//				}
+//				else
+//				{
 					jmVariableLengthField.getInterpretation().setValue(interpretation);
-				}
+//				}
 			}
 
 		    // Count Field.  Since it's been 'fixed' earlier, we don't need to handle
