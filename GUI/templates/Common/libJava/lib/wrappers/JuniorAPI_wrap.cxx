@@ -839,12 +839,13 @@ jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize sz) {
 extern "C" {
 #endif
 
-SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrConnect_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jint jarg1, jbyteArray jarg2, jintArray jarg3) {
+SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrConnect_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jint jarg1, jbyteArray jarg2, jlongArray jarg3, jint jarg4) {
   jint jresult = 0 ;
   long arg1 ;
   char *arg2 = (char *) 0 ;
   long *arg3 = (long *) 0 ;
   JrErrorCode result;
+  bool arg4 ;
   
   (void)jenv;
   (void)jcls;
@@ -861,15 +862,16 @@ SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrConnect_1_1SWIG_
       SWIG_JavaThrowException(jenv, SWIG_JavaIndexOutOfBoundsException, "Array must contain at least 1 element");
       return 0;
     }
-    arg3 = (long *) jenv->GetIntArrayElements(jarg3, 0); 
+    arg3 = (long *) jenv->GetLongArrayElements(jarg3, 0);
+    arg4 = jarg4 > 0;
   }
-  result = (JrErrorCode)JrConnect(arg1,arg2,arg3);
+  result = (JrErrorCode)JrConnect(arg1,arg2,arg3, arg4);
   jresult = (jint)result; 
   {
     jenv->ReleaseByteArrayElements(jarg2, (jbyte *) arg2, 0); 
   }
   {
-    jenv->ReleaseIntArrayElements(jarg3, (jint *)arg3, 0); 
+    jenv->ReleaseLongArrayElements(jarg3, (jlong *)arg3, 0); 
   }
   
   
@@ -877,7 +879,7 @@ SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrConnect_1_1SWIG_
 }
 
 
-SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jint jarg1, jlong jarg2, jlong jarg3, jbyteArray jarg4, jint jarg5, jint jarg6, jint jarg7) {
+SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jlong jarg3, jbyteArray jarg4, jint jarg5, jint jarg6, jint jarg7) {
   jint jresult = 0 ;
   long arg1 ;
   unsigned int arg2 ;
@@ -909,7 +911,7 @@ SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_10(
 }
 
 
-SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jint jarg1, jlong jarg2, jlong jarg3, jbyteArray jarg4, jint jarg5, jint jarg6) {
+SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jlong jarg3, jbyteArray jarg4, jint jarg5, jint jarg6) {
   jint jresult = 0 ;
   long arg1 ;
   unsigned int arg2 ;
@@ -939,7 +941,7 @@ SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_11(
 }
 
 
-SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jint jarg1, jlong jarg2, jlong jarg3, jbyteArray jarg4, jint jarg5) {
+SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jlong jarg3, jbyteArray jarg4, jint jarg5) {
   jint jresult = 0 ;
   long arg1 ;
   unsigned int arg2 ;
@@ -967,7 +969,7 @@ SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_12(
 }
 
 
-SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jint jarg1, jlong jarg2, jlong jarg3, jbyteArray jarg4) {
+SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jlong jarg3, jbyteArray jarg4) {
   jint jresult = 0 ;
   long arg1 ;
   unsigned int arg2 ;
@@ -993,7 +995,7 @@ SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrSend_1_1SWIG_13(
 }
 
 
-SWIGEXPORT jbyteArray JNICALL Java_framework_transport_JuniorAPIJNI_JrReceive(JNIEnv *jenv, jclass jcls, jint jarg1, jlongArray jarg2, jintArray jarg5, jintArray jarg6, jintArray jarg7) {
+SWIGEXPORT jbyteArray JNICALL Java_framework_transport_JuniorAPIJNI_JrReceive(JNIEnv *jenv, jclass jcls, jlong jarg1, jlongArray jarg2, jintArray jarg5, jintArray jarg6, jintArray jarg7) {
   jint jresult = 0 ;
   long arg1 ;
   unsigned int *arg2 = (unsigned int *) 0 ;
@@ -1118,7 +1120,7 @@ SWIGEXPORT jshort JNICALL Java_framework_transport_JuniorAPIJNI_ExperimentalFlag
 }
 
 
-SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrBroadcast(JNIEnv *jenv, jclass jcls, jint jarg1, jlong jarg2, jstring jarg3, jint jarg4, jint jarg5) {
+SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrBroadcast(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jstring jarg3, jint jarg4, jint jarg5) {
   jint jresult = 0 ;
   long arg1 ;
   unsigned int arg2 ;
@@ -1161,12 +1163,13 @@ SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrCheckAllHandles(
 }
 
 
-SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrConnect_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jstring jarg2, jlong jarg3) {
+SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrConnect_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jstring jarg2, jlong jarg3, jint jarg4) {
   jint jresult = 0 ;
   unsigned int arg1 ;
   char *arg2 = (char *) 0 ;
   long *arg3 = (long *) 0 ;
   JrErrorCode result;
+  bool arg4 ;
   
   (void)jenv;
   (void)jcls;
@@ -1176,15 +1179,16 @@ SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrConnect_1_1SWIG_
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(long **)&jarg3; 
-  result = (JrErrorCode)JrConnect(arg1,(char const *)arg2,arg3);
+  arg3 = *(long **)&jarg3;
+  arg4 = jarg4 > 0; 
+  result = (JrErrorCode)JrConnect(arg1,(char const *)arg2,arg3, arg4);
   jresult = (jint)result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   return jresult;
 }
 
 
-SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrDisconnect(JNIEnv *jenv, jclass jcls, jint jarg1) {
+SWIGEXPORT jint JNICALL Java_framework_transport_JuniorAPIJNI_JrDisconnect(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   jint jresult = 0 ;
   long arg1 ;
   JrErrorCode result;

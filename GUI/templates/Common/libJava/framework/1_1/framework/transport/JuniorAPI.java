@@ -9,27 +9,27 @@
 package framework.transport;
 
 public class JuniorAPI {
-  public static JrErrorCode JrConnect(int id, byte[] BYTE, int[] INOUT) {
-    return JrErrorCode.swigToEnum(JuniorAPIJNI.JrConnect__SWIG_0(id, BYTE, INOUT));
+  public static JrErrorCode JrConnect(int id, byte[] BYTE, long[] INOUT, int allowWildcards) {
+    return JrErrorCode.swigToEnum(JuniorAPIJNI.JrConnect__SWIG_0(id, BYTE, INOUT, allowWildcards));
   }
 
-  public static JrErrorCode JrSend(int handle, long dest, long size, byte[] BYTE, int priority, int flags, int msg_id) {
+  public static JrErrorCode JrSend(long handle, long dest, long size, byte[] BYTE, int priority, int flags, int msg_id) {
     return JrErrorCode.swigToEnum(JuniorAPIJNI.JrSend__SWIG_0(handle, dest, size, BYTE, priority, flags, msg_id));
   }
 
-  public static JrErrorCode JrSend(int handle, long dest, long size, byte[] BYTE, int priority, int flags) {
+  public static JrErrorCode JrSend(long handle, long dest, long size, byte[] BYTE, int priority, int flags) {
     return JrErrorCode.swigToEnum(JuniorAPIJNI.JrSend__SWIG_1(handle, dest, size, BYTE, priority, flags));
   }
 
-  public static JrErrorCode JrSend(int handle, long dest, long size, byte[] BYTE, int priority) {
+  public static JrErrorCode JrSend(long handle, long dest, long size, byte[] BYTE, int priority) {
     return JrErrorCode.swigToEnum(JuniorAPIJNI.JrSend__SWIG_2(handle, dest, size, BYTE, priority));
   }
 
-  public static JrErrorCode JrSend(int handle, long dest, long size, byte[] BYTE) {
+  public static JrErrorCode JrSend(long handle, long dest, long size, byte[] BYTE) {
     return JrErrorCode.swigToEnum(JuniorAPIJNI.JrSend__SWIG_3(handle, dest, size, BYTE));
   }
 
-  public static byte[] JrReceive(int handle, long[] arg1, int[] arg4, int[] arg5, int[] arg6) {
+  public static byte[] JrReceive(long handle, long[] arg1, int[] arg4, int[] arg5, int[] arg6) {
     return JuniorAPIJNI.JrReceive(handle, arg1, arg4, arg5, arg6);
   }
 
@@ -45,7 +45,7 @@ public class JuniorAPI {
     return JuniorAPIJNI.ExperimentalFlag_get();
   }
 
-  public static JrErrorCode JrBroadcast(int handle, long size, String buffer, int priority, int msg_id) {
+  public static JrErrorCode JrBroadcast(long handle, long size, String buffer, int priority, int msg_id) {
     return JrErrorCode.swigToEnum(JuniorAPIJNI.JrBroadcast(handle, size, buffer, priority, msg_id));
   }
 
@@ -53,11 +53,11 @@ public class JuniorAPI {
     return JrErrorCode.swigToEnum(JuniorAPIJNI.JrCheckAllHandles(SWIGTYPE_p_long.getCPtr(list), SWIGTYPE_p_int.getCPtr(size_of_list)));
   }
 
-  public static JrErrorCode JrConnect(long id, String config_file, SWIGTYPE_p_long handle) {
-    return JrErrorCode.swigToEnum(JuniorAPIJNI.JrConnect__SWIG_1(id, config_file, SWIGTYPE_p_long.getCPtr(handle)));
+  public static JrErrorCode JrConnect(long id, String config_file, SWIGTYPE_p_long handle, int allowWildcards) {
+    return JrErrorCode.swigToEnum(JuniorAPIJNI.JrConnect__SWIG_1(id, config_file, SWIGTYPE_p_long.getCPtr(handle), allowWildcards));
   }
 
-  public static JrErrorCode JrDisconnect(int handle) {
+  public static JrErrorCode JrDisconnect(long handle) {
     return JrErrorCode.swigToEnum(JuniorAPIJNI.JrDisconnect(handle));
   }
 
