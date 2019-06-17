@@ -61,7 +61,7 @@ namespace JTS
 class DllExport JausRouter : public SimpleThread
 {
 public:
-	JausRouter(JausAddress jausAddress, InternalEventHandler* ieHandler);
+	JausRouter(JausAddress jausAddress, InternalEventHandler* ieHandler, bool allowWildcards = false);
 	~JausRouter();
 
 	enum TransportType {Version_1_0, Version_1_1};
@@ -70,6 +70,7 @@ public:
 	void sendMessage(Send_1_1* msg);
 	void routeMessage(JausAddress sender, unsigned int bufsize, const unsigned char* buffer);
 	void setTransportType( TransportType type);
+    void updateJausID(JausAddress jausAddress, bool allowWildcards = false);
 	
 	void stop();
 	

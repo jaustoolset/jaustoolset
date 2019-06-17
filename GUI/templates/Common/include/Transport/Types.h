@@ -92,10 +92,10 @@ class JAUS_ID
         if (val == in.val) return true;
 
         // Each byte may have a wildcard (0xFF), so we need to check bytewise
-        // comparisons.
+        // comparisons. AEODRS: Also support zero as wildcard...
         for (char i=0; i<4; i++)
-            if ((getByte(val, i) != 0xFF) &&
-                (getByte(in.val, i) != 0xFF) &&
+            if ((getByte(val, i) != 0xFF) && (getByte(val, i) != 0x00) &&
+                (getByte(in.val, i) != 0xFF) && (getByte(in.val, i) != 0x00) &&
                 (getByte(val, i) != getByte(in.val, i)))
             {
                 return false;
@@ -117,9 +117,11 @@ class JAUS_ID
     }
     bool containsWildcards()
     {
-        // Each byte may have a wildcard (0xFF), so we need to check each
-        for (char i=0; i<4; i++)
-            if (getByte(val, i) == 0xFF) return true;
+        // More allowance for AEODRS weirdness...
+        if ((getByte(val, 2) == 0xFF) && (getByte(val, 3) == 0xFF)) return true;
+        if ((getByte(val, 1) == 0xFF) || (getByte(val, 0) == 0xFF)) return true;
+        if ((getByte(val, 2) == 0)    && (getByte(val, 3) == 0)) return true;
+        if ((getByte(val, 1) == 0)    || (getByte(val, 0) == 0)) return true;
         return false;
     }
 };

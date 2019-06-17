@@ -76,8 +76,8 @@ public:
 
 	typedef std::vector<Connection <AddressType>* > ConnectionListType;
 
-	// Functions to manage the list
-    bool addElement(JAUS_ID id, AddressType addr, MsgVersion version);
+    // Functions to manage the list
+    bool addElement(JAUS_ID id, AddressType addr, MsgVersion version, bool allowWildcards = false);
     bool removeElement(JAUS_ID id);
 
 	// Functions to access the list
@@ -97,33 +97,39 @@ protected:
 // define inlines
 template<class AddressType>
 inline bool ConnectionList<AddressType>::addElement(JAUS_ID id, 
-										  AddressType addr, 
-										  MsgVersion version)
+                                AddressType addr, 
+                                MsgVersion version, 
+                                bool allowWildcards)
 {
     // Not permitted for zero id's
     if (id.val == 0) return false;
 
-	// check for duplicates
-	AddressType prevAddr;
-	if (getAddrFromId(id, prevAddr))
-	{
-		// Element with same ID.
-		// Update the address and version
-		// and return success.
-		updateConnection(id, addr, version);
-		return true;
-	}
+    // AEODRS SPECIFIC: Don't record anything with 0000 as subsystem ID
+    // IOP Uses zeros as placeholders... not sure what if anything we
+    // need to restrict here anymore
+    if (id.containsWildcards() && !allowWildcards) return true;
 
-	// Existing element does not exist.  Create a new connection
-	Connection<AddressType>* connection = new Connection<AddressType>(id, addr, version);
-	if (connection == NULL) return false;
+   // check for duplicates
+   AddressType prevAddr;
+   if (getAddrFromId(id, prevAddr))
+   {
+      // Element with same ID.
+      // Update the address and version
+      // and return success.
+      updateConnection(id, addr, version);
+      return true;
+   }
+
+   // Existing element does not exist.  Create a new connection
+   Connection<AddressType>* connection = new Connection<AddressType>(id, addr, version);
+   if (connection == NULL) return false;
 
     // Add this connection to our list
-    JrFull
-		<< "Adding address book entry for id " << id.val
-		<< " for addr " << addr
-		<< " at position " << _list.size()
-		<< std::endl;
+    std::cout
+      << "Adding address book entry for id " << id.val
+      << " for addr " << addr
+      << " at position " << _list.size()
+      << std::endl;
     _list.push_back(connection);
     return true;
 }
@@ -133,7 +139,7 @@ inline bool ConnectionList<S>::removeElement(JAUS_ID id)
 {
     // Wipe all entries with matching ids
     for (int i=0; i < _list.size(); i++)
-        if (_list[i]->getId() == id) _list[i]->setId(0);
+        if (_list[i]->getId().val == id.val) _list[i]->setId(0);
     return true;
 }
 
@@ -145,7 +151,9 @@ inline bool ConnectionList<AddressType>::getAddrFromId( JAUS_ID id, AddressType&
     // Check for a match based on the JAUS_ID
     for (int i=0; i < _list.size(); i++)
     {
-        if (_list[i]->getId() == id)
+        //printf("List size = %d\n", _list.size());
+        if (_list[i] == NULL) continue;
+        if (_list[i]->getId().val == id.val)
         {
             addr = _list[i]->getAddress();
             return true;
@@ -162,7 +170,7 @@ inline bool ConnectionList<AddressType>::getMsgVersion( JAUS_ID id, MsgVersion& 
     // Check for a match based on the JAUS_ID
     for (int i=0; i < _list.size(); i++)
     {
-        if (_list[i]->getId() == id)
+        if (_list[i]->getId().val == id.val)
         {
             version = _list[i]->getVersion();
             return true;
@@ -179,7 +187,7 @@ inline bool ConnectionList<AddressType>::updateConnection( JAUS_ID id, AddressTy
     // Check for a match based on the JAUS_ID
     for (int i=0; i < _list.size(); i++)
     {
-        if (_list[i]->getId() == id)
+        if (_list[i]->getId().val == id.val)
         {
             _list[i]->setAddress(addr);
             _list[i]->setVersion(version);

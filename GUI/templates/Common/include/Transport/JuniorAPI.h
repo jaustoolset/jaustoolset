@@ -74,7 +74,8 @@ JrErrorCode DllExport JrCheckAllHandles(long* list, int* size_of_list);
 
 JrErrorCode DllExport JrConnect(unsigned int id, 
                                const char* config_file, 
-                               long* handle);
+                               long* handle,
+                               bool allowWildcards = false);
 
 JrErrorCode DllExport JrDisconnect(long handle);
 

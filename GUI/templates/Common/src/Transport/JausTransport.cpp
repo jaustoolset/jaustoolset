@@ -41,11 +41,11 @@ namespace JTS
 /**
  * JausRouter Definitions
  */
-JausRouter::JausRouter(JausAddress jausAddress, InternalEventHandler* ieHandler)
+JausRouter::JausRouter(JausAddress jausAddress, InternalEventHandler* ieHandler, bool allowWildcards)
 {
 	this->jausAddress = jausAddress;
 	jrHandle = 0;
-	if (JrConnect(jausAddress.get(), "nm.cfg", &jrHandle) != 0)
+	if (JrConnect(jausAddress.get(), "nm.cfg", &jrHandle, allowWildcards) != 0)
 		printf("UNABLE TO CONNECT TO THE NODE MANAGER.  IS IT RUNNING?\n");
 	this->ieHandler = ieHandler;
 	this->transportType = Version_1_0;
@@ -164,23 +164,18 @@ void JausRouter::sendMessage(Send_1_1* msg)
 	}
 }
 
-
-
-//void JausRouter::updateTable(InternalEventHandler* handler, std::set<jUnsignedShortInteger> &inputMessageList, TransportType type)
-//{
-//	if (inputMessageList.size() > 0)
-//	{
-//		for (std::set<jUnsignedShortInteger>::iterator j = inputMessageList.begin(); j != inputMessageList.end(); j++)
-//		{
-//#ifdef DEBUG
-//			std::cout << "[JausRouter::updateTable] Adding 0x" << std::hex << *j << std::dec << std::endl;
-//#endif
-//			
-//			msgIDToHandlerTable[*j].push_back(std::make_pair(handler, type));
-//		}
-//	}
-//}
-
+void JausRouter::updateJausID(JausAddress jausAddress, bool allowWildcards)
+{
+   // Request to change our JAUS ID.  This means we have to close the current connection
+   // to junior, and recreate it.  But first we need to stop the receive thread.
+   stop();
+   JrDisconnect(jrHandle);
+   this->jausAddress = jausAddress;
+   jrHandle = 0;
+   if (JrConnect(jausAddress.get(), "nm.cfg", &jrHandle, allowWildcards) != 0)
+      printf("UNABLE TO CONNECT TO THE NODE MANAGER.  IS IT RUNNING?\n");
+   start();
+}
 
 void JausRouter::stop()
 {
@@ -191,6 +186,7 @@ void JausRouter::stop()
 	// Send a message to ourselves to wake-up the thread
 	unsigned short msg_id = 0;
 	JrSend(jrHandle, jausAddress.get(), 2, (char*) &msg_id);
+	DeVivo::Junior::JrSleep(50); // short delay to allow thread to wake-up
 }
 
 

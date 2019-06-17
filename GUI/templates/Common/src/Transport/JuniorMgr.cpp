@@ -558,7 +558,7 @@ JrErrorCode JuniorMgr::connect(unsigned int id,  std::string config_file)
 
 // Connect() implementation for full Junior version that includes Run-Time Engine
 // and application-to-application message support.
-JrErrorCode JuniorMgr::connect(unsigned int id,  std::string config_file)
+JrErrorCode JuniorMgr::connect(unsigned int id,  std::string config_file, bool allowWildcards)
 {
     // Parse the config file & read logger settings
     XmlConfig config;
@@ -589,7 +589,7 @@ JrErrorCode JuniorMgr::connect(unsigned int id,  std::string config_file)
 
     // Make sure the ID doesn't contain any wildcards.
     JAUS_ID jausId(id);
-    if (jausId.containsWildcards())
+    if (!allowWildcards && jausId.containsWildcards())
     {
         JrError << "Client ID may not contain wildcards (0xFF).  Returning error...\n";
         return InvalidID;

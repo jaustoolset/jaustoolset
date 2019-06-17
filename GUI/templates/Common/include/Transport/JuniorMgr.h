@@ -58,7 +58,7 @@ public:
     JrErrorCode recvfrom( unsigned int* sender, unsigned int* bufsize,
                   char** buffer, int* priority, int* flags, MessageCode* code = NULL);
     
-    JrErrorCode connect(unsigned int id, std::string config_file);
+    JrErrorCode connect(unsigned int id, std::string config_file, bool allowWildcards = false);
 
     unsigned char pending( );
 

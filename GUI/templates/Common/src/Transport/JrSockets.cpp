@@ -119,13 +119,13 @@ void JrSocket::openResponseChannel(Message* msg)
         std::stringstream s; s << msg->getSourceId().val;
         HANDLE source = OpenMailslot(s.str());
         if (source != INVALID_HANDLE_VALUE) 
-            _map.addElement(msg->getSourceId(), source, AS5669);
+            _map.addElement(msg->getSourceId(), source, AS5669, true);
     }
 #else
     // For Unix, we just use the ID as the name of the socket.
     // The AddressMap class will prevent duplicates.
     std::stringstream s; s << SOCK_PATH; s << msg->getSourceId().val;
-    _map.addElement(msg->getSourceId(), s.str(), AS5669);
+    _map.addElement(msg->getSourceId(), s.str(), AS5669, true);
 #endif
 }
 
@@ -289,7 +289,7 @@ Transport::TransportError JrSocket::broadcastMsg(Message& msg)
 		for (int i = 0; i < _map.getList().size(); i++)
         {
             if ((msg.getDestinationId() == _map.getList()[i]->getId()) &&
-                (msg.getSourceId() != _map.getList()[i]->getId()))
+                (msg.getSourceId().val != _map.getList()[i]->getId().val))
                 result = sendMsg(msg, _map.getList()[i]->getAddress());
 
             // If we failed to send to this destination, remove
