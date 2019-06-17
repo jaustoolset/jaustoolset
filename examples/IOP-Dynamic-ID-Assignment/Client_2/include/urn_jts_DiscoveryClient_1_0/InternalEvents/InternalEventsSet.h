@@ -1,0 +1,8 @@
+#ifndef URN_JTS_DISCOVERYCLIENT_1_0_INTERNALEVENTSSET
+#define URN_JTS_DISCOVERYCLIENT_1_0_INTERNALEVENTSSET
+
+#include "BroadcastLocal.h"
+#include "BroadcastGlobal.h"
+#include "RHP_Timeout.h"
+
+#endif //URN_JTS_DISCOVERYCLIENT_1_0_INTERNALEVENTSSET

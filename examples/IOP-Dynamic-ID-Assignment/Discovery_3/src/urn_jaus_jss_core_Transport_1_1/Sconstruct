@@ -1,0 +1,6 @@
+VariantDir('Build', '.', duplicate=0)
+sources = ['Build/InternalEvents/BroadcastGlobal.cpp', 'Build/InternalEvents/BroadcastLocal.cpp', 'Build/TransportService.cpp', 'Build/Transport_ReceiveFSM.cpp', 'Build/Transport_ReceiveFSM_sm.cpp', 'Build/Transport_SendFSM.cpp', 'Build/Transport_SendFSM_sm.cpp']
+Import('env')
+lib = env.SharedLibrary('./lib/TransportService', sources, LIBS=['Common'])
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )

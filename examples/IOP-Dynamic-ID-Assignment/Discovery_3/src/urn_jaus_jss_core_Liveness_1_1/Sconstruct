@@ -1,0 +1,6 @@
+VariantDir('Build', '.', duplicate=0)
+sources = ['Build/InternalEvents/BroadcastGlobal.cpp', 'Build/InternalEvents/BroadcastLocal.cpp', 'Build/InternalEvents/CommandCompleted.cpp', 'Build/InternalEvents/CommandExpired.cpp', 'Build/InternalEvents/EventError.cpp', 'Build/InternalEvents/EventOccurred.cpp', 'Build/InternalEvents/Timeout.cpp', 'Build/LivenessService.cpp', 'Build/Liveness_ReceiveFSM.cpp', 'Build/Liveness_ReceiveFSM_sm.cpp', 'Build/Liveness_SendFSM.cpp', 'Build/Liveness_SendFSM_sm.cpp', 'Build/Messages/CancelEvent.cpp', 'Build/Messages/CommandEvent.cpp', 'Build/Messages/ConfirmEventRequest.cpp', 'Build/Messages/CreateCommandEvent.cpp', 'Build/Messages/CreateEvent.cpp', 'Build/Messages/Event.cpp', 'Build/Messages/QueryEventTimeout.cpp', 'Build/Messages/QueryEvents.cpp', 'Build/Messages/QueryHeartbeatPulse.cpp', 'Build/Messages/RejectEventRequest.cpp', 'Build/Messages/ReportEventTimeout.cpp', 'Build/Messages/ReportEvents.cpp', 'Build/Messages/ReportHeartbeatPulse.cpp', 'Build/Messages/UpdateEvent.cpp']
+Import('env')
+lib = env.SharedLibrary('./lib/LivenessService', sources, LIBS=['Common', 'EventsService', 'TransportService'])
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )
