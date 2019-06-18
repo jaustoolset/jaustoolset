@@ -74,7 +74,7 @@ namespace JTS
         /// </summary>
         /// <param name="msg">The message to be sent</param>
         /// <param name="dest">The address to which the message is going.</param>
-		protected void sendJausMessage (Message msg, JausAddress dest)
+		protected void sendJausMessage (Message msg, JausAddress dest, bool force = false)
 		{
 			// Encode the message
 			uint bufsize = (uint) msg.getSize();
@@ -82,7 +82,7 @@ namespace JTS
 			int pos = 0;
 			msg.encode(buffer, pos);
 			// and send...
-			sendJausMessage (bufsize, buffer, dest);
+			sendJausMessage (bufsize, buffer, dest, force);
 						
 		}
 
@@ -93,9 +93,18 @@ namespace JTS
         /// <param name="bufsize">the size of the given buffer in bytes</param>
         /// <param name="buffer">the bytes from the message to be sent</param>
         /// <param name="dest">the destination of the message</param>
-		protected void sendJausMessage (uint bufsize, byte[] buffer, JausAddress dest)
+		protected void sendJausMessage (uint bufsize, byte[] buffer, JausAddress dest, bool force = false)
 		{
-			Send response = new Send();
+            // We need to have a complete JAUS ID (no wildcards)
+            // to send any messages, unless that message is specifically forced
+            // to send by the calling application
+            if (jausRouter.getJausAddress().containsWildcards() && !force)
+            {
+                Console.WriteLine("Can't send message when ID contains wildcards");
+                return;
+            }
+
+            Send response = new Send();
 			response.getBody().getSendRec().getMessagePayload().set((int)bufsize, buffer);
 			response.getBody().getSendRec().getDestinationID().setSubsystemID(dest.getSubsystemID());
             response.getBody().getSendRec().getDestinationID().setNodeID(dest.getNodeID());

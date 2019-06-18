@@ -16,8 +16,8 @@ using System.Runtime.InteropServices;
 
 
 public class JuniorAPI {
-  public static JrErrorCode JrConnect(int id, string cfg, ref int INOUT) {
-    JrErrorCode ret = (JrErrorCode)JuniorAPIPINVOKE.JrConnect__SWIG_0(id, cfg, ref INOUT);
+  public static JrErrorCode JrConnect(int id, string cfg, ref int INOUT, int allowWildcards) {
+    JrErrorCode ret = (JrErrorCode)JuniorAPIPINVOKE.JrConnect__SWIG_0(id, cfg, ref INOUT, allowWildcards);
     return ret;
   }
 

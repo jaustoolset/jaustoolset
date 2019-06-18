@@ -1,0 +1,20 @@
+Import('env')
+
+sources = Split("""
+		Transport_SendFSM.cs
+		Transport_ReceiveFSM.cs
+		InternalEvents/BroadcastGlobal.cs
+		InternalEvents/BroadcastLocal.cs
+		Transport_SendFSM_sm.cs
+		TransportService.cs
+		Transport_ReceiveFSM_sm.cs
+	""")
+
+libs = ['statemap', 'CSharpCommon' ]
+pathlibs = env.CLIRefs(libs)
+
+lib = env.CLILibrary('./lib/TransportService', sources, ASSEMBLYREFS=pathlibs)
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )
+env.AddToRefPaths(lib)
+Return('lib')
