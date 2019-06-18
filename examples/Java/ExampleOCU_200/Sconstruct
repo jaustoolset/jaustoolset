@@ -2,7 +2,7 @@ import os
 if ('JTS_COMMON_PATH' in os.environ):
 	common_dir = os.environ['JTS_COMMON_PATH']
 else:
-	print 'Must define JTS_COMMON_PATH before building'
+	print ('Must define JTS_COMMON_PATH before building')
 	exit(-1)
 
 VariantDir('Build', 'src', duplicate=0)
@@ -39,12 +39,12 @@ env.Append( JARCHDIR = './Build') #
 ###############################################
 swigflag = []
 if env['PLATFORM'] == 'cygwin':
-	print 'scons: Building for CYGWIN...'
+	print ('scons: Building for CYGWIN...')
 	env.Append( CCFLAGS = ['-D__CYGWIN__'] )
 	env.Append( CPPPATH = [ os.environ['JAVA_HOME'] + '/include', os.environ['JAVA_HOME'] + '/include/win32' ] )
 	
 elif os.name == 'nt':
-	print 'scons: Building for Windows...'
+	print ('scons: Building for Windows...')
 	env.Append( CCFLAGS = ['-DWIN32', '-DWINDOWS', '/MD', '-EHsc','-D_CRT_SECURE_NO_DEPRECATE'])
 	env.Append( LINKFLAGS = ['/MANIFEST', '/DEFAULTLIB:"WSock32.Lib"'] )
 	env.Append( CPPPATH = [ os.environ['JAVA_HOME'] + '/include', os.environ['JAVA_HOME'] + '/include/win32' ] )

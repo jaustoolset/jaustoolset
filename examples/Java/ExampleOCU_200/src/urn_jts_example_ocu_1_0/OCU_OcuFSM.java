@@ -47,8 +47,12 @@ public class OCU_OcuFSM extends StateMachine{
         mapPanel = null;
 
         gui = new GUI();
-        while ( mapPanel == null)
+        while ( mapPanel == null) {
             mapPanel = gui.getMapPanel();
+            try {
+                Thread.sleep(1);
+            } catch (Exception e) {}
+        }
 
 	/*
 	 * If there are other variables, context must be constructed last so that all

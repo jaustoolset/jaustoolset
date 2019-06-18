@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 using namespace DeVivo::Junior;
-static std::vector<long> handles;
+static std::vector<int64_t> handles;
 
 
 // This function checks all known handles for pending
@@ -45,7 +45,7 @@ static std::vector<long> handles;
 // size passed in 'size_of_list'.  This value will be modified
 // to equal the total number of handles with messages waiting.
 //
-JrErrorCode DllExport JrCheckAllHandles(long* list, int* size_of_list)
+JrErrorCode DllExport JrCheckAllHandles(int64_t* list, int* size_of_list)
 {
     JrErrorCode ret = Ok;
     int count = 0;
@@ -71,7 +71,7 @@ JrErrorCode DllExport JrCheckAllHandles(long* list, int* size_of_list)
 }
 
 
-JrErrorCode DllExport JrSend(long handle,
+JrErrorCode DllExport JrSend(int64_t handle,
            unsigned int destination, 
            unsigned int bufsize, 
            const char* buffer,
@@ -84,7 +84,7 @@ JrErrorCode DllExport JrSend(long handle,
     return (mgr->sendto(destination, bufsize, buffer, priority, flags, msg_id));
 }
 
-JrErrorCode DllExport JrBroadcast(long handle,
+JrErrorCode DllExport JrBroadcast(int64_t handle,
               unsigned int bufsize,
               const char* buffer,
               int priority,
@@ -93,7 +93,7 @@ JrErrorCode DllExport JrBroadcast(long handle,
     return JrSend(handle, 0xFFFFFFFF, bufsize, buffer, priority, 0, msg_id);
 }
 
-JrErrorCode DllExport JrReceive(long handle,
+JrErrorCode DllExport JrReceive(int64_t handle,
              unsigned int* sender,
              unsigned int* bufsize,
              char** buffer,
@@ -106,7 +106,7 @@ JrErrorCode DllExport JrReceive(long handle,
     return (mgr->recvfrom(sender, bufsize, buffer, priority, flags, msg_id));
 }
 
-JrErrorCode DllExport JrConnect(unsigned int id, const char* config_file, long* handle, bool allowWildcards)
+JrErrorCode DllExport JrConnect(unsigned int id, const char* config_file, int64_t* handle, bool allowWildcards)
 {
     if (handle == NULL) return InitFailed;
 
@@ -125,13 +125,13 @@ JrErrorCode DllExport JrConnect(unsigned int id, const char* config_file, long* 
     }
     else
     {
-        *handle = (long)mgr;
-        handles.push_back((long) mgr);
+        *handle = (int64_t)mgr;
+        handles.push_back((int64_t) mgr);
     }
     return ret;
 }
 
-JrErrorCode DllExport JrDisconnect(long handle)
+JrErrorCode DllExport JrDisconnect(int64_t handle)
 {    
     if (handle == 0) return NotInitialized;
     JuniorMgr* mgr = (JuniorMgr*) handle;

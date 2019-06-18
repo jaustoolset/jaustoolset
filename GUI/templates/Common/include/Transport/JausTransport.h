@@ -82,7 +82,7 @@ protected:
 	DeVivo::Junior::JrMutex runLock;
 	bool isRunning;
 	
-	long jrHandle;
+    int64_t jrHandle;
 	JausAddress jausAddress;
 	InternalEventHandler* ieHandler;
 	TransportType transportType;
