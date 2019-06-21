@@ -36,6 +36,8 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "InternalEvents/InternalEventHandler.h"
 #include "Messages/Message.h"
 #include "Transport/JausTransport.h"
+#include "Transport/Types.h"
+#include <iostream>
 
 namespace JTS
 {
@@ -72,10 +74,11 @@ public:
 	void processNotifications(std::string state, InternalEvent* ie = NULL);
 
 	// Send a message via the JAUS (external) queue
-	void sendJausMessage(JTS::Message& msg, JausAddress dest);
+	void sendJausMessage(JTS::Message& msg, JausAddress dest, bool force = false);
 	void sendJausMessage(const jUnsignedInteger length,
 						 const unsigned char* buffer, 
-						 JausAddress dest);
+						 JausAddress dest,
+						 bool force = false);
 		
 protected:
 
@@ -93,7 +96,8 @@ inline void StateMachine::setHandlers(InternalEventHandler *ieHandler,
 }
 
 inline void StateMachine::sendJausMessage(JTS::Message& msg, 
-										  JausAddress dest)
+										  JausAddress dest,
+										  bool force)
 {
 	// Encode the message
 	unsigned int bufsize = msg.getSize();
@@ -101,7 +105,7 @@ inline void StateMachine::sendJausMessage(JTS::Message& msg,
 	msg.encode(buffer);
 
 	// and send...
-	sendJausMessage(bufsize, buffer, dest);
+	sendJausMessage(bufsize, buffer, dest, force);
 	
 	// Free the buffer we used to encode the message
 	delete[] buffer;
@@ -109,8 +113,20 @@ inline void StateMachine::sendJausMessage(JTS::Message& msg,
 
 inline void StateMachine::sendJausMessage(const jUnsignedInteger bufsize,
 										  const unsigned char* buffer, 
-										  JausAddress dest)
+										  JausAddress dest,
+										  bool force)
 {
+	// We need to have a complete JAUS ID (no wildcards)
+    // to send any messages, unless that message is specifically forced
+	// to send by the calling application
+	DeVivo::Junior::JAUS_ID myId(jausRouter->getJausAddress()->get());
+    if (myId.containsWildcards() && !force)
+    {
+        std::cerr << "Can't send message when ID contains wildcards" << std::endl;
+        return;
+    }
+
+
 	// Send the response.  We enclose
 	// the response message in a transport envelope that includes
 	// the destination address.

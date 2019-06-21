@@ -77,22 +77,53 @@ public class JausRouter extends SimpleThread{
 	*
 	*/
     public JausRouter(JausAddress jausAddress, InternalEventHandler ieHandler){
+        this(jausAddress, ieHandler, false);
+    }
+
+    public JausRouter(JausAddress jausAddress, InternalEventHandler ieHandler, boolean allowWildcards){
 
         this.jausAddress = jausAddress;
 		this.ieHandler = ieHandler;
         jrHandle = 0;
         int jAdd = (int) jausAddress.get();
+        int jWildcards = allowWildcards ? 1 : 0;
 
 		// array used to force pass by reference to C++ library
-        int[] jrHandle_p = new int[1];
+        long[] jrHandle_p = new long[1];
 		String cfg = "nm.cfg";
 
-        if(JuniorAPI.JrConnect(jAdd, cfg.getBytes(), jrHandle_p) != JrErrorCode.Ok)
+        if(JuniorAPI.JrConnect(jAdd, cfg.getBytes(), jrHandle_p, jWildcards) != JrErrorCode.Ok)
 		{
             System.out.println("UNABLE TO CONNECT TO THE NODE MANAGER. IS IT RUNNING?");
 		}
 
 		jrHandle = jrHandle_p[0];
+    }
+
+    public void updateJausID(JausAddress jausAddress) {
+        this.updateJausID(jausAddress, false);
+    }
+
+    public synchronized void updateJausID(JausAddress jausAddress, boolean allowWildcards) {
+        // Request to change our JAUS ID.  This means we have to close the current connection
+        // to junior, and recreate it.  But first we need to stop the receive thread.
+        stop();
+        this.jausAddress = jausAddress;
+        jrHandle = 0;
+        int jAdd = (int) jausAddress.get();
+        int jWildcards = allowWildcards ? 1 : 0;
+
+		// array used to force pass by reference to C++ library
+        long[] jrHandle_p = new long[1];
+		String cfg = "nm.cfg";
+
+        if(JuniorAPI.JrConnect(jAdd, cfg.getBytes(), jrHandle_p, jWildcards) != JrErrorCode.Ok)
+		{
+            System.out.println("UNABLE TO CONNECT TO THE NODE MANAGER. IS IT RUNNING?");
+		}
+
+		jrHandle = jrHandle_p[0];
+        start();
     }
 
 	/*
@@ -124,7 +155,7 @@ public class JausRouter extends SimpleThread{
 
         // Otherwise, forward Message to NodeManager.
         else{
-            JrErrorCode ret = JuniorAPI.JrSend((int)jrHandle, destination.get(),
+            JrErrorCode ret = JuniorAPI.JrSend(jrHandle, destination.get(),
                     msg.getBody().getSendRec().getMessagePayload().getLength(),
                     msg.getBody().getSendRec().getMessagePayload().getData().array());
 			if (ret != JrErrorCode.Ok){
@@ -161,11 +192,11 @@ public class JausRouter extends SimpleThread{
         //byte[] msg_id = new byte[4];
         //long jAdd = jausAddress.get();
 
-        //JuniorAPI.JrSend((int) jrHandle, (int) jAdd, 2, msg_id);
+        //JuniorAPI.JrSend(jrHandle, (int) jAdd, 2, msg_id);
 
 		// Inform the C++ framework to disconnect from NodeManager.
         //System.out.println("Stopping router...");
-		JuniorAPI.JrDisconnect((int) jrHandle);
+		JuniorAPI.JrDisconnect(jrHandle);
         //System.out.println("\tdisconnected from NM.");
 		try
 		{
@@ -208,7 +239,7 @@ public class JausRouter extends SimpleThread{
             /*
              * Transport Service receives a TransportMessage
              */
-            byte[] buffer_bytes = JuniorAPI.JrReceive((int) jrHandle, source_p, priority_p, flags_p, msg_id_p);
+            byte[] buffer_bytes = JuniorAPI.JrReceive(jrHandle, source_p, priority_p, flags_p, msg_id_p);
             if (buffer_bytes.length > 0)
             {
                 // See if we got an exit signal while we were pending...

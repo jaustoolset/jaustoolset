@@ -9,17 +9,17 @@
 package framework.transport;
 
 class JuniorAPIJNI {
-  public final static native int JrConnect__SWIG_0(int jarg1, byte[] jarg2, int[] jarg3);
-  public final static native int JrSend__SWIG_0(int jarg1, long jarg2, long jarg3, byte[] jarg4, int jarg5, int jarg6, int jarg7);
-  public final static native int JrSend__SWIG_1(int jarg1, long jarg2, long jarg3, byte[] jarg4, int jarg5, int jarg6);
-  public final static native int JrSend__SWIG_2(int jarg1, long jarg2, long jarg3, byte[] jarg4, int jarg5);
-  public final static native int JrSend__SWIG_3(int jarg1, long jarg2, long jarg3, byte[] jarg4);
-  public final static native byte[] JrReceive(int jarg1, long[] jarg2, int[] jarg5, int[] jarg6, int[] jarg7);
+  public final static native int JrConnect__SWIG_0(int jarg1, byte[] jarg2, long[] jarg3, int jarg4);
+  public final static native int JrSend__SWIG_0(long jarg1, long jarg2, long jarg3, byte[] jarg4, int jarg5, int jarg6, int jarg7);
+  public final static native int JrSend__SWIG_1(long jarg1, long jarg2, long jarg3, byte[] jarg4, int jarg5, int jarg6);
+  public final static native int JrSend__SWIG_2(long jarg1, long jarg2, long jarg3, byte[] jarg4, int jarg5);
+  public final static native int JrSend__SWIG_3(long jarg1, long jarg2, long jarg3, byte[] jarg4);
+  public final static native byte[] JrReceive(long jarg1, long[] jarg2, int[] jarg5, int[] jarg6, int[] jarg7);
   public final static native short GuaranteeDelivery_get();
   public final static native short ServiceConnection_get();
   public final static native short ExperimentalFlag_get();
-  public final static native int JrBroadcast(int jarg1, long jarg2, String jarg3, int jarg4, int jarg5);
+  public final static native int JrBroadcast(long jarg1, long jarg2, String jarg3, int jarg4, int jarg5);
   public final static native int JrCheckAllHandles(long jarg1, long jarg2);
-  public final static native int JrConnect__SWIG_1(long jarg1, String jarg2, long jarg3);
-  public final static native int JrDisconnect(int jarg1);
+  public final static native int JrConnect__SWIG_1(long jarg1, String jarg2, long jarg3, int jarg4);
+  public final static native int JrDisconnect(long jarg1);
 }

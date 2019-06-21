@@ -47,6 +47,15 @@ public class JausAddress extends Address {
     this(JausAddressJNI.new_JausAddress__SWIG_2(value), true);
   }
 
+  public boolean containsWildcards() {
+    return ((getSubsystemID() == 0xFFFF) ||
+            (getSubsystemID() == 0) ||
+            (getNodeID() == 0xFF) ||
+            (getNodeID() == 0) ||
+            (getComponentID() == 0xFF) ||
+            (getComponentID() == 0));
+  }
+
   public int getSubsystemID() {
     return JausAddressJNI.JausAddress_getSubsystemID(swigCPtr, this);
   }

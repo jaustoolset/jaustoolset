@@ -84,7 +84,11 @@ public class StateMachine{
 	*
 	*  Encodes the message in a byte buffer to be sent out.
 	*/
-    public void sendJausMessage(Message msg, JausAddress dest){
+	public void sendJausMessage(Message msg, JausAddress dest){
+		sendJausMessage(msg, dest, false);
+	}
+
+    public void sendJausMessage(Message msg, JausAddress dest, boolean force){
 
         // Get the message size before we allocate the buffer
         long bufsize = msg.getSize();
@@ -98,7 +102,7 @@ public class StateMachine{
         msg.encode(buffer, pos);
 
         // And send...
-        sendJausMessage(bufsize, buffer, dest);
+        sendJausMessage(bufsize, buffer, dest, force);
     }
 
 	/*
@@ -108,9 +112,23 @@ public class StateMachine{
 	*
 	* Wraps the buffer containing the message and sends it out through the JausRouter.
 	*/
+	public void sendJausMessage(long bufsize, ByteBuffer buffer, JausAddress dest){
+		sendJausMessage(bufsize, buffer, dest, false);
+	}
+
     public void sendJausMessage(long bufsize,
             ByteBuffer buffer,
-            JausAddress dest){
+            JausAddress dest,
+			boolean force){
+
+		// We need to have a complete JAUS ID (no wildcards)
+		// to send any messages, unless that message is specifically forced
+		// to send by the calling application
+		if (jausRouter.getJausAddress().containsWildcards() && !force)
+		{
+			System.out.println("Can't send message when ID contains wildcards");
+			return;
+		}
 
         // Send the response. We enclose the response message
         // in a transport envelope that includes the

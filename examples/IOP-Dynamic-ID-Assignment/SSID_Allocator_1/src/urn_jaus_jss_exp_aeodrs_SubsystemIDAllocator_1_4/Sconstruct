@@ -1,0 +1,6 @@
+VariantDir('Build', '.', duplicate=0)
+sources = ['Build/InternalEvents/BroadcastGlobal.cpp', 'Build/InternalEvents/BroadcastLocal.cpp', 'Build/Messages/GrantSubsystemID.cpp', 'Build/Messages/QuerySubsystemIDs.cpp', 'Build/Messages/ReportSubsystemIDs.cpp', 'Build/Messages/RequestSubsystemID.cpp', 'Build/SubsystemIDAllocatorService.cpp', 'Build/SubsystemIDAllocator_ReceiveFSM.cpp', 'Build/SubsystemIDAllocator_ReceiveFSM_sm.cpp', 'Build/SubsystemIDAllocator_SendFSM.cpp', 'Build/SubsystemIDAllocator_SendFSM_sm.cpp']
+Import('env')
+lib = env.SharedLibrary('./lib/SubsystemIDAllocatorService', sources, LIBS=['Common', 'TransportService'])
+env.Install( env['INSTALL_LIB'], lib )
+env.Install( env['BINPATH'], lib )

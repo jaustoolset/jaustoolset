@@ -1,0 +1,9 @@
+#ifndef URN_JAUS_JSS_EXP_AEODRS_SUBSYSTEMIDALLOCATOR_1_4_MESSAGESET
+#define URN_JAUS_JSS_EXP_AEODRS_SUBSYSTEMIDALLOCATOR_1_4_MESSAGESET
+
+#include "QuerySubsystemIDs.h"
+#include "RequestSubsystemID.h"
+#include "GrantSubsystemID.h"
+#include "ReportSubsystemIDs.h"
+
+#endif //URN_JAUS_JSS_EXP_AEODRS_SUBSYSTEMIDALLOCATOR_1_4_MESSAGESET

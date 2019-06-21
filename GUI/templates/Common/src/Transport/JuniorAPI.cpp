@@ -106,7 +106,7 @@ JrErrorCode DllExport JrReceive(long handle,
     return (mgr->recvfrom(sender, bufsize, buffer, priority, flags, msg_id));
 }
 
-JrErrorCode DllExport JrConnect(unsigned int id, const char* config_file, long* handle)
+JrErrorCode DllExport JrConnect(unsigned int id, const char* config_file, long* handle, bool allowWildcards)
 {
     if (handle == NULL) return InitFailed;
 
@@ -115,9 +115,9 @@ JrErrorCode DllExport JrConnect(unsigned int id, const char* config_file, long* 
     JuniorMgr* mgr = new JuniorMgr();
     JrErrorCode ret;
     if ((config_file == NULL) || strlen(config_file) == 0) 
-        ret = mgr->connect(id, "");
+        ret = mgr->connect(id, "", allowWildcards);
     else 
-        ret = mgr->connect(id, config_file);
+        ret = mgr->connect(id, config_file, allowWildcards);
     if (ret != Ok)
     {
         delete mgr;
