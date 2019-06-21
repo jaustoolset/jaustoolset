@@ -287,17 +287,19 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_JuniorAPI(SWIG_CSharpStri
 extern "C" {
 #endif
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JrConnect__SWIG_0(long jarg1, char* jarg2, long * jarg3) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JrConnect__SWIG_0(long jarg1, char* jarg2, int64_t * jarg3, int jarg4) {
   int jresult ;
   long arg1 ;
   char *arg2 = (char *) 0 ;
-  long *arg3 = (long *) 0 ;
+  int64_t *arg3 = (int64_t *) 0 ;
+  bool arg4;
   JrErrorCode result;
   
   arg1 = (long)jarg1; 
   arg2 = jarg2;
-  arg3 = (long *)jarg3; 
-  result = (JrErrorCode)JrConnect(arg1,arg2,arg3);
+  arg3 = (int64_t *)jarg3;
+  arg4 = (bool)jarg4!=0;
+  result = (JrErrorCode)JrConnect(arg1,arg2,arg3, jarg4);
   jresult = result; 
   
   
@@ -305,9 +307,9 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JrConnect__SWIG_0(long jarg1, char* jarg2, lon
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_0(long jarg1, unsigned int jarg2, unsigned int jarg3, char* jarg4, int jarg5, int jarg6, unsigned short jarg7) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_0(int64_t jarg1, unsigned int jarg2, unsigned int jarg3, char* jarg4, int jarg5, int jarg6, unsigned short jarg7) {
   int jresult ;
-  long arg1 ;
+  int64_t arg1 ;
   unsigned int arg2 ;
   unsigned int arg3 ;
   char *arg4 = (char *) 0 ;
@@ -316,7 +318,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_0(long jarg1, unsigned int jarg2,
   unsigned short arg7 ;
   JrErrorCode result;
   
-  arg1 = (long)jarg1; 
+  arg1 = (int64_t)jarg1;
   arg2 = (unsigned int)jarg2; 
   arg3 = (unsigned int)jarg3; 
   arg4 = jarg4;
@@ -331,9 +333,9 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_0(long jarg1, unsigned int jarg2,
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_1(long jarg1, unsigned int jarg2, unsigned int jarg3, char* jarg4, int jarg5, int jarg6) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_1(int64_t jarg1, unsigned int jarg2, unsigned int jarg3, char* jarg4, int jarg5, int jarg6) {
   int jresult ;
-  long arg1 ;
+  int64_t arg1 ;
   unsigned int arg2 ;
   unsigned int arg3 ;
   char *arg4 = (char *) 0 ;
@@ -341,7 +343,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_1(long jarg1, unsigned int jarg2,
   int arg6 ;
   JrErrorCode result;
   
-  arg1 = (long)jarg1; 
+  arg1 = (int64_t)jarg1;
   arg2 = (unsigned int)jarg2; 
   arg3 = (unsigned int)jarg3; 
   arg4 = jarg4;
@@ -355,16 +357,16 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_1(long jarg1, unsigned int jarg2,
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_2(long jarg1, unsigned int jarg2, unsigned int jarg3, char* jarg4, int jarg5) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_2(int64_t jarg1, unsigned int jarg2, unsigned int jarg3, char* jarg4, int jarg5) {
   int jresult ;
-  long arg1 ;
+  int64_t arg1 ;
   unsigned int arg2 ;
   unsigned int arg3 ;
   char *arg4 = (char *) 0 ;
   int arg5 ;
   JrErrorCode result;
   
-  arg1 = (long)jarg1; 
+  arg1 = (int64_t)jarg1;
   arg2 = (unsigned int)jarg2; 
   arg3 = (unsigned int)jarg3; 
   arg4 = jarg4;
@@ -377,15 +379,15 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_2(long jarg1, unsigned int jarg2,
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_3(long jarg1, unsigned int jarg2, unsigned int jarg3, char* jarg4) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_3(int64_t jarg1, unsigned int jarg2, unsigned int jarg3, char* jarg4) {
   int jresult ;
-  long arg1 ;
+  int64_t arg1 ;
   unsigned int arg2 ;
   unsigned int arg3 ;
   char *arg4 = (char *) 0 ;
   JrErrorCode result;
   
-  arg1 = (long)jarg1; 
+  arg1 = (int64_t)jarg1;
   arg2 = (unsigned int)jarg2; 
   arg3 = (unsigned int)jarg3; 
   arg4 = jarg4;
@@ -397,9 +399,9 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JrSend__SWIG_3(long jarg1, unsigned int jarg2,
 }
 
 
-SWIGEXPORT char* SWIGSTDCALL CSharp_JrReceive(long jarg1, unsigned int * jarg2, unsigned int * jarg3, int * jarg5, int * jarg6, unsigned short * jarg7) {
+SWIGEXPORT char* SWIGSTDCALL CSharp_JrReceive(int64_t jarg1, unsigned int * jarg2, unsigned int * jarg3, int * jarg5, int * jarg6, unsigned short * jarg7) {
   int jresult ;
-  long arg1 ;
+  int64_t arg1 ;
   unsigned int *arg2 = (unsigned int *) 0 ;
   unsigned int *arg3 = (unsigned int *) 0 ;
   char *arg4 = (char *) 0 ;
@@ -408,7 +410,7 @@ SWIGEXPORT char* SWIGSTDCALL CSharp_JrReceive(long jarg1, unsigned int * jarg2, 
   unsigned short *arg7 = (unsigned short *) 0 ;
   JrErrorCode result;
   
-  arg1 = (long)jarg1; 
+  arg1 = (int64_t)jarg1;
   arg2 = (unsigned int *)jarg2; 
   arg3 = (unsigned int *)jarg3; 
   arg5 = (int *)jarg5; 
@@ -455,16 +457,16 @@ SWIGEXPORT unsigned char SWIGSTDCALL CSharp_ExperimentalFlag_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JrBroadcast(long jarg1, unsigned int jarg2, char * jarg3, int jarg4, unsigned short jarg5) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JrBroadcast(int64_t jarg1, unsigned int jarg2, char * jarg3, int jarg4, unsigned short jarg5) {
   int jresult ;
-  long arg1 ;
+  int64_t arg1 ;
   unsigned int arg2 ;
   char *arg3 = (char *) 0 ;
   int arg4 = (int) 6 ;
   unsigned short arg5 = (unsigned short) 0 ;
   JrErrorCode result;
   
-  arg1 = (long)jarg1; 
+  arg1 = (int64_t)jarg1;
   arg2 = (unsigned int)jarg2; 
   arg3 = (char *)jarg3; 
   arg4 = (int)jarg4; 
@@ -477,11 +479,11 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JrBroadcast(long jarg1, unsigned int jarg2, ch
 
 SWIGEXPORT int SWIGSTDCALL CSharp_JrCheckAllHandles(void * jarg1, void * jarg2) {
   int jresult ;
-  long *arg1 = (long *) 0 ;
+  int64_t *arg1 = (int64_t *) 0 ;
   int *arg2 = (int *) 0 ;
   JrErrorCode result;
   
-  arg1 = (long *)jarg1; 
+  arg1 = (int64_t *)jarg1;
   arg2 = (int *)jarg2; 
   result = (JrErrorCode)JrCheckAllHandles(arg1,arg2);
   jresult = result; 
@@ -489,28 +491,30 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JrCheckAllHandles(void * jarg1, void * jarg2) 
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JrConnect__SWIG_1(unsigned int jarg1, char * jarg2, void * jarg3) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JrConnect__SWIG_1(unsigned int jarg1, char * jarg2, void * jarg3, int jarg4) {
   int jresult ;
   unsigned int arg1 ;
   char *arg2 = (char *) 0 ;
-  long *arg3 = (long *) 0 ;
+  int64_t *arg3 = (int64_t *) 0 ;
+  bool arg4 ;
   JrErrorCode result;
   
   arg1 = (unsigned int)jarg1; 
   arg2 = (char *)jarg2; 
-  arg3 = (long *)jarg3; 
-  result = (JrErrorCode)JrConnect(arg1,(char const *)arg2,arg3);
+  arg3 = (int64_t *)jarg3;
+  arg4 = (bool)jarg4 != 0;
+  result = (JrErrorCode)JrConnect(arg1,(char const *)arg2,arg3,arg4);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JrDisconnect(long jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JrDisconnect(int64_t jarg1) {
   int jresult ;
-  long arg1 ;
+  int64_t arg1 ;
   JrErrorCode result;
   
-  arg1 = (long)jarg1; 
+  arg1 = (int64_t)jarg1;
   result = (JrErrorCode)JrDisconnect(arg1);
   jresult = result; 
   return jresult;

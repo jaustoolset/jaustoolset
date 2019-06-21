@@ -55,12 +55,13 @@ namespace JTS
         /// Constructor. Connects with nodeManager and sets up variables.
         /// </summary>
         /// <param name="jausAddress">The JausAddress of the current component.</param>
-		public JausRouter (JausAddress jausAddress, InternalEventHandler ieHandler)
+		public JausRouter (JausAddress jausAddress, InternalEventHandler ieHandler, bool allowWildcards = false)
 		{
 			this.jausAddress = jausAddress;
 			this.ieHandler = ieHandler;
 			jrHandle = 0;
-			if (JuniorAPI.JrConnect((int)jausAddress.get(), "nm.cfg", ref jrHandle) != 0)
+            int jWildcards = allowWildcards ? 1 : 0;
+            if (JuniorAPI.JrConnect((int)jausAddress.get(), "nm.cfg", ref jrHandle, jWildcards) != 0)
 			{
 				Console.WriteLine("UNABLE TO CONNECT TO THE NODE MANAGER.  IS IT RUNNING?");
 			}
@@ -73,13 +74,30 @@ namespace JTS
 		{
 			JuniorAPI.JrDisconnect((int) jrHandle);
 		}
-		
+
+        public void updateJausID(JausAddress jausAddress, bool allowWildcards = false)
+        {
+            // Request to change our JAUS ID.  This means we have to close the current connection
+            // to junior, and recreate it.  But first we need to stop the receive thread.
+            stop();
+            JuniorAPI.JrDisconnect((int)jrHandle);
+            this.jausAddress = jausAddress;
+            jrHandle = 0;
+            int jWildcards = allowWildcards ? 1 : 0;
+            if (JuniorAPI.JrConnect((int)jausAddress.get(), "nm.cfg", ref jrHandle, jWildcards) != 0)
+            {
+                Console.WriteLine("UNABLE TO CONNECT TO THE NODE MANAGER.  IS IT RUNNING?");
+            }
+
+            start();
+        }
+
         /// <summary>
         /// Determines if the outgoing message is local, or needs to be routed through
         /// the node manager.
         /// </summary>
         /// <param name="msg">the outgoing message wrapped in a Send wrapper.</param>
-		public void sendMessage(ref Send msg)
+        public void sendMessage(ref Send msg)
 		{
 			// Pull the destination ID
 			JausAddress destination = new JausAddress((ushort) msg.getBody().getSendRec().getDestinationID().getSubsystemID(),
@@ -130,7 +148,7 @@ namespace JTS
 			// Send a message to ourselves to wake up the thread.
 			byte[] msg_id = {0};
 			JuniorAPI.JrSend(jrHandle, jausAddress.get(), (uint) 2, msg_id);
-            thread.Join(THREAD_JOIN_TIME);
+            thread.Join(THREAD_JOIN_TIME*10);
 		}
 		
         /// <summary>

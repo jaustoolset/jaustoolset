@@ -146,7 +146,7 @@ public class SconstructGenerator
         buf.append("if ('JTS_COMMON_PATH' in os.environ):").append(System.getProperty("line.separator"));
         buf.append("\tcommon_dir = os.environ['JTS_COMMON_PATH']").append(System.getProperty("line.separator"));
         buf.append("else:").append(System.getProperty("line.separator"));
-        buf.append("\tprint 'Must define JTS_COMMON_PATH before building'").append(System.getProperty("line.separator"));
+        buf.append("\tprint ('Must define JTS_COMMON_PATH before building')").append(System.getProperty("line.separator"));
         buf.append("\texit(-1)").append(System.getProperty("line.separator"));
         buf.append(System.getProperty("line.separator"));
             	    	
@@ -262,11 +262,11 @@ public class SconstructGenerator
 		buf.append("# Some stuff is platform specific").append(System.getProperty("line.separator"));
         buf.append("extra_libs = []").append(System.getProperty("line.separator"));
 		buf.append("if env['PLATFORM'] == 'cygwin':").append(System.getProperty("line.separator"));
-		buf.append("\tprint 'scons: Building for CYGWIN...'").append(System.getProperty("line.separator"));
+		buf.append("\tprint ('scons: Building for CYGWIN...')").append(System.getProperty("line.separator"));
 		buf.append("\tenv.Append( CCFLAGS = ['-D__CYGWIN__'] )").append(System.getProperty("line.separator"));
 		buf.append("\tenv.Append( LINKFLAGS = ['-Wl,--enable-auto-import'] )").append(System.getProperty("line.separator"));
 		buf.append("elif os.name == 'nt':").append(System.getProperty("line.separator"));                     
-		buf.append("\tprint 'scons: Building for Windows...'").append(System.getProperty("line.separator"));
+		buf.append("\tprint ('scons: Building for Windows...')").append(System.getProperty("line.separator"));
 		buf.append("\tenv.Append( CCFLAGS = ['-DWIN32', '-DWINDOWS', '/MD', '-EHsc','-D_CRT_SECURE_NO_DEPRECATE'])").append(System.getProperty("line.separator"));
 		buf.append("\tenv.Append( LINKFLAGS = ['/DEFAULTLIB:\"WSock32.Lib\"'] )").append(System.getProperty("line.separator"));
 		buf.append("elif env['PLATFORM'] == 'darwin':").append(System.getProperty("line.separator"));

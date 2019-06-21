@@ -48,7 +48,7 @@ const unsigned char ServiceConnection = 0x02;
 const unsigned char ExperimentalFlag  = 0x04;
 
 // Functional interface.  
-JrErrorCode DllExport JrSend(long handle,
+JrErrorCode DllExport JrSend(int64_t handle,
            unsigned int destination, 
            unsigned int size, 
            const char* buffer,
@@ -56,7 +56,7 @@ JrErrorCode DllExport JrSend(long handle,
            int flags = 0,
 		   unsigned short msg_id = 0);
 
-JrErrorCode DllExport JrReceive(long handle,
+JrErrorCode DllExport JrReceive(int64_t handle,
              unsigned int* source,
              unsigned int* bufsize,
              char** buffer,
@@ -64,20 +64,20 @@ JrErrorCode DllExport JrReceive(long handle,
              int* flags = 0,
 			 unsigned short* msg_id = 0);
 
-JrErrorCode DllExport JrBroadcast(long handle,
+JrErrorCode DllExport JrBroadcast(int64_t handle,
               unsigned int size,
               const char* buffer,
               int priority = 6,
 			  unsigned short msg_id = 0);
 
-JrErrorCode DllExport JrCheckAllHandles(long* list, int* size_of_list);
+JrErrorCode DllExport JrCheckAllHandles(int64_t* list, int* size_of_list);
 
 JrErrorCode DllExport JrConnect(unsigned int id, 
                                const char* config_file, 
-                               long* handle,
+                               int64_t* handle,
                                bool allowWildcards = false);
 
-JrErrorCode DllExport JrDisconnect(long handle);
+JrErrorCode DllExport JrDisconnect(int64_t handle);
 
 } // end extern "C"
 #endif

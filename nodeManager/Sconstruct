@@ -2,7 +2,7 @@ import os
 if ('JTS_COMMON_PATH' in os.environ):
 	common_dir = os.environ['JTS_COMMON_PATH']
 else:
-	print 'Must define JTS_COMMON_PATH before building'
+	print ('Must define JTS_COMMON_PATH before building')
 	exit(-1)
 
 VariantDir('Build', 'src', duplicate=0)
@@ -20,11 +20,11 @@ env.Append( BINPATH = '#./bin')
 # Some stuff is platform specific
 extra_libs = []
 if env['PLATFORM'] == 'cygwin':
-	print 'scons: Building for CYGWIN...'
+	print ('scons: Building for CYGWIN...')
 	env.Append( CCFLAGS = ['-D__CYGWIN__'] )
 	env.Append( LINKFLAGS = ['-Wl,--enable-auto-import'] )	
 elif os.name == 'nt':
-	print 'scons: Building for Windows...'
+	print ('scons: Building for Windows...')
 	env.Append( CCFLAGS = ['-DWINDOWS', '/MD', '-EHsc','-D_CRT_SECURE_NO_DEPRECATE'])
 	env.Append( LINKFLAGS = ['/DEFAULTLIB:"WSock32.Lib"'] )
 elif env['PLATFORM'] == 'darwin':

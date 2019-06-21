@@ -189,7 +189,7 @@ class JuniorAPIPINVOKE {
 
 
   [DllImport("JuniorAPI", EntryPoint="CSharp_JrConnect__SWIG_0")]
-  public static extern int JrConnect__SWIG_0(int jarg1, string jarg2, ref int jarg3);
+  public static extern int JrConnect__SWIG_0(int jarg1, string jarg2, ref int jarg3, int allowWildcards);
 
   [DllImport("JuniorAPI", EntryPoint="CSharp_JrSend__SWIG_0")]
   public static extern int JrSend__SWIG_0(int jarg1, uint jarg2, uint jarg3, [In, Out, MarshalAs(UnmanagedType.LPArray)]byte[] jarg4, int jarg5, int jarg6, ushort jarg7);
@@ -225,7 +225,7 @@ class JuniorAPIPINVOKE {
   public static extern int JrCheckAllHandles(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport("JuniorAPI", EntryPoint="CSharp_JrConnect__SWIG_1")]
-  public static extern int JrConnect__SWIG_1(uint jarg1, string jarg2, HandleRef jarg3);
+  public static extern int JrConnect__SWIG_1(uint jarg1, string jarg2, HandleRef jarg3, int allowWildcards);
 
   [DllImport("JuniorAPI", EntryPoint="CSharp_JrDisconnect")]
   public static extern int JrDisconnect(int jarg1);

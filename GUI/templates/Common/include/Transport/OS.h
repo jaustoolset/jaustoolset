@@ -82,8 +82,8 @@ namespace Junior {
 
 void DllExport JrSleep(unsigned long milliseconds);
 void DllExport JrSpawnProcess(std::string path, std::string arg);
-int DllExport JrSpawnThread(void*(*func_ptr)(void*), void* func_arg);
-void DllExport JrKillThread(int thread);
+int64_t DllExport JrSpawnThread(void*(*func_ptr)(void*), void* func_arg);
+void DllExport JrKillThread(int64_t thread);
 unsigned long DllExport JrGetTimestamp();
 std::list<unsigned int> DllExport JrGetIPAddresses();
 bool DllExport JrStrCaseCompare(std::string str1, std::string str2);

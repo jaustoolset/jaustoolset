@@ -183,10 +183,10 @@ bool DeVivo::Junior::JrStrCaseCompare(std::string str1, std::string str2)
 #endif
 }
 
-int DeVivo::Junior::JrSpawnThread(void*(*func_ptr)(void*), void* func_arg)
+int64_t DeVivo::Junior::JrSpawnThread(void*(*func_ptr)(void*), void* func_arg)
 {
 #ifdef WINDOWS
-    return (int) CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) func_ptr, func_arg, 0, NULL);
+    return (int64_t) CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) func_ptr, func_arg, 0, NULL);
 #else
     pthread_t thread_info;
     pthread_attr_t attr;
@@ -198,12 +198,12 @@ int DeVivo::Junior::JrSpawnThread(void*(*func_ptr)(void*), void* func_arg)
 #ifdef __MAC__
     return 0;
 #else
-    return (int) thread_info;
+    return (int64_t) thread_info;
 #endif
 #endif
 }
 
-void DeVivo::Junior::JrKillThread(int thread)
+void DeVivo::Junior::JrKillThread(int64_t thread)
 {
 #ifdef WINDOWS
     TerminateThread((HANDLE) thread, 0);

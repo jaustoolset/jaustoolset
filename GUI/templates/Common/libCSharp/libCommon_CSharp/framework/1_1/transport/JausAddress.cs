@@ -49,6 +49,16 @@ public class JausAddress : Address {
   public JausAddress(uint value) : this(JausAddressModulePINVOKE.new_JausAddress__SWIG_2(value), true) {
   }
 
+public bool containsWildcards()
+{
+    return ((getSubsystemID() == 0xFFFF) ||
+            (getSubsystemID() == 0) ||
+            (getNodeID() == 0xFF) ||
+            (getNodeID() == 0) ||
+            (getComponentID() == 0xFF) ||
+            (getComponentID() == 0));
+}
+
   public virtual ushort getSubsystemID() {
     ushort ret = JausAddressModulePINVOKE.JausAddress_getSubsystemID(swigCPtr);
     return ret;
