@@ -202,6 +202,19 @@ public class Array
 				jxArray.setVariableLengthString(element);
 			}
 		}
+		// bit, fixed, and variable fields can all have embedded declared_value_set, so we need to resolve them
+		else if(jxArray.getBitField() != null)
+		{
+			BitField.resolveDeclaredElements(jxArray.getBitField());
+		}
+		else if(jxArray.getFixedField() != null)
+		{
+			FixedField.resolveDeclaredElements(jxArray.getFixedField());
+		}
+		else if(jxArray.getVariableField() != null)
+		{
+			VariableField.resolveDeclaredElements(jxArray.getVariableField());
+		}
 	}
 
 	public static void resolveDeclaredConstantElements(org.jts.jsidl.binding.Array array)

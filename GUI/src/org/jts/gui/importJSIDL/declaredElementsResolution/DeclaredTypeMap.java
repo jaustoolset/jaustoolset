@@ -850,4 +850,32 @@ public class DeclaredTypeMap {
             return element_copy;
         }
     }
+
+    public static org.jts.jsidl.binding.ValueSet lookupDeclaredValueSet(org.jts.jsidl.binding.DeclaredValueSet declaredValueSet) {
+        DeclaredTypeMap declaredTypeMap = DeclaredTypeMap.getInstance();
+
+        Object obj = declaredTypeMap.getType(declaredValueSet.getDeclaredTypeRef());
+
+        if (obj == null) {
+            // Error, declared type ref not found in TypeMap
+            return null;
+        } else if (!(obj instanceof org.jts.jsidl.binding.ValueSet)) {
+            // Error, declared type ref found but wrong object type
+            return null;
+        } else {
+        	
+            org.jts.jsidl.binding.ValueSet element = (org.jts.jsidl.binding.ValueSet) obj;
+        	org.jts.jsidl.binding.ValueSet element_copy = new org.jts.jsidl.binding.ValueSet();
+
+        	element_copy.setName(declaredValueSet.getName());
+            element_copy.setOffsetToLowerLimit(element.isOffsetToLowerLimit());
+            for (Object item : element.getValueRangeOrValueEnum()) {
+                element_copy.getValueRangeOrValueEnum().add(item);
+            } 
+
+            return element_copy;
+        }
+    }
+
+    
 }

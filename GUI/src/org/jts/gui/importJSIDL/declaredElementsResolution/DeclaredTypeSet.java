@@ -335,6 +335,14 @@ public class DeclaredTypeSet
 		{
 			mapDeclaredVariableLengthString(obj, declaredTypeMap);
 		}
+		else if(obj instanceof org.jts.jsidl.binding.DeclaredValueSet)
+		{
+			mapDeclaredValueSet(obj, declaredTypeMap);
+		}
+		else if(obj instanceof org.jts.jsidl.binding.ValueSet)
+		{
+			mapValueSet(obj, declaredTypeMap);
+		}
 		else
 		{
 			// Unknown type
@@ -378,8 +386,8 @@ public class DeclaredTypeSet
 	
 	public static void mapBitField(Object obj, DeclaredTypeMap declaredTypeMap)
 	{
-		// No possible declared types to resolve in BitField, so add this object to the map
 		org.jts.jsidl.binding.BitField field = (org.jts.jsidl.binding.BitField) obj;
+        BitField.resolveDeclaredElements(field);
 		declaredTypeMap.addType(field.getName(), field);
 	}
 	
@@ -390,9 +398,8 @@ public class DeclaredTypeSet
 	
 	public static void mapVariableField(Object obj, DeclaredTypeMap declaredTypeMap)
 	{
-		// No possible declared types to resolve in VariableField, so add this object to the map
 		org.jts.jsidl.binding.VariableField field = (org.jts.jsidl.binding.VariableField) obj;
-
+		VariableField.resolveDeclaredElements(field);
 		declaredTypeMap.addType(field.getName(), field);
 	}
 	
@@ -410,8 +417,8 @@ public class DeclaredTypeSet
 	
 	public static void mapFixedField(Object obj, DeclaredTypeMap declaredTypeMap)
 	{
-		// No possible declared types to resolve in FixedField, so add this object to the map
 		org.jts.jsidl.binding.FixedField fixedField = (org.jts.jsidl.binding.FixedField) obj;
+		FixedField.resolveDeclaredElements(fixedField);
 		declaredTypeMap.addType(fixedField.getName(), fixedField);
 	}
 	
@@ -751,6 +758,31 @@ public class DeclaredTypeSet
 		{
 			// Add to the map with the declared name
 			declaredTypeMap.addType(declaredVariableLengthString.getName(), element);
+		}
+	}
+
+    public static void mapValueSet(Object obj, DeclaredTypeMap declaredTypeMap)
+	{
+		// No possible declared types to resolve in ValueSet, so add this object to the map
+		org.jts.jsidl.binding.ValueSet field = (org.jts.jsidl.binding.ValueSet) obj;
+		declaredTypeMap.addType(field.getName(), field);
+	}
+	
+	public static void mapDeclaredValueSet(Object obj, DeclaredTypeMap declaredTypeMap)
+	{
+		// Resolve the declared type into the actual object
+		org.jts.jsidl.binding.DeclaredValueSet declaredValueSet = (org.jts.jsidl.binding.DeclaredValueSet) obj;
+		org.jts.jsidl.binding.ValueSet element = DeclaredTypeMap.lookupDeclaredValueSet(declaredValueSet);
+		
+		if(element == null)
+		{
+			// Error, not found in TypeMap
+			throw new ImportException("Declared Value Set \""+declaredValueSet.getName()+"\" with type ref \""+declaredValueSet.getDeclaredTypeRef()+"\" not found.");
+		}
+		else
+		{
+			// Add to the map with the declared name
+			declaredTypeMap.addType(declaredValueSet.getName(), element);
 		}
 	}
 	
