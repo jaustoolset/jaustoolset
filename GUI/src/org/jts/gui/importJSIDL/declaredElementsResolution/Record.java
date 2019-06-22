@@ -222,6 +222,19 @@ public class Record
 				{
 					Array.resolveDeclaredElements((org.jts.jsidl.binding.Array) obj);
 				}
+				// bit, fixed, and variable fields can all have embedded declared_value_set, so we need to resolve them
+				else if( obj instanceof org.jts.jsidl.binding.BitField )
+				{
+					BitField.resolveDeclaredElements((org.jts.jsidl.binding.BitField) obj);
+				}
+				else if( obj instanceof org.jts.jsidl.binding.FixedField )
+				{
+					FixedField.resolveDeclaredElements((org.jts.jsidl.binding.FixedField) obj);
+				}
+				else if( obj instanceof org.jts.jsidl.binding.VariableField )
+				{
+					VariableField.resolveDeclaredElements((org.jts.jsidl.binding.VariableField) obj);
+				}
 			}
 		}
 	}
