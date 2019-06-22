@@ -1219,17 +1219,35 @@ public class VariableFieldGenerator
          *	pos += m_VaribleLengthField1.getSize();
          */
         methodCode.clear();
-        if (codeType == CodeLines.CodeType.C_PLUS_PLUS) {
+        if (codeType == CodeLines.CodeType.C_PLUS_PLUS) 
+        {
             methodCode.add(varName + ".encode(bytes + pos);");
-        } else if (codeType == CodeLines.CodeType.JAVA) {
+            methodCode.add("pos += " + varName + ".getSize();");
+            
+            if (variableField.isOptional()) 
+            {
+                methodCode = CppCode.addOptionalWrapper(pvIndex, methodCode);
+            }
+        } 
+        else if (codeType == CodeLines.CodeType.JAVA) 
+        {
             methodCode.add(varName + ".encode(bytes, pos);");
-        } else if (codeType == CodeLines.CodeType.C_SHARP) {
+            methodCode.add("pos += " + varName + ".getSize();");
+            
+            if (variableField.isOptional()) 
+            {
+                methodCode = JavaCode.addOptionalWrapper(pvIndex, methodCode);
+            }
+        } 
+        else if (codeType == CodeLines.CodeType.C_SHARP) 
+        {
             methodCode.add(varName + ".encode(bytes, pos);");
-        }
-
-        methodCode.add("pos += " + varName + ".getSize();");
-        if (variableField.isOptional()) {
-            methodCode = CppCode.addOptionalWrapper(pvIndex, methodCode);
+            methodCode.add("pos += " + varName + ".getSize();");
+            
+            if (variableField.isOptional()) 
+            {
+                methodCode = CSharpCode.addOptionalWrapper(pvIndex, methodCode);
+            }
         }
 
         /// If the encoder lines are not empty then put a line to increase readability
@@ -1244,14 +1262,33 @@ public class VariableFieldGenerator
          *	pos += m_VaribleLengthField1.getSize();
          */
         methodCode.clear();
-        if (codeType == CodeLines.CodeType.C_PLUS_PLUS) {
+        if (codeType == CodeLines.CodeType.C_PLUS_PLUS) 
+        {
             methodCode.add(varName + ".decode(bytes + pos);");
-        } else if (codeType == CodeLines.CodeType.JAVA) {
+            methodCode.add("pos += " + varName + ".getSize();");
+            if (variableField.isOptional())
+            {
+                methodCode = CppCode.addOptionalWrapper(pvIndex, methodCode);
+            }
+        } 
+        else if (codeType == CodeLines.CodeType.JAVA) 
+        {
             methodCode.add(varName + ".decode(bytes, pos);");
-        } else if (codeType == CodeLines.CodeType.C_SHARP) {
+            methodCode.add("pos += " + varName + ".getSize();");
+            if (variableField.isOptional())
+            {
+                methodCode = JavaCode.addOptionalWrapper(pvIndex, methodCode);
+            }
+        } 
+        else if (codeType == CodeLines.CodeType.C_SHARP) 
+        {
             methodCode.add(varName + ".decode(bytes, pos);");
+            methodCode.add("pos += " + varName + ".getSize();");
+            if (variableField.isOptional())
+            {
+                methodCode = CSharpCode.addOptionalWrapper(pvIndex, methodCode);
+            }
         }
-        methodCode.add("pos += " + varName + ".getSize();");
 
         /// If the decoder lines are not empty then put a line to increase readability
         if (!code.decoderLines.isEmpty()) {
