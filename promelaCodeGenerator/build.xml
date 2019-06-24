@@ -83,13 +83,15 @@
 			destdir="${build.classes.dir}"
 			classpathref="class.path"
 			listfiles="true"
-			target="1.5"
+			target="1.7"
+            source="1.7"
 			debug="on" debuglevel="lines,vars,source" deprecation="on" />
         <javac srcdir="${src.dir}/org/jts/protocolvalidator"
 			destdir="${build.classes.dir}"
 			classpathref="class.path"
 			listfiles="true"
-			target="1.5"
+			target="1.7"
+            source="1.7"
 			debug="on" debuglevel="lines,vars,source" deprecation="on" />
 
     </target>
