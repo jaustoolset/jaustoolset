@@ -90,7 +90,7 @@ private:
     // Configuration data
     unsigned short _maxMsgHistory;      // as a message count
     unsigned short _oldMsgTimeout;      // in seconds
-    unsigned char  _detectDuplicates; 
+    unsigned short _detectDuplicates; 
 
 	// We now allow the receive loop to find the ack/nak response,
 	// rather than doing it from the send loop.  But that means
