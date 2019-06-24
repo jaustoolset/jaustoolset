@@ -32,50 +32,8 @@ import javax.swing.UIManager;
 public class StillImageClient_StillImageClientFSM extends StateMachine{
 	protected boolean running;
     StillImageClient_StillImageClientFSMContext context;
-
-    public static class StillImageClientGUI extends JFrame {
-        
-        JPanel panel;
-        
-        public StillImageClientGUI() {
-
-            addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    dispose();
-                    System.exit(0);
-                }
-            });
-            
-            getContentPane().setLayout(new GridLayout(0,1));
-            
-            panel = new JPanel();
-            panel.setPreferredSize(new Dimension(320,240));
-            getContentPane().add(panel);
-
-            pack();
-            setVisible(true);
-        }
-        
-        public boolean updateImage(byte[] data) {
-            BufferedImage i;
-            
-            try {
-                Graphics g = panel.getGraphics();
-                i = ImageIO.read(new ByteArrayInputStream(data));
-                if (g!=null) g.drawImage(i, 0,0,null,null);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-            
-            return true;
-        }
-
-    }
-    
     StillImageClientGUI gui;
     
-	
 	public StillImageClient_StillImageClientFSM()
 	{
 		/*

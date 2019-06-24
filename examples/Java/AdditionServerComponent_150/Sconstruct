@@ -82,7 +82,7 @@ Swig2 =env.SharedLibrary(target = './bin/JausAddress', source = [common_dir + '/
 
 classes = env.Java('./Build', '#.')
 
-env.Jar('./bin/AdditionServerComponent_150.jar', ['./Build', '#./lib/Manifest.txt'] )
+env.Jar('./bin/AdditionServerComponent_150.jar', classes + ['./lib/Manifest.txt'] )
 
 env.Install('#./bin', '#./lib/statemap.jar')
 

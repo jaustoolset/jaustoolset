@@ -389,7 +389,7 @@
                                value="org.apache.xerces.jaxp.SAXParserFactoryImpl"/>
             <sysproperty key="javax.xml.xpath.XPathFactory"
                                value="com.sun.org.apache.xpath.internal.jaxp.XPathFactoryImpl"/>
-            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+            <!--sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/-->
         </java>
     </target>
     <!-- 
@@ -402,23 +402,23 @@
         <java classname="${code.gen.main.class}" fork="true">
             <classpath refid="class.path"/>
             <arg line="-i testXML/jts_final_test/PalindromeSet.xml -o Demo/PalindromeSet1 -n PalindromeComponent --id 2"/>
-            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+            <!--sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/-->
         </java>
         <java classname="${code.gen.main.class}" fork="true">
             <classpath refid="class.path"/>
             <arg line="-i testXML/jts_final_test/PalindromeSet.xml -o Demo/PalindromeSet2 -n PalindromeComponent --id 3"/>
-            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+            <!--sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/-->
         </java>
         <java classname="${code.gen.main.class}" fork="true">
             <classpath refid="class.path"/>
             <arg line="-i testXML/jts_final_test/PalindromeSet.xml -o Demo/PalindromeSet2 -n PalindromeClientComponent --id 4"/>
-            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+            <!--sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/-->
         </java>
     </target>
     <target name="run-doc-generator" description="Run the 'command-line' document generator.">
         <java classname="${doc.gen.main.class}" classpathref="class.path" fork="true" maxmemory="192m">
             <arg line="${doc.generator.args}"/>
-            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+            <!--sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/-->
         </java>
     </target>
     <target name="create-run-script" description="Create a runnable shell script" depends="genhbm">
@@ -536,7 +536,7 @@
 			<!--You can use sysproperty elements to pass configuration settings
 				to your test classes, or to appplication classes they will run:
 			<sysproperty key="targetserver.test" value="mercedes"/> -->
-            <sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/>
+            <!--sysproperty key="java.endorsed.dirs" path="${lib.jaxb.dir}"/-->
         </junit>
 		
         <junitreport todir="${test.reports.dir}/rawOutput">
