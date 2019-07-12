@@ -57,7 +57,7 @@ class Message
 public:
     Message():
             _code(0),_source(0),_destination(0), _priority(6), _acknak(0), 
-			_control(None),_bcast(0), _service_connection(0), _experimental(0), _payload(){}
+			_control(None),_bcast(0), _sequence(0), _service_connection(0), _experimental(0), _payload(){}
    ~Message(){}
 
     //
