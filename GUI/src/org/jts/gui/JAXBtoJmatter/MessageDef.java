@@ -77,7 +77,9 @@ public class MessageDef
 			jmMessageDef.getMessageId().setValue(messageId);
 			
 			// isCommand
-			jmMessageDef.getIsCommand().setValue(jxMessageDef.isIsCommand());
+                        /// @TODO The isCommand attribute is optional. However, 
+                        /// the jmMessage does not support optional booleans. 
+			jmMessageDef.getIsCommand().setValue(jxMessageDef.isIsCommand() == null ? false : jxMessageDef.isIsCommand());
 			
 			// Description
 			String description = jxMessageDef.getDescription().getContent().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;			

@@ -136,7 +136,7 @@ public class DefinitionGenerator extends JTSFileWriter {
         // get type from reference to the type
         String name = Util.getTypeNameFromDeclTypeRef(refMap, msgDef.getName(), classID);
         refMap.put(msgDef.getName(), name);
-        boolean cmd = msgDef.isIsCommand();
+        boolean cmd = msgDef.isIsCommand() == null ? false : msgDef.isIsCommand();
         waitingOutput.add("typedef " + name + "{");
 
         // definitions and declarations need to be kept separate
