@@ -469,6 +469,7 @@ public class DeclaredTypeMap {
             org.jts.jsidl.binding.EventDef element_copy = new org.jts.jsidl.binding.EventDef();
 
             element_copy.setName(declaredEventDef.getName());
+            element_copy.setDeprecated(element.isDeprecated());
             element_copy.setDescription(element.getDescription());
             element_copy.setHeader(element.getHeader());
             element_copy.setBody(element.getBody());
@@ -680,6 +681,7 @@ public class DeclaredTypeMap {
         	element_copy.setFooter( element.getFooter() );
         	element_copy.setHeader( element.getHeader() );
         	element_copy.setIsCommand( element.isIsCommand() );
+                element_copy.setDeprecated( element.isDeprecated() );
         	element_copy.setMessageId( element.getMessageId() );
 
         	fixOverrides(declaredMessageDef, element_copy);

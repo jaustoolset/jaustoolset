@@ -79,6 +79,9 @@ public class MessageDef
 			// isCommand
 			jmMessageDef.getIsCommand().setValue(jxMessageDef.isIsCommand());
 			
+                        // deprecated
+                        jmMessageDef.getDeprecated().setValue(jxMessageDef.isDeprecated() == null ? false : jxMessageDef.isDeprecated());
+                        
 			// Description
 			String description = jxMessageDef.getDescription().getContent().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;			
 			jmMessageDef.getDescription().setValue(description);

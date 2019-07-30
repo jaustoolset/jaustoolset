@@ -93,6 +93,9 @@ public class ServiceDef
         // version
         jmServiceDef.get_version().setValue( jxServiceDef.getVersion() );
         
+        // deprecated
+        jmServiceDef.getDeprecated().setValue( jxServiceDef.isDeprecated() == null ? false : jxServiceDef.isDeprecated());
+
         // description
         String description = jxServiceDef.getDescription().getContent().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
         jmServiceDef.getDescription().setValue(description);

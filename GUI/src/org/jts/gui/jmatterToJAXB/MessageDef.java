@@ -46,6 +46,7 @@ public class MessageDef {
      
      md.setMessageId( getBytes(messageDef.getMessageId().toString()) );
      md.setIsCommand( messageDef.getIsCommand().booleanValue() );
+     md.setDeprecated( messageDef.getDeprecated().booleanValue() ? true : null);
      md.setDescription( Description.convert( messageDef) );
      
      // header

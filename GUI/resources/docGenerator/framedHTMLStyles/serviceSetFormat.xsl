@@ -48,7 +48,7 @@
 				<div>
 					<b>
 						<a href="{$serviceDefName}/{$serviceDefName}.html" onClick="loadSubMenuFrame('{$serviceDefName}/subMenuB.html')">		
-							<xsl:value-of select="@name"/>
+							<xsl:value-of select="@name"/><xsl:if test="@deprecated='true'"> (Deprecated)</xsl:if>
 						</a>
 					<!--
 						<a href="{$serviceDefName}/{$serviceDefName}.html">

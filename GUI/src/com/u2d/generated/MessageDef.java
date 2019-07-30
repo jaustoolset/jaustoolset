@@ -56,6 +56,10 @@ public  class MessageDef extends AbstractComplexEObject_JTS implements HasHeader
     public BooleanEO getIsCommand() { return isCommand;}
     public void setIsCommand( boolean b ) { isCommand.setValue( b ); }
 
+    // ******    deprecated   ******
+    private final BooleanEO deprecated = new BooleanEO();
+    public BooleanEO getDeprecated() { return deprecated;}
+    public void setDeprecated( boolean b ) { deprecated.setValue( b ); }
    
 
 
@@ -102,7 +106,7 @@ public  class MessageDef extends AbstractComplexEObject_JTS implements HasHeader
 
  
 /************** Uncomment the following as needed *****************************/
-      public static String[] fieldOrder  = {"name", "messageId", "description", "isCommand", "header", "body", "footer", "referencingElements"};
+      public static String[] fieldOrder  = {"name", "messageId", "description", "isCommand", "deprecated", "header", "body", "footer", "referencingElements"};
 public static String[] readOnly  = {"referencingElements"};
 // ******    referencingElements   ******
    private final StringEO referencingElements = new StringEO("{Input Sets, Output Sets}");

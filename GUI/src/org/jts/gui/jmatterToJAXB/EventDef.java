@@ -44,6 +44,8 @@ public class EventDef {
     
      ed.setName( eventDef.getName().toString() );
 
+     ed.setDeprecated( eventDef.getDeprecated().booleanValue() ? true : null );
+
      ed.setDescription( Description.convert( eventDef ) );
      
      // header
