@@ -129,7 +129,7 @@ public class MessageDefGenerator {
                 }
 
                 /// Initialize isCommand variable
-                code.constructorLines.add("m_IsCommand = " + String.valueOf(msgDef.isIsCommand()) + ";");
+                code.constructorLines.add("m_IsCommand = " + String.valueOf(msgDef.isIsCommand() == null ? false : msgDef.isIsCommand()) + ";");
 
                 includes.add("Messages/Message.h");
                 includes.add("JConstants.h");
@@ -202,7 +202,7 @@ public class MessageDefGenerator {
                     code.addAll(subCode);
                 }
                 /// Initialize isCommand variable
-                code.constructorLines.add("m_IsCommand = " + String.valueOf(msgDef.isIsCommand()) + ";");
+                code.constructorLines.add("m_IsCommand = " + String.valueOf(msgDef.isIsCommand() == null ? false : msgDef.isIsCommand()) + ";");
 
                 includes.add("framework.messages.Message");
                 includes.add("framework.JausUtils");
@@ -298,7 +298,7 @@ public class MessageDefGenerator {
                     code.addAll(subCode);
                 }
                 /// Initialize isCommand variable
-                code.constructorLines.add("m_IsCommand = " + String.valueOf(msgDef.isIsCommand()) + ";");
+                code.constructorLines.add("m_IsCommand = " + String.valueOf(msgDef.isIsCommand() == null ? false : msgDef.isIsCommand()) + ";");
 
                 baseClassList.add("JTS.Message");
                 if (!namespace.isEmpty()) {

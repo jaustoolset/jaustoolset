@@ -45,6 +45,7 @@ public class MessageDef {
     md.setName( messageDef.getName().toString() );
      
      md.setMessageId( getBytes(messageDef.getMessageId().toString()) );
+     /// @TODO: This should handle null values because the isCommand is optional.
      md.setIsCommand( messageDef.getIsCommand().booleanValue() );
      md.setDescription( Description.convert( messageDef) );
      
