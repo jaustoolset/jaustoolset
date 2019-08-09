@@ -38,6 +38,11 @@ public  class EventDef extends AbstractComplexEObject_JTS implements HasHeaderBo
     private final StringEO name = new StringEO();
     public StringEO getName() { return name;}
 
+    // ****** deprecated ******
+    private final BooleanEO deprecated = new BooleanEO();
+    public BooleanEO getDeprecated() { return deprecated;}
+    public void setDeprecated( boolean b ) { deprecated.setValue( b ); }
+
     // ******    description   ******
     private final TextEO description = new TextEO();
     public TextEO getDescription() { return description;}
@@ -86,7 +91,7 @@ public  class EventDef extends AbstractComplexEObject_JTS implements HasHeaderBo
 
  
 /************** Uncomment the following as needed *****************************/
-      public static String[] fieldOrder  = {"name", "description", "header", "body", "footer", "referencingServiceDef"};
+      public static String[] fieldOrder  = {"name", "deprecated", "description", "header", "body", "footer", "referencingServiceDef"};
 //    public static String[] fieldOrder        = {"fieldname1", "fieldname2"};
 
       ;

@@ -47,6 +47,7 @@ public class MessageDef {
      md.setMessageId( getBytes(messageDef.getMessageId().toString()) );
      /// @TODO: This should handle null values because the isCommand is optional.
      md.setIsCommand( messageDef.getIsCommand().booleanValue() );
+     md.setDeprecated( messageDef.getDeprecated().booleanValue() ? true : null);
      md.setDescription( Description.convert( messageDef) );
      
      // header

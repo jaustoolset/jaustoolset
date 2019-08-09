@@ -49,6 +49,11 @@ public  class ServiceDef extends AbstractComplexEObject_JTS{
     @Fld(label="Version")
     public StringEO get_version() { return _version;}
 
+    // ****** deprecated ******
+    private final BooleanEO deprecated = new BooleanEO();
+    public BooleanEO getDeprecated() { return deprecated;}
+    public void setDeprecated( boolean b ) { deprecated.setValue( b ); }
+
     // ******    description   ******
     private final TextEO description = new TextEO();
     public TextEO getDescription() { return description;}
@@ -178,7 +183,7 @@ public  class ServiceDef extends AbstractComplexEObject_JTS{
     }
  
 /************** Uncomment the following as needed *****************************/
-      public static String[] fieldOrder  = {"name", "serviceId", "_version", "description", "assumptions", "inheritsFrom", "clientOf", "inputSet", "outputSet", "eventDefs", "protocolBehavior", "constantSet", "referencingElements"};
+      public static String[] fieldOrder  = {"name", "serviceId", "_version", "deprecated", "description", "assumptions", "inheritsFrom", "clientOf", "inputSet", "outputSet", "eventDefs", "protocolBehavior", "constantSet", "referencingElements"};
 public static String[] readOnly  = {"referencingElements"};
 // ******    referencingElements   ******
    private final StringEO referencingElements = new StringEO("{ServiceDefs (clientOf, InheritsFrom), Service Sets}");

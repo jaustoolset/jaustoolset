@@ -5,7 +5,7 @@
 		<html>
 			<head>
 				<title>
-					<xsl:value-of select="message_def/@name"/>
+					<xsl:value-of select="message_def/@name"/><xsl:if test="message_def/@deprecated='true'"> (Deprecated)</xsl:if>
 				</title>
 				<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 				<link rel="stylesheet" href="framedStyleSheet.css"/>
@@ -15,7 +15,7 @@
 				<!-- TITLE -->
 				<!-- ===== -->
 				<h1> 
-					<xsl:value-of select="message_def/@name"/>
+					<xsl:value-of select="message_def/@name"/><xsl:if test="message_def/@deprecated='true'"> (Deprecated)</xsl:if>
 				</h1>
 				<h3>
 					ID: <xsl:value-of select="message_def/@message_id"/>

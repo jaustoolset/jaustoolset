@@ -175,6 +175,7 @@ public class MessageDef
 					existingMessage.setFooter( messageDef.getFooter() );
 					existingMessage.setHeader( messageDef.getHeader() );
 					existingMessage.setIsCommand( messageDef.getIsCommand().booleanValue() );
+                                        existingMessage.setDeprecated( messageDef.getDeprecated().booleanValue() );
 					existingMessage.setName( messageDef.getName().stringValue() );
 
 					// change item in database

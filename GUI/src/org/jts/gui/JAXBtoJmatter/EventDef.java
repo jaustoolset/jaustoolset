@@ -66,6 +66,9 @@ public class EventDef
 			// Set Name
 			jmEventDef.getName().setValue(jxEventDef.getName());
 
+                        // deprecated
+                        jmEventDef.getDeprecated().setValue(jxEventDef.isDeprecated() == null ? false : jxEventDef.isDeprecated());
+
 			// Description
 	    	String description = jxEventDef.getDescription().getContent().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;
 			jmEventDef.getDescription().setValue(description);

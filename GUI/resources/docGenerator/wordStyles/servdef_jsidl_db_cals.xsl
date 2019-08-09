@@ -63,7 +63,7 @@
     <section xml:id="{$sectname}">
       <xsl:attribute name="version">1.0</xsl:attribute>
       <title>
-        <xsl:value-of select="@name"/>
+        <xsl:value-of select="@name"/><xsl:if test="@deprecated='true'"> (Deprecated)</xsl:if>
       </title>
       
       <para>
@@ -141,7 +141,7 @@
                 <row>
                   <entry><xsl:value-of select="@message_id"/></entry>
                   <entry><link linkend="{$link-text}"><emphasis role="hyperlink">
-                    <xsl:value-of select="@name"/></emphasis></link></entry>
+                    <xsl:value-of select="@name"/><xsl:if test="@deprecated='true'"> (Deprecated)</xsl:if></emphasis></link></entry>
                   <entry><xsl:value-of select="@is_command"/></entry>
                 </row>
               </xsl:for-each>
@@ -158,7 +158,7 @@
                 <row>
                   <entry><xsl:value-of select="@message_id"/></entry>
                   <entry><link linkend="{$link-text}"><emphasis role="hyperlink">
-                    <xsl:value-of select="@name"/></emphasis></link></entry>
+                    <xsl:value-of select="@name"/><xsl:if test="@deprecated='true'"> (Deprecated)</xsl:if></emphasis></link></entry>
                   <entry><xsl:value-of select="@is_command"/></entry>
                 </row>
               </xsl:for-each>
@@ -196,7 +196,7 @@
               <row>
                 <entry>
                   <link linkend="{$link-text}">
-                    <emphasis role="hyperlink"><xsl:value-of select="@name"/></emphasis>
+                    <emphasis role="hyperlink"><xsl:value-of select="@name"/><xsl:if test="@deprecated='true'"> (Deprecated)</xsl:if></emphasis>
                   </link>
                 </entry>
                 <entry><xsl:value-of select="./jaus:description"/></entry>
@@ -383,6 +383,7 @@
   <xsl:template match="jaus:description">
     <section>
       <title>Description</title>
+      <xsl:if test="../@deprecated='true'"><para><emphasis role="bold"><xsl:value-of select="../@name"/> is deprecated and is scheduled to be removed during a future revision.</emphasis></para></xsl:if>
       <para>
         <xsl:value-of select="."/>
       </para>
@@ -471,7 +472,8 @@
         <xsl:value-of select="@name"/>
       </xsl:variable>
       <section xml:id="{$event_def_id}">
-        <title><xsl:value-of select="@name"/></title>
+        <title><xsl:value-of select="@name"/><xsl:if test="@deprecated='true'"> (Deprecated)</xsl:if></title>
+        <xsl:if test="@deprecated='true'"><para><emphasis role="bold"><xsl:value-of select="@name"/> is deprecated and is scheduled to be removed during a future revision.</emphasis></para></xsl:if>
         <para><xsl:value-of select="jaus:description"/></para>
         <table>
           <title><xsl:value-of select="@name"/> Event Encoding</title>
@@ -521,8 +523,9 @@
       <section xml:id="{$msg_def_id}">
         <title>
           <xsl:text>ID </xsl:text><xsl:value-of select="@message_id"/>
-          <xsl:text>: </xsl:text><xsl:value-of select="@name"/>
+          <xsl:text>: </xsl:text><xsl:value-of select="@name"/> <xsl:if test="@deprecated='true'"> (Deprecated)</xsl:if>
         </title>
+        <xsl:if test="@deprecated='true'"><para><emphasis role="bold"><xsl:value-of select="@name"/> is deprecated and is scheduled to be removed during a future revision.</emphasis></para></xsl:if>
         <para><xsl:value-of select="jaus:description"/></para>
       <table>
         <title><xsl:value-of select="@name"/> Message Encoding</title>

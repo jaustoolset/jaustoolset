@@ -5,7 +5,7 @@
 		<html>
 			<head>
 				<title>
-					<xsl:value-of select="service_def/@name"/>
+					<xsl:value-of select="service_def/@name"/><xsl:if test="service_def/@deprecated='true'"> (Deprecated)</xsl:if>
 				</title>
 				<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 				<link rel="stylesheet" href="framedStyleSheet.css"/>
@@ -17,7 +17,7 @@
 				<!-- TITLE -->
 				<!-- ===== -->
 				<h1> 
-					<xsl:value-of select="service_def/@name"/> Service
+					<xsl:value-of select="service_def/@name"/> Service<xsl:if test="service_def/@deprecated='true'"> (Deprecated)</xsl:if>
 				</h1>
 				<br/>
 				
@@ -308,7 +308,7 @@
 			<td align="left">
 				<div>
 					<a href="messages/{$messageName}.html">		<!-- create hyperlink to message file -->
-						<xsl:value-of select="@name"/>
+						<xsl:value-of select="@name"/><xsl:if test="@deprecated='true'"> (Deprecated)</xsl:if>
 					</a>
 				</div>
 			</td>
@@ -327,7 +327,7 @@
 					<tr>
 						<td align="left">
 							<div>
-								<xsl:value-of select="@name"/>
+								<xsl:value-of select="@name"/><xsl:if test="@deprecated='true'"> (Deprecated)</xsl:if>
 							</div>
 						</td>
 						<td align="left">
@@ -361,7 +361,7 @@
 		<ul>
 			<h3>
 				<u>
-					<xsl:value-of select="@name"/>
+					<xsl:value-of select="@name"/><xsl:if test="@deprecated='true'"> (Deprecated)</xsl:if>
 				</u>
 			</h3>
 			

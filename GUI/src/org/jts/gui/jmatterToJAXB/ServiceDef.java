@@ -47,6 +47,7 @@ public class ServiceDef {
     sd.setName( serviceDef.getName().toString() );
     sd.setId( serviceDef.getServiceId().toString() );
     sd.setVersion( serviceDef.get_version().toString() );
+    sd.setDeprecated( serviceDef.getDeprecated().booleanValue() ? true : null );
     
     // description
     sd.setDescription( Description.convert( serviceDef ) );

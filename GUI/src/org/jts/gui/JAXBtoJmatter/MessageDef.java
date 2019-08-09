@@ -81,6 +81,9 @@ public class MessageDef
                         /// the jmMessage does not support optional booleans. 
 			jmMessageDef.getIsCommand().setValue(jxMessageDef.isIsCommand() == null ? false : jxMessageDef.isIsCommand());
 			
+                        // deprecated
+                        jmMessageDef.getDeprecated().setValue(jxMessageDef.isDeprecated() == null ? false : jxMessageDef.isDeprecated());
+                        
 			// Description
 			String description = jxMessageDef.getDescription().getContent().replaceAll("\\s\\s+ | \\n | \\r | \\t", " ").trim();;			
 			jmMessageDef.getDescription().setValue(description);
