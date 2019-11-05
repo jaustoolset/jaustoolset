@@ -61,8 +61,14 @@ int DllExport RunJuniorRTE(std::string config_file)
     // First thing we need to do is initialize the log, but we can't
     // do that until we read in the log file name from the configuration
     // file.  So we start with opening and parsing the config file...
+    // Issue #52: Better debug if config file is not present or invalid
     XmlConfig config;
-    config.parseFile(config_file);
+    ConfigData::ConfigError ret = config.parseFile(config_file);
+    if (!config_file.empty() && (config_file != "") && (ret == ConfigData::FileNotFound))
+        printf("WARNING!!  Specified config file (%s) not found.  Using default values....\n", config_file.c_str());
+    else if (!config_file.empty() && (config_file != "") && (ret == ConfigData::InvalidFile))
+        printf("WARNING!!  Specified config file (%s) is invalid.\n", config_file.c_str());        
+
     std::string logfile;
     config.getValue(logfile, "LogFileName", "Log_Configuration");
     int debug_level = 3;
