@@ -58,21 +58,21 @@ public class InternalEventHandler {
 	*
 	*/
     public void invoke(InternalEvent ie){
-        internalEventQueue.add(ie);
+		synchronized(internalEventQueue) {
+        	internalEventQueue.add(ie);
+		}
     }
 
 	/*
 	*
-	* @return the internal event that will contain the retrieve event.
+	* @return the internal event that will contain the retrieve event (or null if no element exists).
 	*
 	*/
     public InternalEvent invoked(){
-
-		InternalEvent ie = new InternalEvent();
-
-    	if(!internalEventQueue.isEmpty()){
-        	ie = internalEventQueue.remove();
-        }
+		InternalEvent ie = null;
+		synchronized(internalEventQueue) {
+        	ie = internalEventQueue.poll();
+		}
         return ie;
     }
 
