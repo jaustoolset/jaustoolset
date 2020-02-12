@@ -51,13 +51,13 @@ public:
 			class DllExport SourceID
 			{
 			public:
-				jUnsignedInteger getComponentID();
+				jUnsignedInteger getComponentID() const;
 				int setComponentID(jUnsignedInteger value);
-				jUnsignedInteger getNodeID();
+				jUnsignedInteger getNodeID() const;
 				int setNodeID(jUnsignedInteger value);
-				jUnsignedInteger getSubsystemID();
+				jUnsignedInteger getSubsystemID() const;
 				int setSubsystemID(jUnsignedInteger value);
-				const unsigned int getSize();
+				const unsigned int getSize() const;
 				virtual void encode(unsigned char *bytes);
 				virtual void decode(const unsigned char *bytes);
 				SourceID &operator=(const SourceID &value);
@@ -76,7 +76,7 @@ public:
 				const jUnsignedInteger getLength() const;
 				const unsigned char *getData() const;
 				int set(const jUnsignedInteger &length, const unsigned char *data);
-				const unsigned int getSize();
+				const unsigned int getSize() const;
 				virtual void encode(unsigned char *bytes);
 				virtual void decode(const unsigned char *bytes);
 				MessagePayload &operator=(const MessagePayload &value);
@@ -92,10 +92,12 @@ public:
 			};
 		
 			SourceID* const getSourceID();
+			const SourceID* const getSourceID() const;
 			int setSourceID(const SourceID &value);
 			MessagePayload* const getMessagePayload();
+			const MessagePayload* const getMessagePayload() const;
 			int setMessagePayload(const MessagePayload &value);
-			const unsigned int getSize();
+			const unsigned int getSize() const;
 			virtual void encode(unsigned char *bytes);
 			virtual void decode(const unsigned char *bytes);
 			ReceiveRec &operator=(const ReceiveRec &value);
@@ -111,8 +113,9 @@ public:
 		};
 	
 		ReceiveRec* const getReceiveRec();
+		const ReceiveRec* const getReceiveRec() const;
 		int setReceiveRec(const ReceiveRec &value);
-		const unsigned int getSize();
+		const unsigned int getSize() const;
 		virtual void encode(unsigned char *bytes);
 		virtual void decode(const unsigned char *bytes);
 		Body &operator=(const Body &value);
@@ -127,8 +130,9 @@ public:
 	};
 
 	Body* const getBody();
+	const Body* const getBody() const;
 	int setBody(const Body &value);
-	const unsigned int getSize();
+	const unsigned int getSize() const;
 	virtual void encode(unsigned char *bytes);
 	virtual void decode(const unsigned char *bytes);
 	Receive_1_1 &operator=(const Receive_1_1 &value);

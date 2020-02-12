@@ -42,16 +42,17 @@ class InternalEvent
 {
 public:
 	InternalEvent(){}
-	InternalEvent( std::string name, std::string source )
+	InternalEvent(const std::string& name, const std::string& source )
 	{
 		m_Name = name;
-	    m_Source = source;
+		m_Source = source;
 	};
-    virtual ~InternalEvent(){};
-	jVariableLengthString getName() { return m_Name; };
-	jVariableLengthString getSource() { return m_Source; };
+	virtual ~InternalEvent(){};
 
-	virtual const unsigned int getSize(){return 0;};
+	jVariableLengthString getName() const { return m_Name; };
+	jVariableLengthString getSource() const { return m_Source; };
+
+	virtual const unsigned int getSize() const {return 0;};
 	virtual void encode(unsigned char *bytes){};
 	virtual void decode(const unsigned char *bytes){};
 	

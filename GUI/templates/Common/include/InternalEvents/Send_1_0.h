@@ -55,7 +55,7 @@ public:
 				const jUnsignedInteger getLength() const;
 				const unsigned char *getData() const;
 				int set(const jUnsignedInteger &length, const unsigned char *data);
-				const unsigned int getSize();
+				const unsigned int getSize() const;
 				virtual void encode(unsigned char *bytes);
 				virtual void decode(const unsigned char *bytes);
 				MessagePayload &operator=(const MessagePayload &value);
@@ -70,28 +70,29 @@ public:
 				unsigned char *m_Data;
 			};
 		
-			jUnsignedByte getPresenceVector();
+			jUnsignedByte getPresenceVector() const;
 			bool checkPresenceVector(unsigned int index) const;
-			jUnsignedShortInteger getDestSubsystemID();
+			jUnsignedShortInteger getDestSubsystemID() const;
 			int setDestSubsystemID(jUnsignedShortInteger value);
-			jUnsignedByte getDestNodeID();
+			jUnsignedByte getDestNodeID() const;
 			int setDestNodeID(jUnsignedByte value);
-			jUnsignedByte getDestComponentID();
+			jUnsignedByte getDestComponentID() const;
 			int setDestComponentID(jUnsignedByte value);
 			bool isSrcSubsystemIDValid() const;
-			jUnsignedShortInteger getSrcSubsystemID();
+			jUnsignedShortInteger getSrcSubsystemID() const;
 			int setSrcSubsystemID(jUnsignedShortInteger value);
 			bool isSrcNodeIDValid() const;
-			jUnsignedByte getSrcNodeID();
+			jUnsignedByte getSrcNodeID() const;
 			int setSrcNodeID(jUnsignedByte value);
-			jUnsignedByte getSrcComponentID();
+			jUnsignedByte getSrcComponentID() const;
 			int setSrcComponentID(jUnsignedByte value);
 			bool isPriorityValid() const;
-			jUnsignedByte getPriority();
+			jUnsignedByte getPriority() const;
 			int setPriority(jUnsignedByte value);
 			MessagePayload* const getMessagePayload();
+			const MessagePayload* const getMessagePayload() const;
 			int setMessagePayload(const MessagePayload &value);
-			const unsigned int getSize();
+			const unsigned int getSize() const;
 			virtual void encode(unsigned char *bytes);
 			virtual void decode(const unsigned char *bytes);
 			SendRec &operator=(const SendRec &value);
@@ -116,8 +117,9 @@ public:
 		};
 	
 		SendRec* const getSendRec();
+		const SendRec* const getSendRec() const;
 		int setSendRec(const SendRec &value);
-		const unsigned int getSize();
+		const unsigned int getSize() const;
 		virtual void encode(unsigned char *bytes);
 		virtual void decode(const unsigned char *bytes);
 		Body &operator=(const Body &value);
@@ -132,8 +134,9 @@ public:
 	};
 
 	Body* const getBody();
+	const Body* const getBody() const;
 	int setBody(const Body &value);
-	const unsigned int getSize();
+	const unsigned int getSize() const;
 	virtual void encode(unsigned char *bytes);
 	virtual void decode(const unsigned char *bytes);
 	Send_1_0 &operator=(const Send_1_0 &value);

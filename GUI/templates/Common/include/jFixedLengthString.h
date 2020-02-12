@@ -47,7 +47,7 @@ public:
 	jFixedLengthString(const jFixedLengthString &str);
 	virtual ~jFixedLengthString();
 	void setSize(unsigned int size);
-	unsigned int length();
+	unsigned int length() const;
 	const char* c_str() const;
 	jFixedLengthString &operator=(const char* value);
 	jFixedLengthString &operator=(const std::string &value);
