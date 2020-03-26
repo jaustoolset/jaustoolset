@@ -1456,6 +1456,10 @@
         <xsl:text>]</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="@interpretation">
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="@interpretation"/>
+    </xsl:if>
     </font-resize>
     <xsl:processing-instruction name="linebreak"/>
   </xsl:template>
