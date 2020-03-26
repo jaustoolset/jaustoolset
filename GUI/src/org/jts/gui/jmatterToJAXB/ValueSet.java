@@ -50,19 +50,18 @@ public class ValueSet {
     
     List jxList = vs.getValueRangeOrValueEnum();
     
-    // value ranges
-    List jmList = valueSet.getValueRanges().getItems();
-    for(int ii=0; ii<jmList.size(); ii++) {
-      jxList.add( ValueRange.convert( (com.u2d.generated.ValueRange)jmList.get(ii) ) );
-    }
-  
-  
     // value enums
-    jmList = valueSet.getValueEnums().getItems();
+    List jmList = valueSet.getValueEnums().getItems();
     for(int ii=0; ii<jmList.size(); ii++) {
       jxList.add( ValueEnum.convert( (com.u2d.generated.ValueEnum)jmList.get(ii) ) );
     }
     
+    // value ranges
+    jmList = valueSet.getValueRanges().getItems();
+    for(int ii=0; ii<jmList.size(); ii++) {
+      jxList.add( ValueRange.convert( (com.u2d.generated.ValueRange)jmList.get(ii) ) );
+    }
+  
     return vs;
   }
 }

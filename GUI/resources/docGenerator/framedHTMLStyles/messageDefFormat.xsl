@@ -1635,7 +1635,7 @@
 		<xsl:if test="@interpretation">
 			: <xsl:value-of select="@interpretation"/>
 		</xsl:if>
-		
+		<br/>
 	</xsl:template>
 	
 	<xsl:template match="value_enum">

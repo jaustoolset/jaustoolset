@@ -1410,6 +1410,10 @@
         <xsl:text>]</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="@interpretation">
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="@interpretation"/>
+    </xsl:if>
     <xsl:processing-instruction name="linebreak"/>
   </xsl:template>
   
