@@ -92,7 +92,7 @@ namespace JTS
                     */
                     public void setComponentID(uint value)
                     {
-                        if ((value >= 1) && (value <= 225))
+                        if ((value >= 1) && (value <= 255))
                         {
                             BitArray bfbs = JausUtils.setPV(m_SubFields);
                             BitArray sfbs = JausUtils.setPV(value);
@@ -133,7 +133,7 @@ namespace JTS
                     */
                     public void setNodeID(uint value)
                     {
-                        if ((value >= 1) && (value <= 225))
+                        if ((value >= 1) && (value <= 255))
                         {
                             BitArray bfbs = JausUtils.setPV(m_SubFields);
                             BitArray sfbs = JausUtils.setPV(value);
@@ -308,7 +308,7 @@ namespace JTS
                     */
                     public void setComponentID(uint value)
                     {
-                        if ((value >= 1) && (value <= 225))
+                        if ((value >= 1) && (value <= 255))
                         {
                             BitArray bfbs = JausUtils.setPV(m_SubFields);
                             BitArray sfbs = JausUtils.setPV(value);
@@ -349,7 +349,7 @@ namespace JTS
                     */
                     public void setNodeID(uint value)
                     {
-                        if ((value >= 1) && (value <= 225))
+                        if ((value >= 1) && (value <= 255))
                         {
                             BitArray bfbs = JausUtils.setPV(m_SubFields);
                             BitArray sfbs = JausUtils.setPV(value);
