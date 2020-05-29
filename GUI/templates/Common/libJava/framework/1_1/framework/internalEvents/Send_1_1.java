@@ -107,7 +107,7 @@ public class Send_1_1 extends InternalEvent
 				*/				
 				public void setComponentID(long value)
 				{
-					if((value >= 1) && (value <= 225))
+					if((value >= 1) && (value <= 255))
 					{
 						BitSet bfbs = JausUtils.setPV(m_SubFields);
 						BitSet sfbs = JausUtils.setPV(value);
@@ -148,7 +148,7 @@ public class Send_1_1 extends InternalEvent
 				*/
 				public void setNodeID(long value)
 				{
-					if((value >= 1) && (value <= 225))
+					if((value >= 1) && (value <= 255))
 					{
 						BitSet bfbs = JausUtils.setPV(m_SubFields);
 						BitSet sfbs = JausUtils.setPV(value);
@@ -323,7 +323,7 @@ public class Send_1_1 extends InternalEvent
 				*/				
 				public void setComponentID(long value)
 				{
-					if((value >= 1) && (value <= 225))
+					if((value >= 1) && (value <= 255))
 					{
 						BitSet bfbs = JausUtils.setPV(m_SubFields);
 						BitSet sfbs = JausUtils.setPV(value);
@@ -364,7 +364,7 @@ public class Send_1_1 extends InternalEvent
 				*/
 				public void setNodeID(long value)
 				{
-					if((value >= 1) && (value <= 225))
+					if((value >= 1) && (value <= 255))
 					{
 						BitSet bfbs = JausUtils.setPV(m_SubFields);
 						BitSet sfbs = JausUtils.setPV(value);
