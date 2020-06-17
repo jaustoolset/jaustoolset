@@ -867,22 +867,22 @@ public class AppFrame extends JFrame implements AppContainer
             });
 
 
-      if (Platform.APPLE) new AppleQuitListener();
+   //   if (Platform.APPLE) new AppleQuitListener();
    }
 
-   class AppleQuitListener extends com.apple.eawt.ApplicationAdapter
-   {
-      AppleQuitListener()
-      {
-         new com.apple.eawt.Application().addApplicationListener(this);
-      }
-
-      public void handleQuit(com.apple.eawt.ApplicationEvent evt)
-      {
-         evt.setHandled(false);
-         quit();
-      }
-   }
+   //class AppleQuitListener extends com.apple.eawt.ApplicationAdapter
+   //{
+   //   AppleQuitListener()
+   //   {
+   //      new com.apple.eawt.Application().addApplicationListener(this);
+   //   }
+   //
+   //   public void handleQuit(com.apple.eawt.ApplicationEvent evt)
+   //   {
+   //      evt.setHandled(false);
+   //      quit();
+   //   }
+   //}
 
    private void quit()
    {

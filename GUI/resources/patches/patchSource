@@ -26,3 +26,8 @@ patch ./SeeThruTree.java.original -i ./SeeThruTree.java.patch -o ./jmatter-20090
 patch ./SeeThruList.java.original -i ./SeeThruList.java.patch -o ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/SeeThruList.java
 patch ./SeeThruTable.java.original -i ./SeeThruTable.java.patch -o ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/SeeThruTable.java
 patch ./GridList.java.original -i ./GridList.java.patch -o ./jmatter-20090430/modules/ds-swing/src/com/u2d/ui/GridList.java
+
+patch ./jmatter.build.xml.original -i ./jmatter.build.xml.patch -o ./jmatter-20090430/jmatter/build.xml
+patch ./swingvm.build.xml.original -i ./swingvm.build.xml.patch -o ./jmatter-20090430/modules/swingvm/build.xml
+patch ./ds-swing.build.xml.original -i ./ds-swing.build.xml.patch -o ./jmatter-20090430/modules/ds-swing/build.xml
+patch ./ds-wizard.build.xml.original -i ./ds-wizard.build.xml.patch -o ./jmatter-20090430/modules/ds-wizard/build.xml

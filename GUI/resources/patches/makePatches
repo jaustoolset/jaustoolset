@@ -22,3 +22,8 @@ diff ./SeeThruTree.java.original ./SeeThruTree.java.modified > ./SeeThruTree.jav
 diff ./SeeThruList.java.original ./SeeThruList.java.modified > ./SeeThruList.java.patch
 diff ./SeeThruTable.java.original ./SeeThruTable.java.modified > ./SeeThruTable.java.patch
 diff ./GridList.java.original ./GridList.java.modified > ./GridList.java.patch
+
+diff ./jmatter.build.xml.original ./jmatter.build.xml.modified > ./jmatter.build.xml.patch
+diff ./swingvm.build.xml.original ./swingvm.build.xml.modified > ./swingvm.build.xml.patch
+diff ./ds-swing.build.xml.original ./ds-swing.build.xml.modified > ./ds-swing.build.xml.patch
+diff ./ds-wizard.build.xml.original ./ds-wizard.build.xml.modified > ./ds-wizard.build.xml.patch

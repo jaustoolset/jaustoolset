@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+
+<project name="swingvm" default="jar">
+   <description>Swing View Mechanism Implementation for JMatter</description>
+   
+   <property name="src.dir" location="src" />
+   <property name="build.dir" location="build" />
+   <property name="build.classes.dir" location="build/classes" />
+   <property name="lib.dir" location="../../jmatter/lib/runtime/swingvm" />
+   <property name="dist.dir" location="dist" />
+
+   <property name="test.dir" location="test" />
+   <property name="test.src.dir" location="${test.dir}" />
+   <property name="test.classes.dir" location="${build.classes.dir}" />
+   <property name="test.lib.dir" location="lib/test" />
+   <property name="test.reports.dir" location="${build.dir}/reports" />
+
+   <path id="class.path">
+      <fileset dir="${lib.dir}" includes="*.jar" />
+      <pathelement location="${build.classes.dir}" />
+      <pathelement location="../../jmatter/build/classes" />
+      <pathelement location="../ds-swing/build/classes" />
+      <pathelement location="../ds-wizard/build/classes" />
+      <fileset dir="../../jmatter/lib/runtime/" includes="*.jar,spring/*.jar,hb/*.jar" />
+   </path>
+
+   <path id="test.classpath">
+     <path refid="class.path" />
+     <fileset dir="${test.lib.dir}" includes="**/*.jar" />
+     <pathelement location="${test.classes.dir}" />
+   </path>
+
+
+   <target name="init">
+      <mkdir dir="${build.classes.dir}" />
+      <mkdir dir="${dist.dir}" />
+      <tstamp />
+   </target>
+   
+   <target name="clean" description="delete build artifacts">
+      <delete dir="${build.dir}" />
+      <delete dir="${dist.dir}" />
+   </target>
+
+   <target name="compile" depends="init" description="compile">
+      <javac debug="on" 
+             srcdir="${src.dir}" 
+             destdir="${build.classes.dir}" 
+             target="1.8"
+             classpathref="class.path" />
+
+      <!-- <java classname="org.codehaus.groovy.ant.Groovyc" fork="true" maxmemory="128M">
+          <classpath>
+             <path refid="class.path" />
+             <fileset dir="../../jmatter/lib/tools" includes="*.jar" />
+          </classpath>
+          <arg value="${build.classes.dir}"/>
+          <arg value="${src.dir}"/>
+          <arg value="-j"/>
+      </java> -->
+      
+      <copy todir="${build.classes.dir}">
+        <fileset dir="${src.dir}" includes="**/*.jfrm" />
+      </copy>
+   </target>
+
+   <target name="jar" depends="compile" description="jar">
+      <jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.classes.dir}"
+        includes="**/*" />
+   </target>
+
+ <!-- targets pertaining to junit testing -->
+
+ <target name="test-init">
+   <mkdir dir="${test.classes.dir}"/>
+   <mkdir dir="${test.reports.dir}"/>
+ </target>
+
+ <target name="compile-tests" depends="test-init,compile" description="compile tests">
+   <javac debug="on" deprecation="on"
+          classpathref="test.classpath" destdir="${test.classes.dir}" srcdir="${test.src.dir}" />
+ </target>
+
+ <target name="run-tests" depends="compile-tests" description="run tests" >
+    <junit fork="true" haltonfailure="true" printsummary="true">
+       <classpath refid="test.classpath" />
+       <formatter type="brief" usefile="false" /> <!-- alternative type="xml" for producing reports -->
+       <batchtest todir="${test.reports.dir}">
+          <fileset dir="${test.classes.dir}" includes="**/*Suite.class" />
+       </batchtest>
+    </junit>
+ </target>
+
+ <target name="run-test" description="run a test class" depends="compile-tests">
+   <java classname="${main.class}" classpathref="class.path" fork="true" />
+ </target>
+
+
+ <target name="test-report" depends="run-tests" description="produce junit reports">
+   <junitreport todir="${test.reports.dir}">
+     <fileset dir="${test.reports.dir}" includes="TEST-*.xml" />
+     <report todir="${test.reports.dir}/html" />
+   </junitreport>
+ </target>
+
+</project>
