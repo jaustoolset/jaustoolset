@@ -43,7 +43,7 @@ import org.jts.jsidl.binding.*;
 
 // TODO: Add code for testOperators
 /**
- * This class will generate C++, Java, or C# code from a JSIDL Record
+ * This class will generate C++, Java, or C# code from a JSIDL org.jts.jsidl.binding.Record
  *
  * @version		0.1	5 Sept 2008
  * @author		Nicholas M. Johnson
@@ -66,7 +66,7 @@ public class RecordGenerator
     final private boolean fixedLengthStringHasClass = false;		// FixedLengthString		// Currently always false
     final private boolean variableLengthStringHasClass = false;		// VariableLengthString		// Currently always false
     private CodeLines.CodeType codeType;
-    private Record record;
+    private org.jts.jsidl.binding.Record record;
     private boolean isList;
     private String countFieldType;
     private boolean countFieldSigned;
@@ -77,7 +77,7 @@ public class RecordGenerator
     private String shortClassName;
     private String varName;
 
-    public RecordGenerator(CodeLines.CodeType codeType, Record record)
+    public RecordGenerator(CodeLines.CodeType codeType, org.jts.jsidl.binding.Record record)
     {
         this.codeType = codeType;
         this.record = record;
@@ -101,7 +101,7 @@ public class RecordGenerator
 
     }
 
-    public RecordGenerator(CodeLines.CodeType codeType, Record record, boolean isList, String countFieldType)
+    public RecordGenerator(CodeLines.CodeType codeType, org.jts.jsidl.binding.Record record, boolean isList, String countFieldType)
     {
         this.codeType = codeType;
         this.record = record;
@@ -128,7 +128,7 @@ public class RecordGenerator
 
     /**
      * This method generates the code for creating a record.
-     * The generate Record will be placed within its own class which
+     * The generate org.jts.jsidl.binding.Record will be placed within its own class which
      * is nested within the encapsulating class.
      * @param parentName
      * @param code
@@ -167,7 +167,7 @@ public class RecordGenerator
            	CSharpCode.addParentReference(code, fullClassName, pvIndex, record.isOptional());
         }
         
-        /* Create the Record Class */
+        /* Create the org.jts.jsidl.binding.Record Class */
         /***************************/
         generateClass(code, messageId);
         
@@ -814,7 +814,7 @@ public class RecordGenerator
     }
 
     /**
-     * Generates the Code for a Record if is a Vector
+     * Generates the Code for a org.jts.jsidl.binding.Record if is a Vector
      * @param pvIndex
      * @param code
      */

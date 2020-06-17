@@ -43,7 +43,7 @@ import org.jts.jsidl.binding.*;
 
 // TODO: Add code for testOperators
 /**
- * This class will generate C++ code from a JSIDL Record 
+ * This class will generate C++ code from a JSIDL org.jts.jsidl.binding.Record 
  *
  * @version		0.1	5 Sept 2008
  * @author		Nicholas M. Johnson
@@ -56,7 +56,7 @@ public class SequenceGenerator
 {
 //	final private boolean debug = false;
 	final private boolean variantIsNested = true;			// Variant					// Currently always true
-	final private boolean recordIsNested = true;			// Record					// Currently always true
+	final private boolean recordIsNested = true;			// org.jts.jsidl.binding.Record					// Currently always true
 	final private boolean listIsNested = true;				// List						// Currently always true
 	final private boolean sequenceIsNested = true;			// Sequence					// Currently always true
 	
@@ -248,9 +248,9 @@ public class SequenceGenerator
 
                     new VariantGenerator(codeType, variant).run(fullClassName, pvIndex1, varCode);
                 }
-                else if (field instanceof Record)
+                else if (field instanceof org.jts.jsidl.binding.Record)
                 {
-                    Record record = (Record)field;
+                    org.jts.jsidl.binding.Record record = (org.jts.jsidl.binding.Record)field;
 
                     fieldName = Util.upperCaseFirstLetter(record.getName());
                     fieldIsNested = recordIsNested;
@@ -364,9 +364,9 @@ public class SequenceGenerator
 
                     new VariantGenerator(codeType, variant).run(fullClassName, pvIndex1, varCode);
                 }
-                else if (field instanceof Record)
+                else if (field instanceof org.jts.jsidl.binding.Record)
                 {
-                    Record record = (Record)field;
+                    org.jts.jsidl.binding.Record record = (org.jts.jsidl.binding.Record)field;
 
                     fieldName = Util.upperCaseFirstLetter(record.getName());
                     fieldIsNested = recordIsNested;
@@ -479,9 +479,9 @@ public class SequenceGenerator
 
                     new VariantGenerator(codeType, variant).run(fullClassName, pvIndex1, varCode);
                 }
-                else if (field instanceof Record)
+                else if (field instanceof org.jts.jsidl.binding.Record)
                 {
-                    Record record = (Record)field;
+                    org.jts.jsidl.binding.Record record = (org.jts.jsidl.binding.Record)field;
 
                     fieldName = Util.upperCaseFirstLetter(record.getName());
                     fieldIsNested = recordIsNested;
