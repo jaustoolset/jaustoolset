@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+
+<project name="ds-wizard" default="jar">
+   <description>JMatter Wizard Infrastructure</description>
+   
+   <property name="srcdir" location="src" />
+   <property name="builddir" location="build" />
+   <property name="buildclassesdir" location="build/classes" />
+   <property name="libdir" location="lib" />
+   <property name="distdir" location="dist" />
+
+   <property name="test.dir" location="test" />
+   <property name="test.src.dir" location="${test.dir}" />
+   <property name="test.classes.dir" location="${buildclassesdir}" />
+   <property name="test.lib.dir" location="lib/test" />
+   <property name="test.reports.dir" location="${builddir}/reports" />
+
+   <path id="class.path">
+      <fileset dir="${libdir}" includes="*.jar" />
+      <pathelement location="${buildclassesdir}" />
+      <pathelement location="../../jmatter/build/classes" />
+      <pathelement location="../ds-swing/build/classes" />
+      <fileset dir="../../jmatter/lib/runtime/" includes="groovy*.jar,commons-lang-*.jar" />
+   </path>
+
+   <path id="test.classpath">
+     <path refid="class.path" />
+     <fileset dir="${test.lib.dir}" includes="**/*.jar" />
+     <pathelement location="${test.classes.dir}" />
+   </path>
+
+
+   <target name="init">
+      <mkdir dir="${buildclassesdir}" />
+      <mkdir dir="${distdir}" />
+      <tstamp />
+   </target>
+   
+   <target name="clean" description="delete build artifacts">
+      <delete dir="${builddir}" />
+      <delete dir="${distdir}" />
+   </target>
+
+   <target name="compile" depends="init" description="compile">
+      <javac debug="on" 
+             source="1.8" 
+             target="1.8" 
+             srcdir="${srcdir}" 
+             destdir="${buildclassesdir}" 
+             classpathref="class.path" />
+      <copy todir="${buildclassesdir}">
+        <fileset dir="${srcdir}" includes="**/*.xml,**/*.txt" />
+      </copy>
+   </target>
+
+   <target name="jar" depends="compile" description="jar">
+      <jar destfile="${distdir}/${ant.project.name}.jar" basedir="${buildclassesdir}"
+        includes="**/*" />
+   </target>
+
+ <!-- targets pertaining to junit testing -->
+
+ <target name="test-init">
+   <mkdir dir="${test.classes.dir}"/>
+   <mkdir dir="${test.reports.dir}"/>
+ </target>
+
+ <target name="compile-tests" depends="test-init,compile" description="compile tests">
+   <javac debug="on" deprecation="on"
+          classpathref="test.classpath" destdir="${test.classes.dir}" srcdir="${test.src.dir}" />
+ </target>
+
+ <target name="run-tests" depends="compile-tests" description="run tests" >
+    <junit fork="true" haltonfailure="false" printsummary="true">
+       <classpath refid="test.classpath" />
+       <!-- <formatter type="brief" usefile="false" /> --> <!-- alternative type="xml" for producing reports -->
+       <formatter type="xml" />
+       <batchtest todir="${test.reports.dir}">
+          <fileset dir="${test.classes.dir}" includes="**/*Suite.class" />
+       </batchtest>
+    </junit>
+ </target>
+
+ <target name="run-test" description="run a test class" depends="compile-tests">
+   <java classname="${main.class}" classpathref="class.path" fork="true" />
+ </target>
+
+
+ <target name="test-report" depends="run-tests" description="produce junit reports">
+   <junitreport todir="${test.reports.dir}">
+     <fileset dir="${test.reports.dir}" includes="TEST-*.xml" />
+     <report todir="${test.reports.dir}/html" />
+   </junitreport>
+ </target>
+
+</project>

@@ -66,7 +66,7 @@ public class MessageProcessor extends DataTypeProcessor {
         String name = Util.getTypeNameFromDeclTypeRef(refMap, header.getName(), parentID);
 
         // make sure all the definitions this depends on already exist
-        Record rec = header.getRecord();
+        org.jts.jsidl.binding.Record rec = header.getRecord();
         if (rec != null) {
             output.addAll(processRecordDef(rec, parentID));
         }
@@ -137,7 +137,7 @@ public class MessageProcessor extends DataTypeProcessor {
         String name = body.getName();
 
         // handle records
-        Record rec = body.getRecord();
+        org.jts.jsidl.binding.Record rec = body.getRecord();
         if (rec != null) {
             output.addAll(processRecord(rec, parentID));
         }
@@ -173,7 +173,7 @@ public class MessageProcessor extends DataTypeProcessor {
         String name = header.getName();
 
         // handle records
-        Record rec = header.getRecord();
+        org.jts.jsidl.binding.Record rec = header.getRecord();
         if (rec != null) {
             output.addAll(processRecord(rec, parentID));
         }
@@ -207,7 +207,7 @@ public class MessageProcessor extends DataTypeProcessor {
     public List<String> processBodyDef(Body body, String parentID) throws Exception {
         List<String> output = new ArrayList<String>();
         output.addAll(Util.formatCommentString(body.getInterpretation(), false));
-        Record rec = body.getRecord();
+        org.jts.jsidl.binding.Record rec = body.getRecord();
         org.jts.jsidl.binding.List jtsList = body.getList();
         if (rec != null) {
             output.addAll(processRecordDef(rec, parentID));

@@ -60,13 +60,13 @@ public class DataTypeProcessor {
     }
 
     /**
-     * Processes a Record and writes the result to the output file
+     * Processes a org.jts.jsidl.binding.Record and writes the result to the output file
      * @param rec the input binding
      * @param parentID - the ID for the parent of this object,
      * which allows embedded types to have a globally unique name
      * @return - generated code
      */
-    protected List<String> processRecord(Record rec, String parentID) {
+    protected List<String> processRecord(org.jts.jsidl.binding.Record rec, String parentID) {
         List<String> outputDef = new ArrayList<String>();
         String type = Util.getTypeNameFromDeclTypeRef(refMap, rec.getName(), parentID);
         outputDef.addAll(Util.formatCommentString(rec.getInterpretation(), false));
@@ -328,8 +328,8 @@ public class DataTypeProcessor {
     }
 
     /**
-     * Uses the Record to declare this type
-     * @param rec input Record
+     * Uses the org.jts.jsidl.binding.Record to declare this type
+     * @param rec input org.jts.jsidl.binding.Record
      * @param parentID - the ID for the parent of this object,
      * which allows embedded types to have a globally unique name
      * @return - generated code
@@ -344,7 +344,7 @@ public class DataTypeProcessor {
         waitingOutput.add("typedef " + name + "{");
 
         // try to get data
-        Record rec = list.getRecord();
+        org.jts.jsidl.binding.Record rec = list.getRecord();
         org.jts.jsidl.binding.List jtsList = list.getList();
         Sequence seq = list.getSequence();
         org.jts.jsidl.binding.Variant var = list.getVariant();
@@ -387,19 +387,19 @@ public class DataTypeProcessor {
     }
 
     /**
-     * Uses the Record to declare this type
-     * @param rec input Record
+     * Uses the org.jts.jsidl.binding.Record to declare this type
+     * @param rec input org.jts.jsidl.binding.Record
      * @param parentID - the ID for the parent of this object,
      * which allows embedded types to have a globally unique name
      * @return - generated code
      */
-    protected List<String> processRecordDef(Record rec, String parentID) throws Exception {
+    protected List<String> processRecordDef(org.jts.jsidl.binding.Record rec, String parentID) throws Exception {
         List<String> outputDef = new ArrayList<String>();
         List<String> waitingOutput = new ArrayList<String>();
 
         List<Object> tmpList = rec.getArrayOrFixedFieldOrVariableField();
         if (rec.getName() == null) {
-            Logger.getLogger(JTSFileWriter.class.getName()).log(Level.WARNING, "Record name is null");
+            Logger.getLogger(JTSFileWriter.class.getName()).log(Level.WARNING, "org.jts.jsidl.binding.Record name is null");
             throw new CodeGeneratorException("Unexpected class type while evaluating ValueRange or ValueEnum");
         }
         String recname = Util.getTypeNameFromDeclTypeRef(refMap, rec.getName(), parentID);
@@ -483,9 +483,9 @@ public class DataTypeProcessor {
         String name = Util.getTypeNameFromDeclTypeRef(refMap, seq.getName(), parentID);
         List<Object> tmplist = seq.getRecordOrDeclaredRecordOrList();
         for (Object tmpobj : tmplist) {
-            if (tmpobj instanceof Record) {
-                output.addAll(processRecordDef((Record) tmpobj, parentID + ":" + ((Record) tmpobj).getName()));
-                waitingOutput.addAll(processRecord((Record) tmpobj, parentID + ":" + ((Record) tmpobj).getName()));
+            if (tmpobj instanceof org.jts.jsidl.binding.Record) {
+                output.addAll(processRecordDef((org.jts.jsidl.binding.Record) tmpobj, parentID + ":" + ((org.jts.jsidl.binding.Record) tmpobj).getName()));
+                waitingOutput.addAll(processRecord((org.jts.jsidl.binding.Record) tmpobj, parentID + ":" + ((org.jts.jsidl.binding.Record) tmpobj).getName()));
             } else if (tmpobj instanceof org.jts.jsidl.binding.List) {
                 output.addAll(processListDef((org.jts.jsidl.binding.List) tmpobj,
                         parentID + ":" + ((org.jts.jsidl.binding.List) tmpobj).getName()));
@@ -522,9 +522,9 @@ public class DataTypeProcessor {
         String name = Util.getTypeNameFromDeclTypeRef(refMap, var.getName(), parentID);
         List<Object> tmplist = var.getRecordOrDeclaredRecordOrList();
         for (Object tmpobj : tmplist) {
-            if (tmpobj instanceof Record) {
-                output.addAll(processRecordDef((Record) tmpobj, parentID + ":" + ((Record) tmpobj).getName()));
-                waitingOutput.addAll(processRecord((Record) tmpobj, parentID + ":" + ((Record) tmpobj).getName()));
+            if (tmpobj instanceof org.jts.jsidl.binding.Record) {
+                output.addAll(processRecordDef((org.jts.jsidl.binding.Record) tmpobj, parentID + ":" + ((org.jts.jsidl.binding.Record) tmpobj).getName()));
+                waitingOutput.addAll(processRecord((org.jts.jsidl.binding.Record) tmpobj, parentID + ":" + ((org.jts.jsidl.binding.Record) tmpobj).getName()));
             } else if (tmpobj instanceof org.jts.jsidl.binding.List) {
                 output.addAll(processListDef((org.jts.jsidl.binding.List) tmpobj,
                         parentID + ":" + ((org.jts.jsidl.binding.List) tmpobj).getName()));

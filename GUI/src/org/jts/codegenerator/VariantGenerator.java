@@ -346,9 +346,9 @@ public class VariantGenerator
 
             varCode.clear();
 
-            if (field instanceof Record)
+            if (field instanceof org.jts.jsidl.binding.Record)
             {
-                Record record = (Record) field;
+                org.jts.jsidl.binding.Record record = (org.jts.jsidl.binding.Record) field;
 
                 fieldName = record.getName();
                 if (record.isOptional())

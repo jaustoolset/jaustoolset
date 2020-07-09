@@ -150,3 +150,35 @@
 > 	   }
 >    }
 >    // jts
+735c870
+<       if (Platform.APPLE) new AppleQuitListener();
+---
+>    //   if (Platform.APPLE) new AppleQuitListener();
+738,750c873,885
+<    class AppleQuitListener extends com.apple.eawt.ApplicationAdapter
+<    {
+<       AppleQuitListener()
+<       {
+<          new com.apple.eawt.Application().addApplicationListener(this);
+<       }
+< 
+<       public void handleQuit(com.apple.eawt.ApplicationEvent evt)
+<       {
+<          evt.setHandled(false);
+<          quit();
+<       }
+<    }
+---
+>    //class AppleQuitListener extends com.apple.eawt.ApplicationAdapter
+>    //{
+>    //   AppleQuitListener()
+>    //   {
+>    //      new com.apple.eawt.Application().addApplicationListener(this);
+>    //   }
+>    //
+>    //   public void handleQuit(com.apple.eawt.ApplicationEvent evt)
+>    //   {
+>    //      evt.setHandled(false);
+>    //      quit();
+>    //   }
+>    //}

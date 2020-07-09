@@ -1,0 +1,237 @@
+<project name="jmatter" default="jar">
+
+  <description>jMatter framework</description>
+
+  <property name="build.dir" location="build" />
+  <property name="build.classes.dir" location="${build.dir}/classes" />
+  <property name="build.gen.dir" location="${build.dir}/gen" />
+  <property name="dist.dir" location="dist" />
+
+  <property name="src.dir" location="src" />
+  <property name="lib.dir" location="lib" />
+  <property name="resource.dir" location="resources" />
+  
+  <property name="runtime.lib.dir" location="${lib.dir}/runtime" />
+  <property name="tools.lib.dir" location="${lib.dir}/tools" />
+  <property name="gen.lib.dir" location="${lib.dir}/gen" />
+
+  <path id="class.path">
+    <fileset dir="${runtime.lib.dir}" includes="**/*.jar" />
+    <pathelement location="${build.classes.dir}" />
+  </path>
+
+  <property name="test.src.dir" location="test" />
+  <property name="test.classes.dir" location="${build.dir}/classes" />
+  <property name="test.lib.dir" location="${lib.dir}/test" />
+  <property name="test.reports.dir" location="${build.dir}/reports" />
+
+  <path id="test.classpath">
+    <path refid="class.path" />
+    <fileset dir="${test.lib.dir}" includes="**/*.jar" />
+    <pathelement location="${test.classes.dir}" />
+  </path>
+
+  <!-- TARGETS -->
+
+  <target name="init">
+    <tstamp />
+    <mkdir dir="${build.classes.dir}" />
+    <mkdir dir="${build.gen.dir}" />
+    <mkdir dir="${dist.dir}" />
+  </target>
+ 
+  <target name="clean">
+    <delete dir="${build.dir}" />
+  </target>
+
+  <property name="smc.jar" location="${gen.lib.dir}/Smc.jar" />
+
+  <taskdef name="smc" classname="net.sf.smc.ant.SmcJarWrapper"
+    classpath="${gen.lib.dir}/smc-ant.jar" />
+
+  <target name="gen" description="generate smc support code" depends="init">
+    <mkdir dir="${build.gen.dir}/com/u2d/app" />
+    <smc target="java" smfile="${src.dir}/com/u2d/app/AppSession.sm" 
+         destdir="${build.gen.dir}/com/u2d/app"
+         smcjar="${smc.jar}" />
+  </target>
+
+  <target name="authgraph" description="use smc -graph option to produce a state machine diagram of authentication logic" depends="gen">
+    <java dir="${src.dir}/com/u2d/app" jar="${smc.jar}"
+          classpathref="class.path" fork="true">
+      <arg line="-graph -glevel 2 -d ${build.gen.dir}/com/u2d/app Application.sm" />
+    </java>
+  </target>
+
+  <target name="compile" description="compile code" depends="raw-compile, compile-dependent-modules" />
+  <target name="raw-compile" description="compile code" depends="gen, compile-standalone-modules">
+    <javac debug="on" deprecation="on" 
+           classpathref="class.path"
+           listfiles="false"
+           target="1.5"
+           destdir="${build.classes.dir}">
+      <src path="${src.dir}" />
+      <src path="${build.gen.dir}" />
+    </javac>
+    <copy todir="${build.classes.dir}">
+      <fileset dir="${resource.dir}" includes="styles.css,images/*.gif,images/*.png,images/*.jpg,app/model-metadata.properties" />
+      <fileset dir="${resource.dir}" includes="jfreereport.properties" />
+      <fileset dir="${resource.dir}/data" includes="*.json" />
+      <fileset dir="${src.dir}" includes="**/*.xml" />  <!-- wizard fsm -->
+    </copy>
+
+    <native2ascii encoding="UTF-8" src="${resource.dir}" dest="${build.classes.dir}" includes="app/locale-metadata*.properties,app/uidefaults*.properties" />
+
+  </target>
+   
+  <target name="compile-standalone-modules">
+     <antcall target="compile-module">
+        <param name="module.name" value="ds-swing" />
+     </antcall>
+     <antcall target="compile-module">
+        <param name="module.name" value="ds-wizard" />
+     </antcall>
+  </target>
+
+  <target name="compile-dependent-modules">
+     <antcall target="compile-module">
+        <param name="module.name" value="swingvm" />
+     </antcall>
+     <antcall target="compile-module">
+        <param name="module.name" value="wingsvm" />
+     </antcall>
+     <antcall target="compile-module">
+        <param name="module.name" value="echovm" />
+     </antcall>
+  </target>
+   
+  <target name="compile-module">
+    <ant antfile="../modules/${module.name}/build.xml" inheritAll="false" target="jar" />
+    <copy file="../modules/${module.name}/dist/${module.name}.jar" todir="${runtime.lib.dir}" />
+  </target>
+   
+  <target name="just-jar" description="just jar jmatter framework (assume compiled)">
+    <jar basedir="${build.classes.dir}" file="${dist.dir}/${ant.project.name}.jar">
+      <manifest>
+        <attribute name="Created-By" value="Eitan Suez" />
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="jar" description="jar jmatter framework" depends="compile, just-jar" />
+  <target name="cleanjar" description="clean first, then jar" depends="clean,jar" />
+
+ <!-- targets pertaining to junit testing -->
+
+  <target name="test-init">
+    <mkdir dir="${test.classes.dir}"/>
+    <mkdir dir="${test.reports.dir}"/>
+  </target>
+
+  <target name="compile-tests" 
+          depends="test-init,compile" 
+          description="compile tests">
+    <javac debug="on" deprecation="on"
+           classpathref="test.classpath"
+           destdir="${test.classes.dir}" srcdir="${test.src.dir}" />
+    <copy todir="${build.classes.dir}">
+      <!-- <fileset dir="${test.src.dir}" includes="**/*.hbm.xml" /> -->
+      <fileset dir="${test.src.dir}" includes="**/*.xml" /> <!-- jfree report templates -->
+    </copy>
+  </target>
+
+  <target name="run-tests" depends="compile-tests" description="run tests" >
+    <junit fork="true" haltonfailure="true" printsummary="true">
+      <classpath refid="test.classpath" />
+      <formatter type="xml" />
+      <!-- <formatter type="brief" usefile="false" /> -->
+      <batchtest todir="${test.reports.dir}">
+        <fileset dir="${test.classes.dir}" includes="**/*Suite.class" />
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="run-a-test" depends="compile-tests" 
+          description="run a test case (flag: test.name)" >
+    <junit fork="true" haltonfailure="true" printsummary="true">
+      <classpath refid="test.classpath" />
+      <formatter type="brief" usefile="false" /> <!-- alternative type="xml" for producing reports -->
+      <batchtest todir="${test.reports.dir}">
+        <fileset dir="${test.classes.dir}" includes="**/${test.name}.class" />
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="test-report" depends="run-tests" 
+          description="produce junit reports">
+    <junitreport todir="${test.reports.dir}">
+      <fileset dir="${test.reports.dir}" includes="TEST-*.xml" />
+      <report todir="${test.reports.dir}/html" />
+    </junitreport>
+  </target>
+
+   
+   <!-- TODO: override with -Dnew.project.name flag upon invoking target -->
+   <property name="new.project.name" value="new-jmatter-project" />
+   <property name="new.project.basedir" value=".." />
+   <!-- DOC: presence of "standalone" property determines whether new project is standalone or not -->
+
+
+  <path id="newprojectui.classpath">
+    <fileset dir="${runtime.lib.dir}" includes="swingvm/css4swing.jar,swingvm/swingx*.jar,swingvm/antlr-*-runtime.jar" />
+    <fileset dir="${tools.lib.dir}" includes="newprojectui.jar" />
+  </path>
+
+   <target name="new-project-ui" depends="jar"
+           description="GUI for creating a new jmatter project">
+     <java classname="org.jmatter.tools.NewProjectFrontEnd" 
+           classpathref="newprojectui.classpath"
+           fork="true" />
+   </target>
+
+
+   <target name="new-project" depends="jar"
+           description="create a new project (flags: new.project.name, new.project.basedir)">
+      <property name="np.basedir" location="${new.project.basedir}/${new.project.name}" />
+      <mkdir dir="${np.basedir}" />
+      <copy todir="${np.basedir}" verbose="true" filtering="true">
+         <fileset dir="${resource.dir}/project-template" />
+         <filterset>
+           <filter token="PROJECTNAME" value="${new.project.name}" />
+           <filter token="FRAMEWORK_DIR" value="${basedir}" />
+         </filterset>
+      </copy>
+      <copy todir="${np.basedir}/resources/images" overwrite="true">
+         <fileset dir="${resource.dir}/project-template/resources/images" includes="*" />
+      </copy>
+      <antcall target="new-standalone-project" />
+      <antcall target="new-dependent-project" />
+   </target>
+
+   <target name="new-standalone-project" if="standalone">
+      <copy todir="${np.basedir}/lib">
+        <fileset dir="${lib.dir}" excludes="gen/**" />
+      </copy>
+      <copy file="${dist.dir}/${ant.project.name}.jar"
+            todir="${np.basedir}/lib/runtime" />
+      <move file="${np.basedir}/build-standalone.xml" tofile="${np.basedir}/build.xml" />
+   </target>
+
+   <target name="new-dependent-project" unless="standalone">
+      <delete file="${np.basedir}/build-standalone.xml" />
+   </target>
+
+   <target name="ultraviolet" description="Launch UltraViolet design tool" depends="compile">
+      <ant antfile="tools/ultraviolet/build.xml" inheritAll="false" />
+   </target> 
+
+   
+   <target name="javadoc" description="produce jmatter javadocs">
+     <javadoc sourcepath="${src.dir}"
+              destdir="${build.dir}/javadocs"
+              classpathref="class.path" 
+              packagenames="com.u2d.*" />
+   </target>
+   
+</project>
+
