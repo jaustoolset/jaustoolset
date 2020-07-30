@@ -245,6 +245,58 @@
             <action name="stopEventTimer" interpretation="Stop evaluating the
               recurring                  event for timeouts."/>
           </transition>
+          <transition name="transport.Receive">
+            <parameter type="CreateCommandEvent" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <guard condition="isCommandSupported(msg) &amp;&amp; !eventExists(msg)"/>
+            <ns2:internal/>
+            <action name="createCommandEvent" interpretation="Add the encapsulated command message to the input message queue of this service so that it can be received and processed by the extensions of this service (derived services)">
+              <argument value="msg"/>
+            </action>
+            <action name="transport.Send" interpretation="Send Confirm Event Request message">
+              <argument value=" 'ConfirmEventRequest' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+            <action name="startCommandTimer" interpretation="Start a timer for the specified CommandEvent"/>
+          </transition>
+          <transition name="transport.Receive">
+            <parameter type="CreateCommandEvent" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <guard condition="isCommandSupported(msg) &amp;&amp; eventExists(msg)"/>
+            <ns2:internal/>
+            <action name="updateCommandEvent" interpretation="Update the command event">
+              <argument value="msg"/>
+            </action>
+            <action name="transport.Send" interpretation="Send Confirm Event Request message">
+              <argument value=" 'ConfirmEventRequest' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+            <action name="startCommandTimer" interpretation="Start a timer for the specified CommandEvent"/>
+          </transition>
+          <transition name="transport.Receive">
+            <parameter type="CreateCommandEvent" value="msg"/>
+            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+            <guard condition="!isCommandSupported(msg)"
+              interpretation="False. This condition should be overridden by derived services to allow command events"/>
+            <ns2:internal/>
+            <action name="transport.Send" interpretation="Send Reject Event Request message">
+              <argument value=" 'RejectEventRequest' "/>
+              <argument value="msg"/>
+              <argument value="transportData"/>
+            </action>
+          </transition>
+          <transition name="CommandCompleted">
+            <guard condition="eventExists()"/>
+            <ns2:internal/>
+            <action name="stopCommandTimer" interpretation="Stop the timer for the specified CommandEvent"/>
+            <action name="sendCommandEvent" interpretation="Send a CommandEvent notification"/>
+          </transition>
+          <transition name="CommandExpired">
+            <ns2:internal/>
+            <action name="sendCommandEvent" interpretation="Send a CommandEvent notification"/>
+          </transition>
         </state>
       </state>
     </state_machine>

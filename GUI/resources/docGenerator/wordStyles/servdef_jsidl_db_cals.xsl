@@ -1155,9 +1155,13 @@
         <xsl:text>)</xsl:text>
         </font-resize>
         </xsl:if>
+        <font-resize font-size="8pt">
+        <xsl:text>Format_enum:</xsl:text>
+        </font-resize>
+        <xsl:processing-instruction name="linebreak"/>
+        <xsl:apply-templates select="jaus:format_field" mode="cell"/>
       </entry>
     </row>
-    <xsl:apply-templates select="jaus:format_field" mode="row"/>
   </xsl:template>
 
   <!-- FIELD DETAIL COMPONENTS -->
