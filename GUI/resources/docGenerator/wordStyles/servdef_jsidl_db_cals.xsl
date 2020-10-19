@@ -777,6 +777,11 @@
           </xsl:when>
           <xsl:otherwise><xsl:text>N/A</xsl:text></xsl:otherwise>
         </xsl:choose>
+        <xsl:choose>
+          <xsl:when test="@interpretation">
+            (<xsl:value-of select="@interpretation"/>)
+          </xsl:when>
+        </xsl:choose>
       </entry>
     </row>
     <row>
