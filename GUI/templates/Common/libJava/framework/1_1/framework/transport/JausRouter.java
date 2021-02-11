@@ -90,7 +90,7 @@ public class JausRouter extends SimpleThread{
 
 		// array used to force pass by reference to C++ library
         long[] jrHandle_p = new long[1];
-		String cfg = "nm.cfg";
+		String cfg = "nm.cfg\0";
 
         if(JuniorAPI.JrConnect(jAdd, cfg.getBytes(), jrHandle_p, jWildcards) != JrErrorCode.Ok)
 		{
@@ -115,7 +115,7 @@ public class JausRouter extends SimpleThread{
 
 		// array used to force pass by reference to C++ library
         long[] jrHandle_p = new long[1];
-		String cfg = "nm.cfg";
+		String cfg = "nm.cfg\0";
 
         if(JuniorAPI.JrConnect(jAdd, cfg.getBytes(), jrHandle_p, jWildcards) != JrErrorCode.Ok)
 		{
