@@ -1,4 +1,4 @@
-# jaustoolset
+# JAUS ToolSet
 
 The JAUS ToolSet is Java-based tool for the creation (or import) of interfaces for robotic systems based on the JAUS Service Interface Definition Language (JSIDL) as published by the SAE AS-4 committee. Once created (or imported), the toolset can be used to generate C++, Java, or C# code as well as documentation in HTML or Word formats.
 
