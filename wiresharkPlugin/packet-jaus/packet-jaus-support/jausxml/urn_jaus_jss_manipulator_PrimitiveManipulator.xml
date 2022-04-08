@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="PrimitiveManipulator" id="urn:jaus:jss:manipulator:PrimitiveManipulator" version="2.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">This service is the low level interface to a manipulator arm.  Motion of the arm is accomplished via the Set Joint Effort message.  In this message, each actuator is commanded to move with a percentage of maximum effort. To ensure backward compatibility with 1.0 implementations of this service, it is recommended that this service be co-located on the same component as a Manipulator Specification Service.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost, or reordered.</assumptions>
+    <references>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryJointEffort" message_id="2601" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving service to reply to the requestor with a ID 4601h: ReportJointEffort message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetJointEffort" message_id="0601" is_command="true">
+                <description xml:space="preserve">This message is used to control joint actuators in an open loop fashion. The command states the percentage level of effort that each actuator should exercise in order to move its corresponding joint. The message must contain effort commands for each joint in the manipulator.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="JointEffortList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <record name="JointEffortRec" optional="false">
+                            <fixed_field name="JointEffort" optional="false" interpretation="Percent of maximum effort for this joint. Each joint must have a corresponding entry in the list." field_type="unsigned short integer" field_units="one">
+                                <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportJointEffort" message_id="4601" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the percent effort that is currently being applied to the individual manipulator joints.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="JointEffortList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <record name="JointEffortRec" optional="false">
+                            <fixed_field name="JointEffort" optional="false" interpretation="Percent of maximum effort for this joint. Each joint must have a corresponding entry in the list." field_type="unsigned short integer" field_units="one">
+                                <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryJointEffort" value="msg" interpretation="enveloped query joint efforts message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a report joint efforts message">
+                                    <argument value=" 'ReportJointEffort' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetJointEffort" value="msg" interpretation="enveloped set joint efforts message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="management.accessControl.isControllingClient(transportData)" interpretation="True if the message that triggered the transition is                      received from the client that is in control of this service"/>
+                                    <internal/>
+                                    <action name="setJointEffort" interpretation="Set the joint motion efforts for the manipulator.  The                      manipulator joints move accordingly">
+                                        <argument value="msg"/>
+                                    </action>
+                                </transition>
+                            </state>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryJointEffort" value="msg" interpretation="enveloped query joint efforts message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a report joint efforts message">
+                                    <argument value=" 'ReportJointEffort' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

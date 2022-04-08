@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="LocalLoiterDriver" id="urn:jaus:jss:mobility:LocalLoiterDriver" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Local Loiter Driver is to command the platform to loiter about a desired position (“loiter reference position”) in the local coordinate system using a specified loiter pattern. The service provides for three different loiter patterns: Hover, Polygon, and Race Track. Hover is a special case of loiter where the vehicle stays at or near the specified loiter reference position within a tolerance without specifying or implementing a particular loiter pattern.  While hovering, the command specifies whether the vehicle should give priority to maintinaing its XY position or its Z position. A polygon loiter pattern establishes a regular, symmetrical geometry, centered on the loiter point, by specifying the number of vertices and their distance from the loiter reference position. A race track loiter pattern establishes one of two types of loiters (traditional or figure 8), centered on the loiter reference position, by specifying the width and length of the pattern. Polygon and race track loiters allow the direction of travel (clockwise versus counter clockwise) and angular offset (“loiter bearing”) of the pattern to be specified.  For figure 8 loiters, the direction of travel refers to the part of the figure-8 pattern governed by the loiter bearing (between 0 and PI). Another commanded input consists of the desired travel speed.  The desired travel speed remains unchanged unless a new Set Travel Speed Message is received.  The travel speed may then be changed at any time during the loiter.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetLocalLoiter" message_id="0426" is_command="true">
+                <description xml:space="preserve">This message is used to command the vehicle to loiter about a desired position in the local reference frame. Note that in some applications, particularly air and undersea, position may be a mix of local coordinates for XY position and absolute coordinates for Z/altitude/depth.  This only applies if the Z axis for the vehicle coordinate frame is aligned with a vertical axis, e.g. a vector orthogonal to the ground plane.  In all other cases, implementations must use Zlocal reporting only. For example, a UUV launched from a USV may need to navigate using local X/Y coordinates based on its launch point (using dead reckoning from its IMU) but rely on direct readings that do not suffer from drift for its Depth and/or Altitude ASF. All times are in Coordinated Universal Time (UTC).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="LocalLoiterSpecification" optional="false">
+                        <record name="LocalLoiterRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="X" optional="false" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Y" optional="false" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                            </fixed_field>
+                            <variable_field name="ZPosition" optional="true">
+                                <type_and_units_field>
+                                    <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                    </type_and_units_enum>
+                                    <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                    </type_and_units_enum>
+                                    <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                    </type_and_units_enum>
+                                    <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                    </type_and_units_enum>
+                                    <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                    </type_and_units_enum>
+                                </type_and_units_field>
+                            </variable_field>
+                        </record>
+                        <variant name="Loiter" optional="false">
+                            <vtag_field min_count="0" max_count="2" field_type_unsigned="unsigned byte"/>
+                            <record name="HoverRec" optional="false">
+                                <fixed_field name="HoverPreference" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="XYPriority" interpretation="XY position priority"/>
+                                        <value_enum enum_index="1" enum_const="ZPriority" interpretation="Z position priority"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="XYTolerance" optional="false" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="ZTolerance" optional="false" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="50000" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                            <record name="PolygonRec" optional="false">
+                                <fixed_field name="NumberLoiterVertices" optional="false" interpretation="Number of vertices in loiter convex, regular polygon 0 and 1 are a circular loiter; 2 forms a linear loiter" field_type="unsigned byte" field_units="one"/>
+                                <fixed_field name="XYExtent" optional="false" interpretation="Distance from loiter reference position to polygon vertices" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="LoiterDirection" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="VehicleDependent" interpretation="Vehicle dependent"/>
+                                        <value_enum enum_index="1" enum_const="Clockwise" interpretation="Clockwise from North about the z-axis"/>
+                                        <value_enum enum_index="2" enum_const="CounterClockwise" interpretation="Counter-Clockwise from North about the z-axis"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="LoiterBearing" optional="false" interpretation="Angular offset from the X-axis in a right-hand sense about Z-axis from the loiter point to the first vertex of the polygon; a value of zero for a 4-vertex polygon would create a diamond while a value of PI/4 would create a square with respect to the local coordinate system." field_type="unsigned short integer" field_units="radian">
+                                    <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                            <record name="RaceTrackRec" optional="false">
+                                <fixed_field name="LoiterType" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Racetrack" interpretation="RaceTrack"/>
+                                        <value_enum enum_index="1" enum_const="Figure8" interpretation="Figure 8"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="LoiterRadius" optional="false" interpretation="Width (smaller distance) of racetrack or figure 8" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="200000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="LoiterLength" optional="false" interpretation="Length (larger distance) of racetrack or figure 8" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="200000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="LoiterDirection" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="VehicleDependent" interpretation="Vehicle dependent"/>
+                                        <value_enum enum_index="1" enum_const="Clockwise" interpretation="Clockwise from North about the z-axis"/>
+                                        <value_enum enum_index="2" enum_const="CounterClockwise" interpretation="Counter-Clockwise from North about the z-axis"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="LoiterBearing" optional="false" interpretation="Angular offset of the length axis from the X-axis in a right-hand sense about Z-axis; a value of zero would align the “LoiterLength” with the X-axis while a value of PI/2 would align it with the Y-axis." field_type="unsigned short integer" field_units="radian">
+                                    <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                        </variant>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetTravelSpeedExt" message_id="04AA" is_command="true">
+                <description xml:space="preserve">This message is used to set the desired travel speed. It uses a variable field allowing platforms to select various methods for specifying speed.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="TravelSpeedExtRec" optional="false">
+                        <variable_field name="Speed" optional="false">
+                            <type_and_units_field>
+                                <type_and_units_enum name="SpeedOverGround" index="0" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="SpeedRelativeToMedium" index="1" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="RotationsPerMinute" index="2" field_type="unsigned short integer" field_units="rotations per minute">
+                                    <scale_range real_lower_limit="-1000" real_upper_limit="1000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="IndicatedSpeed" index="3" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryLocalLoiter" message_id="2426" is_command="false">
+                <description xml:space="preserve">This message will cause the receiving component to reply to the requestor with a ID 4426h: ReportLocalLoiter message. A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder. The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="LocalLoiterRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Local Loiter Message" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryTravelSpeedExt" message_id="24AA" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 44AAh: ReportTravelSpeedExt  message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportLocalLoiter" message_id="4426" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver with the current values of the safety zones. The message data for this message are identical to the ID 0426h: SetLocalLoiter message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="LocalLoiterSpecification" optional="false">
+                        <record name="LocalLoiterRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="X" optional="false" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Y" optional="false" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                            </fixed_field>
+                            <variable_field name="ZPosition" optional="true">
+                                <type_and_units_field>
+                                    <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                    </type_and_units_enum>
+                                    <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                    </type_and_units_enum>
+                                    <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                    </type_and_units_enum>
+                                    <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                    </type_and_units_enum>
+                                    <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                    </type_and_units_enum>
+                                </type_and_units_field>
+                            </variable_field>
+                        </record>
+                        <variant name="Loiter" optional="false">
+                            <vtag_field min_count="0" max_count="2" field_type_unsigned="unsigned byte"/>
+                            <record name="HoverRec" optional="false">
+                                <fixed_field name="HoverPreference" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="XYPriority" interpretation="XY position priority"/>
+                                        <value_enum enum_index="1" enum_const="ZPriority" interpretation="Z position priority"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="XYTolerance" optional="false" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="ZTolerance" optional="false" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="50000" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                            <record name="PolygonRec" optional="false">
+                                <fixed_field name="NumberLoiterVertices" optional="false" interpretation="Number of vertices in loiter convex, regular polygon 0 and 1 are a circular loiter; 2 forms a linear loiter" field_type="unsigned byte" field_units="one"/>
+                                <fixed_field name="XYExtent" optional="false" interpretation="Distance from loiter reference position to polygon vertices" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="LoiterDirection" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="VehicleDependent" interpretation="Vehicle dependent"/>
+                                        <value_enum enum_index="1" enum_const="Clockwise" interpretation="Clockwise from North about the z-axis"/>
+                                        <value_enum enum_index="2" enum_const="CounterClockwise" interpretation="Counter-Clockwise from North about the z-axis"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="LoiterBearing" optional="false" interpretation="Angular offset from the X-axis in a right-hand sense about Z-axis from the loiter point to the first vertex of the polygon; a value of zero for a 4-vertex polygon would create a diamond while a value of PI/4 would create a square with respect to the local coordinate system." field_type="unsigned short integer" field_units="radian">
+                                    <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                            <record name="RaceTrackRec" optional="false">
+                                <fixed_field name="LoiterType" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Racetrack" interpretation="RaceTrack"/>
+                                        <value_enum enum_index="1" enum_const="Figure8" interpretation="Figure 8"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="LoiterRadius" optional="false" interpretation="Width (smaller distance) of racetrack or figure 8" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="200000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="LoiterLength" optional="false" interpretation="Length (larger distance) of racetrack or figure 8" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="200000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="LoiterDirection" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="VehicleDependent" interpretation="Vehicle dependent"/>
+                                        <value_enum enum_index="1" enum_const="Clockwise" interpretation="Clockwise from North about the z-axis"/>
+                                        <value_enum enum_index="2" enum_const="CounterClockwise" interpretation="Counter-Clockwise from North about the z-axis"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="LoiterBearing" optional="false" interpretation="Angular offset of the length axis from the X-axis in a right-hand sense about Z-axis; a value of zero would align the “LoiterLength” with the X-axis while a value of PI/2 would align it with the Y-axis." field_type="unsigned short integer" field_units="radian">
+                                    <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                        </variant>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportTravelSpeedExt" message_id="44AA" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the current value of the commanded travel speed. The message data of this message is identical to ID 04AA h: SetTravelSpeedExt.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="TravelSpeedExtRec" optional="false">
+                        <variable_field name="Speed" optional="false">
+                            <type_and_units_field>
+                                <type_and_units_enum name="SpeedOverGround" index="0" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="SpeedRelativeToMedium" index="1" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="RotationsPerMinute" index="2" field_type="unsigned short integer" field_units="rotations per minute">
+                                    <scale_range real_lower_limit="-1000" real_upper_limit="1000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="IndicatedSpeed" index="3" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalLoiter" value="msg" interpretation="enveloped query local loiter message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportLocalLoiter" interpretation="Send a Report Local Loiter message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryTravelSpeedExt" value="msg" interpretation="enveloped query travel speed ext message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportTravelSpeedExt" interpretation="Send a Report Travel Speed Ext message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <exit>
+                                    <action name="resetTravelSpeed" interpretation="Safe motion of the platform, as described in Section 3.5"/>
+                                </exit>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetTravelSpeedExt" value="msg" interpretation="enveloped set travel speed ext message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData ) &amp;&amp; loiterExists()" interpretation="True if the message that triggered the transition is received from the client                      that is in control of this service AND a valid Local Loiter has been received."/>
+                                    <internal/>
+                                    <action name="setTravelSpeedExt" interpretation="Set the travel speedExt for the platform">
+                                        <argument value="msg"/>
+                                    </action>
+                                </transition>
+                            </state>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalLoiter" value="msg" interpretation="enveloped query local loiter message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportLocalLoiter" interpretation="Send a Report Local Loiter message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryTravelSpeedExt" value="msg" interpretation="enveloped query travel speed ext message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportTravelSpeedExt" interpretation="Send a Report Travel Speed Ext message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetLocalLoiter" value="msg" interpretation="enveloped set loiter message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered the                    transition is received from the client that is in control of this service."/>
+                                <internal/>
+                                <action name="SetLocalLoiter" interpretation="Set the local loiter parameters for the platform.">
+                                    <argument value="msg"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

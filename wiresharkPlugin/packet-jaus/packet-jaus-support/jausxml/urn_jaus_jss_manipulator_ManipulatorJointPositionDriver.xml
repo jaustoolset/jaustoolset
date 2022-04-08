@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="ManipulatorJointPositionDriver" id="urn:jaus:jss:manipulator:ManipulatorJointPositionDriver" version="2.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Joint Position Driver is to perform closed-loop joint position control.  A single target is provided via the Set Joint Position message.  The target remains unchanged until a new Set Joint Position message is received.  To ensure backward compatibility with 1.0 implementations of this service, it is recommended that this service be co-located on the same component as a Manipulator Specification Service and a Manipulator Joint Motion Profile Service.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost, or reordered.</assumptions>
+    <references>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryCommandedJointPositions" message_id="2608" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving service to reply to the requestor with a ID 4608h: ReportCommandedJointPositions message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetJointPositions" message_id="0602" is_command="true">
+                <description xml:space="preserve">This message sets the desired joint position values.  The message must contain a position command for each joint in the manipulator.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="JointPositionList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <record name="JointPositionRec" optional="false">
+                            <variable_field name="JointPosition" optional="false" interpretation="Scaled integer representing the command position for this joint.  Each joint must have a corresponding entry in the list.  Units and scale range are based on the joint type.">
+                                <type_and_units_field>
+                                    <type_and_units_enum name="radian" index="1" field_type="unsigned integer" field_units="radian">
+                                        <scale_range real_lower_limit="-25.132741228718345" real_upper_limit="25.132741228718345" integer_function="round"/>
+                                    </type_and_units_enum>
+                                    <type_and_units_enum name="meter" index="2" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-10" real_upper_limit="10" integer_function="round"/>
+                                    </type_and_units_enum>
+                                </type_and_units_field>
+                            </variable_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportCommandedJointPositions" message_id="4608" is_command="false">
+                <description xml:space="preserve">This message provides the receiver with the commanded joint positions.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="JointPositionList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <record name="JointPositionRec" optional="false">
+                            <variable_field name="JointPosition" optional="false" interpretation="Scaled integer representing the command position for this joint.  Each joint must have a corresponding entry in the list.  Units and scale range are based on the joint type.">
+                                <type_and_units_field>
+                                    <type_and_units_enum name="radian" index="1" field_type="unsigned integer" field_units="radian">
+                                        <scale_range real_lower_limit="-25.132741228718345" real_upper_limit="25.132741228718345" integer_function="round"/>
+                                    </type_and_units_enum>
+                                    <type_and_units_enum name="meter" index="2" field_type="unsigned integer" field_units="meter">
+                                        <scale_range real_lower_limit="-10" real_upper_limit="10" integer_function="round"/>
+                                    </type_and_units_enum>
+                                </type_and_units_field>
+                            </variable_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryCommandedJointPositions" value="msg" interpretation="enveloped query commanded Joint Positions message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Commanded Joint Positions message">
+                                    <argument value=" 'ReportCommandedJointPositions' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <exit>
+                                    <action name="stopMotion" interpretation="Stop motion of the manipulator."/>
+                                </exit>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetJointPositions" value="msg" interpretation="enveloped set joint efforts message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="management.accessControl.isControllingClient(transportData)                      &amp;&amp; motionProfileExists()" interpretation="True if the message that triggered the transition                      is received from the client that is in control of this service AND                     a motion profile has already been received."/>
+                                    <internal/>
+                                    <action name="setJointEfforts" interpretation="Set the joint motion efforts for the manipulator.                       The manipulator joints move accordingly">
+                                        <argument value="msg"/>
+                                    </action>
+                                </transition>
+                            </state>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryCommandedJointPositions" value="msg" interpretation="enveloped query commanded Joint Positions message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Commanded Joint Positions message">
+                                    <argument value=" 'ReportCommandedJointPositions' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="GlobalVectorDriver" id="urn:jaus:jss:mobility:GlobalVectorDriver" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Global Vector Driver is to perform closed loop control of the desired global yaw, roll, pitch, altitude or depth, and the speed of a mobile platform.  The Global Vector Driver takes the desired heading (yaw) of the platform as measured with respect to the global coordinate system and the desired speed of the platform.  Note that the new Ext messages support different values for course and heading (yaw) for holonomic systems that allow such configurations.The desired Altitude, measured in accordance with the WGS 84 standard, provides a means through which systems capable of flight can be controlled.  Vehicles also may be controlled by specifying the desired altitude with respect to Mean Sea Level. Submersible vehicles may be controlled by specifying the desired Depth or Altitude ASF.  For ground-based systems, the Altitude field is optional.  The speed of the vehicle can be expressed as either Speed over Ground or Speed Relative to Medium.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetGlobalVector" message_id="0407" is_command="true" deprecated="true">
+                <description xml:space="preserve">This message is used to set the driving vector based on the global coordinate system.  Field #2 sets the desired speed of the platform. Field #3 sets the desired Altitude in accordance with the WGS 84 standard.  The orientation is defined as per Section 3.1.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="GlobalVectorRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="Speed" optional="true" field_type="unsigned short integer" field_units="meter per second">
+                            <scale_range real_lower_limit="0" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Altitude" optional="true" interpretation="Altitude with respect to WGS-84 reference ellipsoid" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Heading" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetGlobalVectorExt" message_id="04A7" is_command="true">
+                <description xml:space="preserve">This message is used to set the driving vector based on the global coordinate system.  Field #2 sets the desired speed of the platform. It uses a variable field allowing platforms to select various methods for specifying speed.  Field #3 sets the desired Z position. It uses a variable field allowing platforms to select various methods for specifying altitude or depth.  The desired heading (yaw) angle is set in field #4; however, field #7 supports a different value for course (the true direction of travel) which may be different for holonomic systems The orientation is defined as per Section 3.1.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="GlobalVectorExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <variable_field name="Speed" optional="false">
+                            <type_and_units_field>
+                                <type_and_units_enum name="SpeedOverGround" index="0" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="SpeedRelativeToMedium" index="1" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="RotationsPerMinute" index="2" field_type="unsigned short integer" field_units="rotations per minute">
+                                    <scale_range real_lower_limit="-1000" real_upper_limit="1000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="IndicatedSpeed" index="3" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                        <variable_field name="ZPosition" optional="true">
+                            <type_and_units_field>
+                                <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Heading" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Course" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryGlobalVector" message_id="2407" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4407h: ReportGlobalVector (Deprecated) message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder.  The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryGlobalVectorRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Global Vector Message" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryGlobalVectorExt" message_id="24A7" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 44A7h: ReportGlobalVectorExt message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder.  The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryGlobalVectorExtRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Global Vector Ext Message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportGlobalVector" message_id="4407" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message is used to provide the receiver the current values of the commanded global vector. The message data of this message is identical to ID 0407 h: SetGlobalVector (Deprecated).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="GlobalVectorRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="Speed" optional="true" field_type="unsigned short integer" field_units="meter per second">
+                            <scale_range real_lower_limit="0" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Altitude" optional="true" interpretation="Altitude with respect to WGS-84 reference ellipsoid" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Heading" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportGlobalVectorExt" message_id="44A7" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the current values of the commanded global vector. The message data of this report is identical to ID 04A7 h: SetGlobalVectorExt.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="GlobalVectorExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <variable_field name="Speed" optional="false">
+                            <type_and_units_field>
+                                <type_and_units_enum name="SpeedOverGround" index="0" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="SpeedRelativeToMedium" index="1" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="RotationsPerMinute" index="2" field_type="unsigned short integer" field_units="rotations per minute">
+                                    <scale_range real_lower_limit="-1000" real_upper_limit="1000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="IndicatedSpeed" index="3" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                        <variable_field name="ZPosition" optional="true">
+                            <type_and_units_field>
+                                <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Heading" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Course" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryGlobalVector" value="msg" interpretation="enveloped query global                     vector message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                     Global Vector message">
+                                    <argument value=" 'ReportGlobalVector' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryGlobalVectorExt" value="msg" interpretation="enveloped query global ext                     vector message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                     Global Vector Ext message">
+                                    <argument value=" 'ReportGlobalVectorExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <exit>
+                                    <action name="resetTravelSpeed" interpretation="Safe motion of the platform, as described in Section 3.5"/>
+                                </exit>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetGlobalVector" value="msg" interpretation="enveloped set global                     vector message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered the                      transition is received from the client that is in control of this service."/>
+                                    <internal/>
+                                    <action name="setGlobalVector" interpretation="Set the global vector values for the platform."/>
+                                </transition>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetGlobalVectorExt" value="msg" interpretation="enveloped set global                     vector ext message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered the                      transition is received from the client that is in control of this service."/>
+                                    <internal/>
+                                    <action name="setGlobalVectorExt" interpretation="Set the global vector values for the platform."/>
+                                </transition>
+                            </state>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryGlobalVector" value="msg" interpretation="enveloped query global                   vector message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                   Global Vector message">
+                                    <argument value=" 'ReportGlobalVector' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryGlobalVectorExt" value="msg" interpretation="enveloped query global ext                   vector message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                   Global Vector Ext message">
+                                    <argument value=" 'ReportGlobalVectorExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

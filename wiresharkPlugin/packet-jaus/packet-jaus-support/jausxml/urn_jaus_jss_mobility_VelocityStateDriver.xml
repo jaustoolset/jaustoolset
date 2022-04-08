@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="VelocityStateDriver" id="urn:jaus:jss:mobility:VelocityStateDriver" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The Velocity State Driver allows for low level control of platform mobility.  This service does not imply any particular domain type such ground, air, surface, or underwater vehicles, but describes mobility in six degrees of freedom using velocity commands relative to the vehicle’s coordinate system.  The function of the Velocity State Driver service is to control the desired linear and angular velocity of a mobile platform.  The Velocity State Driver takes the desired velocity as measured with respect to the vehicle coordinate system defined in Section 3.1.  This service also allows the client to set acceleration limits. The SetVelocityCommand provides the capability to set the current velocity command, set the maximum allowed velocity values, set the minimum allowed velocity values and set the default velocity command, by setting the appropriate command type in the message.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetVelocityCommand" message_id="0415" is_command="true" deprecated="true">
+                <description xml:space="preserve">This message is used to command the linear velocity and rotational rate of the platform.  The SetVelocityCommand provides the capability, by setting the appropriate command type in the message, to set the current velocity command, set the maximum allowed velocity values, set the minimum allowed velocity values and set the default velocity command.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="VelocityCommandRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="CommandType" optional="false" interpretation="Where minimum and maximum are the bottom and top ends of the allowable range. Any commanded velocity outside this range will be ignored. For a system that expects to move in both directions along or around an axis, e.g. forward and backward for linear X, then the minimum is expected to be negative." field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="SetCurrentCommand" interpretation="Set current command"/>
+                                <value_enum enum_index="1" enum_const="SetMaxAllowed" interpretation="Set maximum allowed values"/>
+                                <value_enum enum_index="2" enum_const="SetMinAllowed" interpretation="Set minimum allowed values"/>
+                                <value_enum enum_index="3" enum_const="SetDefaultCommand" interpretation="Set default command"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Velocity_X" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Velocity_Y" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Velocity_Z" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="RollRate" optional="true" field_type="unsigned short integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PitchRate" optional="true" field_type="unsigned short integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="YawRate" optional="true" field_type="unsigned short integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetVelocityCommandExt" message_id="04B5" is_command="true">
+                <description xml:space="preserve">This message is used to command the linear velocity and rotational rate of the platform.  The SetVelocityCommand provides the capability, by setting the appropriate command type in the message, to set the current velocity command, set the maximum allowed velocity values, set the minimum allowed velocity values and set the default velocity command. Either absolute speed (SOG) or relative (SRM) may be set.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="VelocityCommandExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="CommandType" optional="false" interpretation="Where minimum and maximum are the bottom and top ends of the allowable range. Any commanded velocity outside this range will be ignored. For a system that expects to move in both directions along or around an axis, e.g. forward and backward for linear X, then the minimum is expected to be negative." field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="SetCmdSOG" interpretation="Set current command SOG"/>
+                                <value_enum enum_index="1" enum_const="SetMaxSOG" interpretation="Set maximum allowed SOG values"/>
+                                <value_enum enum_index="2" enum_const="SetMinSOG" interpretation="Set minimum allowed SOG values"/>
+                                <value_enum enum_index="3" enum_const="SetDefaultSOG" interpretation="Set default SOG command"/>
+                                <value_enum enum_index="4" enum_const="SetCmdSRM" interpretation="Set current command SRM"/>
+                                <value_enum enum_index="5" enum_const="SetMaxSRM" interpretation="Set maximum allowed SRM values"/>
+                                <value_enum enum_index="6" enum_const="SetMinSRM" interpretation="Set minimum allowed SRM values"/>
+                                <value_enum enum_index="7" enum_const="SetDefaultSRM" interpretation="Set default SRM command"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Velocity_X" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Velocity_Y" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Velocity_Z" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="RollRate" optional="true" field_type="unsigned integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PitchRate" optional="true" field_type="unsigned integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="YawRate" optional="true" field_type="unsigned integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetAccelerationLimit" message_id="0416" is_command="true">
+                <description xml:space="preserve">This message is used to command the linear and rotational acceleration limits of the platform.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="AccelerationLimitRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="CommandType" optional="false" interpretation="Where acceleration/deceleration limits are applicable in both directions, e.g. linear X is forward and backward, and angular Z is left and right." field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="1" enum_const="MaxAccel" interpretation="Set maximum allowed acceleration"/>
+                                <value_enum enum_index="2" enum_const="MaxDecel" interpretation="Set maximum allowed deceleration (expected to be the most negative value"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_X" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_Y" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_Z" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="RollAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PitchAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="YawAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryVelocityCommand" message_id="2415" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4415h: ReportVelocityCommand (Deprecated)  message.  Field #2 specifies the type of velocity fields to be returned in the Report Velocity Command message. A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder.  The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryVelocityCommandRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Velocity State Message" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="CommandType" optional="false" interpretation="See Report Velocity State Message" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryVelocityCommandExt" message_id="24B5" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 44B5h: ReportVelocityCommandExt message.  Field #2 specifies the type of velocity fields to be returned in the ReportVelocityCommandExt message. A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder. The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryVelocityCommandExtRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Velocity State Ext Message" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="CommandType" optional="false" interpretation="See Report Velocity State Ext Message" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryAccelerationLimit" message_id="2416" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4416h: ReportAccelerationLimit message.  Field #2 specifies the type of acceleration fields to be returned in the Report Acceleration Limit message. A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder.  The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryAccelerationLimitRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Acceleration Limit Message" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="CommandType" optional="false" interpretation="See Report Acceleration Limit Message" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportVelocityCommand" message_id="4415" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message is used to provide the receiver the commanded linear velocity and rotational rate of the platform. The message data and mapping of the presence vector of this message are identical to ID 0415h: SetVelocityCommand.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="VelocityCommandRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="CommandType" optional="false" interpretation="Where minimum and maximum are the bottom and top ends of the allowable range. Any commanded velocity outside this range will be ignored. For a system that expects to move in both directions along or around an axis, e.g. forward and backward for linear X, then the minimum is expected to be negative." field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="SetCurrentCommand" interpretation="Set current command"/>
+                                <value_enum enum_index="1" enum_const="SetMaxAllowed" interpretation="Set maximum allowed values"/>
+                                <value_enum enum_index="2" enum_const="SetMinAllowed" interpretation="Set minimum allowed values"/>
+                                <value_enum enum_index="3" enum_const="SetDefaultCommand" interpretation="Set default command"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Velocity_X" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Velocity_Y" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Velocity_Z" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="RollRate" optional="true" field_type="unsigned short integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PitchRate" optional="true" field_type="unsigned short integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="YawRate" optional="true" field_type="unsigned short integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportVelocityCommandExt" message_id="44B5" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the commanded linear velocity and rotational rate of the platform. The message data and mapping of the presence vector of this message are identical to a ID 04B5h: SetVelocityCommandExt.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="VelocityCommandExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="CommandType" optional="false" interpretation="Where minimum and maximum are the bottom and top ends of the allowable range. Any commanded velocity outside this range will be ignored. For a system that expects to move in both directions along or around an axis, e.g. forward and backward for linear X, then the minimum is expected to be negative." field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="SetCmdSOG" interpretation="Set current command SOG"/>
+                                <value_enum enum_index="1" enum_const="SetMaxSOG" interpretation="Set maximum allowed SOG values"/>
+                                <value_enum enum_index="2" enum_const="SetMinSOG" interpretation="Set minimum allowed SOG values"/>
+                                <value_enum enum_index="3" enum_const="SetDefaultSOG" interpretation="Set default SOG command"/>
+                                <value_enum enum_index="4" enum_const="SetCmdSRM" interpretation="Set current command SRM"/>
+                                <value_enum enum_index="5" enum_const="SetMaxSRM" interpretation="Set maximum allowed SRM values"/>
+                                <value_enum enum_index="6" enum_const="SetMinSRM" interpretation="Set minimum allowed SRM values"/>
+                                <value_enum enum_index="7" enum_const="SetDefaultSRM" interpretation="Set default SRM command"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Velocity_X" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Velocity_Y" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Velocity_Z" optional="true" field_type="unsigned integer" field_units="meter per second">
+                            <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="RollRate" optional="true" field_type="unsigned integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PitchRate" optional="true" field_type="unsigned integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="YawRate" optional="true" field_type="unsigned integer" field_units="radian per second">
+                            <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportAccelerationLimit" message_id="4416" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the commanded linear and rotational acceleration limits of the platform. The message data and mapping of the presence vector of this message are identical to ID 0416h: SetAccelerationCommand.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="AccelerationLimitRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="CommandType" optional="false" interpretation="Where acceleration/deceleration limits are applicable in both directions, e.g. linear X is forward and backward, and angular Z is left and right." field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="1" enum_const="MaxAccel" interpretation="Set maximum allowed acceleration"/>
+                                <value_enum enum_index="2" enum_const="MaxDecel" interpretation="Set maximum allowed deceleration (expected to be the most negative value"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_X" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_Y" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_Z" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="RollAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PitchAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="YawAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryVelocityCommand" value="msg" interpretation="enveloped query                      velocity command message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                     Velocity Command message">
+                                    <argument value=" 'ReportVelocityCommand' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryVelocityCommandExt" value="msg" interpretation="enveloped query                      velocity command ext message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                     Velocity Command Ext message">
+                                    <argument value=" 'ReportVelocityCommandExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryAccelerationLimit" value="msg" interpretation="enveloped query                        acceleration limit message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                       Acceleration Limit message">
+                                    <argument value=" 'ReportAccelerationLimit' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <exit>
+                                    <action name="resetCmdVelocityToDefault" interpretation="When leaving the Ready state,                      reset the commanded velocity to the previously established default values."/>
+                                </exit>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetVelocityCommand" value="msg" interpretation="enveloped set                      velocity command message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData ) &amp;&amp;                      isCurrentVelocityCmd( msg ) &amp;&amp; isCommandValueValid( msg )" interpretation="True if the message that triggered the transition is received from                      the client that is in control of this service AND the message has a CommandType                      of 'Set current command' AND the commanded velocity value is within any previously                     established minimum and maximum value ranges."/>
+                                    <internal/>
+                                    <action name="setCurrentVelocityCommand" interpretation="Update the current commanded velocity vector."/>
+                                </transition>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetVelocityCommandExt" value="msg" interpretation="enveloped set                      velocity command ext message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData ) &amp;&amp;                      isCurrentVelocityCmd( msg ) &amp;&amp; isCommandValueValid( msg )" interpretation="True if the message that triggered the transition is received from                      the client that is in control of this service AND the message has a CommandType                      of 'Set current command' AND the commanded velocity value is within any previously                     established minimum and maximum value ranges."/>
+                                    <internal/>
+                                    <action name="setCurrentVelocityCommandExt" interpretation="Update the current commanded velocity vector."/>
+                                </transition>
+                            </state>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetVelocityCommand" value="msg" interpretation="enveloped set                    velocity command message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData ) &amp;&amp; !isCurrentVelocityCmd( msg )" interpretation="True if the message that triggered the transition is received from                    the client that is in control of this service AND the message does not have a CommandType                    of 'Set current command'."/>
+                                <internal/>
+                                <action name="setVelocityLimit" interpretation="Set the max, min or default velocity as requested."/>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetVelocityCommandExt" value="msg" interpretation="enveloped set                    velocity command ext message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData ) &amp;&amp; !isCurrentVelocityCmd( msg )" interpretation="True if the message that triggered the transition is received from                    the client that is in control of this service AND the message does not have a CommandType                    of 'Set current command'."/>
+                                <internal/>
+                                <action name="setVelocityLimitExt" interpretation="Set the max, min or default velocity as requested."/>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetAccelerationLimit" value="msg" interpretation="enveloped set                    acceleration limit message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered                    the transition is received from the client that is in control of this service."/>
+                                <internal/>
+                                <action name="setAccelerationLimit" interpretation="Set the max or min acceleration as requested."/>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryVelocityCommand" value="msg" interpretation="enveloped query                    velocity command message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                   Velocity Command message">
+                                    <argument value=" 'ReportVelocityCommand' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryVelocityCommandExt" value="msg" interpretation="enveloped query                    velocity command ext message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                   Velocity Command Ext message">
+                                    <argument value=" 'ReportVelocityCommandExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryAccelerationLimit" value="msg" interpretation="enveloped query                    acceleration limit message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                   Acceleration Limit message">
+                                    <argument value=" 'ReportAccelerationLimit' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

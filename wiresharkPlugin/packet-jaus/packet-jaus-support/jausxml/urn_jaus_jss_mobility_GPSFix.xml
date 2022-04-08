@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="GPSFix" id="urn:jaus:jss:mobility:GPSFix" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the GPSFix Service is to provide the current GPS solution status and to provide the ability for requesting the UxV to execute a maneuver to acquire a GPS signal allowing the navigation system to update its solution with a GPS fix.  The specific maneuver to acquire a GPS signal is intentionally not defined and left for system designers to implement as needed. Note that the latitude and longitude reported with the Report GPS Fix message are the latest data from the satellite, whereas the latitude and longitude from ReportGlobalPose will be from the navigation system.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="RequestGPSFix" message_id="0428" is_command="true">
+                <description xml:space="preserve">This message is used to request that a GPS Fix be performed.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryGPSFix" message_id="2428" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4428h: ReportGPSFix message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportGPSFix" message_id="4428" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver with the GPS Signal Status.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="GPSFixSeq" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <record name="GPSFixRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="GPSFixTimeSeconds" optional="false" interpretation="UTC POSIX-style time in seconds since 1 January 1970" field_type="unsigned integer" field_units="second"/>
+                            <fixed_field name="GPSFixTimeNanoSeconds" optional="false" interpretation="Nanoseconds component of POSIX-style time" field_type="unsigned integer" field_units="one"/>
+                            <fixed_field name="GPSLatitude" optional="true" interpretation="As defined by WGS84" field_type="unsigned integer" field_units="degree">
+                                <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="GPSLongitude" optional="true" interpretation="As defined by WGS84" field_type="unsigned integer" field_units="degree">
+                                <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="GPSTrueCourse" optional="true" field_type="unsigned integer" field_units="degree">
+                                <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="GPS_SpeedOverGround" optional="true" field_type="unsigned short integer" field_units="meter per second">
+                                <scale_range real_lower_limit="0" real_upper_limit="327.67" integer_function="round"/>
+                            </fixed_field>
+                        </record>
+                        <variant name="GPSStatusVar" optional="true">
+                            <vtag_field min_count="0" max_count="1" field_type_unsigned="unsigned byte"/>
+                            <record name="MinGPSRec" optional="false">
+                                <fixed_field name="GPSValidity" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Invalid"/>
+                                        <value_enum enum_index="1" enum_const="Valid"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="GPSMagneticVariation" optional="false" field_type="unsigned integer" field_units="degree">
+                                    <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                            <record name="AltGPSRec" optional="false">
+                                <presence_vector field_type_unsigned="unsigned byte"/>
+                                <fixed_field name="GPSStatus" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="OptimalGPSSignal"/>
+                                        <value_enum enum_index="1" enum_const="GoodGPSSignal"/>
+                                        <value_enum enum_index="2" enum_const="MinimalGPSSignal"/>
+                                        <value_enum enum_index="3" enum_const="NoGPSSignal"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="GPSFixCommandStatus" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="StableGPSFix"/>
+                                        <value_enum enum_index="1" enum_const="InitiatingGPSFix"/>
+                                        <value_enum enum_index="2" enum_const="PerformingGPSFix"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="GPSLatLonValid" optional="false" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="FALSE"/>
+                                        <value_enum enum_index="1" enum_const="TRUE"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="GPSVelocityEast" optional="true" interpretation="Easterly component of the velocity from GPS" field_type="unsigned integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="GPSVelocityNorth" optional="true" interpretation="Northerly component of the velocity from GPS" field_type="unsigned integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="GPSVelocityDown" optional="true" interpretation="Downward component of the velocity from GPS" field_type="unsigned integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="GPSAltitude" optional="true" interpretation="Altitude as defined by WGS84" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="NumberOfSatellitesSeen" optional="true" interpretation="Number of accessible (visible) satellites" field_type="unsigned byte" field_units="one"/>
+                                <fixed_field name="NumberOfSatellitesInSolution" optional="true" interpretation="Number of satellites currently used to compute a GPS fix" field_type="unsigned byte" field_units="one"/>
+                            </record>
+                        </variant>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryGPSFix" value="msg" interpretation="enveloped query GPS fix message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportGPSFix" interpretation="Send a Report GPS Fix message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <exit>
+                                    <action name="resetTravelSpeed" interpretation="Safe motion of the platform, as described in Section 3.5"/>
+                                </exit>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="RequestGPSFix" value="msg" interpretation="enveloped request GPS fix message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered the transition is received from the                      client that is in control of this service"/>
+                                    <internal/>
+                                    <action name="requestGPSFix" interpretation="Issue the GPSFix request to the UxV."/>
+                                </transition>
+                            </state>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryGPSFix" value="msg" interpretation="enveloped query GPS fix message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportGPSFix" interpretation="Send a Report GPS Fix message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

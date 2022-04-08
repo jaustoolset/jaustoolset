@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="NavigationState" id="urn:jaus:jss:mobility:NavigationState" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Navigation State service is to provide position, orientation, velocity and acceleration of the platform framed within a single message. The ReportNavigation message provides platform global position, local position, orientation, velocity, and acceleration in formats that are consistent with GlobalPoseSensor, LocalPoseSensor, VelocityStateSensor, and AccelerationStateSensor services.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryNavigation" message_id="2421" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4421: ReportNavigation message. A logical AND shall be performed on the requested presence vectors and that representing the available fields from the responder. The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryNavigationRec" optional="false">
+                        <fixed_field name="GlobalPosePresenceVector" optional="false" interpretation="See Report Global Pose Ext State Message" field_type="unsigned short integer" field_units="one"/>
+                        <fixed_field name="LocalPosePresenceVector" optional="false" interpretation="See Report Local Pose Ext State Message" field_type="unsigned short integer" field_units="one"/>
+                        <fixed_field name="VelocityStatePresenceVector" optional="false" interpretation="See Report Velocity State Ext State Message" field_type="unsigned short integer" field_units="one"/>
+                        <fixed_field name="AccelerationStatePresenceVector" optional="false" interpretation="See Report Acceleration State Ext State Message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportNavigation" message_id="4421" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the global position, local position, attitude, velocity, and acceleration of the platform. Reporting of these values is consistent with GlobalPoseSensor, LocalPoseSensor, VelocityStateSensor, and AccelerationStateSensor services.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="NavigationSeq" optional="false">
+                        <record name="SyncTimeRec" optional="false">
+                            <fixed_field name="TimeSeconds" optional="false" interpretation="UTC POSIX-style time in seconds since 1 January 1970.  If all data is captured simultaneously, this is the capture time.  Otherwise, it is the time when the disparate data is combined." field_type="unsigned integer" field_units="second"/>
+                            <fixed_field name="TimeNanoSeconds" optional="false" interpretation="Nanoseconds component of POSIX-style time.  If all data is captured simultaneously, this is the capture time.  Otherwise, it is the time when the disparate data is combined." field_type="unsigned integer" field_units="one"/>
+                        </record>
+                        <record name="ReportGlobalPoseExtRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned short integer"/>
+                            <fixed_field name="Latitude" optional="true" interpretation="Decimal degrees" field_type="unsigned integer" field_units="degree">
+                                <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Longitude" optional="true" interpretation="Decimal degrees" field_type="unsigned integer" field_units="degree">
+                                <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="AltitudeAGL" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="AltitudeMSL" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="AltitudeASF" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Depth" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="XYPositionRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="ZPositionRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Heading" optional="true" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Attitude_RMS" optional="true" interpretation="An RMS value indicating the validity of the orientation data." field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Course" optional="true" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="TimeSeconds" optional="true" interpretation="UTC POSIX-style time in seconds since 1 January 1970" field_type="unsigned integer" field_units="second"/>
+                            <fixed_field name="TimeNanoSeconds" optional="true" interpretation="Nanoseconds component of POSIX-style time" field_type="unsigned integer" field_units="one"/>
+                        </record>
+                        <record name="ReportLocalPoseExtRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned short integer"/>
+                            <fixed_field name="X" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Y" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="AltitudeAGL" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="AltitudeMSL" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="AltitudeASF" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Depth" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="ZLocal" optional="true" field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="XYPositionRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="ZPositionRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Heading" optional="true" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Attitude_RMS" optional="true" interpretation="An RMS value indicating the validity of the orientation data." field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Course" optional="true" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="TimeSeconds" optional="true" interpretation="UTC POSIX-style time in seconds since 1 January 1970" field_type="unsigned integer" field_units="second"/>
+                            <fixed_field name="TimeNanoSeconds" optional="true" interpretation="Nanoseconds component of POSIX-style time" field_type="unsigned integer" field_units="one"/>
+                        </record>
+                        <sequence name="ReportVelocityStateExtSeq" optional="false">
+                            <variant name="VelocityVar" optional="false">
+                                <vtag_field min_count="0" max_count="2" field_type_unsigned="unsigned byte"/>
+                                <record name="VelocityVehicleXYZRec" optional="false" interpretation="Velocity measured in platform frame">
+                                    <presence_vector field_type_unsigned="unsigned byte"/>
+                                    <fixed_field name="Velocity_X" optional="true" field_type="unsigned integer" field_units="meter per second">
+                                        <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="Velocity_Y" optional="true" field_type="unsigned integer" field_units="meter per second">
+                                        <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="Velocity_Z" optional="true" field_type="unsigned integer" field_units="meter per second">
+                                        <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                    </fixed_field>
+                                </record>
+                                <record name="VelocityLocalXYZRec" optional="false" interpretation="Velocity measured in local coordinate frame">
+                                    <presence_vector field_type_unsigned="unsigned byte"/>
+                                    <fixed_field name="Velocity_X" optional="true" field_type="unsigned integer" field_units="meter per second">
+                                        <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="Velocity_Y" optional="true" field_type="unsigned integer" field_units="meter per second">
+                                        <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="Velocity_Z" optional="true" field_type="unsigned integer" field_units="meter per second">
+                                        <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                    </fixed_field>
+                                </record>
+                                <record name="VelocityNEDRec" optional="false" interpretation="Velocity measured in global (north, east, down) coordinate frame">
+                                    <presence_vector field_type_unsigned="unsigned byte"/>
+                                    <fixed_field name="Velocity_N" optional="true" field_type="unsigned integer" field_units="meter per second">
+                                        <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="Velocity_E" optional="true" field_type="unsigned integer" field_units="meter per second">
+                                        <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="Velocity_D" optional="true" field_type="unsigned integer" field_units="meter per second">
+                                        <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                    </fixed_field>
+                                </record>
+                            </variant>
+                            <record name="ReportVelocityStateExtRec" optional="false">
+                                <presence_vector field_type_unsigned="unsigned short integer"/>
+                                <fixed_field name="Velocity_RMS" optional="true" interpretation="An RMS value indicating the validity of the velocity data." field_type="unsigned integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="RollRate" optional="true" field_type="unsigned integer" field_units="radian per second">
+                                    <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="PitchRate" optional="true" field_type="unsigned integer" field_units="radian per second">
+                                    <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="YawRate" optional="true" field_type="unsigned integer" field_units="radian per second">
+                                    <scale_range real_lower_limit="-32.768" real_upper_limit="32.767" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="Rate_RMS" optional="true" interpretation="An RMS value indicating the validity of the rotational velocity data." field_type="unsigned short integer" field_units="radian per second">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="SpeedOverGround" optional="true" interpretation="Scalar speed measured relative to fixed coordinate system" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="SpeedRelativeToMedium" optional="true" interpretation="Scalar speed measured relative to medium, such as air or water currents" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="RotationsPerMinute" optional="true" field_type="unsigned short integer" field_units="rotations per minute">
+                                    <scale_range real_lower_limit="-1000" real_upper_limit="1000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="IndicatedSpeed" optional="true" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="TimeSeconds" optional="true" interpretation="UTC POSIX-style time in seconds since 1 January 1970" field_type="unsigned integer" field_units="second"/>
+                                <fixed_field name="TimeNanoSeconds" optional="true" interpretation="Nanoseconds component of POSIX-style time" field_type="unsigned integer" field_units="one"/>
+                            </record>
+                        </sequence>
+                        <record name="ReportAccelerationStateExtRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned short integer"/>
+                            <fixed_field name="Acceleration_X" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                                <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Acceleration_Y" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                                <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Acceleration_Z" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                                <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Acceleration_RMS" optional="true" interpretation="An RMS value indicating the validity of the acceleration data." field_type="unsigned integer" field_units="meter per second squared">
+                                <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="RollAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                                <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="PitchAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                                <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="YawAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                                <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="RotationalAcceleration_RMS" optional="true" interpretation="An RMS value indicating the validity of the rotational acceleration data." field_type="unsigned short integer" field_units="radian per second squared">
+                                <scale_range real_lower_limit="0" real_upper_limit="1000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="TimeSeconds" optional="true" interpretation="UTC POSIX-style time in seconds since 1 January 1970" field_type="unsigned integer" field_units="second"/>
+                            <fixed_field name="TimeNanoSeconds" optional="true" interpretation="Nanoseconds component of POSIX-style time" field_type="unsigned integer" field_units="one"/>
+                        </record>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <start state_machine_name="events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready">
+                    <default_state>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryNavigation" value="msg" interpretation="enveloped query navigation message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                            <internal/>
+                            <action name="events.transport.Send" interpretation="Send a Report Navigation message">
+                                <argument value="msg"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                    </default_state>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

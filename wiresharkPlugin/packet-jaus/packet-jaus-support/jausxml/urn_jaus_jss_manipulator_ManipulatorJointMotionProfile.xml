@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="ManipulatorJointMotionProfile" id="urn:jaus:jss:manipulator:ManipulatorJointMotionProfile" version="2.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Joint Motion Profile Service is to allow for configuration of the motion profile for all services co-located on this component.  The Set Motion Profile message is used to set maximum velocity and acceleration rates for each of the joint parameters.  All motions utilize the motion profile data that was most recently sent.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost, or reordered.</assumptions>
+    <references>
+        <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryJointMotionProfile" message_id="2607" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving service to reply to the requestor with a ID 4607h: ReportMotionProfile message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetJointMotionProfile" message_id="0607" is_command="true">
+                <description xml:space="preserve">This message sets maximum speeds, acceleration, and deceleration rates for each joint of the manipulator.  The message must contain a profile for each joint in the manipulator.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="JointMotionProfileList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <variant name="JointType" optional="false">
+                            <vtag_field min_count="0" max_count="1" field_type_unsigned="unsigned byte"/>
+                            <record name="RevoluteJointMotionProfileRec" optional="false">
+                                <fixed_field name="JointMaxSpeed" optional="false" field_type="unsigned integer" field_units="radian per second">
+                                    <scale_range real_lower_limit="0" real_upper_limit="31.41592653589793" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="JointMaxAccelerationRate" optional="false" field_type="unsigned integer" field_units="radian per second squared">
+                                    <scale_range real_lower_limit="0" real_upper_limit="31.41592653589793" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="JointMaxDecelerationRate" optional="false" field_type="unsigned integer" field_units="radian per second squared">
+                                    <scale_range real_lower_limit="0" real_upper_limit="31.41592653589793" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                            <record name="PrismaticJointMotionProfileRec" optional="false">
+                                <fixed_field name="JointMaxSpeed" optional="false" field_type="unsigned integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="0" real_upper_limit="5" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="JointMaxAccelerationRate" optional="false" field_type="unsigned integer" field_units="meter per second squared">
+                                    <scale_range real_lower_limit="0" real_upper_limit="20" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="JointMaxDecelerationRate" optional="false" field_type="unsigned integer" field_units="meter per second squared">
+                                    <scale_range real_lower_limit="0" real_upper_limit="20" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                        </variant>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportJointMotionProfile" message_id="4607" is_command="false">
+                <description xml:space="preserve">This message provides the receiver with the current motion profile.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="JointMotionProfileList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <variant name="JointType" optional="false">
+                            <vtag_field min_count="0" max_count="1" field_type_unsigned="unsigned byte"/>
+                            <record name="RevoluteJointMotionProfileRec" optional="false">
+                                <fixed_field name="JointMaxSpeed" optional="false" field_type="unsigned integer" field_units="radian per second">
+                                    <scale_range real_lower_limit="0" real_upper_limit="31.41592653589793" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="JointMaxAccelerationRate" optional="false" field_type="unsigned integer" field_units="radian per second squared">
+                                    <scale_range real_lower_limit="0" real_upper_limit="31.41592653589793" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="JointMaxDecelerationRate" optional="false" field_type="unsigned integer" field_units="radian per second squared">
+                                    <scale_range real_lower_limit="0" real_upper_limit="31.41592653589793" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                            <record name="PrismaticJointMotionProfileRec" optional="false">
+                                <fixed_field name="JointMaxSpeed" optional="false" field_type="unsigned integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="0" real_upper_limit="5" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="JointMaxAccelerationRate" optional="false" field_type="unsigned integer" field_units="meter per second squared">
+                                    <scale_range real_lower_limit="0" real_upper_limit="20" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="JointMaxDecelerationRate" optional="false" field_type="unsigned integer" field_units="meter per second squared">
+                                    <scale_range real_lower_limit="0" real_upper_limit="20" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                        </variant>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryJointMotionProfile" value="msg" interpretation="enveloped query motion profile message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="motionProfileExists()" interpretation="True if a motion profile has already been received."/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report Motion Profile message">
+                                    <argument value=" 'ReportJointMotionProfile' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryJointMotionProfile" value="msg" interpretation="enveloped query motion profile message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="motionProfileExists()" interpretation="True if a motion profile has already been received."/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report Motion Profile message">
+                                    <argument value=" 'ReportJointMotionProfile' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="SetJointMotionProfile" value="msg" interpretation="enveloped query motion profile message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="accessControl.isControllingClient(transportData)" interpretation="True if the message that triggered the transition is                    received from the client that is in control of this service."/>
+                                <internal/>
+                                <action name="setJointMotionProfile" interpretation="Set the motion profile parameters for the manipulator.">
+                                    <argument value="msg"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="Liveness" id="urn:jaus:jss:core:Liveness" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">This service provides a means to maintain connection liveness between communicating components.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryHeartbeatPulse" message_id="2202" is_command="false">
+                <description xml:space="preserve">This message shall be used to query for a heartbeat pulse.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportHeartbeatPulse" message_id="4202" is_command="false">
+                <description xml:space="preserve">This message notifies the receiver that the sender is alive.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <start state_machine_name="events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready">
+                    <default_state>
+                        <transition name="transport.Receive">
+                            <parameter type="QueryHeartbeatPulse" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <internal/>
+                            <action name="transport.Send" interpretation="Send a Report                 Heartbeat pulse                 to querying client">
+                                <argument value=" 'ReportHeartbeatPulse' "/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                    </default_state>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

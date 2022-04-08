@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="PrimitiveDriver" id="urn:jaus:jss:mobility:PrimitiveDriver" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The Primitive Driver allows for basic platform mobility.  This service does not imply any particular platform type such as tracked or wheeled, but describes mobility in six degrees of freedom using a percent of available effort in each direction.  Additionally, no power plant (gasoline, diesel, or battery) is implied and the service functions strictly in an open loop manner, i.e., a velocity is not commanded or held since that requires a speed sensor.  The service definition makes no assertion about the preventative actions that must be taken to avoid unintended consequences, such as rolling on an incline when given a zero propulsive and zero resistive effort. Note that the specific actuator commands are not defined by JAUS. This service uses “effort” as a relative measure of the amount of drive power.  This measure is intentionally kept agnostic of the underlying control system for portability across hardware types. As a result, the implementation of an “effort” driver may map the request to a percent of maximum current of an electric motor, fluid pressure of a hydraulic system, duty-cycle of a pulse-width modulated controller, or position of a control lever.  These examples are meant to be illustrative; the actual mapping is not restricted by JAUS, so long as it can be expressed as a percent of some maximum.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetWrenchEffort" message_id="0405" is_command="true">
+                <description xml:space="preserve">This message is used to provide open-loop mobility control in the coordinate frame defined in Section 3.1. The command consists of a six element propulsive wrench and a six element resistive wrench.  The six elements of each wrench break down into three linear elements and three rotational elements, which are mapped to the three axis orthogonal coordinate frame of the vehicle.  All elements of the Wrench message are not necessarily applicable to a particular platform.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="WrenchEffortRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="PropulsiveLinearEffortX" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PropulsiveLinearEffortY" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PropulsiveLinearEffortZ" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PropulsiveRotationalEffortX" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PropulsiveRotationalEffortY" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PropulsiveRotationalEffortZ" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveLinearEffortX" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveLinearEffortY" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveLinearEffortZ" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveRotationalEffortX" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveRotationalEffortY" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveRotationalEffortZ" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryWrenchEffort" message_id="2405" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4405h: ReportWrenchEffort message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder. The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryWrenchEffortRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Wrench Effort Message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportWrenchEffort" message_id="4405" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the current values of the commanded wrench effort. The message data and mapping of the presence vector for this message are identical to ID 0405 h: SetWrenchEffort.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="WrenchEffortRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="PropulsiveLinearEffortX" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PropulsiveLinearEffortY" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PropulsiveLinearEffortZ" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PropulsiveRotationalEffortX" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PropulsiveRotationalEffortY" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PropulsiveRotationalEffortZ" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned short integer" field_units="percent">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveLinearEffortX" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveLinearEffortY" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveLinearEffortZ" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveRotationalEffortX" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveRotationalEffortY" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ResistiveRotationalEffortZ" optional="true" interpretation="Measured as a percent of maximum" field_type="unsigned byte" field_units="percent">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryWrenchEffort" value="msg" interpretation="enveloped query wrench effort                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                     Wrench Effort message">
+                                    <argument value=" 'ReportWrenchEffort' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <exit>
+                                    <action name="resetTravelSpeed" interpretation="Safe motion of the platform, as described in Section 3.5"/>
+                                </exit>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetWrenchEffort" value="msg" interpretation="enveloped set wrench                     effort message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered the                      transition is received from the client that is in control of this service."/>
+                                    <internal/>
+                                    <action name="setWrenchEffort" interpretation="Set the wrench effort for the platform.">
+                                        <argument value="msg"/>
+                                    </action>
+                                </transition>
+                            </state>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryWrenchEffort" value="msg" interpretation="enveloped query wrench effort                   message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                   Wrench Effort message">
+                                    <argument value=" 'ReportWrenchEffort' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

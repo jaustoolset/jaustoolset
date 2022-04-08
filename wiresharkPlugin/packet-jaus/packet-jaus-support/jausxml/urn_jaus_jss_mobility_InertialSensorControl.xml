@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="InertialSensorControl" id="urn:jaus:jss:mobility:InertialSensorControl" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of this service is to control and report the operational state of the platform's inertial sensor unit such as an INU or IMU if one exists.  Please note that this service does not report the data provided by the inertial sensor unit. Such function is provided by other services, e.g., Global Pose Sensor and Local Pose Sensor.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="InertialSensorControl" message_id="0429" is_command="true">
+                <description xml:space="preserve">This message is used to set the active state of the inertial sensor.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="InertialSensorControlRec" optional="false">
+                        <fixed_field name="Command" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="OFF"/>
+                                <value_enum enum_index="1" enum_const="ON"/>
+                                <value_enum enum_index="2" enum_const="RESTART"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryInertialSensorStatus" message_id="2429" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4429h: ReportInertialSensorStatus.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportInertialSensorStatus" message_id="4429" is_command="false">
+                <description xml:space="preserve">This message is used to report the current operational status of the inertial sensor.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="InertialSensorStatusRec" optional="false">
+                        <fixed_field name="PowerState" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="OFF"/>
+                                <value_enum enum_index="1" enum_const="ON"/>
+                                <value_enum enum_index="2" enum_const="RESTARTING"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="OperatingState" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="INIT"/>
+                                <value_enum enum_index="1" enum_const="OPERATIONAL"/>
+                                <value_enum enum_index="2" enum_const="COARSE_STATIONARY_ALIGNMENT"/>
+                                <value_enum enum_index="3" enum_const="COARSE_GPS_ALIGNMENT"/>
+                                <value_enum enum_index="4" enum_const="FINE_STATIONARY_ALIGNMENT_STARTED"/>
+                                <value_enum enum_index="5" enum_const="FINE_STATIONARY_ALIGNMENT_COMPLETE"/>
+                                <value_enum enum_index="6" enum_const="FINE_GPS_ALIGNMENT_STARTED"/>
+                                <value_enum enum_index="7" enum_const="FINE_GPS_ALIGNMENT_COMPLETE"/>
+                                <value_enum enum_index="8" enum_const="INERTIAL_SENSOR_FAILURE"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryInertialSensorStatus" value="msg" interpretation="enveloped query message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportInertialSensorStatus" interpretation="Send a ReportInertialSensorStatus                      message to the component that sent the query">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryInertialSensorStatus" value="msg" interpretation="enveloped query message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportInertialSensorStatus" interpretation="Send a ReportInertialSensorStatus                      message to the component that sent the query">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="InertialSensorControl" value="msg" interpretation="enveloped message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered                      the transition is received from the client that is in control of this service."/>
+                                <internal/>
+                                <action name="setInertialSensorState" interpretation="Set the inertial sensor power state as commanded                      in the InertialSensorControl message"/>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

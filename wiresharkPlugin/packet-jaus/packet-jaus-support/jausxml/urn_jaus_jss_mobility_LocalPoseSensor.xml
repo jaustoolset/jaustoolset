@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="LocalPoseSensor" id="urn:jaus:jss:mobility:LocalPoseSensor" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Local Pose Sensor is to report the local position and orientation of the platform.  The Report Local Pose message provides the position and orientation of the platform relative to a local reference frame.  A new origin of the local reference frame may be commanded using the Set Local Pose message, which sets the current position and orientation of the platform to the specified values.  Platform orientation is defined in Section 3 of this document.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetLocalPose" message_id="0403" is_command="true" deprecated="true">
+                <description xml:space="preserve">This message is used to set the local pose values.  This message specifies the platform's position and orientation with respect to the local cordinate frame as defined in Section 3.1.  This allows a client to redefine the origin of the local coordinate frame.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="LocalPoseRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="X" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Y" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Z" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Position_RMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Yaw" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Attitude_RMS" optional="true" interpretation="An RMS value indicating the validity of the orientation data." field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <bit_field name="TimeStamp" optional="true" field_type_unsigned="unsigned integer">
+                            <sub_field name="Milliseconds">
+                                <bit_range from_index="0" to_index="9"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="999" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Seconds">
+                                <bit_range from_index="10" to_index="15"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Minutes">
+                                <bit_range from_index="16" to_index="21"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Hour">
+                                <bit_range from_index="22" to_index="26"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="23" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Day">
+                                <bit_range from_index="27" to_index="31"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetLocalPoseExt" message_id="04A3" is_command="true">
+                <description xml:space="preserve">This message is used to set the local pose values.  This message specifies the platform's position and orientation with respect to the local coordinate frame as defined in Section 3.1.  This allows a client to redefine the origin of the local coordinate frame. It uses a variable field allowing platforms to select various methods for specifying altitude or depth. Note that in some applications, particularly air and undersea, position may be a mix of local coordinates for XY position and absolute coordinates for Z/altitude/depth.  This only applies if the Z axis for the vehicle coordinate frame is aligned with a vertical axis, e.g. a vector orthogonal to the ground plane.  In all other cases, implementations must use Zlocal reporting only. For example, a UUV launched from a USV may need to navigate using local X/Y coordinates based on its launch point (using dead reckoning from its IMU) but rely on direct readings that do not suffer from drift for its Depth and/or Altitude ASF. All times are in Coordinated Universal Time (UTC).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="LocalPoseExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="X" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Y" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                        </fixed_field>
+                        <variable_field name="ZPosition" optional="true">
+                            <type_and_units_field>
+                                <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                        <fixed_field name="XYPositionRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ZPositionRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Heading" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Attitude_RMS" optional="true" interpretation="An RMS value indicating the validity of the orientation data." field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="TimeSeconds" optional="true" interpretation="UTC POSIX-style time in seconds since 1 January 1970" field_type="unsigned integer" field_units="second"/>
+                        <fixed_field name="TimeNanoSeconds" optional="true" interpretation="Nanoseconds component of POSIX-style time" field_type="unsigned integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryLocalPose" message_id="2403" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4403h: ReportLocalPose (Deprecated) message. A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder.  The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryLocalPoseRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Local Pose Message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryLocalPoseExt" message_id="24A3" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 44A3h: ReportLocalPoseExt message. A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder.  The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryLocalPoseExtRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Local Pose Ext Message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportLocalPose" message_id="4403" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message is used to provide the receiver the position and attitude of the platform relative to a local reference frame.  All times are in Coordinated Universal Time (UTC).  The message data and mapping of the presence vector for this message are identical to ID 0403h: SetLocalPose (Deprecated).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="LocalPoseRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="X" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Y" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Z" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Position_RMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Yaw" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Attitude_RMS" optional="true" interpretation="An RMS value indicating the validity of the orientation data." field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <bit_field name="TimeStamp" optional="true" field_type_unsigned="unsigned integer">
+                            <sub_field name="Milliseconds">
+                                <bit_range from_index="0" to_index="9"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="999" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Seconds">
+                                <bit_range from_index="10" to_index="15"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Minutes">
+                                <bit_range from_index="16" to_index="21"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Hour">
+                                <bit_range from_index="22" to_index="26"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="23" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Day">
+                                <bit_range from_index="27" to_index="31"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportLocalPoseExt" message_id="44A3" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the position and attitude of the platform relative to a local reference frame.  All times are in Coordinated Universal Time (UTC). Note that in some applications, particularly air and undersea, position may be a mix of local coordinates for XY position and absolute coordinates for Z/altitude/depth.  This only applies if the Z axis for the vehicle coordinate frame is aligned with a vertical axis, e.g. a vector orthogonal to the ground plane.  In all other cases, implementations must use Zlocal reporting only. For example, a UUV launched from a USV may need to navigate using local X/Y coordinates based on its launch point (using dead reckoning from its IMU) but rely on direct readings that do not suffer from drift for its Depth and/or Altitude ASF. Note the set command uses a variable field to set only one Zposition, whereas the report enables one or more of the possible Zposition values to be returned. Submerged vehicle often need to know depth as well as altitude above the sea floor.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportLocalPoseExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="X" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Y" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="AltitudeAGL" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="AltitudeMSL" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="AltitudeASF" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Depth" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ZLocal" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="XYPositionRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ZPositionRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Heading" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Attitude_RMS" optional="true" interpretation="An RMS value indicating the validity of the orientation data." field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Course" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="TimeSeconds" optional="true" interpretation="UTC POSIX-style time in seconds since 1 January 1970" field_type="unsigned integer" field_units="second"/>
+                        <fixed_field name="TimeNanoSeconds" optional="true" interpretation="Nanoseconds component of POSIX-style time" field_type="unsigned integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalPose" value="msg" interpretation="enveloped query local pose                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Local Pose message with the current local position">
+                                    <argument value=" 'ReportLocalPose' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalPoseExt" value="msg" interpretation="enveloped query local pose ext                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Local Pose Ext message with the current local position">
+                                    <argument value=" 'ReportLocalPoseExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalPose" value="msg" interpretation="enveloped query local pose                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Local Pose message with the current local position">
+                                    <argument value=" 'ReportLocalPose' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalPoseExt" value="msg" interpretation="enveloped query local pose ext                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Local Pose Ext message with the current local position">
+                                    <argument value=" 'ReportLocalPoseExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="SetLocalPose" value="msg" interpretation="enveloped set local pose                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered                      the transition is received from the client that is in control of this service."/>
+                                <internal/>
+                                <action name="updateLocalPose" interpretation="Update the local pose for the component."/>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="SetLocalPoseExt" value="msg" interpretation="enveloped set local pose ext                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered                      the transition is received from the client that is in control of this service."/>
+                                <internal/>
+                                <action name="updateLocalPoseExt" interpretation="Update the local pose for the component."/>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>
