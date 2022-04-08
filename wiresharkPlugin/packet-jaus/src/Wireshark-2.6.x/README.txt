@@ -1,6 +1,6 @@
 README.txt
 
-This has been built and tested (a little) on Ubuntu 20.04 with Wireshark 3.2.3. Please submit any issues to https://github.com/jaustoolset/jaustoolset/issues.
+This has been built and tested (a little) on Ubuntu 18.04 with Wireshark 2.6.10. Please submit any issues to https://github.com/jaustoolset/jaustoolset/issues.
 
 Beyond Wireshark, dependencies also include libxml2-dev.
 
@@ -10,7 +10,7 @@ To build:
 2) Change to it: cd build
 3) Run CMake: cmake ..
 4) Compile: make
-5) Manually copy jaus.so to <wireshark lib dir>/plugins/3.2/epan
+5) Manually copy jaus.so to <wireshark lib dir>/plugins/2.6/epan
 
 For me <wireshark lib dir> = /usr/lib/x86_64-linux-gnu
 
