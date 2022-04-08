@@ -13,7 +13,8 @@ include_directories (${GLIB2_INCLUDE_DIRS} ${Wireshark_INCLUDE_DIR} ${LIBXML2_IN
 
 set(LINK_MODE_LIB SHARED)
 set(LINK_MODE_MODULE MODULE)
-add_definitions(-DPLUGIN_VERSION="2.6")
+set(PLUGIN_VERSION "1.0.0")
+add_definitions(-DPLUGIN_VERSION=\"${PLUGIN_VERSION}\")
 
 set(DISSECTOR_SRC
 	packet-jaus.c
