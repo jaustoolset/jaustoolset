@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="ManipulatorListDriver" id="urn:jaus:jss:manipulator:ManipulatorListDriver" version="2.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Manipulator List Driver is to add support for executing a list of waypoints. It is expected that child services will inherit this service to provide functionality by overriding the isListValid() guard in the protocol.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost, or reordered.</assumptions>
+    <references>
+        <inherits_from name="listManager" id="urn:jaus:jss:core:ListManager" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="ExecuteList" message_id="061E" is_command="false">
+                <description xml:space="preserve">This message is used to begin execution of a sequential list of motion commands.  Optionally, the starting element UID can also be specified, where an unspecified value or a value of zero (0) indicates the first (head) element in the list.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ExecuteListRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="ElementUID" optional="true" interpretation="Element UID of the starting element.  A value of zero (0) indicates the first (head) element of the list." field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryActiveElement" message_id="261E" is_command="false">
+                <description xml:space="preserve">This message is used to query the current active element of an executing list.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportActiveElement" message_id="461E" is_command="false">
+                <description xml:space="preserve">This message is used to report the identifier of the current list element being executed.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ActiveElementRec" optional="false">
+                        <fixed_field name="ElementUID" optional="false" interpretation="UID of the active list element.  A value of 0 implies that no lists are executing." field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="listManager.management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="listManager.management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="listManager.management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="listManager.management.accessControl.events.transport.Receive">
+                                <parameter type="QueryActiveElement" value="msg" interpretation="enveloped query Active element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="listManager.management.accessControl.events.transport.Send" interpretation="Send a Report Active Element message">
+                                    <argument value=" 'ReportActiveElement' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <exit>
+                                    <action name="stopMotion" interpretation="Stop motion of the manipulator."/>
+                                </exit>
+                                <transition name="listManager.management.accessControl.events.transport.Receive">
+                                    <parameter type="ExecuteList" value="msg" interpretation="enveloped execute list message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData ) &amp;&amp;                      listManager.elementExists( msg ) &amp;&amp; isListValid()" interpretation="This condition is always FALSE.  It must be                      overridden by derived services to allow the list to be executed."/>
+                                    <internal/>
+                                </transition>
+                            </state>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="listManager.management.accessControl.events.transport.Receive">
+                                <parameter type="QueryActiveElement" value="msg" interpretation="enveloped query Active element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="listManager.management.accessControl.events.transport.Send" interpretation="Send a Report Active Element message">
+                                    <argument value=" 'ReportActiveElement' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="listManager.management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

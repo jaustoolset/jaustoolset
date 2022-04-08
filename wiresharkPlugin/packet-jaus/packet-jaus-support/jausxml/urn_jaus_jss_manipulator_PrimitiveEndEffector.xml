@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="PrimitiveEndEffector" id="urn:jaus:jss:manipulator:PrimitiveEndEffector" version="2.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">This service is the low level interface to an end effector.  The End Effector is a one degree of freedom manipulator, usually mounted on the end of an n-degree of freedom manipulator.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost, or reordered.</assumptions>
+    <references>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryEndEffectorSpecification" message_id="2632" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving service to reply to the requestor with a ID 4632h: ReportEndEffectorSpecification message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryEndEffectorEffort" message_id="2633" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving service to reply to the requestor with a ID 4633h: ReportEndEffectorEffort message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetEndEffectorEffort" message_id="0633" is_command="true">
+                <description xml:space="preserve">This message is used to control a single degree of freedom end effector in an open loop fashion. The command states the percentage level of effort that the end effector should exercise.  The mapping of effort to end effector behavior (open/close gripper, turn a screw driver, activate a welder) is implementation specific.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="EndEffectorEffortRec" optional="false">
+                        <fixed_field name="EndEffectorEffort" optional="false" field_type="unsigned short integer" field_units="one">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportEndEffectorSpecification" message_id="4632" is_command="false">
+                <description xml:space="preserve">This message provides the specifications of a one degree of freedom end effector.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportEndEffectorSpecificationRec" optional="false">
+                        <fixed_field name="ParentId" optional="false" interpretation="4 byte JAUS identifier of the manipulator on which this end effector is mounted" field_type="unsigned integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportEndEffectorEffort" message_id="4633" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the percent effort that is currently being applied to the end effector.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="EndEffectorEffortRec" optional="false">
+                        <fixed_field name="EndEffectorEffort" optional="false" field_type="unsigned short integer" field_units="one">
+                            <scale_range real_lower_limit="-100" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryEndEffectorSpecification" value="msg" interpretation="enveloped query End Effector specification message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a report End Effector spec message">
+                                    <argument value=" 'ReportEndEffectorSpecification' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryEndEffectorEffort" value="msg" interpretation="enveloped query End Effector effort message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a report End Effector effort message">
+                                    <argument value=" 'ReportEndEffectorEffort' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="SetEndEffectorEffort" value="msg" interpretation="enveloped set End Effector effort message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="management.accessControl.isControllingClient(transportData)" interpretation="True if the message that triggered the transition is                      received from the client that is in control of this service"/>
+                                    <internal/>
+                                    <action name="setEndEffectorEffort" interpretation="Set the effort for the end effector">
+                                        <argument value="msg"/>
+                                    </action>
+                                </transition>
+                            </state>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryEndEffectorSpecification" value="msg" interpretation="enveloped query End Effector specification message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a report End Effector spec message">
+                                    <argument value=" 'ReportEndEffectorSpecification' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryEndEffectorEffort" value="msg" interpretation="enveloped query End Effector effort message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a report End Effector effort message">
+                                    <argument value=" 'ReportEndEffectorEffort' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

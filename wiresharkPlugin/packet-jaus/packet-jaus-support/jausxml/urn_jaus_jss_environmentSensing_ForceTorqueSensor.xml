@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="ForceTorqueSensor" id="urn:jaus:jss:environmentSensing:ForceTorqueSensor" version="2.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The Force Torque Sensor Service provides a means to get force or torque information from one or more devices.  While the nominal use case is a bump sensor or collision detector, the service is suitable for other applications. The data can be reported in either the sensor coordinate system or the vehicle coordinate system (if supported).</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost, or reordered.</assumptions>
+    <references>
+        <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryForceTorqueCapabilities" message_id="280B" is_command="false">
+                <description xml:space="preserve">This message is used to query the capabilities for one or more force/torque devices.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="QueryForceTorqueCapabilitiesList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="QueryForceTorqueCapabilitiesRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" interpretation="The ID of the sensor.  A value of zero (0) means all sensors" field_type="unsigned short integer" field_units="one"/>
+                            <fixed_field name="QueryPresenceVector" optional="false" interpretation="See ReportForceTorqueCapabilites" field_type="unsigned short integer" field_units="one"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryForceTorque" message_id="280C" is_command="false">
+                <description xml:space="preserve">This message is used to query the force/torque for one or more devices. Note that the requested coordinate system may not be respected if the underlying service does not support transformations, as given in the ReportForceTorqueCapabilities message.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="QueryForceTorqueList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="QueryForceTorqueRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" interpretation="The ID of the sensor.  A value of zero (0) means all sensors" field_type="unsigned short integer" field_units="one"/>
+                            <fixed_field name="CoordinateSystem" optional="false" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="NativeCoordinateSystems"/>
+                                    <value_enum enum_index="1" enum_const="VehicleCoordinateSystems"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="QueryPresenceVector" optional="false" interpretation="See ReportForceTorqueRec" field_type="unsigned byte" field_units="one"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportForceTorqueCapabilities" message_id="480B" is_command="false">
+                <description xml:space="preserve">This message is used to report the capabilities of one or more force/torque sensing devices.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="ReportForceTorqueCapabilitiesList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="ReportForceTorqueCapabilitiesRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned short integer"/>
+                            <fixed_field name="SensorID" optional="false" interpretation="The ID of the sensor.  A value of zero (0) means all sensors" field_type="unsigned short integer" field_units="one"/>
+                            <variable_length_string name="SensorName" optional="false">
+                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            </variable_length_string>
+                            <fixed_field name="CoordinateTransformSupported" optional="true" interpretation="True or false depending on if the service supports transforming data into the vehicle coordinate system." field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="False"/>
+                                    <value_enum enum_index="1" enum_const="True"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="MinForceX" optional="true" interpretation="Most negative force measurable in the X-direction." field_type="unsigned short integer" field_units="newton">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaxForceX" optional="true" interpretation="Most positive force measurable in the X-direction." field_type="unsigned short integer" field_units="newton">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MinForceY" optional="true" interpretation="Most negative force measurable in the Y-direction." field_type="unsigned short integer" field_units="newton">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaxForceY" optional="true" interpretation="Most positive force measurable in the Y-direction." field_type="unsigned short integer" field_units="newton">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MinForceZ" optional="true" interpretation="Most negative force measurable in the Z-direction." field_type="unsigned short integer" field_units="newton">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaxForceZ" optional="true" interpretation="Most positive force measurable in the Z-direction." field_type="unsigned short integer" field_units="newton">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MinTorqueX" optional="true" interpretation="Most negative torque  measurable around the X-axis." field_type="unsigned short integer" field_units="newton meter">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaxTorqueX" optional="true" interpretation="Most positive torque  measurable around the X-axis." field_type="unsigned short integer" field_units="newton meter">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MinTorqueY" optional="true" interpretation="Most negative torque  measurable around the Y-axis." field_type="unsigned short integer" field_units="newton meter">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaxTorqueY" optional="true" interpretation="Most positive torque  measurable around the Y-axis." field_type="unsigned short integer" field_units="newton meter">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MinTorqueZ" optional="true" interpretation="Most negative torque  measurable around the Z-axis." field_type="unsigned short integer" field_units="newton meter">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaxTorqueZ" optional="true" interpretation="Most positive torque  measurable around the Z-axis." field_type="unsigned short integer" field_units="newton meter">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportForceTorque" message_id="480C" is_command="false">
+                <description xml:space="preserve">This message is used to report the measured force/torque for one or more sensing devices.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="ReportForceTorqueList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="ReportForceTorqueRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="SensorID" optional="false" interpretation="The ID of the sensor.  A value of zero (0) is not allowed" field_type="unsigned short integer" field_units="one"/>
+                            <fixed_field name="CoordinateSystem" optional="false" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="NativeCoordinateSystems"/>
+                                    <value_enum enum_index="1" enum_const="VehicleCoordinateSystems"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="ForceX" optional="true" interpretation="Current force measured in the X-direction" field_type="unsigned short integer" field_units="newton">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="ForceY" optional="true" interpretation="Current force measured in the Y-direction" field_type="unsigned short integer" field_units="newton">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="ForceZ" optional="true" interpretation="Current force measured in the Z-direction" field_type="unsigned short integer" field_units="newton">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="TorqueX" optional="true" interpretation="Current torque measured around the X-axis" field_type="unsigned short integer" field_units="newton meter">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="TorqueY" optional="true" interpretation="Current torque measured around the Y-axis" field_type="unsigned short integer" field_units="newton meter">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="TorqueZ" optional="true" interpretation="Current torque measured around the Z-axis" field_type="unsigned short integer" field_units="newton meter">
+                                <scale_range real_lower_limit="-5000" real_upper_limit="5000" integer_function="round"/>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <start state_machine_name="events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready">
+                    <default_state>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryForceTorque" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <internal/>
+                            <action name="sendReportForceTorque" interpretation="Send a ReportForceTorque message">
+                                <argument value="msg"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryForceTorqueCapabilities" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <internal/>
+                            <action name="sendReportForceTorqueCapabilities" interpretation="Send a ReportForceTorqueCapabilities message">
+                                <argument value="msg"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                    </default_state>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

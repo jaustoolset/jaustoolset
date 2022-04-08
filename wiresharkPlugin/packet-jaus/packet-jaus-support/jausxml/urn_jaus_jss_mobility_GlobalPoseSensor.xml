@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="GlobalPoseSensor" id="urn:jaus:jss:mobility:GlobalPoseSensor" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Global Pose Sensor is to report the global position and orientation of the platform. The Report Global Pose message provides the position and orientation of the platform.  The Set Global Pose message provides the ability for clients to initialize/update the current vehicle position for systems that only have a dead reckoning capability. The position of the platform is given in latitude, longitude, and potentially altitude and/or depth.  Platform orientation is as defined in Section 3 of this document.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetGlobalPose" message_id="0402" is_command="true" deprecated="true">
+                <description xml:space="preserve">This message is used to set the global pose values.  The position of the platform is given in latitude, longitude, and altitude.  All times are in Coordinated Universal Time (UTC).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="GlobalPoseRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="Latitude" optional="true" interpretation="Decimal degrees" field_type="unsigned integer" field_units="degree">
+                            <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Longitude" optional="true" interpretation="Decimal degrees" field_type="unsigned integer" field_units="degree">
+                            <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Altitude" optional="true" interpretation="Altitude with respect to WGS-84 reference ellipsoid" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Position_RMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Yaw" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Attitude_RMS" optional="true" interpretation="An RMS value indicating the validity of the orientation data." field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <bit_field name="TimeStamp" optional="true" field_type_unsigned="unsigned integer">
+                            <sub_field name="Milliseconds">
+                                <bit_range from_index="0" to_index="9"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="999" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Seconds">
+                                <bit_range from_index="10" to_index="15"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Minutes">
+                                <bit_range from_index="16" to_index="21"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Hour">
+                                <bit_range from_index="22" to_index="26"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="23" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Day">
+                                <bit_range from_index="27" to_index="31"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetGlobalPoseExt" message_id="04A2" is_command="true">
+                <description xml:space="preserve">This message is used to set the global pose values.  The position of the platform is given in latitude, longitude, and Z position.  An optional variable field is added for air and submersible platforms to select altitude or depth. All times are in Coordinated Universal Time (UTC).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="GlobalPoseExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="Latitude" optional="true" interpretation="Decimal degrees" field_type="unsigned integer" field_units="degree">
+                            <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Longitude" optional="true" interpretation="Decimal degrees" field_type="unsigned integer" field_units="degree">
+                            <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+                        </fixed_field>
+                        <variable_field name="ZPosition" optional="true">
+                            <type_and_units_field>
+                                <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                        <fixed_field name="HorizontalRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="VerticalRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Heading" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Attitude_RMS" optional="true" interpretation="An RMS value indicating the validity of the orientation data." field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="TimeSeconds" optional="true" interpretation="UTC POSIX-style time in seconds since 1 January 1970" field_type="unsigned integer" field_units="second"/>
+                        <fixed_field name="TimeNanoSeconds" optional="true" interpretation="Nanoseconds component of POSIX-style time" field_type="unsigned integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetGeomagneticProperty" message_id="0412" is_command="true">
+                <description xml:space="preserve">This message is used to set the location specific magnetic variation for converting between true and magnetic heading.  The formula for conversion is: magnetic heading + variation = true heading where e ast is positive and west is negative.  According to [ngdc]: "Variation is the angle of difference between true North and magnetic North. For instance, if the declination at a certain point were 10° W, then a compass at that location pointing north (magnetic) would actually align 10° W of true North. True North would be 10° E relative to the magnetic North direction given by the compass. Variation varies with location and slowly changes in time."</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="GeomagneticPropertyRec" optional="false">
+                        <fixed_field name="MagneticVariation" optional="false" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryGlobalPose" message_id="2402" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4402h: ReportGlobalPose (Deprecated) message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder.  The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryGlobalPoseRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Global Pose Message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryGlobalPoseExt" message_id="24A2" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 44A2h: ReportGlobalPoseExt message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder.  The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryGlobalPoseExtRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Global Pose Ext Message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryGeomagneticProperty" message_id="2412" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4412h: ReportGeomagneticProperty message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportGlobalPose" message_id="4402" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message is used to provide the receiver the position and attitude of the platform.  The position of the platform is given in latitude, longitude, and altitude.  All times are in Coordinated Universal Time (UTC).  The message data and mapping of the presence vector for this message are identical to ID 0402h: SetGlobalPose (Deprecated).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="GlobalPoseRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="Latitude" optional="true" interpretation="Decimal degrees" field_type="unsigned integer" field_units="degree">
+                            <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Longitude" optional="true" interpretation="Decimal degrees" field_type="unsigned integer" field_units="degree">
+                            <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Altitude" optional="true" interpretation="Altitude with respect to WGS-84 reference ellipsoid" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Position_RMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Yaw" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Attitude_RMS" optional="true" interpretation="An RMS value indicating the validity of the orientation data." field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <bit_field name="TimeStamp" optional="true" field_type_unsigned="unsigned integer">
+                            <sub_field name="Milliseconds">
+                                <bit_range from_index="0" to_index="9"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="999" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Seconds">
+                                <bit_range from_index="10" to_index="15"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Minutes">
+                                <bit_range from_index="16" to_index="21"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Hour">
+                                <bit_range from_index="22" to_index="26"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="23" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Day">
+                                <bit_range from_index="27" to_index="31"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportGlobalPoseExt" message_id="44A2" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the position and attitude of the platform.  The position of the platform is given in latitude, longitude, and altitude.  All times are in Coordinated Universal Time (UTC).  The message data and mapping of the presence vector for this message are shown in the table below. Note the SetGlobalPoseExt command uses a variable field to set only one Zposition, whereas this report enables one or more of the optional Z-position values to be returned. Submerged vehicles often need to know depth as well as altitude above the sea floor.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportGlobalPoseExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="Latitude" optional="true" interpretation="Decimal degrees" field_type="unsigned integer" field_units="degree">
+                            <scale_range real_lower_limit="-90" real_upper_limit="90" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Longitude" optional="true" interpretation="Decimal degrees" field_type="unsigned integer" field_units="degree">
+                            <scale_range real_lower_limit="-180" real_upper_limit="180" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="AltitudeAGL" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="AltitudeMSL" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="AltitudeASF" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Depth" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="XYPositionRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ZPositionRMS" optional="true" interpretation="An RMS value indicating the validity of the position data." field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Roll" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Pitch" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Heading" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Attitude_RMS" optional="true" interpretation="An RMS value indicating the validity of the orientation data." field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Course" optional="true" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="TimeSeconds" optional="true" interpretation="UTC POSIX-style time in seconds since 1 January 1970" field_type="unsigned integer" field_units="second"/>
+                        <fixed_field name="TimeNanoSeconds" optional="true" interpretation="Nanoseconds component of POSIX-style time" field_type="unsigned integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportGeomagneticProperty" message_id="4412" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the current geomagnetic property value. The message data and mapping of the presence vector of this message are identical to ID 0412h: SetGeomagneticProperty.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="GeomagneticPropertyRec" optional="false">
+                        <fixed_field name="MagneticVariation" optional="false" field_type="unsigned short integer" field_units="radian">
+                            <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryGlobalPose" value="msg" interpretation="enveloped query global pose                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Global Pose message with the current global position">
+                                    <argument value=" 'ReportGlobalPose' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryGlobalPoseExt" value="msg" interpretation="enveloped query global pose ext                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Global Pose Ext message with the current global position">
+                                    <argument value=" 'ReportGlobalPoseExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryGeomagneticProperty" value="msg" interpretation="enveloped query                      magnetic propery message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Geomagnetic Property message">
+                                    <argument value=" 'ReportGeomagneticProperty' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryGlobalPose" value="msg" interpretation="enveloped query global pose                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Global Pose message with the current global position">
+                                    <argument value=" 'ReportGlobalPose' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryGlobalPoseExt" value="msg" interpretation="enveloped query global pose ext                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Global Pose Ext message with the current global position">
+                                    <argument value=" 'ReportGlobalPoseExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryGeomagneticProperty" value="msg" interpretation="enveloped query                      magnetic propery message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                     Geomagnetic Property message">
+                                    <argument value=" 'ReportGeomagneticProperty' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="SetGlobalPose" value="msg" interpretation="enveloped set global pose                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered                      the transition is received from the client that is in control of this service."/>
+                                <internal/>
+                                <action name="updateGlobalPose" interpretation="Update the global pose for the component."/>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="SetGlobalPoseExt" value="msg" interpretation="enveloped set global pose ext                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered                      the transition is received from the client that is in control of this service."/>
+                                <internal/>
+                                <action name="updateGlobalPoseExt" interpretation="Update the global pose for the component."/>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetGeomagneticProperty" value="msg" interpretation="enveloped set                      geomagnetic property message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered                      the transition is received from the client that is in control of this service."/>
+                                <internal/>
+                                <action name="updateGeomagneticProperty" interpretation="Update the location                      specific magnetic variation for adjusting GPS heading."/>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

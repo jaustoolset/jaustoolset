@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="Time" id="urn:jaus:jss:core:Time" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The Time Service allows clients to query and set the system time for the component. Note that exclusive control is required to set the time, but is not required to query it.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetTime" message_id="0011" is_command="true">
+                <description xml:space="preserve">Time is configured within a JAUS system using the following message.  Accuracy of the time may be dependent on latencies in the transmission of the message.  Proper systems engineering procedures should be used to insure the accuracy of the time messages are within the system tolerance.  All times are in Coordinated Universal Time (UTC).</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="TimeRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <bit_field name="TimeStamp" optional="true" field_type_unsigned="unsigned integer">
+                            <sub_field name="Milliseconds">
+                                <bit_range from_index="0" to_index="9"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="999" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Seconds">
+                                <bit_range from_index="10" to_index="15"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Minutes">
+                                <bit_range from_index="16" to_index="21"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Hour">
+                                <bit_range from_index="22" to_index="26"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="23" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Day">
+                                <bit_range from_index="27" to_index="31"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                        <bit_field name="DateStamp" optional="true" field_type_unsigned="unsigned short integer">
+                            <sub_field name="Day">
+                                <bit_range from_index="0" to_index="4"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Month">
+                                <bit_range from_index="5" to_index="8"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="12" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Year">
+                                <bit_range from_index="9" to_index="15"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="127" upper_limit_type="inclusive" interpretation="Where 0 is 2000, 1 is 2001, etc."/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryTime" message_id="2011" is_command="false">
+                <description xml:space="preserve">This message is used by clients of this service to query the current time of this service.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryTimeRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See corresponding report time message for presence vector mapping" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportTime" message_id="4011" is_command="false">
+                <description xml:space="preserve">This message is used to report the current time of this service to querying clients. All times are in Coordinated Universal Time (UTC).</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="TimeRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <bit_field name="TimeStamp" optional="true" field_type_unsigned="unsigned integer">
+                            <sub_field name="Milliseconds">
+                                <bit_range from_index="0" to_index="9"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="999" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Seconds">
+                                <bit_range from_index="10" to_index="15"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Minutes">
+                                <bit_range from_index="16" to_index="21"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Hour">
+                                <bit_range from_index="22" to_index="26"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="23" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Day">
+                                <bit_range from_index="27" to_index="31"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                        <bit_field name="DateStamp" optional="true" field_type_unsigned="unsigned short integer">
+                            <sub_field name="Day">
+                                <bit_range from_index="0" to_index="4"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Month">
+                                <bit_range from_index="5" to_index="8"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="12" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Year">
+                                <bit_range from_index="9" to_index="15"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="127" upper_limit_type="inclusive" interpretation="Where 0 is 2000, 1 is 2001, etc."/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryTime" value="msg" interpretation="enveloped query time                   message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                   Time message                   with the                   current time">
+                                    <argument value=" 'ReportTime' "/>
+                                    <argument value=" 'currentTime' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryTime" value="msg" interpretation="enveloped query time                   message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="accessControl.events.transport.Send" interpretation="Send a Report                   Time message                   with the                   current time">
+                                    <argument value=" 'ReportTime' "/>
+                                    <argument value=" 'currentTime' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="SetTime" value="msg" interpretation="enveloped                   set time message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient(transportData)" interpretation="True if the message that triggered the                   transition is                    received from the client that                   is in control of this service"/>
+                                <internal/>
+                                <action name="setTime" interpretation="Set the time of this                   component to the                   specified                   time">
+                                    <argument value="msg"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="ListManager" id="urn:jaus:jss:core:ListManager" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The List Manager Service permits operations on a single ordered sequence of connected elements. It supports operations to add, replace or delete elements from the list, as well as querying the entire list or individual elements. Elements within the list are uniquely identified by the Element UID. The Element UID is used as an identifier only, and the value of the UID does not imply a sequence or order. When a new element is added to the list, the previous (parent) and next (child) elements are specified to denote sequencing, similar to a doubly linked list. Circular lists can be created when the last element in the list specifies the first element as a child. A list is considered valid when the following conditions are met: 1) A list must contain exactly one head element which is defined as having a previous (parent) identifier of zero (0). 2) For non-circular lists, the list must contain exactly one tail element which is defined as having a next (child) identifier of zero (0). 3) Each element must reference existing previous (parent) and next (child) elements, or zero. 4) Elements cannot be orphaned. An orphan is defined as an element that is not connected in any way to the other elements in the list. 5) The previous (parent) and next(child) reference for each element cannot point to itself. The list manager service is designed to be inherited, and is trivial on its own. Derived services should redefine isElementSupported condition as shown by example in the Global Waypoint List Driver.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="management" id="urn:jaus:jss:core:Management" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetElement" message_id="041A" is_command="true">
+                <description xml:space="preserve">This message is used to add, insert or replace one or more elements in a list.  Each element is uniquely identified by the UID, and the sequence within the list is specified by the previous (parent) and next (child) elements.  This message can also be used to update an existing element.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="SetElementSeq" optional="false">
+                        <record name="RequestIDRec" optional="false">
+                            <fixed_field name="RequestID" optional="false" interpretation="ID of the request.  This ID will be returned in the response message." field_type="unsigned byte" field_units="one"/>
+                        </record>
+                        <list name="ElementList" optional="false">
+                            <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            <record name="ElementRec" optional="false">
+                                <fixed_field name="ElementUID" optional="false" interpretation="Values zero (0) and 65535 are invalid (reserved)." field_type="unsigned short integer" field_units="one"/>
+                                <fixed_field name="PreviousUID" optional="false" interpretation="UID of the previous (parent) element in the list.  The value is zero (0) if this is the first (head) element." field_type="unsigned short integer" field_units="one"/>
+                                <fixed_field name="NextUID" optional="false" interpretation="UID of the next (child) element in the list.  The value is zero (0) if this is the last (tail) element." field_type="unsigned short integer" field_units="one"/>
+                                <variable_format_field name="ElementData" optional="false" interpretation="Element data to be added to the list">
+                                    <format_field>
+                                        <format_enum index="0" field_format="JAUS MESSAGE"/>
+                                        <format_enum index="1" field_format="User defined"/>
+                                    </format_field>
+                                    <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                                </variable_format_field>
+                            </record>
+                        </list>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="DeleteElement" message_id="041B" is_command="true">
+                <description xml:space="preserve">This message is used to delete one or more elements from a list.  Each element is uniquely identified by the UID.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="DeleteElementSeq" optional="false">
+                        <record name="RequestIDRec" optional="false">
+                            <fixed_field name="RequestID" optional="false" interpretation="ID of the request.  This ID will be returned in the response message." field_type="unsigned byte" field_units="one"/>
+                        </record>
+                        <list name="DeleteElementList" optional="false">
+                            <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            <record name="DeleteElementRec" optional="false">
+                                <fixed_field name="ElementUID" optional="false" interpretation="UID of the element to be deleted, where a value of 65535 represents all element in the list." field_type="unsigned short integer" field_units="one"/>
+                            </record>
+                        </list>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryElement" message_id="241A" is_command="false">
+                <description xml:space="preserve">This message is used to query an element from a list.  The element is uniquely identified by the UID.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryElementRec" optional="false">
+                        <fixed_field name="ElementUID" optional="false" interpretation="UID of the queried element.  A value of zero (0) represents the first (head) element in the list." field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryElementList" message_id="241B" is_command="false">
+                <description xml:space="preserve">This message is used to query all elements from a list.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryElementCount" message_id="241C" is_command="false">
+                <description xml:space="preserve">This message is used to query the number of elements in a list.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ConfirmElementRequest" message_id="041C" is_command="false">
+                <description xml:space="preserve">This message is used to confirm successful operation on an element list.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="RequestIDRec" optional="false">
+                        <fixed_field name="RequestID" optional="false" interpretation="ID of the request that generated this confirmation message." field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="RejectElementRequest" message_id="041D" is_command="false">
+                <description xml:space="preserve">This message is used to reject an operation on an element list.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="RejectElementRec" optional="false">
+                        <fixed_field name="RequestID" optional="false" interpretation="ID of the request that generated this confirmation message." field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="ResponseCode" optional="false" interpretation="ID of the request that generated this confirmation message." field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="1" enum_const="Invalid element ID"/>
+                                <value_enum enum_index="2" enum_const="Invalid previous element"/>
+                                <value_enum enum_index="3" enum_const="Invalid next element"/>
+                                <value_enum enum_index="4" enum_const="Unsupported element type"/>
+                                <value_enum enum_index="5" enum_const="Element ID not found"/>
+                                <value_enum enum_index="6" enum_const="Out of memory"/>
+                                <value_enum enum_index="7" enum_const="Unspecified error"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportElement" message_id="441A" is_command="false">
+                <description xml:space="preserve">This message is used to report a single element from a list.  The element is uniquely identified by the UID, while it's position within the list is denoted by the previous (parent) and next (child) elements. The message data is identical to the Element Record in ID 041Ah: SetElement.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ElementRec" optional="false">
+                        <fixed_field name="ElementUID" optional="false" interpretation="Values zero (0) and 65535 are invalid (reserved)." field_type="unsigned short integer" field_units="one"/>
+                        <fixed_field name="PreviousUID" optional="false" interpretation="UID of the previous (parent) element in the list.  The value is zero (0) if this is the first (head) element." field_type="unsigned short integer" field_units="one"/>
+                        <fixed_field name="NextUID" optional="false" interpretation="UID of the next (child) element in the list.  The value is zero (0) if this is the last (tail) element." field_type="unsigned short integer" field_units="one"/>
+                        <variable_format_field name="ElementData" optional="false" interpretation="Element data to be added to the list">
+                            <format_field>
+                                <format_enum index="0" field_format="JAUS MESSAGE"/>
+                                <format_enum index="1" field_format="User defined"/>
+                            </format_field>
+                            <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        </variable_format_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportElementList" message_id="441B" is_command="false">
+                <description xml:space="preserve">This message is used to report the UIDs for all elements in a list.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="ElementList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="ElementListRec" optional="false">
+                            <fixed_field name="ElementUID" optional="false" interpretation="UID of the elements in the list." field_type="unsigned short integer" field_units="one"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportElementCount" message_id="441C" is_command="false">
+                <description xml:space="preserve">This message is used to report the number of elements in a list.</description>
+                <header name="MsgHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ElementCountRec" optional="false">
+                        <fixed_field name="ElementCount" optional="false" interpretation="Number of elements currently in the list" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryElement" value="msg" interpretation="enveloped query element                     message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="elementExists( msg )" interpretation="True                     if the Element UID specified in the message                     that triggered the transition exists in the list."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report                     Element                     message with the requested element">
+                                    <argument value=" 'ReportElement' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryElementList" value="msg" interpretation="enveloped query element list message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Element List message with the                     UIDs of all elements currently in the list">
+                                    <argument value=" 'ReportElementList' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryElementCount" value="msg" interpretation="enveloped query element count message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Element Count message with                     the number of elements currently in the list">
+                                    <argument value=" 'ReportElementCount' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryElement" value="msg" interpretation="enveloped query element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="elementExists( msg )" interpretation="True                     if the Element UID specified in the message                     that triggered the transition exists in the list."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Element message with the                     requested element">
+                                    <argument value=" 'ReportElement' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryElementList" value="msg" interpretation="enveloped query element list message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Element List message with the                     UIDs of all elements currently in the list">
+                                    <argument value=" 'ReportElementList' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryElementCount" value="msg" interpretation="enveloped query element count message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Element Count message with                     the number of elements currently in the list">
+                                    <argument value=" 'ReportElementCount' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetElement" value="msg" interpretation="enveloped set element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient(transportData)                     &amp;&amp;                     isValidElementRequest(msg) &amp;&amp;                     isElementSupported(msg)" interpretation="This condition is                     always FALSE.  It must be                     overridden by                     derived services to allow the list to be                     populated."/>
+                                <internal/>
+                                <action name="setElement" interpretation="Store the element(s)                     in the list with sequence                      specified by                     the previous and next element IDs.  If this                     action represents an insert or append into an existing list,                     the service should modify the NextUID of the previous                     element and/or the Previous UID of the next element to                     reflect the updated sequence."/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Confirm Element Request message with                     the                      requested element">
+                                    <argument value=" 'ConfirmElementRequest' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetElement" value="msg" interpretation="enveloped set element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )                     &amp;&amp;                     !isValidElementRequest( msg )" interpretation="True if the                     message that triggered the transition is                     received from the client that is in control of this service                     AND the                      resulting list would be invalid                     as defined by the List Manager Service                     description or the receiving entity does not have sufficient                     memory to                     store the element(s)."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Reject Element Request message with                     the                      requested element">
+                                    <argument value=" 'RejectElementRequest' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetElement" value="msg" interpretation="enveloped set element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )                     &amp;&amp;                      !isElementSupported(                     msg )" interpretation="True if the message that triggered                     the transition                     is received from the                     client that is in control of this service.  This guard                     should be overridden by derived services to prevent the                     service from accepting unsupported elements."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Reject Element Request message with                     the                      requested element">
+                                    <argument value=" 'RejectElementRequest' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="DeleteElement" value="msg" interpretation="enveloped delete element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )                     &amp;&amp;                      elementExists( msg                     )" interpretation="True if the message that triggered the                     transition                      is received from the client                     that is in control of this service AND                     the Element UID specified in the message that triggered the                     transition exists in the list."/>
+                                <internal/>
+                                <action name="deleteElement" interpretation="Remove the                     specified element(s) from the                     list.  The                     service should modify the NextUID of the previous                     element and/or the Previous UID of the next element to                     reflect the updated sequence."/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Confirm Element Request message with                     the                      requested element">
+                                    <argument value=" 'ConfirmElementRequest' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="DeleteElement" value="msg" interpretation="enveloped delete element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )                     &amp;&amp;                      !elementExists( msg                     )" interpretation="True if the message that triggered the                     transition is                      received from the                     client that is in control of this service AND the Element                     UID                      specified in the message that                     triggered the transition does not exist                     in the list."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Reject Element Request message with                     the                      requested element">
+                                    <argument value=" 'RejectElementRequest' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

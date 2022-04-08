@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="DigitalResourceDiscovery" id="urn:jaus:jss:environmentSensing:DigitalResourceDiscovery" version="2.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The Digital Resource Discovery service provides a mechanism for SAE JAUS-based components to discover network entities that transmit digital data streams (usually video and/or audio) and files in a standards-compliant format.  Because of the wide-spread support for numerous file transfer and streaming standards, this service does not propose a JAUS-specific format for data; it only provides a discovery mechanism based on a Uniform Resource Locator (URL).</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="Events" id="urn:jaus:jss:core:Events" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryDigitalResourceEndpoint" message_id="2816" is_command="false">
+                <description xml:space="preserve">Queries for a list of known digital resource endpoints.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="RegisterDigitalResourceEndpoint" message_id="0808" is_command="true">
+                <description xml:space="preserve">Registers a digital resource server with the service.  Each endpoint is represented by a URL; however, the URL shall not require a Domain Name Service (DNS) to resolve.  In addition, each stream may also specify a JAUS ID that hosts additional SAE JAUS services for the configuration and control of the digital resource, as well as a ResourceID that identifies the stream source.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="RegisterDigitalResourceSeq" optional="false">
+                        <record name="RequestIDRec" optional="false">
+                            <fixed_field name="RequestID" optional="false" interpretation="Client provided ID to link the response to the request" field_type="unsigned byte" field_units="one"/>
+                        </record>
+                        <record name="DigitalResourceEndpointRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="ServerType" optional="false" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="RTSP"/>
+                                    <value_enum enum_index="1" enum_const="MPEG2_TS"/>
+                                    <value_enum enum_index="2" enum_const="FTP"/>
+                                    <value_enum enum_index="3" enum_const="SFTP"/>
+                                    <value_enum enum_index="4" enum_const="FTP_over_SSH"/>
+                                    <value_enum enum_index="5" enum_const="HTTP"/>
+                                    <value_enum enum_index="6" enum_const="HTTPS"/>
+                                    <value_enum enum_index="7" enum_const="SCP"/>
+                                    <value_enum enum_index="8" enum_const="CCSI" interpretation="where URL is of the form 'ip address:port number' (no quotes)"/>
+                                    <value_range lower_limit="9" lower_limit_type="inclusive" upper_limit="200" upper_limit_type="inclusive" interpretation="Reserved for future use"/>
+                                    <value_range lower_limit="201" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive" interpretation="Reserved for program or implementation specific use"/>
+                                </value_set>
+                            </fixed_field>
+                            <variable_length_string name="ServerURL" optional="false" interpretation="URL (or URL-like descriptor in the case of CCSI) of the digital resource server. This should not require a DNS to resolve; hence, an IP address should be substituted for a host name.">
+                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            </variable_length_string>
+                            <bit_field name="JAUS_ID" optional="true" field_type_unsigned="unsigned integer">
+                                <sub_field name="ComponentID">
+                                    <bit_range from_index="0" to_index="7" interpretation="ComponentID"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="NodeID">
+                                    <bit_range from_index="8" to_index="15" interpretation="NodeID"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="SubsystemID">
+                                    <bit_range from_index="16" to_index="31" interpretation="SubsystemID"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                            <fixed_field name="ResourceID" optional="true" interpretation="The ID used by the configuration and control service to identify this source. This is the SensorID for visual sensors." field_type="unsigned short integer" field_units="one"/>
+                        </record>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="RemoveDigitalResourceEndpoint" message_id="0809" is_command="true">
+                <description xml:space="preserve">Remove a previously registered digital resource transfer server from the service.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="RemoveDigitalResourceEndpointRec" optional="false">
+                        <fixed_field name="ID" optional="false" interpretation="Unique ID that was returned in the confirm message" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="RequestID" optional="false" interpretation="Client provided ID to link the response to the request" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportDigitalResourceEndpoint" message_id="4816" is_command="false">
+                <description xml:space="preserve">Reports a list of known digital resource servers.  Each endpoint is represented by a URL; however, the URL shall not require a Domain Name Service (DNS) to resolve.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="DigitalResourceEndpointList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <record name="DigitalResourceEndpointRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="ServerType" optional="false" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="RTSP"/>
+                                    <value_enum enum_index="1" enum_const="MPEG2_TS"/>
+                                    <value_enum enum_index="2" enum_const="FTP"/>
+                                    <value_enum enum_index="3" enum_const="SFTP"/>
+                                    <value_enum enum_index="4" enum_const="FTP_over_SSH"/>
+                                    <value_enum enum_index="5" enum_const="HTTP"/>
+                                    <value_enum enum_index="6" enum_const="HTTPS"/>
+                                    <value_enum enum_index="7" enum_const="SCP"/>
+                                    <value_enum enum_index="8" enum_const="CCSI" interpretation="where URL is of the form 'ip address:port number' (no quotes)"/>
+                                    <value_range lower_limit="9" lower_limit_type="inclusive" upper_limit="200" upper_limit_type="inclusive" interpretation="Reserved for future use"/>
+                                    <value_range lower_limit="201" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive" interpretation="Reserved for program or implementation specific use"/>
+                                </value_set>
+                            </fixed_field>
+                            <variable_length_string name="ServerURL" optional="false" interpretation="URL (or URL-like descriptor in the case of CCSI) of the digital resource server. This should not require a DNS to resolve; hence, an IP address should be substituted for a host name.">
+                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            </variable_length_string>
+                            <bit_field name="JAUS_ID" optional="true" field_type_unsigned="unsigned integer">
+                                <sub_field name="ComponentID">
+                                    <bit_range from_index="0" to_index="7" interpretation="ComponentID"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="NodeID">
+                                    <bit_range from_index="8" to_index="15" interpretation="NodeID"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="255" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="SubsystemID">
+                                    <bit_range from_index="16" to_index="31" interpretation="SubsystemID"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                            <fixed_field name="ResourceID" optional="true" interpretation="The ID used by the configuration and control service to identify this source. This is the SensorID for visual sensors." field_type="unsigned short integer" field_units="one"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ConfirmDigitalResourceEndpoint" message_id="080A" is_command="false">
+                <description xml:space="preserve">Confirm a digital resource endpoint registration or removal.  Provides a unique ID for referencing the server in the future.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ConfirmDigitalResourceEndpointRec" optional="false">
+                        <fixed_field name="ID" optional="false" interpretation="Unique ID identifying this resource endpoint" field_type="unsigned byte" field_units="one"/>
+                        <fixed_field name="RequestID" optional="false" interpretation="Client provided ID to link the response to the request" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="Events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <start state_machine_name="Events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="Events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready">
+                    <default_state>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryDigitalResourceEndpoint" value="msg" interpretation="enveloped Query Digital Resource Endpoint message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transportData"/>
+                            <internal/>
+                            <action name="sendReportDigitalResourceEndpoint" interpretation="Send a ReportDigitalResourceEndpoint message to querying client">
+                                <argument value="msg"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="RegisterDigitalResourceEndpoint" value="msg" interpretation="enveloped Register Digital Resource Endpoint message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transportData"/>
+                            <internal/>
+                            <action name="AddDigitalResourceEndpoint" interpretation="Adds the specified endpoint to the list of known endpoints">
+                                <argument value="msg"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <action name="sendConfirmDigitalResourceEndpoint" interpretation="Send a ConfirmDigitalResourceEndpoint message to querying client">
+                                <argument value="msg"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="RemoveDigitalResourceEndpoint" value="msg" interpretation="enveloped Remove Digital Resource Endpoint message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transportData"/>
+                            <internal/>
+                            <action name="RemoveDigitalResourceEndpoint" interpretation="Removes the specified endpoint from the list of known endpoints">
+                                <argument value="msg"/>
+                                <argument value="transportData"/>
+                            </action>
+                            <action name="sendConfirmDigitalResourceEndpoint" interpretation="Send a ConfirmDigitalResourceEndpoint message to querying client">
+                                <argument value="msg"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                    </default_state>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="Events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

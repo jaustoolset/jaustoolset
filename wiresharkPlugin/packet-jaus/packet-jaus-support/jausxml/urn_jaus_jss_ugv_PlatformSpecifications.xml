@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="PlatformSpecificationsService" id="urn:jaus:jss:ugv:PlatformSpecifications" version="1.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The Platform Specification Service provides information on the mobility and geometric characteristics of the platform.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryPlatformSpecifications" message_id="2502" is_command="false">
+                <description xml:space="preserve">Request PlatformSpecifications data</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="Two byte field to hold message ID" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="body"/>
+                <footer name="footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportPlatformSpecifications" message_id="4502" is_command="false">
+                <description xml:space="preserve">Sends PlatformSpecifications data</description>
+                <header name="header">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="Two byte field to hold message ID" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="body">
+                    <sequence name="platformData" optional="false">
+                        <variant name="platformSpecifics" optional="false">
+                            <vtag_field min_count="0" max_count="1" field_type_unsigned="unsigned byte"/>
+                            <record name="skidsteer" optional="false" interpretation="Skid-steer specific platform specs">
+                                <presence_vector field_type_unsigned="unsigned byte"/>
+                                <fixed_field name="TrackSeparation" optional="true" interpretation="Distance between the two tracks" field_type="unsigned short integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="30" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="DriveWheelRadius" optional="true" interpretation="Radius of the drive wheel (distance from center of the drive shaft to the outer edge of the drive wheel) in meters" field_type="unsigned short integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="10" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                            <record name="Ackermann" optional="false">
+                                <presence_vector field_type_unsigned="unsigned byte"/>
+                                <fixed_field name="SteeringAngleRange" optional="true" interpretation="The maximum achievable steering angles, as measured by a virtual wheel at the center of the front axle. Negative values cause the vehicle to turn left; positive values cause the vehicle to turn right." field_type="unsigned short integer" field_units="radian">
+                                    <scale_range real_lower_limit="-1.57079632679489661923" real_upper_limit="1.57079632679489661923" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="MinTurnRadius" optional="true" interpretation="The radius of the smallest turn the vehicle is able to make." field_type="unsigned short integer" field_units="meter">
+                                    <scale_range real_lower_limit="0.0" real_upper_limit="25.0" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="WheelSeparation" optional="true" interpretation="Distance between the centers of the left and right wheels" field_type="unsigned short integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="30" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="DriveWheelRadius" optional="true" interpretation="Radius of the drive wheel (distance from center of the drive shaft to the outer edge of the drive wheel) in meters" field_type="unsigned short integer" field_units="meter">
+                                    <scale_range real_lower_limit="0" real_upper_limit="10" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                        </variant>
+                        <record name="platformInertial" optional="false" interpretation="General platform specs">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="MaximumForwardSpeed" optional="true" field_type="unsigned short integer" field_units="meter per second">
+                                <scale_range real_lower_limit="0.0" real_upper_limit="90.0" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaximumReverseSpeed" optional="true" field_type="unsigned short integer" field_units="meter per second">
+                                <scale_range real_lower_limit="0.0" real_upper_limit="90.0" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaximumRotationalSpeed" optional="true" field_type="unsigned short integer" field_units="radian per second">
+                                <scale_range real_lower_limit="0.0" real_upper_limit="6.28" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaximumForwardAcceleration" optional="true" field_type="unsigned byte" field_units="meter per second squared">
+                                <scale_range real_lower_limit="0.0" real_upper_limit="40.0" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaximumReverseAcceleration" optional="true" field_type="unsigned byte" field_units="meter per second squared">
+                                <scale_range real_lower_limit="0.0" real_upper_limit="40.0" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaximumForwardDeceleration" optional="true" field_type="unsigned byte" field_units="meter per second squared">
+                                <scale_range real_lower_limit="0.0" real_upper_limit="40.0" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="MaximumReverseDeceleration" optional="true" field_type="unsigned byte" field_units="meter per second squared">
+                                <scale_range real_lower_limit="0.0" real_upper_limit="40.0" integer_function="round"/>
+                            </fixed_field>
+                        </record>
+                        <record name="platformSpec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned short integer"/>
+                            <variable_length_string name="MobilityPlatformName" optional="false" interpretation="A human-readable string for the vehicle.">
+                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            </variable_length_string>
+                            <fixed_field name="Front" optional="true" interpretation="Measured along the positive X axis of the vehicle coordinate frame" field_type="unsigned short integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="30" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Back" optional="true" interpretation="Measured along the negative X axis of the vehicle coordinate frame" field_type="unsigned short integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="30" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Right" optional="true" interpretation="Measured along the positive Y axis of the vehicle coordinate frame" field_type="unsigned short integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="30" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Left" optional="true" interpretation="Measured along the negative Y axis of the vehicle coordinate frame" field_type="unsigned short integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="30" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Bottom" optional="true" interpretation="Measured along the positive Z axis of the vehicle coordinate frame" field_type="unsigned short integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="30" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Top" optional="true" interpretation="Measured along the negative Z axis of the vehicle coordinate frame" field_type="unsigned short integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="30" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Xcg" optional="true" interpretation="Measured from the vehicle coordinate frame" field_type="unsigned short integer" field_units="meter">
+                                <scale_range real_lower_limit="-30" real_upper_limit="30" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Ycg" optional="true" interpretation="Measured from the vehicle coordinate frame" field_type="unsigned short integer" field_units="meter">
+                                <scale_range real_lower_limit="-30" real_upper_limit="30" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="Zcg" optional="true" interpretation="Measured from the vehicle coordinate frame" field_type="unsigned short integer" field_units="meter">
+                                <scale_range real_lower_limit="-30" real_upper_limit="30" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="WheelBase" optional="true" interpretation="Distance between the center of the frontmost wheel and the center of the rearmost wheel." field_type="unsigned short integer" field_units="meter">
+                                <scale_range real_lower_limit="0" real_upper_limit="60" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="StaticPitchOver" optional="true" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="StaticRollOver" optional="true" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="-3.14159265358979323846" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="VehicleWeight" optional="true" field_type="unsigned integer" field_units="kilogram">
+                                <scale_range real_lower_limit="0" real_upper_limit="1000000" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="ApproachAngle" optional="true" interpretation="The angle formed by an imaginary line from the front bumper to the bottom of the front tire" field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846/2" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="DepartureAngle" optional="true" interpretation="The angle formed by an imaginary line from the bottom of the rear tire to rear bumper." field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846/2" integer_function="round"/>
+                            </fixed_field>
+                            <fixed_field name="BreakOverAngle" optional="true" interpretation="The angle formed by an imaginary line from the bottom of the tires to the center of the vehicle’s underside." field_type="unsigned short integer" field_units="radian">
+                                <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846/2" integer_function="round"/>
+                            </fixed_field>
+                        </record>
+                    </sequence>
+                </body>
+                <footer name="footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <start state_machine_name="events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready">
+                    <default_state>
+                        <transition name="transport.Receive">
+                            <parameter type="QueryPlatformSpecifications" value="msg"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData"/>
+                            <internal/>
+                            <action name="sendReportPlatformSpecifications" interpretation="Send a Report                                                   Platform Specifications message to querying client">
+                                <argument value="msg"/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                    </default_state>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="DigitalVideo" id="urn:jaus:jss:environmentSensing:DigitalVideo" version="2.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">This service provides access to the capabilities 
+		and configuration of the digital visual sensor, allowing the controlling 
+		component to set the visual sensor to a particular operational profile. 
+		The actual transmission of the video stream is outside the scope of this 
+		service. The ability to start, stop and pause the video stream is provided 
+		in the message protocol. There may also be mechanisms in the chosen video 
+		transmission protocol to control the video stream. In such situations, the 
+		messages defined herein are redundant and either mechanism may be used by 
+		sensor's client.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="visualSensor" id="urn:jaus:jss:environmentSensing:VisualSensor" version="2.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="ControlDigitalVideoSensorStream" message_id="0805" is_command="true">
+                <description xml:space="preserve">This message is used to control the playback state of the video stream from a digital video service. The actual stream protocol for this is outside the scope of the protocol. The streaming mechanism selected may support other methods to control the stream within its own protocol. In such a case, this message shall be a redunant mechanism and a service client may choose to use either the native protocol or this message for stream control.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ControlDigitalVideoSensorStreamRec" optional="false">
+                        <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="StreamState" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="Play"/>
+                                <value_enum enum_index="1" enum_const="Pause"/>
+                                <value_enum enum_index="2" enum_const="Stop"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ControlDigitalVideoSensorRecording" message_id="0810" is_command="true">
+                <description xml:space="preserve">This message is used to control the recording state of the video from a digital video service. The details of the recording (filename, location,
+			maximum file size, etc) are left to the implementation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ControlDigitalVideoSensorRecordingRec" optional="false">
+                        <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                            </value_set>
+                        </fixed_field>
+                        <fixed_field name="RequestedRecordingState" optional="false" field_type="unsigned byte" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="NotRecording"/>
+                                <value_enum enum_index="1" enum_const="Recording"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="SetDigitalVideoSensorConfiguration" message_id="0804" is_command="true">
+                <description xml:space="preserve">This message is used to set the configuration of the digital video sensor associated with the service. Configuration is based off of each sensor’s capabilities as described in the Report Digital Video Sensor Capabilities message. This message shall cause the receiving service to reply to the sender with a Confirm Sensor Configuration message. If the configuration specified is invalid for a given sensor ID, the confirm message shall contain an Digital Video Error Record for the given Sensor ID however other, valid, configurations specified shall be set (if they exist).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="DigitalVideoSensorConfigurationSequence" optional="false">
+                        <record name="RequestIdRec" optional="false">
+                            <fixed_field name="RequestID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        </record>
+                        <list name="DigitalVideoSensorList" optional="false">
+                            <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                            <record name="DigitalVideoSensorConfigurationRec" optional="false">
+                                <presence_vector field_type_unsigned="unsigned byte"/>
+                                <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="MinimumBitRate" optional="true" interpretation="measured kilobits per second" field_type="unsigned short integer" field_units="one"/>
+                                <fixed_field name="MaximumBitRate" optional="true" interpretation="measured kilobits per second" field_type="unsigned short integer" field_units="one"/>
+                                <fixed_field name="FrameRate" optional="true" field_type="unsigned byte" field_units="one"/>
+                                <fixed_field name="FrameSize" optional="true" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="128x96 (sqcif)"/>
+                                        <value_enum enum_index="1" enum_const="176x144 (qcif)"/>
+                                        <value_enum enum_index="2" enum_const="352x288 (cif)"/>
+                                        <value_enum enum_index="3" enum_const="704x576 (4cif)"/>
+                                        <value_enum enum_index="4" enum_const="1408x1152 (16cif)"/>
+                                        <value_enum enum_index="5" enum_const="160x120 (qqvga)"/>
+                                        <value_enum enum_index="6" enum_const="320x240 (qvga)"/>
+                                        <value_enum enum_index="7" enum_const="640x480 (vga)"/>
+                                        <value_enum enum_index="8" enum_const="800x600 (svga)"/>
+                                        <value_enum enum_index="9" enum_const="1024x768 (xga)"/>
+                                        <value_enum enum_index="10" enum_const="1600x1200 (uxga)"/>
+                                        <value_enum enum_index="11" enum_const="2048x1536 (qxga)"/>
+                                        <value_enum enum_index="12" enum_const="1280x1024 (sxga)"/>
+                                        <value_enum enum_index="13" enum_const="2560x2048 (qsxga)"/>
+                                        <value_enum enum_index="14" enum_const="5120x4096 (hsxga)"/>
+                                        <value_enum enum_index="15" enum_const="852x480 (wvga)"/>
+                                        <value_enum enum_index="16" enum_const="1366x768 (wxga)"/>
+                                        <value_enum enum_index="17" enum_const="1600x1024 (wsxga)"/>
+                                        <value_enum enum_index="18" enum_const="1920x1200 (wuxga)"/>
+                                        <value_enum enum_index="19" enum_const="2560x1600 (woxga)"/>
+                                        <value_enum enum_index="20" enum_const="3200x2048 (wqsxga)"/>
+                                        <value_enum enum_index="21" enum_const="3840x2400 (wquxga)"/>
+                                        <value_enum enum_index="22" enum_const="6400x4096 (whsxga)"/>
+                                        <value_enum enum_index="23" enum_const="7680x4800 (whuxga)"/>
+                                        <value_enum enum_index="24" enum_const="320x200 (cga)"/>
+                                        <value_enum enum_index="25" enum_const="640x350 (ega)"/>
+                                        <value_enum enum_index="26" enum_const="852x480 (hd480)"/>
+                                        <value_enum enum_index="27" enum_const="1280x720 (hd720)"/>
+                                        <value_enum enum_index="28" enum_const="1920x1080 (hd1080)"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="DigitalFormat" optional="true" field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="AVI"/>
+                                        <value_enum enum_index="1" enum_const="MJPEG"/>
+                                        <value_enum enum_index="2" enum_const="MPEG-2"/>
+                                        <value_enum enum_index="3" enum_const="H.263"/>
+                                        <value_enum enum_index="4" enum_const="H.263+"/>
+                                        <value_enum enum_index="5" enum_const="MPEG-4 Visual (MPEG-4 Part 2)"/>
+                                        <value_enum enum_index="6" enum_const="MPEG-4 AVC"/>
+                                    </value_set>
+                                </fixed_field>
+                            </record>
+                        </list>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryDigitalVideoSensorConfiguration" message_id="2809" is_command="false">
+                <description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Digital Video Sensor Configuration message. A logical AND 
+			shall be performed on the requested presence vector and 
+			that representing the available fields from the responder.  
+			The resulting message shall contain the fields indicated by 
+			the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="QueryDigitalVideoConfigurationList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="QueryDigitalVideoConfigurationRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor being queried. Zero (0) is used to query all sensors associated with this service." field_type="unsigned short integer" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="AllSensors"/>
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive" interpretation="Specific ID to be queried"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="QueryPresenceVector" optional="false" field_type="unsigned byte" field_units="one"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryDigitalVideoSensorCapabilitiesExt" message_id="281D" is_command="false">
+                <description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Digital Video Sensor Capabilities Ext message. A logical AND 
+			shall be performed on the requested presence vector and 
+			that representing the available fields from the responder.  
+			The resulting message shall contain the fields indicated 
+			by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="QueryDigitalVideoSensorCapabilitiesList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="QueryDigitalVideoSensorCapabilitiesRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor being queried. Zero (0) is used to query all sensors associated with this service." field_type="unsigned short integer" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="AllSensors"/>
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive" interpretation="Specific ID to be queried"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="QueryPresenceVector" optional="false" field_type="unsigned byte" field_units="one"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryDigitalVideoSensorStatus" message_id="281E" is_command="false">
+                <description xml:space="preserve">This message shall cause the 
+			receiving service to reply to the requestor with a Report 
+			Digital Video Sensor Status message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="SensorIdList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="SensorIDQueryRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor being queried. Zero (0) is used to query all sensors associated with this service." field_type="unsigned short integer" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="AllSensors"/>
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive" interpretation="Specific ID to be queried"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportDigitalVideoSensorCapabilitiesExt" message_id="481D" is_command="false">
+                <description xml:space="preserve">This message is used to report the sensors’ capabilities upon receipt of a Query Digital Video Sensor Capabilities Ext message. Capabilities include sensor properties, values and ranges which can be modified by the Set Digital Video Sensor Configuration message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="DigitalVideoSensorList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="DigitalVideoSensorCapabilitiesRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="MinimumBitRate" optional="true" interpretation="measured kilobits per second" field_type="unsigned short integer" field_units="one"/>
+                            <fixed_field name="MaximumBitRate" optional="true" interpretation="measured kilobits per second" field_type="unsigned short integer" field_units="one"/>
+                            <fixed_field name="MinimumFrameRate" optional="true" field_type="unsigned byte" field_units="one"/>
+                            <fixed_field name="MaximumFrameRate" optional="true" field_type="unsigned byte" field_units="one"/>
+                            <bit_field name="SupportedFrameSizes" optional="true" field_type_unsigned="unsigned integer">
+                                <sub_field name="sqcif_128x96">
+                                    <bit_range from_index="0" to_index="0"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="qcif_176x144">
+                                    <bit_range from_index="1" to_index="1"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="cif_352x288">
+                                    <bit_range from_index="2" to_index="2"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="cif4_704x576">
+                                    <bit_range from_index="3" to_index="3"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="cif16_1408x1152">
+                                    <bit_range from_index="4" to_index="4"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="qqvga_160x120">
+                                    <bit_range from_index="5" to_index="5"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="qvga_320x240">
+                                    <bit_range from_index="6" to_index="6"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="vga_640x480">
+                                    <bit_range from_index="7" to_index="7"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="svga_800x600">
+                                    <bit_range from_index="8" to_index="8"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="xga_1024x768">
+                                    <bit_range from_index="9" to_index="9"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="uxga_1600x1200">
+                                    <bit_range from_index="10" to_index="10"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="qxga_2048x1536">
+                                    <bit_range from_index="11" to_index="11"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="sxga_1280x1024">
+                                    <bit_range from_index="12" to_index="12"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="qsxga_2560x2048">
+                                    <bit_range from_index="13" to_index="13"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="hsxga_5120x4096">
+                                    <bit_range from_index="14" to_index="14"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wvga_852x480">
+                                    <bit_range from_index="15" to_index="15"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wxga_1366x768">
+                                    <bit_range from_index="16" to_index="16"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wsxga_1600x1024">
+                                    <bit_range from_index="17" to_index="17"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wuxga_1920x1200">
+                                    <bit_range from_index="18" to_index="18"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="woxga_2560x1600">
+                                    <bit_range from_index="19" to_index="19"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wqsxga_3200x2048">
+                                    <bit_range from_index="20" to_index="20"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="wquxga_3840x2400">
+                                    <bit_range from_index="21" to_index="21"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="whsxga_6400x4096">
+                                    <bit_range from_index="22" to_index="22"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="whuxga_7680x4800">
+                                    <bit_range from_index="23" to_index="23"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="cga_320x200">
+                                    <bit_range from_index="24" to_index="24"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ega_640x350">
+                                    <bit_range from_index="25" to_index="25"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="hd480_852x480">
+                                    <bit_range from_index="26" to_index="26"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="hd720_1280x720">
+                                    <bit_range from_index="27" to_index="27"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="hd1080_1920x1080">
+                                    <bit_range from_index="28" to_index="28"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                            <bit_field name="SupportedDigitalFormats" optional="true" field_type_unsigned="unsigned byte">
+                                <sub_field name="AVI">
+                                    <bit_range from_index="0" to_index="0"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="MJPEG">
+                                    <bit_range from_index="1" to_index="1"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="MPEG2">
+                                    <bit_range from_index="2" to_index="2"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="h263">
+                                    <bit_range from_index="3" to_index="3"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="h263plus">
+                                    <bit_range from_index="4" to_index="4"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="MPEG4_Visual">
+                                    <bit_range from_index="5" to_index="5"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="MPEG4_AVC_h264">
+                                    <bit_range from_index="6" to_index="6"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Unsupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                            <fixed_field name="RecordingSupported" optional="true" interpretation="Indicates if the implementation supports local recording of video for the sensor" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="Unsupported"/>
+                                    <value_enum enum_index="1" enum_const="Supported"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportDigitalVideoSensorConfiguration" message_id="4809" is_command="false">
+                <description xml:space="preserve">This message is sent in response to a Query Digital Video Sensor Configuration message. It is populated with the current sensor configuration (per sensor ID) as defined in the table below.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="DigitalVideoSensorConfigurationList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="DigitalVideoSensorConfigurationRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="MinimumBitRate" optional="true" interpretation="measured kilobits per second" field_type="unsigned short integer" field_units="one"/>
+                            <fixed_field name="MaximumBitRate" optional="true" interpretation="measured kilobits per second" field_type="unsigned short integer" field_units="one"/>
+                            <fixed_field name="FrameRate" optional="true" field_type="unsigned byte" field_units="one"/>
+                            <fixed_field name="FrameSize" optional="true" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="128x96 (sqcif)"/>
+                                    <value_enum enum_index="1" enum_const="176x144 (qcif)"/>
+                                    <value_enum enum_index="2" enum_const="352x288 (cif)"/>
+                                    <value_enum enum_index="3" enum_const="704x576 (4cif)"/>
+                                    <value_enum enum_index="4" enum_const="1408x1152 (16cif)"/>
+                                    <value_enum enum_index="5" enum_const="160x120 (qqvga)"/>
+                                    <value_enum enum_index="6" enum_const="320x240 (qvga)"/>
+                                    <value_enum enum_index="7" enum_const="640x480 (vga)"/>
+                                    <value_enum enum_index="8" enum_const="800x600 (svga)"/>
+                                    <value_enum enum_index="9" enum_const="1024x768 (xga)"/>
+                                    <value_enum enum_index="10" enum_const="1600x1200 (uxga)"/>
+                                    <value_enum enum_index="11" enum_const="2048x1536 (qxga)"/>
+                                    <value_enum enum_index="12" enum_const="1280x1024 (sxga)"/>
+                                    <value_enum enum_index="13" enum_const="2560x2048 (qsxga)"/>
+                                    <value_enum enum_index="14" enum_const="5120x4096 (hsxga)"/>
+                                    <value_enum enum_index="15" enum_const="852x480 (wvga)"/>
+                                    <value_enum enum_index="16" enum_const="1366x768 (wxga)"/>
+                                    <value_enum enum_index="17" enum_const="1600x1024 (wsxga)"/>
+                                    <value_enum enum_index="18" enum_const="1920x1200 (wuxga)"/>
+                                    <value_enum enum_index="19" enum_const="2560x1600 (woxga)"/>
+                                    <value_enum enum_index="20" enum_const="3200x2048 (wqsxga)"/>
+                                    <value_enum enum_index="21" enum_const="3840x2400 (wquxga)"/>
+                                    <value_enum enum_index="22" enum_const="6400x4096 (whsxga)"/>
+                                    <value_enum enum_index="23" enum_const="7680x4800 (whuxga)"/>
+                                    <value_enum enum_index="24" enum_const="320x200 (cga)"/>
+                                    <value_enum enum_index="25" enum_const="640x350 (ega)"/>
+                                    <value_enum enum_index="26" enum_const="852x480 (hd480)"/>
+                                    <value_enum enum_index="27" enum_const="1280x720 (hd720)"/>
+                                    <value_enum enum_index="28" enum_const="1920x1080 (hd1080)"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="DigitalFormat" optional="true" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="AVI"/>
+                                    <value_enum enum_index="1" enum_const="MJPEG"/>
+                                    <value_enum enum_index="2" enum_const="MPEG-2"/>
+                                    <value_enum enum_index="3" enum_const="H.263"/>
+                                    <value_enum enum_index="4" enum_const="H.263+"/>
+                                    <value_enum enum_index="5" enum_const="MPEG-4 Visual (MPEG-4 Part 2)"/>
+                                    <value_enum enum_index="6" enum_const="MPEG-4 AVC"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportDigitalVideoSensorStatus" message_id="481E" is_command="false">
+                <description xml:space="preserve">This message is sent in response to a Query Digital Video Sensor Status message. It is populated with the current sensor status (per sensor ID) as defined in the table below.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="DigitalVideoSensorStatusList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="DigitalVideoSensorStatusRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="StreamingState" optional="false" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="Play"/>
+                                    <value_enum enum_index="1" enum_const="Pause"/>
+                                    <value_enum enum_index="2" enum_const="Stop"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="RecordingState" optional="false" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="NotRecording"/>
+                                    <value_enum enum_index="1" enum_const="Recording"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="visualSensor.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="visualSensor.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="visualSensor.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryDigitalVideoSensorCapabilitiesExt" value="msg" interpretation="enveloped QueryDigitalVideoSensorCapabilitiesExt message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportDigitalVideoSensorCapabilitiesExt" interpretation="Send a ReportDigitalVideoSensorCapabilitiesExt message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryDigitalVideoSensorConfiguration" value="msg" interpretation="enveloped QueryDigitalVideoSensorConfiguration message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportDigitalVideoSensorConfiguration" interpretation="Send a ReportDigitalVideoSensorConfiguration message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryDigitalVideoSensorStatus" value="msg" interpretation="enveloped QueryDigitalVideoSensorStatus message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportDigitalVideoSensorStatus" interpretation="Send a ReportDigitalVideoSensorStatus message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="SetDigitalVideoSensorConfiguration" value="msg" interpretation="enveloped SetDigitalVideoSensorConfiguration message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="accessControl.isControllingClient( transportData )" interpretation="True if the message that triggered the           transition is received from the client that is in control           of this service."/>
+                                <internal/>
+                                <action name="sendConfirmSensorConfiguration" interpretation="Send sendConfirmSensorConfiguration message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                                <action name="updateDigitalVideoSensorConfiguration" interpretation="Update the sensor user controllable           configuration parameters according to the ones specified.">
+                                    <argument value="msg"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="ControlDigitalVideoSensorStream" value="msg" interpretation="enveloped ControlDigitalVideoSensorStream message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="accessControl.isControllingClient( transportData )" interpretation="True if the message that triggered the           transition is received from the client that is in           control of this service."/>
+                                <internal/>
+                                <action name="modifyDigitalVideoSensorStream" interpretation="Modify the video stream according to the specified message.">
+                                    <argument value="msg"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="ControlDigitalVideoSensorRecording" value="msg" interpretation="enveloped ControlDigitalVideoSensorRecording message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="accessControl.isControllingClient( transportData )  &amp;&amp; isSupported( msg )" interpretation="True if the message that triggered the           transition is received from the client that is in           control of this service AND the requested recording          state is supported by the implementation."/>
+                                <internal/>
+                                <action name="updateDigitalVideoSensorRecordingState" interpretation="Update the video recording state according to the specified message.">
+                                    <argument value="msg"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryDigitalVideoSensorCapabilitiesExt" value="msg" interpretation="enveloped QueryDigitalVideoSensorCapabilitiesExt message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportDigitalVideoSensorCapabilitiesExt" interpretation="Send a ReportDigitalVideoSensorCapabilitiesExt message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryDigitalVideoSensorConfiguration" value="msg" interpretation="enveloped QueryDigitalVideoSensorConfiguration message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportDigitalVideoSensorConfiguration" interpretation="Send a ReportDigitalVideoSensorConfiguration message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryDigitalVideoSensorStatus" value="msg" interpretation="enveloped QueryDigitalVideoSensorStatus message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportDigitalVideoSensorStatus" interpretation="Send a ReportDigitalVideoSensorStatus message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="visualSensor.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

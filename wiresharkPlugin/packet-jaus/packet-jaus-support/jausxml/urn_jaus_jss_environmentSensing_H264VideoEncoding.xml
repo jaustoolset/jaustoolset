@@ -1,0 +1,975 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="H264VideoEncoding" id="urn:jaus:jss:environmentSensing:H264VideoEncoding" version="2.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The H264 Video Encoding Service provides a mechanism for querying and configuring the H264 encoding of one or more video sensors</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="digitalVideo" id="urn:jaus:jss:environmentSensing:DigitalVideo" version="2.0"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetH264VideoEncodingConfiguration" message_id="080D" is_command="true">
+                <description xml:space="preserve">This message is used to set the active configuration for one or more H264 encoded video streams.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="H264ConfigurationListSequence" optional="false">
+                        <record name="RequestIdRec" optional="false">
+                            <fixed_field name="RequestID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        </record>
+                        <list name="H264ConfigurationList" optional="false">
+                            <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                            <sequence name="H264ConfigurationSequence" optional="false">
+                                <presence_vector field_type_unsigned="unsigned byte"/>
+                                <record name="H264ConfigurationRec" optional="false">
+                                    <presence_vector field_type_unsigned="unsigned byte"/>
+                                    <fixed_field name="SensorID" optional="false" interpretation="Note: 0 is not a valid VisualSensorID value" field_type="unsigned short integer" field_units="one"/>
+                                    <fixed_field name="Profile" optional="true" interpretation="Enumeration for h264 profile setting." field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Baseline"/>
+                                            <value_enum enum_index="1" enum_const="ConstrainedBaseline"/>
+                                            <value_enum enum_index="2" enum_const="Main"/>
+                                            <value_enum enum_index="3" enum_const="Extended"/>
+                                            <value_enum enum_index="4" enum_const="High"/>
+                                            <value_enum enum_index="5" enum_const="ProgressiveHigh"/>
+                                            <value_enum enum_index="6" enum_const="ConstrainedHigh"/>
+                                            <value_enum enum_index="7" enum_const="High10"/>
+                                            <value_enum enum_index="8" enum_const="High422"/>
+                                            <value_enum enum_index="9" enum_const="High444Predictive"/>
+                                            <value_enum enum_index="10" enum_const="High10Intra"/>
+                                            <value_enum enum_index="11" enum_const="High422Intra"/>
+                                            <value_enum enum_index="12" enum_const="High444Intra"/>
+                                            <value_enum enum_index="13" enum_const="CAVLC444"/>
+                                            <value_enum enum_index="14" enum_const="ScalableBaseline"/>
+                                            <value_enum enum_index="15" enum_const="ScalableConstrainedBaseline"/>
+                                            <value_enum enum_index="16" enum_const="ScalableHigh"/>
+                                            <value_enum enum_index="17" enum_const="ScalableConstrainedHigh"/>
+                                            <value_enum enum_index="18" enum_const="ScalableHighIntra"/>
+                                            <value_enum enum_index="19" enum_const="StereoHigh"/>
+                                            <value_enum enum_index="20" enum_const="MultiviewHigh"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="Level" optional="true" interpretation="Enumeration for target h264 level." field_type="unsigned integer" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Level_1"/>
+                                            <value_enum enum_index="1" enum_const="Level_1B"/>
+                                            <value_enum enum_index="2" enum_const="Level_11"/>
+                                            <value_enum enum_index="3" enum_const="Level_12"/>
+                                            <value_enum enum_index="4" enum_const="Level_13"/>
+                                            <value_enum enum_index="5" enum_const="Level_2"/>
+                                            <value_enum enum_index="6" enum_const="Level_21"/>
+                                            <value_enum enum_index="7" enum_const="Level_22"/>
+                                            <value_enum enum_index="8" enum_const="Level_3"/>
+                                            <value_enum enum_index="9" enum_const="Level_31"/>
+                                            <value_enum enum_index="10" enum_const="Level_32"/>
+                                            <value_enum enum_index="11" enum_const="Level_4"/>
+                                            <value_enum enum_index="12" enum_const="Level_41"/>
+                                            <value_enum enum_index="13" enum_const="Level_42"/>
+                                            <value_enum enum_index="14" enum_const="Level_5"/>
+                                            <value_enum enum_index="15" enum_const="Level_51"/>
+                                            <value_enum enum_index="16" enum_const="Level_52"/>
+                                            <value_enum enum_index="17" enum_const="Level_6"/>
+                                            <value_enum enum_index="18" enum_const="Level_61"/>
+                                            <value_enum enum_index="19" enum_const="Level_62"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="Preset" optional="true" interpretation="Preconfigured settings for hardware specific H264 settings.  The actual values for each preset are not specified by the standard and are up to the implementation." field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="LowLatency"/>
+                                            <value_enum enum_index="1" enum_const="SlowComms"/>
+                                            <value_enum enum_index="2" enum_const="PersistentStare"/>
+                                            <value_enum enum_index="3" enum_const="DriveVision"/>
+                                            <value_enum enum_index="4" enum_const="Manipulation"/>
+                                            <value_enum enum_index="5" enum_const="BestQuality"/>
+                                            <value_enum enum_index="12" enum_const="ProgramSpecific_1"/>
+                                            <value_enum enum_index="13" enum_const="ProgramSpecific_2"/>
+                                            <value_enum enum_index="14" enum_const="ProgramSpecific_3"/>
+                                            <value_enum enum_index="15" enum_const="ProgramSpecific_4"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="GroupOfPictures" optional="true" interpretation="Number of interim frames before sending a key frame" field_type="unsigned byte" field_units="one"/>
+                                    <fixed_field name="GradualDecoderRefreshOnOff" optional="true" interpretation="Turn on/off Gradual Decoder Refresh, also called Periodic Intra Refresh." field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="OFF"/>
+                                            <value_enum enum_index="1" enum_const="ON"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="RegionOfInterestOnOff" optional="true" interpretation="Turn on/off region of interest (foveation) encoding, if supported.  The region of interest is specified by the RegionOfInterestParams array." field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="OFF"/>
+                                            <value_enum enum_index="1" enum_const="ON"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="IntraMacroRefresh" optional="true" interpretation="This parameter is the random intra macroblock refresh; it provides the refresh rate in Macroblocks per picture." field_type="unsigned short integer" field_units="one">
+                                        <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                    </fixed_field>
+                                </record>
+                                <record name="RegionOfInterestParams" optional="true">
+                                    <fixed_field name="X_Start" optional="false" interpretation="Horizontal start location of high bitrate window, measured as percent of total image width from the left" field_type="unsigned short integer" field_units="percent">
+                                        <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="Y_Start" optional="false" interpretation="Vertical start location of high bitrate window, measured as percent of total image height from the top" field_type="unsigned short integer" field_units="percent">
+                                        <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="Width" optional="false" interpretation="Width of high bitrate window, measured as percent of total image width" field_type="unsigned short integer" field_units="percent">
+                                        <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="Height" optional="false" interpretation="Height of high bitrate window , measured as percent of total image height" field_type="unsigned short integer" field_units="percent">
+                                        <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                    </fixed_field>
+                                    <fixed_field name="HighBitRate" optional="false" interpretation="Bitrate of ROI window, measured in kilobits per second" field_type="unsigned short integer" field_units="one"/>
+                                    <fixed_field name="LowBitRate" optional="false" interpretation="Bitrate of ROI window, measured in kilobits per second" field_type="unsigned short integer" field_units="one"/>
+                                </record>
+                                <record name="GradualDecoderRefreshParams" optional="true">
+                                    <fixed_field name="GDR_Duration" optional="false" interpretation="The number of frames needed to completely refresh the image" field_type="unsigned short integer" field_units="one"/>
+                                    <fixed_field name="GDR_Interval" optional="false" interpretation="The number of frames that need to be transmitted before starting a new GDR cycle. Note that the interval must be greater than or equal to the duration" field_type="unsigned short integer" field_units="one"/>
+                                </record>
+                            </sequence>
+                        </list>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryH264VideoEncodingCapabilities" message_id="280E" is_command="false">
+                <description xml:space="preserve">This message must be used to query for the H264 encoding capabilities of one or more visual sensors on the receiving service.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="QueryH264VideoEncodingCapabilitiesList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="QueryH264VideoEncodingRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" interpretation="The ID of the sensor for which the capabilities are being queried.Note: A value of 0 shall be interpreted as all associated sensors." field_type="unsigned short integer" field_units="one"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryH264VideoEncodingConfiguration" message_id="280D" is_command="false">
+                <description xml:space="preserve">This message must be used to query for the currently configured H264 encoding parameters.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="QueryH264VideoEncodingConfigurationList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="QueryH264VideoEncodingRec" optional="false">
+                            <fixed_field name="SensorID" optional="false" interpretation="The ID of the sensor for which the capabilities are being queried.Note: A value of 0 shall be interpreted as all associated sensors." field_type="unsigned short integer" field_units="one"/>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ConfirmSensorConfiguration" message_id="0801" is_command="false">
+                <description xml:space="preserve">This message is used to notify a client component that the configuration has been received with the values specified in the corresponding set message with Request ID matching the value of field 1 of this message. If the specified configuration request is deemed valid, the SensorIdRec is returned with the matching SensorID (or illuminatorID) of the 
+			sensor (or illuminator) for which the configuration was successfully 
+			set. If the requested configuration is invalid, one of the ErrorRec 
+			types shall be returned (depending on the source message) with 
+			an error code and description of the configuration setting which 
+			was deemed invalid.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="ConfirmSensorConfigurationSequence" optional="false">
+                        <record name="RequestIdRec" optional="false">
+                            <fixed_field name="RequestID" optional="false" field_type="unsigned byte" field_units="one"/>
+                        </record>
+                        <list name="ConfirmSensorList" optional="false">
+                            <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                            <variant name="ConfirmSensorConfigurationVariant" optional="false">
+                                <vtag_field min_count="0" max_count="9" field_type_unsigned="unsigned byte"/>
+                                <record name="SensorIdRec" optional="false">
+                                    <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                        </value_set>
+                                    </fixed_field>
+                                </record>
+                                <record name="RangeSensorErrorRec" optional="false">
+                                    <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="RangeSensorErrorCode" optional="false" field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Unknown Sensor ID"/>
+                                            <value_enum enum_index="1" enum_const="Invalid Horizontal Field of View"/>
+                                            <value_enum enum_index="2" enum_const="Invalid Vertical Field of View"/>
+                                            <value_enum enum_index="3" enum_const="Invalid Update Rate"/>
+                                            <value_enum enum_index="4" enum_const="Invalid Sensor Range"/>
+                                            <value_enum enum_index="5" enum_const="Invalid Sensor State"/>
+                                            <value_enum enum_index="6" enum_const="Multiple Invalid Parameters"/>
+                                            <value_enum enum_index="255" enum_const="Unknown Error / Fault"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <variable_length_string name="ErrorMessage" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                                <record name="VisualSensorErrorRec" optional="false">
+                                    <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="VisualSensorErrorCode" optional="false" field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Unknown Sensor ID"/>
+                                            <value_enum enum_index="1" enum_const="Invalid Sensor State"/>
+                                            <value_enum enum_index="2" enum_const="Invalid Zoom Mode"/>
+                                            <value_enum enum_index="3" enum_const="Invalid Zoom Value"/>
+                                            <value_enum enum_index="4" enum_const="Invalid Focus Mode"/>
+                                            <value_enum enum_index="5" enum_const="Invalid Focus Value"/>
+                                            <value_enum enum_index="6" enum_const="Invalid White Balance"/>
+                                            <value_enum enum_index="7" enum_const="Invalid Imaging Mode"/>
+                                            <value_enum enum_index="8" enum_const="Invalid Exposure Mode"/>
+                                            <value_enum enum_index="9" enum_const="Invalid Metering Mode"/>
+                                            <value_enum enum_index="10" enum_const="Invalid Shutter Speed"/>
+                                            <value_enum enum_index="11" enum_const="Invalid Aperture Value"/>
+                                            <value_enum enum_index="12" enum_const="Invalid Light Sensitivity"/>
+                                            <value_enum enum_index="13" enum_const="Invalid Image Stabilization"/>
+                                            <value_enum enum_index="14" enum_const="Invalid Horizontal FOV"/>
+                                            <value_enum enum_index="15" enum_const="Invalid Vertical FOV"/>
+                                            <value_enum enum_index="16" enum_const="Multiple Invalid Parameters"/>
+                                            <value_enum enum_index="255" enum_const="Unknown Error / Fault"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <variable_length_string name="ErrorMessage" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                                <record name="DigitalVideoSensorErrorRec" optional="false">
+                                    <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="DigitalVideoErrorCode" optional="false" field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Unknown Sensor ID"/>
+                                            <value_enum enum_index="1" enum_const="Invalid Minimum Bit Rate"/>
+                                            <value_enum enum_index="2" enum_const="Invalid Maximum Bit Rate"/>
+                                            <value_enum enum_index="3" enum_const="Requested Frame Rate Too Low"/>
+                                            <value_enum enum_index="4" enum_const="Requested Frame Rate Too High"/>
+                                            <value_enum enum_index="5" enum_const="Invalid Frame Size"/>
+                                            <value_enum enum_index="6" enum_const="Invalid Format"/>
+                                            <value_enum enum_index="7" enum_const="Multiple Invalid Parameters"/>
+                                            <value_enum enum_index="255" enum_const="Unknown Error / Fault"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <variable_length_string name="ErrorMessage" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                                <record name="AnalogVideoSensorErrorRec" optional="false">
+                                    <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="AnalogVideoErrorCode" optional="false" field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Unknown Sensor ID"/>
+                                            <value_enum enum_index="1" enum_const="Invalid Format"/>
+                                            <value_enum enum_index="255" enum_const="Unknown Error / Fault"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <variable_length_string name="ErrorMessage" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                                <record name="StillImageSensorErrorRec" optional="false">
+                                    <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="StillImageErrorCode" optional="false" field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Unknown Sensor ID"/>
+                                            <value_enum enum_index="1" enum_const="Invalid Frame Size"/>
+                                            <value_enum enum_index="2" enum_const="Invalid Format"/>
+                                            <value_enum enum_index="3" enum_const="Multiple Invalid Parameters"/>
+                                            <value_enum enum_index="255" enum_const="Unknown Error / Fault"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <variable_length_string name="ErrorMessage" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                                <record name="H264VideoEncodingErrorRec" optional="false">
+                                    <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="H264VideoEncodingErrorCode" optional="false" field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Unknown Sensor ID"/>
+                                            <value_enum enum_index="1" enum_const="Invalid Profile"/>
+                                            <value_enum enum_index="2" enum_const="Invalid Preset"/>
+                                            <value_enum enum_index="3" enum_const="Invalid GroupOfPictures"/>
+                                            <value_enum enum_index="4" enum_const="Invalid GDR"/>
+                                            <value_enum enum_index="5" enum_const="Invalid RegionOfInterest"/>
+                                            <value_enum enum_index="6" enum_const="Invalid IntraMacroRefresh"/>
+                                            <value_enum enum_index="255" enum_const="Unknown Error / Fault"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <variable_length_string name="ErrorMessage" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                                <record name="DigitalAudioSensorErrorRec" optional="false">
+                                    <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="DigitalAudioSensorErrorCode" optional="false" field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Unknown Sensor ID"/>
+                                            <value_enum enum_index="1" enum_const="Invalid BitRate"/>
+                                            <value_enum enum_index="2" enum_const="Invalid Format"/>
+                                            <value_enum enum_index="3" enum_const="Invalid SampleRate"/>
+                                            <value_enum enum_index="4" enum_const="Invalid BitDepth"/>
+                                            <value_enum enum_index="5" enum_const="Invalid EncodingQuality"/>
+                                            <value_enum enum_index="255" enum_const="Unknown Error / Fault"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <variable_length_string name="ErrorMessage" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                                <record name="DigitalAudioOutputErrorRec" optional="false">
+                                    <fixed_field name="SensorID" optional="false" interpretation="ID of the sensor. Zero (0) is not a valid ID in this message." field_type="unsigned short integer" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <fixed_field name="DigitalAudioOutputErrorCode" optional="false" field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Unknown Sensor ID"/>
+                                            <value_enum enum_index="1" enum_const="Stream Not Found"/>
+                                            <value_enum enum_index="2" enum_const="Stream Not Supported"/>
+                                            <value_enum enum_index="255" enum_const="Unknown Error / Fault"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <variable_length_string name="ErrorMessage" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                                <record name="VideoIlluminatorErrorRec" optional="false">
+                                    <fixed_field name="IlluminatorID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                                    <fixed_field name="VideoIlluminatorErrorRecCode" optional="false" field_type="unsigned byte" field_units="one">
+                                        <value_set offset_to_lower_limit="false">
+                                            <value_enum enum_index="0" enum_const="Unknown Sensor ID"/>
+                                            <value_enum enum_index="1" enum_const="Unsupported Mode"/>
+                                            <value_enum enum_index="2" enum_const="Unsupported Beam Width"/>
+                                            <value_enum enum_index="3" enum_const="Unsupported Beam Height"/>
+                                            <value_enum enum_index="255" enum_const="Unknown Error / Fault"/>
+                                        </value_set>
+                                    </fixed_field>
+                                    <variable_length_string name="ErrorMessage" optional="false">
+                                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                    </variable_length_string>
+                                </record>
+                            </variant>
+                        </list>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportH264VideoEncodingCapabilities" message_id="480E" is_command="false">
+                <description xml:space="preserve">This message is used to report which configuration options are supported on one or more H264 encoded video streams.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="H264CapabilitiesList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <record name="H264CapabilitiesRec" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <fixed_field name="SensorID" optional="false" interpretation="Note: 0 is not a valid VisualSensorID value" field_type="unsigned short integer" field_units="one"/>
+                            <bit_field name="SupportedProfiles" optional="true" interpretation="A high value (1) for a bit means the profile is supported." field_type_unsigned="unsigned integer">
+                                <sub_field name="Baseline">
+                                    <bit_range from_index="0" to_index="0" interpretation="Baseline"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ConstrainedBaseline">
+                                    <bit_range from_index="1" to_index="1" interpretation="ConstrainedBaseline"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Main">
+                                    <bit_range from_index="2" to_index="2" interpretation="Main"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Extended">
+                                    <bit_range from_index="3" to_index="3" interpretation="Extended"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="High">
+                                    <bit_range from_index="4" to_index="4" interpretation="High"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ProgressiveHigh">
+                                    <bit_range from_index="5" to_index="5" interpretation="ProgressiveHigh"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ConstrainedHigh">
+                                    <bit_range from_index="6" to_index="6" interpretation="ConstrainedHigh"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="High10">
+                                    <bit_range from_index="7" to_index="7" interpretation="High10"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="High422">
+                                    <bit_range from_index="8" to_index="8" interpretation="High422"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="High444Predictive">
+                                    <bit_range from_index="9" to_index="9" interpretation="High444Predictive"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="High10Intra">
+                                    <bit_range from_index="10" to_index="10" interpretation="High10Intra"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="High422Intra">
+                                    <bit_range from_index="11" to_index="11" interpretation="High422Intra"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="High444Intra">
+                                    <bit_range from_index="12" to_index="12" interpretation="High444Intra"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="CAVLC444">
+                                    <bit_range from_index="13" to_index="13" interpretation="CAVLC444"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ScalableBaseline">
+                                    <bit_range from_index="14" to_index="14" interpretation="ScalableBaseline"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ScalableConstrainedBaseline">
+                                    <bit_range from_index="15" to_index="15" interpretation="ScalableConstrainedBaseline"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ScalableHigh">
+                                    <bit_range from_index="16" to_index="16" interpretation="ScalableHigh"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ScalableConstrainedHigh">
+                                    <bit_range from_index="17" to_index="17" interpretation="ScalableConstrainedHigh"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ScalableHighIntra">
+                                    <bit_range from_index="18" to_index="18" interpretation="ScalableHighIntra"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="StereoHigh">
+                                    <bit_range from_index="19" to_index="19" interpretation="StereoHigh"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="MultiviewHigh">
+                                    <bit_range from_index="20" to_index="20" interpretation="MultiviewHigh"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                            <bit_field name="SupportedLevels" optional="true" interpretation="A high value (1) for a bit means the level is supported." field_type_unsigned="unsigned integer">
+                                <sub_field name="Level_1">
+                                    <bit_range from_index="0" to_index="0" interpretation="Level_1"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_1B">
+                                    <bit_range from_index="1" to_index="1" interpretation="Level_1B"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_11">
+                                    <bit_range from_index="2" to_index="2" interpretation="Level_11"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_12">
+                                    <bit_range from_index="3" to_index="3" interpretation="Level_12"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_13">
+                                    <bit_range from_index="4" to_index="4" interpretation="Level_13"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_2">
+                                    <bit_range from_index="5" to_index="5" interpretation="Level_2"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_21">
+                                    <bit_range from_index="6" to_index="6" interpretation="Level_21"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_22">
+                                    <bit_range from_index="7" to_index="7" interpretation="Level_22"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_3">
+                                    <bit_range from_index="8" to_index="8" interpretation="Level_3"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_31">
+                                    <bit_range from_index="9" to_index="9" interpretation="Level_31"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_32">
+                                    <bit_range from_index="10" to_index="10" interpretation="Level_32"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_4">
+                                    <bit_range from_index="11" to_index="11" interpretation="Level_4"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_41">
+                                    <bit_range from_index="12" to_index="12" interpretation="Level_41"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_42">
+                                    <bit_range from_index="13" to_index="13" interpretation="Level_42"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_5">
+                                    <bit_range from_index="14" to_index="14" interpretation="Level_5"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_51">
+                                    <bit_range from_index="15" to_index="15" interpretation="Level_51"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_52">
+                                    <bit_range from_index="16" to_index="16" interpretation="Level_52"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_6">
+                                    <bit_range from_index="17" to_index="17" interpretation="Level_6"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_61">
+                                    <bit_range from_index="18" to_index="18" interpretation="Level_61"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Level_62">
+                                    <bit_range from_index="19" to_index="19" interpretation="Level_62"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                            <bit_field name="SupportedPresets" optional="true" interpretation="A high value (1) for a bit means the preset is supported." field_type_unsigned="unsigned short integer">
+                                <sub_field name="LowLatency">
+                                    <bit_range from_index="0" to_index="0" interpretation="LowLatency"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="SlowComms">
+                                    <bit_range from_index="1" to_index="1" interpretation="SlowComms"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="PersistentStare">
+                                    <bit_range from_index="2" to_index="2" interpretation="PersistentStare"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="DriveVision">
+                                    <bit_range from_index="3" to_index="3" interpretation="DriveVision"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Manipulation">
+                                    <bit_range from_index="4" to_index="4" interpretation="Manipulation"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="BestQuality">
+                                    <bit_range from_index="5" to_index="5" interpretation="BestQuality"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="NotSupported"/>
+                                        <value_enum enum_index="1" enum_const="Supported"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="Reserved">
+                                    <bit_range from_index="6" to_index="11" interpretation="Reserved"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="63" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                                <sub_field name="ProgramSpecific">
+                                    <bit_range from_index="12" to_index="15" interpretation="ProgramSpecific"/>
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="15" upper_limit_type="inclusive"/>
+                                    </value_set>
+                                </sub_field>
+                            </bit_field>
+                            <fixed_field name="GroupOfPicturesSupported" optional="true" interpretation="Boolean for Group of Pictures support" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="FALSE"/>
+                                    <value_enum enum_index="1" enum_const="TRUE"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="GradualDecoderRefreshSupported" optional="true" interpretation="Boolean for Gradual Decoder Refresh (Periodic Intra Refresh) support" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="FALSE"/>
+                                    <value_enum enum_index="1" enum_const="TRUE"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="RegionOfInterestSupported" optional="true" interpretation="Boolean for Region of Interest (foveation) support" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="FALSE"/>
+                                    <value_enum enum_index="1" enum_const="TRUE"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportH264VideoEncodingConfiguration" message_id="480D" is_command="false">
+                <description xml:space="preserve">This message is used to report the active configuration for one or more H264 encoded video streams.</description>
+                <header name="JAUSApplicationLayerHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="H264ConfigurationList" optional="false">
+                        <count_field min_count="0" max_count="65535" field_type_unsigned="unsigned short integer"/>
+                        <sequence name="H264ConfigurationSequence" optional="false">
+                            <presence_vector field_type_unsigned="unsigned byte"/>
+                            <record name="H264ConfigurationRec" optional="false">
+                                <presence_vector field_type_unsigned="unsigned byte"/>
+                                <fixed_field name="SensorID" optional="false" interpretation="Note: 0 is not a valid VisualSensorID value" field_type="unsigned short integer" field_units="one"/>
+                                <fixed_field name="Profile" optional="true" interpretation="Enumeration for h264 profile setting." field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Baseline"/>
+                                        <value_enum enum_index="1" enum_const="ConstrainedBaseline"/>
+                                        <value_enum enum_index="2" enum_const="Main"/>
+                                        <value_enum enum_index="3" enum_const="Extended"/>
+                                        <value_enum enum_index="4" enum_const="High"/>
+                                        <value_enum enum_index="5" enum_const="ProgressiveHigh"/>
+                                        <value_enum enum_index="6" enum_const="ConstrainedHigh"/>
+                                        <value_enum enum_index="7" enum_const="High10"/>
+                                        <value_enum enum_index="8" enum_const="High422"/>
+                                        <value_enum enum_index="9" enum_const="High444Predictive"/>
+                                        <value_enum enum_index="10" enum_const="High10Intra"/>
+                                        <value_enum enum_index="11" enum_const="High422Intra"/>
+                                        <value_enum enum_index="12" enum_const="High444Intra"/>
+                                        <value_enum enum_index="13" enum_const="CAVLC444"/>
+                                        <value_enum enum_index="14" enum_const="ScalableBaseline"/>
+                                        <value_enum enum_index="15" enum_const="ScalableConstrainedBaseline"/>
+                                        <value_enum enum_index="16" enum_const="ScalableHigh"/>
+                                        <value_enum enum_index="17" enum_const="ScalableConstrainedHigh"/>
+                                        <value_enum enum_index="18" enum_const="ScalableHighIntra"/>
+                                        <value_enum enum_index="19" enum_const="StereoHigh"/>
+                                        <value_enum enum_index="20" enum_const="MultiviewHigh"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="Level" optional="true" interpretation="Enumeration for target h264 level." field_type="unsigned integer" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="Level_1"/>
+                                        <value_enum enum_index="1" enum_const="Level_1B"/>
+                                        <value_enum enum_index="2" enum_const="Level_11"/>
+                                        <value_enum enum_index="3" enum_const="Level_12"/>
+                                        <value_enum enum_index="4" enum_const="Level_13"/>
+                                        <value_enum enum_index="5" enum_const="Level_2"/>
+                                        <value_enum enum_index="6" enum_const="Level_21"/>
+                                        <value_enum enum_index="7" enum_const="Level_22"/>
+                                        <value_enum enum_index="8" enum_const="Level_3"/>
+                                        <value_enum enum_index="9" enum_const="Level_31"/>
+                                        <value_enum enum_index="10" enum_const="Level_32"/>
+                                        <value_enum enum_index="11" enum_const="Level_4"/>
+                                        <value_enum enum_index="12" enum_const="Level_41"/>
+                                        <value_enum enum_index="13" enum_const="Level_42"/>
+                                        <value_enum enum_index="14" enum_const="Level_5"/>
+                                        <value_enum enum_index="15" enum_const="Level_51"/>
+                                        <value_enum enum_index="16" enum_const="Level_52"/>
+                                        <value_enum enum_index="17" enum_const="Level_6"/>
+                                        <value_enum enum_index="18" enum_const="Level_61"/>
+                                        <value_enum enum_index="19" enum_const="Level_62"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="Preset" optional="true" interpretation="Preconfigured settings for hardware specific H264 settings.  The actual values for each preset are not specified by the standard and are up to the implementation." field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="LowLatency"/>
+                                        <value_enum enum_index="1" enum_const="SlowComms"/>
+                                        <value_enum enum_index="2" enum_const="PersistentStare"/>
+                                        <value_enum enum_index="3" enum_const="DriveVision"/>
+                                        <value_enum enum_index="4" enum_const="Manipulation"/>
+                                        <value_enum enum_index="5" enum_const="BestQuality"/>
+                                        <value_enum enum_index="12" enum_const="ProgramSpecific_1"/>
+                                        <value_enum enum_index="13" enum_const="ProgramSpecific_2"/>
+                                        <value_enum enum_index="14" enum_const="ProgramSpecific_3"/>
+                                        <value_enum enum_index="15" enum_const="ProgramSpecific_4"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="GroupOfPictures" optional="true" interpretation="Number of interim frames before sending a key frame" field_type="unsigned byte" field_units="one"/>
+                                <fixed_field name="GradualDecoderRefreshOnOff" optional="true" interpretation="Turn on/off Gradual Decoder Refresh, also called Periodic Intra Refresh." field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="OFF"/>
+                                        <value_enum enum_index="1" enum_const="ON"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="RegionOfInterestOnOff" optional="true" interpretation="Turn on/off region of interest (foveation) encoding, if supported.  The region of interest is specified by the RegionOfInterestParams array." field_type="unsigned byte" field_units="one">
+                                    <value_set offset_to_lower_limit="false">
+                                        <value_enum enum_index="0" enum_const="OFF"/>
+                                        <value_enum enum_index="1" enum_const="ON"/>
+                                    </value_set>
+                                </fixed_field>
+                                <fixed_field name="IntraMacroRefresh" optional="true" interpretation="This parameter is the random intra macroblock refresh; it provides the refresh rate in Macroblocks per picture." field_type="unsigned short integer" field_units="one">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                </fixed_field>
+                            </record>
+                            <record name="RegionOfInterestParams" optional="true">
+                                <fixed_field name="X_Start" optional="false" interpretation="Horizontal start location of high bitrate window, measured as percent of total image width from the left" field_type="unsigned short integer" field_units="percent">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="Y_Start" optional="false" interpretation="Vertical start location of high bitrate window, measured as percent of total image height from the top" field_type="unsigned short integer" field_units="percent">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="Width" optional="false" interpretation="Width of high bitrate window, measured as percent of total image width" field_type="unsigned short integer" field_units="percent">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="Height" optional="false" interpretation="Height of high bitrate window , measured as percent of total image height" field_type="unsigned short integer" field_units="percent">
+                                    <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="HighBitRate" optional="false" interpretation="Bitrate of ROI window, measured in kilobits per second" field_type="unsigned short integer" field_units="one"/>
+                                <fixed_field name="LowBitRate" optional="false" interpretation="Bitrate of ROI window, measured in kilobits per second" field_type="unsigned short integer" field_units="one"/>
+                            </record>
+                            <record name="GradualDecoderRefreshParams" optional="true">
+                                <fixed_field name="GDR_Duration" optional="false" interpretation="The number of frames needed to completely refresh the image" field_type="unsigned short integer" field_units="one"/>
+                                <fixed_field name="GDR_Interval" optional="false" interpretation="The number of frames that need to be transmitted before starting a new GDR cycle. Note that the interval must be greater than or equal to the duration" field_type="unsigned short integer" field_units="one"/>
+                            </record>
+                        </sequence>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="digitalVideo.visualSensor.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="digitalVideo.visualSensor.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="digitalVideo.visualSensor.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="digitalVideo.visualSensor.accessControl.events.transport.Receive">
+                                <parameter type="QueryH264VideoEncodingCapabilities" value="msg" interpretation="enveloped query message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportH264VideoEncodingCapabilities" interpretation="Send a ReportH264VideoEncodingCapabilities message to the original requestor">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="digitalVideo.visualSensor.accessControl.events.transport.Receive">
+                                <parameter type="QueryH264VideoEncodingConfiguration" value="msg" interpretation="enveloped query message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportH264VideoEncodingConfiguration" interpretation="Send a ReportH264VideoEncodingConfiguration message to the original requestor">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="digitalVideo.visualSensor.accessControl.events.transport.Receive">
+                                <parameter type="SetH264VideoEncodingConfiguration" value="msg" interpretation="enveloped set message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )" interpretation="True if the command message was received from the client currently controlling this component"/>
+                                <internal/>
+                                <action name="setH264VideoEncodingConfig" interpretation="Update the H264 encoding configuration if valid for the specified sensor ID">
+                                    <argument value="msg"/>
+                                </action>
+                                <action name="sendConfirmSensorConfiguration" interpretation="Send sendConfirmSensorConfiguration message with confirmation or error code for each specified sensor ID">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="digitalVideo.visualSensor.accessControl.events.transport.Receive">
+                                <parameter type="QueryH264VideoEncodingCapabilities" value="msg" interpretation="enveloped query message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportH264VideoEncodingCapabilities" interpretation="Send a ReportH264VideoEncodingCapabilities message to the original requestor">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="digitalVideo.visualSensor.accessControl.events.transport.Receive">
+                                <parameter type="QueryH264VideoEncodingConfiguration" value="msg" interpretation="enveloped query message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportH264VideoEncodingConfiguration" interpretation="Send a ReportH264VideoEncodingConfiguration message to the original requestor">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="digitalVideo.visualSensor.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

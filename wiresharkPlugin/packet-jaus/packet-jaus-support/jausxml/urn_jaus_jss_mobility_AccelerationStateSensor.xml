@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="AccelerationStateSensor" id="urn:jaus:jss:mobility:AccelerationStateSensor" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">This service reports the acceleration state of the unmanned platform.  The Acceleration State Sensor reports the acceleration state that is the first derivative (the rate of change) of the velocity state reported by the Velocity State Sensor. Refer to the description on Velocity State Sensor for coordinate details.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryAccelerationState" message_id="2417" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4417h: ReportAccelerationState message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder. The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryAccelerationStateRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Acceleration State Message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryAccelerationStateExt" message_id="24B7" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 44B7h: ReportAccelerationStateExt  message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder.  The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryAccelerationStateExtRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Acceleration State Ext Message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportAccelerationState" message_id="4417" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message is used to provide the receiver the rate of change in linear velocity and rotational rate of the platform.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportAccelerationStateRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="Acceleration_X" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_Y" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_Z" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_RMS" optional="true" interpretation="An RMS value indicating the validity of the acceleration data." field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="RollAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PitchAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="YawAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="RotationalAcceleration_RMS" optional="true" interpretation="An RMS value indicating the validity of the rotational acceleration data." field_type="unsigned short integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="0" real_upper_limit="3.14159265358979323846" integer_function="round"/>
+                        </fixed_field>
+                        <bit_field name="TimeStamp" optional="true" field_type_unsigned="unsigned integer">
+                            <sub_field name="Milliseconds">
+                                <bit_range from_index="0" to_index="9"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="999" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Seconds">
+                                <bit_range from_index="10" to_index="15"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Minutes">
+                                <bit_range from_index="16" to_index="21"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="59" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Hour">
+                                <bit_range from_index="22" to_index="26"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="0" lower_limit_type="inclusive" upper_limit="23" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                            <sub_field name="Day">
+                                <bit_range from_index="27" to_index="31"/>
+                                <value_set offset_to_lower_limit="false">
+                                    <value_range lower_limit="1" lower_limit_type="inclusive" upper_limit="31" upper_limit_type="inclusive"/>
+                                </value_set>
+                            </sub_field>
+                        </bit_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportAccelerationStateExt" message_id="44B7" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the rate of change in linear velocity and rotational rate of the platform.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportAccelerationStateExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned short integer"/>
+                        <fixed_field name="Acceleration_X" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_Y" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_Z" optional="true" field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="-1310.68" real_upper_limit="1310.68" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Acceleration_RMS" optional="true" interpretation="An RMS value indicating the validity of the acceleration data." field_type="unsigned integer" field_units="meter per second squared">
+                            <scale_range real_lower_limit="0" real_upper_limit="100" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="RollAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PitchAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="YawAcceleration" optional="true" field_type="unsigned integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="-13106.8" real_upper_limit="13106.8" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="RotationalAcceleration_RMS" optional="true" interpretation="An RMS value indicating the validity of the rotational acceleration data." field_type="unsigned short integer" field_units="radian per second squared">
+                            <scale_range real_lower_limit="0" real_upper_limit="1000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="TimeSeconds" optional="true" interpretation="UTC POSIX-style time in seconds since 1 January 1970" field_type="unsigned integer" field_units="second"/>
+                        <fixed_field name="TimeNanoSeconds" optional="true" interpretation="Nanoseconds component of POSIX-style time" field_type="unsigned integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <start state_machine_name="events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready">
+                    <default_state>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryAccelerationState" value="msg" interpretation="enveloped query acceleration                     state message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                            <internal/>
+                            <action name="events.transport.Send" interpretation="Send a Report                     Acceleration State message">
+                                <argument value=" 'ReportAccelerationState' "/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryAccelerationStateExt" value="msg" interpretation="enveloped query acceleration                     ext state message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                            <internal/>
+                            <action name="events.transport.Send" interpretation="Send a Report                     Acceleration State Ext message">
+                                <argument value=" 'ReportAccelerationStateExt' "/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                    </default_state>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

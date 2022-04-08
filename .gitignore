@@ -1,4 +1,6 @@
-/GUI/build/
-/GUI/dist/
-/promelaCodeGenerator/build/
-/promelaCodeGenerator/dist/
+dist
+Build
+bin
+lib
+.sconsign.dblite
+__init__.pyc

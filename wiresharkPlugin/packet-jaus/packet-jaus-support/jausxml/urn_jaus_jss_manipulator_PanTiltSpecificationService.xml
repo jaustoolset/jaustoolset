@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="PanTiltSpecificationService" id="urn:jaus:jss:manipulator:PanTiltSpecificationService" version="2.0" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Pan Tilt Specification Service is to report the physical characteristics of a pan-tilt unit.  The Report Pan Tilt Specification Message returns the minimum and maximum allowable value and the maximum velocity for each of the two joints as well as the position and orientation of the pan tilt base coordinate system relative to the vehicle coordinate system.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost, or reordered.</assumptions>
+    <references>
+        <inherits_from name="events" id="urn:jaus:jss:core:Events" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="QueryPanTiltSpecifications" message_id="2620" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving service to reply to the requestor with a ID 4620h: ReportPanTiltSpecifications message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryPanTiltSpecificationsRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportPanTiltSpecifications" message_id="4620" is_command="false">
+                <description xml:space="preserve">This message provides the joint angle and joint velocity limits for the pan tilt mechanism.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ReportPanTiltSpecificationsRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="PanTiltCoordinateSysX" optional="true" interpretation="x coordinate of origin of pan tilt coordinate system measured with respect to vehicle coordinate system" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-30" real_upper_limit="30" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PanTiltCoordinateSysY" optional="true" interpretation="x coordinate of origin of pan tilt coordinate system measured with respect to vehicle coordinate system" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-30" real_upper_limit="30" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PanTiltCoordinateSysZ" optional="true" interpretation="x coordinate of origin of pan tilt coordinate system measured with respect to vehicle coordinate system" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-30" real_upper_limit="30" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="DComponentOfUnitQuaternionQ" optional="true" interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system" field_type="unsigned integer" field_units="one">
+                            <scale_range real_lower_limit="-1" real_upper_limit="1" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="AComponentOfUnitQuaternionQ" optional="true" interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system" field_type="unsigned integer" field_units="one">
+                            <scale_range real_lower_limit="-1" real_upper_limit="1" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="BComponentOfUnitQuaternionQ" optional="true" interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system" field_type="unsigned integer" field_units="one">
+                            <scale_range real_lower_limit="-1" real_upper_limit="1" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="CComponentOfUnitQuaternionQ" optional="true" interpretation="quaternion q = d + ai +bj + ck defines the orientation of the manipulator coordinate system measured with respect to the vehicle coordinate system" field_type="unsigned integer" field_units="one">
+                            <scale_range real_lower_limit="-1" real_upper_limit="1" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Joint1MinValue" optional="false" field_type="unsigned integer" field_units="radian">
+                            <scale_range real_lower_limit="-25.132741228718345" real_upper_limit="25.132741228718345" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Joint1MaxValue" optional="false" field_type="unsigned integer" field_units="radian">
+                            <scale_range real_lower_limit="-25.132741228718345" real_upper_limit="25.132741228718345" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Joint1MaxSpeed" optional="false" field_type="unsigned integer" field_units="radian per second">
+                            <scale_range real_lower_limit="0" real_upper_limit="31.41592653589793" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Joint2MinValue" optional="false" field_type="unsigned integer" field_units="radian">
+                            <scale_range real_lower_limit="-25.132741228718345" real_upper_limit="25.132741228718345" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Joint2MaxValue" optional="false" field_type="unsigned integer" field_units="radian">
+                            <scale_range real_lower_limit="-25.132741228718345" real_upper_limit="25.132741228718345" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="Joint2MaxSpeed" optional="false" field_type="unsigned integer" field_units="radian per second">
+                            <scale_range real_lower_limit="0" real_upper_limit="31.41592653589793" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior is_stateless="false">
+        <start state_machine_name="events.transport.ReceiveFSM" state_name="Receiving.Ready"/>
+        <start state_machine_name="events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready">
+                    <default_state>
+                        <transition name="events.transport.Receive">
+                            <parameter type="QueryPanTiltSpecifications" value="msg" interpretation="enveloped query pan tilt specifications message"/>
+                            <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                            <internal/>
+                            <action name="events.transport.Send" interpretation="Send a Report Pan Tilt Specifications message">
+                                <argument value=" 'ReportPanTiltSpecifications' "/>
+                                <argument value="transportData"/>
+                            </action>
+                        </transition>
+                    </default_state>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

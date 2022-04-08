@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="LocalPathSegmentDriver" id="urn:jaus:jss:mobility:LocalPathSegmentDriver" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Local Path Segment Driver is to perform closed loop control of position and velocity along a path where the path is defined in a generic manner. The Local Path Segment Driver differs from the Waypoint Drivers in that the exact path between “s” is strictly defined. A path segment will be defined by specifying the three-dimensional coordinates of three points, P0, P1, and P2 together with one scalar weighting value w1 as documented in the JAUS Mobility Service Set Specification.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered.</assumptions>
+    <references>
+        <inherits_from name="listManager" id="urn:jaus:jss:core:ListManager" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="ExecuteList" message_id="041E" is_command="true" deprecated="true">
+                <description xml:space="preserve">This message is used to begin execution of a sequential list of motion commands.  Field #2 sets the desired speed of the platform.  The starting element UID can also be specified, where a value of zero (0) indicates the first (head) element in the list.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ExecuteListRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="Speed" optional="false" field_type="unsigned short integer" field_units="meter per second">
+                            <scale_range real_lower_limit="0" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="ElementUID" optional="true" interpretation="Element UID of the starting element.  A value of zero (0) indicates the first (head) element of the list." field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ExecuteListExt" message_id="04AE" is_command="true">
+                <description xml:space="preserve">This message is used to begin execution of a sequential list of motion commands.  Field #2 sets the desired speed of the platform using an absolute or relative value.  The starting element UID can also be specified, where a value of zero (0) indicates the first (head) element in the list.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ExecuteListExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <variable_field name="Speed" optional="false">
+                            <type_and_units_field>
+                                <type_and_units_enum name="SpeedOverGround" index="0" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="SpeedRelativeToMedium" index="1" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="RotationsPerMinute" index="2" field_type="unsigned short integer" field_units="rotations per minute">
+                                    <scale_range real_lower_limit="-1000" real_upper_limit="1000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="IndicatedSpeed" index="3" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                        <fixed_field name="ElementUID" optional="true" interpretation="Element UID of the starting element.  A value of zero (0) indicates the first (head) element of the list." field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryTravelSpeed" message_id="240A" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 440Ah: ReportTravelSpeed message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryTravelSpeedExt" message_id="24AA" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 44AAh: ReportTravelSpeedExt  message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryLocalPathSegment" message_id="2410" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 4410h: ReportLocalPathSegment (Deprecated) message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder.  The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryLocalPathSegmentRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Local Path Segment Message" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryLocalPathSegmentExt" message_id="24B0" is_command="false">
+                <description xml:space="preserve">This message shall cause the receiving component to reply to the requestor with a ID 44B0h: ReportLocalPathSegmentExt  message.  A logical AND shall be performed on the requested presence vector and that representing the available fields from the responder. The resulting message shall contain the fields indicated by the result of this logical AND operation.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="QueryLocalPathSegmentExtRec" optional="false">
+                        <fixed_field name="PresenceVector" optional="false" interpretation="See Report Local Path Segment Ext Message" field_type="unsigned byte" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryActiveElement" message_id="241E" is_command="false">
+                <description xml:space="preserve">This message is used to query the current active element of an executing list.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body"/>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportTravelSpeed" message_id="440A" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message is used to provide the receiver the current value of the commanded travel speed. The message data of this message is identical to ID 040A h: SetTravelSpeed (Deprecated).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="TravelSpeedRec" optional="false">
+                        <fixed_field name="Speed" optional="false" field_type="unsigned short integer" field_units="meter per second">
+                            <scale_range real_lower_limit="0" real_upper_limit="327.67" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportTravelSpeedExt" message_id="44AA" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the current value of the commanded travel speed. The message data of this message is identical to ID 04AA h: SetTravelSpeedExt.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="TravelSpeedExtRec" optional="false">
+                        <variable_field name="Speed" optional="false">
+                            <type_and_units_field>
+                                <type_and_units_enum name="SpeedOverGround" index="0" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="SpeedRelativeToMedium" index="1" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="RotationsPerMinute" index="2" field_type="unsigned short integer" field_units="rotations per minute">
+                                    <scale_range real_lower_limit="-1000" real_upper_limit="1000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="IndicatedSpeed" index="3" field_type="unsigned short integer" field_units="meter per second">
+                                    <scale_range real_lower_limit="-327.68" real_upper_limit="327.67" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportLocalPathSegment" message_id="4410" is_command="false" deprecated="true">
+                <description xml:space="preserve">This message is used to provide the receiver the values of the commanded path segment. The message data and mapping of the presence vector of this message are identical to ID 0410h: SetLocalPathSegment (Deprecated).</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="LocalPathSegmentRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="P1_X" optional="false" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="P1_Y" optional="false" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="P1_Z" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="P2_X" optional="false" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="P2_Y" optional="false" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-100000" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="P2_Z" optional="true" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-10000" real_upper_limit="35000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="WeightingFactor" optional="false" interpretation="A value of zero (0) is a straight line" field_type="unsigned short integer" field_units="one">
+                            <scale_range real_lower_limit="0" real_upper_limit="500" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PathTolerance" optional="true" interpretation="A value of zero (0) is used for infinite tolerance" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportLocalPathSegmentExt" message_id="44B0" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver the values of the commanded path segment. The message data and mapping of the presence vector of this message are identical to ID 44B0h: ReportLocalPathSegmentExt.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="LocalPathSegmentExtRec" optional="false">
+                        <presence_vector field_type_unsigned="unsigned byte"/>
+                        <fixed_field name="P1_X" optional="false" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="P1_Y" optional="false" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                        </fixed_field>
+                        <variable_field name="P1_ZPosition" optional="true">
+                            <type_and_units_field>
+                                <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                        <fixed_field name="P2_X" optional="false" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="P2_Y" optional="false" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                        </fixed_field>
+                        <variable_field name="P2_ZPosition" optional="true">
+                            <type_and_units_field>
+                                <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                                <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                </type_and_units_enum>
+                            </type_and_units_field>
+                        </variable_field>
+                        <fixed_field name="WeightingFactor" optional="false" interpretation="A value of zero (0) is a straight line" field_type="unsigned short integer" field_units="one">
+                            <scale_range real_lower_limit="0" real_upper_limit="500" integer_function="round"/>
+                        </fixed_field>
+                        <fixed_field name="PathTolerance" optional="true" interpretation="A value of zero (0) is used for infinite tolerance" field_type="unsigned integer" field_units="meter">
+                            <scale_range real_lower_limit="0" real_upper_limit="100000" integer_function="round"/>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportActiveElement" message_id="441E" is_command="false">
+                <description xml:space="preserve">This message is used to report the identifier of the current list element being executed.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ActiveElementRec" optional="false">
+                        <fixed_field name="ElementUID" optional="false" interpretation="UID of the active list element.  A value of 0 implies that no lists are executing." field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set/>
+    <protocol_behavior>
+        <start state_machine_name="listManager.management.accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="listManager.management.accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="listManager.management.accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                        </state>
+                        <state name="NotAvailable" initial_state="Init">
+                            <state name="Init"/>
+                            <state name="Failure"/>
+                            <state name="Shutdown"/>
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryTravelSpeed" value="msg" interpretation="enveloped query travel speed message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Travel Speed message">
+                                    <argument value=" 'ReportTravelSpeed' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryTravelSpeedExt" value="msg" interpretation="enveloped query travel speed ext message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Travel Speed Ext message">
+                                    <argument value=" 'ReportTravelSpeedExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalPathSegment" value="msg" interpretation="enveloped query local path segment message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="segmentExists( msg )" interpretation="True if a valid path segment has been received."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Local Path Segment message">
+                                    <argument value=" 'ReportLocalPathSegment' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalPathSegmentExt" value="msg" interpretation="enveloped query local path segment ext message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="segmentExists( msg )" interpretation="True if a valid path segment has been received."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Local Path Segment Ext message">
+                                    <argument value=" 'ReportLocalPathSegmentExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryActiveElement" value="msg" interpretation="enveloped query active element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Active Element message">
+                                    <argument value=" 'ReportActiveElement' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available" initial_state="Standby">
+                            <state name="Standby"/>
+                            <state name="Ready">
+                                <exit>
+                                    <action name="resetTravelSpeed" interpretation="Safe motion of the platform, as described in Section 3.5"/>
+                                </exit>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="ExecuteList" value="msg" interpretation="enveloped execute list message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData ) &amp;&amp;                      elementExists( msg )" interpretation="True if the message that triggered the transition is                     received from the client that is in control of this service AND the                      Element UID specified in the message exists in the list."/>
+                                    <internal/>
+                                    <action name="executePathSegmentList" interpretation="Begin sequential execution of the path segment                     list starting at the specified element at the specified speed."/>
+                                </transition>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="ExecuteList" value="msg" interpretation="enveloped execute list message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData ) &amp;&amp;                      !elementSpecified( msg )" interpretation="True if the message that triggered the transition                      is received from the client that is in control of this service AND                      the message does not contain an ElementUID."/>
+                                    <internal/>
+                                    <action name="modifyTravelSpeed" interpretation="Set the travel speed to the specified value."/>
+                                </transition>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="ExecuteListExt" value="msg" interpretation="enveloped execute list message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData ) &amp;&amp;                      elementExists( msg )" interpretation="True if the message that triggered the transition is                     received from the client that is in control of this service AND the                      Element UID specified in the message exists in the list."/>
+                                    <internal/>
+                                    <action name="executePathSegmentList" interpretation="Begin sequential execution of the path segment                     list starting at the specified element at the specified speed."/>
+                                </transition>
+                                <transition name="management.accessControl.events.transport.Receive">
+                                    <parameter type="ExecuteListExt" value="msg" interpretation="enveloped execute list message"/>
+                                    <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                    <guard condition="isControllingClient( transportData ) &amp;&amp;                      !elementSpecified( msg )" interpretation="True if the message that triggered the transition                      is received from the client that is in control of this service AND                      the message does not contain an ElementUID."/>
+                                    <internal/>
+                                    <action name="modifyTravelSpeed" interpretation="Set the travel speed to the specified value."/>
+                                </transition>
+                            </state>
+                        </state>
+                        <state name="NotAvailable" initial_state="Emergency">
+                            <state name="Emergency"/>
+                        </state>
+                        <default_state>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetElement" value="msg" interpretation="enveloped set element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData ) &amp;&amp;                   isValidElementRequest( msg ) &amp;&amp; isElementSupported( msg )" interpretation="True if the message that triggered the transition                    is received from the client that is in control of this service AND the                   resulting list will not be invalid as defined by the List Manager                    Service description and the receiving entity has sufficient memory                    to store the element(s) AND the message contains payload(s) of valid                    serialized Set Local Path Segment messages(s)."/>
+                                <internal/>
+                                <action name="setElement" interpretation="Store the given path segment(s) in the path segment                    list with sequence specified by the previous and next element UIDs.                     If this action represents an insert or append into an existing list,                   the service should modify the NextUID of the previous element and/or                   the Previous UID of the next element to reflect the updated                    sequence."/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Confirm Element Request message.">
+                                    <argument value=" 'ConfirmElementRequest' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetElement" value="msg" interpretation="enveloped set element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData ) &amp;&amp;                    !isValidElementRequest( msg )" interpretation="True if the message that triggered the transition                    is received from the client that is in control of this service                    AND the resulting list would be invalid as defined by the List Manager                    Service description or the receiving entity does not have sufficient                   memory to store the element(s)."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Reject Element Request message.">
+                                    <argument value=" 'RejectElementRequest' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="SetElement" value="msg" interpretation="enveloped set element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData ) &amp;&amp;                    !isElementSupported( msg )" interpretation="True if the message that triggered the transition                    is received from the client that is in control of this service AND                    the message contains payload(s) that are not valid serialized Set                    Local Path Segment message(s)."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Reject Element Request message.">
+                                    <argument value=" 'RejectElementRequest' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryTravelSpeed" value="msg" interpretation="enveloped query travel speed message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Travel Speed message">
+                                    <argument value=" 'ReportTravelSpeed' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryTravelSpeedExt" value="msg" interpretation="enveloped query travel speed ext message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Travel Speed Ext message">
+                                    <argument value=" 'ReportTravelSpeedExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalPathSegment" value="msg" interpretation="enveloped query local path segment message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="segmentExists( msg )" interpretation="True if a valid path segment has been received."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Local Path Segment message">
+                                    <argument value=" 'ReportLocalPathSegment' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalPathSegmentExt" value="msg" interpretation="enveloped query local path segment ext message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="segmentExists( msg )" interpretation="True if a valid path segment has been received."/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Local Path Segment Ext message">
+                                    <argument value=" 'ReportLocalPathSegmentExt' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="management.accessControl.events.transport.Receive">
+                                <parameter type="QueryActiveElement" value="msg" interpretation="enveloped query active element message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="management.accessControl.events.transport.Send" interpretation="Send a Report Active Element message">
+                                    <argument value=" 'ReportActiveElement' "/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="listManager.management.accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>

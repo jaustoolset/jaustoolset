@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<service_def name="LocalOperatingZone" id="urn:jaus:jss:mobility:LocalOperatingZone" version="1.1" xmlns="urn:jaus:jsidl:1.1" xmlns:ns2="urn:jaus:jsidl:plus">
+    <description xml:space="preserve">The function of the Local Operating Zone service provides the ability to define an operating zone in which vehicles must remain as well as multiple exclusion zones which vehicles must avoid.  Each zone is defined using a simple polygon, where its vertices are represented as is to set the valid operating and exclusionary zones for a vehicle.  Each zone is specified as a 2D polygon in a list of x and y coordinate pairs, referred to as polygon vertices, using a locally defined coordinate system. The vertices specify a closed area, not a route; for example, a rectangle is represented as four vertices. Additionally, each zone can optionally define a minimum and/or maximum vertical bound, allowing vehicles to operate in the same area but at different altitudes or depths.,A maximum and/or minimum vertical bound may be provided for both operating zones and exclusion zones If the notion of "vertical" is not compatible with the chosen local coordinate system, then use Index 4 (ZLocal) of the ZPosition Fields to set the extent of the volume.  One or more optional exclusion zones may be specified to keep the vehicle out of a zone that is inside the operating zone (e.g. an island lays in the center of the operating zone).  The Local Operating Zone service also provides the functionality of reporting when vehicles leave the operating zone and when they encroach an exclusion zone.</description>
+    <assumptions xml:space="preserve">Messages may be delayed, lost or reordered. Exclusion zones that are not specified with altitude (or depth) are treated as infinite columns in space.</assumptions>
+    <references>
+        <inherits_from name="accessControl" id="urn:jaus:jss:core:AccessControl" version="1.1"/>
+    </references>
+    <message_set>
+        <input_set>
+            <message_def name="SetLocalOperatingZone" message_id="0427" is_command="true">
+                <description xml:space="preserve">Set the operating zone for the vehicle using a local coordinate system.  The operating polygon is represented by a list of points using the local coordinate system and an optional pair of minimum-maximum altitudes or minimum-maximum depths. The polygon is closed by connecting the last point in the list of points that comprise the polygon to the first point. An optional list (length may be set to zero) of exclusion (keep-out) zones are represented as a list of polygons, where each polygon is a list of points. An Exclusion zone that does not specify a MinZPosition or MaxZPosition should be interpreted as being unrestrained in the respective Z direction. Note that in some applications, particularly air and undersea, position may be a mix of local coordinates for XY position and absolute coordinates for Z/altitude/depth.  This only applies if the Z axis for the vehicle coordinate frame is aligned with a vertical axis, e.g. a vector orthogonal to the ground plane.  In all other cases, implementations must use Zlocal reporting only. For example, a UUV launched from a USV may need to navigate using local X/Y coordinates based on its launch point (using dead reckoning from its IMU) but rely on direct readings that do not suffer from drift for its Depth and/or Altitude ASF.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="LocalOperatingZoneSeq" optional="false">
+                        <list name="LocalOperatingZone" optional="false">
+                            <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            <record name="LocalPolygonPointRec" optional="false">
+                                <presence_vector field_type_unsigned="unsigned byte"/>
+                                <fixed_field name="X" optional="false" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="Y" optional="false" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                                </fixed_field>
+                                <variable_field name="MinZPosition" optional="true">
+                                    <type_and_units_field>
+                                        <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                    </type_and_units_field>
+                                </variable_field>
+                                <variable_field name="MaxZPosition" optional="true">
+                                    <type_and_units_field>
+                                        <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                    </type_and_units_field>
+                                </variable_field>
+                            </record>
+                        </list>
+                        <list name="LocalExclusionZones" optional="false">
+                            <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            <list name="LocalExclusionZone" optional="false">
+                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                <sequence name="LocalExclusionZoneSeq" optional="false">
+                                    <record name="LocalExclusionZoneRec" optional="false">
+                                        <fixed_field name="ZoneID" optional="false" field_type="unsigned short integer" field_units="one">
+                                            <value_set offset_to_lower_limit="false">
+                                                <value_enum enum_index="0" enum_const="RESERVED"/>
+                                                <value_enum enum_index="1" enum_const="OPERATING_ZONE"/>
+                                                <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive" interpretation="Allow ID range for exclusion zones"/>
+                                            </value_set>
+                                        </fixed_field>
+                                    </record>
+                                    <record name="LocalPolygonPointRec" optional="false">
+                                        <presence_vector field_type_unsigned="unsigned byte"/>
+                                        <fixed_field name="X" optional="false" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                                        </fixed_field>
+                                        <fixed_field name="Y" optional="false" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                                        </fixed_field>
+                                        <variable_field name="MinZPosition" optional="true">
+                                            <type_and_units_field>
+                                                <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                            </type_and_units_field>
+                                        </variable_field>
+                                        <variable_field name="MaxZPosition" optional="true">
+                                            <type_and_units_field>
+                                                <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                            </type_and_units_field>
+                                        </variable_field>
+                                    </record>
+                                </sequence>
+                            </list>
+                        </list>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="DeleteZone" message_id="0422" is_command="true">
+                <description xml:space="preserve">Removes an operating or exclusion zone.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="ZoneIDList" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <record name="ZoneIDRec" optional="false">
+                            <fixed_field name="ZoneID" optional="false" field_type="unsigned short integer" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="RESERVED"/>
+                                    <value_enum enum_index="1" enum_const="OPERATING_ZONE"/>
+                                    <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive" interpretation="Allow ID range for exclusion zones"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryLocalOperatingZone" message_id="2427" is_command="false">
+                <description xml:space="preserve">This message will cause the receiving component to reply to the requestor with a ID 4427h: ReportLocalOperatingZone message.  If the Query specifies a ZoneID, only that Zone will be returned. If a ZoneID of zero (0) is specified, a list containing all zones will be returned.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="OperatingZoneRec" optional="false">
+                        <fixed_field name="QueryZoneID" optional="false" interpretation="ID of the zone to be returned.  A value of zero (0) shall return a list of all zones." field_type="unsigned short integer" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="ALL_ZONES"/>
+                                <value_enum enum_index="1" enum_const="OPERATING_ZONE"/>
+                                <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive" interpretation="Allow ID range for exclusion zones"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="QueryExcursion" message_id="2424" is_command="false">
+                <description xml:space="preserve">This message will cause the receiving component to reply to the requestor with a ID 4424h: ReportExcursion message. If the Query specifies a ZoneID, only that ExcursionRec will be returned. If a ZoneID of zero (0) is specified, a list containing all zones will be returned.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <record name="ExcursionZoneRec" optional="false">
+                        <fixed_field name="QueryZoneID" optional="false" interpretation="ID of the zone to be returned.  A value of zero (0) shall return a list of all zones." field_type="unsigned short integer" field_units="one">
+                            <value_set offset_to_lower_limit="false">
+                                <value_enum enum_index="0" enum_const="ALL_ZONES"/>
+                                <value_enum enum_index="1" enum_const="OPERATING_ZONE"/>
+                                <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive" interpretation="Allow ID range for exclusion zones"/>
+                            </value_set>
+                        </fixed_field>
+                    </record>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </input_set>
+        <output_set>
+            <message_def name="ReportLocalOperatingZone" message_id="4427" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver with the current values of the operating zone. The message data for this message are identical to the ID 0427h: SetLocalOperatingZone message.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <sequence name="LocalOperatingZoneSeq" optional="false">
+                        <list name="LocalOperatingZone" optional="false">
+                            <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            <record name="LocalPolygonPointRec" optional="false">
+                                <presence_vector field_type_unsigned="unsigned byte"/>
+                                <fixed_field name="X" optional="false" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                                </fixed_field>
+                                <fixed_field name="Y" optional="false" field_type="unsigned integer" field_units="meter">
+                                    <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                                </fixed_field>
+                                <variable_field name="MinZPosition" optional="true">
+                                    <type_and_units_field>
+                                        <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                    </type_and_units_field>
+                                </variable_field>
+                                <variable_field name="MaxZPosition" optional="true">
+                                    <type_and_units_field>
+                                        <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                        <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                        </type_and_units_enum>
+                                    </type_and_units_field>
+                                </variable_field>
+                            </record>
+                        </list>
+                        <list name="LocalExclusionZones" optional="false">
+                            <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                            <list name="LocalExclusionZone" optional="false">
+                                <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                                <sequence name="LocalExclusionZoneSeq" optional="false">
+                                    <record name="LocalExclusionZoneRec" optional="false">
+                                        <fixed_field name="ZoneID" optional="false" field_type="unsigned short integer" field_units="one">
+                                            <value_set offset_to_lower_limit="false">
+                                                <value_enum enum_index="0" enum_const="RESERVED"/>
+                                                <value_enum enum_index="1" enum_const="OPERATING_ZONE"/>
+                                                <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive" interpretation="Allow ID range for exclusion zones"/>
+                                            </value_set>
+                                        </fixed_field>
+                                    </record>
+                                    <record name="LocalPolygonPointRec" optional="false">
+                                        <presence_vector field_type_unsigned="unsigned byte"/>
+                                        <fixed_field name="X" optional="false" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                                        </fixed_field>
+                                        <fixed_field name="Y" optional="false" field_type="unsigned integer" field_units="meter">
+                                            <scale_range real_lower_limit="-20000000" real_upper_limit="20000000" integer_function="round"/>
+                                        </fixed_field>
+                                        <variable_field name="MinZPosition" optional="true">
+                                            <type_and_units_field>
+                                                <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                            </type_and_units_field>
+                                        </variable_field>
+                                        <variable_field name="MaxZPosition" optional="true">
+                                            <type_and_units_field>
+                                                <type_and_units_enum name="AltitudeAGL" index="0" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="AltitudeMSL" index="1" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="AltitudeASF" index="2" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="Depth" index="3" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                                <type_and_units_enum name="ZLocal" index="4" field_type="unsigned integer" field_units="meter">
+                                                    <scale_range real_lower_limit="-50000" real_upper_limit="50000" integer_function="round"/>
+                                                </type_and_units_enum>
+                                            </type_and_units_field>
+                                        </variable_field>
+                                    </record>
+                                </sequence>
+                            </list>
+                        </list>
+                    </sequence>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+            <message_def name="ReportExcursion" message_id="4424" is_command="false">
+                <description xml:space="preserve">This message is used to provide the receiver with information on whether the vehicle is inside the safe operating zone and/or an exclusion zone. If the Query specifies a ZoneID, only that ExcursionRec will be returned. If a ZoneID of zero (0) is specified, a list containing all zones will be returned.</description>
+                <header name="AppHeader">
+                    <record name="HeaderRec" optional="false">
+                        <fixed_field name="MessageID" optional="false" interpretation="A two byte field to hold the message ID of a message" field_type="unsigned short integer" field_units="one"/>
+                    </record>
+                </header>
+                <body name="Body">
+                    <list name="Excursion" optional="false">
+                        <count_field min_count="0" max_count="255" field_type_unsigned="unsigned byte"/>
+                        <record name="ExcursionRec" optional="false">
+                            <fixed_field name="ZoneID" optional="false" field_type="unsigned short integer" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="RESERVED"/>
+                                    <value_enum enum_index="1" enum_const="OPERATING_ZONE"/>
+                                    <value_range lower_limit="2" lower_limit_type="inclusive" upper_limit="65535" upper_limit_type="inclusive" interpretation="Allow ID range for exclusion zones"/>
+                                </value_set>
+                            </fixed_field>
+                            <fixed_field name="ZoneStatus" optional="false" field_type="unsigned byte" field_units="one">
+                                <value_set offset_to_lower_limit="false">
+                                    <value_enum enum_index="0" enum_const="InsideSafeOPZone"/>
+                                    <value_enum enum_index="1" enum_const="OutsizeSafeOPZone"/>
+                                    <value_enum enum_index="2" enum_const="InsideSafeOPZoneAndInsideExclusionZone"/>
+                                </value_set>
+                            </fixed_field>
+                        </record>
+                    </list>
+                </body>
+                <footer name="Footer"/>
+            </message_def>
+        </output_set>
+    </message_set>
+    <internal_events_set>
+        <event_def name="VehicleExcursion">
+            <description xml:space="preserve">An internally generated event when the vehicle leaves the operating zone or enters an exclusion zone.</description>
+            <header name="Header"/>
+            <body name="Body"/>
+            <footer name="Footer"/>
+        </event_def>
+    </internal_events_set>
+    <protocol_behavior>
+        <start state_machine_name="accessControl.events.transport.ReceiveFSM" state_name="Receiving.Ready.NotControlled"/>
+        <start state_machine_name="accessControl.events.transport.SendFSM" state_name="Sending"/>
+        <state_machine name="accessControl.events.transport.ReceiveFSM">
+            <state name="Receiving" initial_state="Ready">
+                <state name="Ready" initial_state="NotControlled">
+                    <state name="NotControlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalOperatingZone" value="msg" interpretation="enveloped query local operating zone message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendLocalOperatingZone" interpretation="Send a Report Local Operating Zone message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryExcursion" value="msg" interpretation="enveloped query Excursion message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportExcursion" interpretation="Send a Report Excursion message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="VehicleExcursion">
+                                <internal/>
+                                <action name="sendExcursion" interpretation="Send a Report Excursion message                    to the current controlling client"/>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <state name="Controlled" initial_state="Available">
+                        <state name="Available"/>
+                        <state name="NotAvailable"/>
+                        <default_state>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="SetLocalOperatingZone" value="msg" interpretation="enveloped set local operating zone message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData )" interpretation="True if the message that triggered                      the transition is received from the client that is in control of this service."/>
+                                <internal/>
+                                <action name="setLocalOperatingZone" interpretation="Set the operating zone and exclusion zones for the platform."/>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="DeleteZone" value="msg" interpretation="enveloped delete zone message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <guard condition="isControllingClient( transportData ) &amp;&amp; allZonesExist( msg )" interpretation="True if the message that triggered the transition is received from the client                      that is in control of this service AND all the zone IDs specified in the message exist."/>
+                                <internal/>
+                                <action name="deleteZone" interpretation="Remove the operating zone or exclusion zone for the platform."/>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryLocalOperatingZone" value="msg" interpretation="enveloped query local operating zone message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendLocalOperatingZone" interpretation="Send a Report Local Operating Zone message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="accessControl.events.transport.Receive">
+                                <parameter type="QueryExcursion" value="msg" interpretation="enveloped query Excursion message"/>
+                                <parameter type="Receive.Body.ReceiveRec" value="transportData" interpretation="transport data"/>
+                                <internal/>
+                                <action name="sendReportExcursion" interpretation="Send a Report Excursion message">
+                                    <argument value="msg"/>
+                                    <argument value="transportData"/>
+                                </action>
+                            </transition>
+                            <transition name="VehicleExcursion">
+                                <internal/>
+                                <action name="sendExcursion" interpretation="Send a Report Excursion message                      to the current controlling client"/>
+                            </transition>
+                        </default_state>
+                    </state>
+                    <default_state/>
+                </state>
+            </state>
+        </state_machine>
+        <state_machine name="accessControl.events.transport.SendFSM">
+            <state name="Sending"/>
+        </state_machine>
+    </protocol_behavior>
+</service_def>
