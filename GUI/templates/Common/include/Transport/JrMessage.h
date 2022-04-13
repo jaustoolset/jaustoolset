@@ -63,17 +63,17 @@ public:
     //
     // Functions to get/set the message code
     //
-    MessageCode getMessageCode(){return _code;}
+    MessageCode getMessageCode() const {return _code;}
     void setMessageCode(MessageCode code){_code = code;}
 
     //
     // Functions to set the source and destination numeric id for the message
     //
     void setSourceId(JAUS_ID source){_source=source;}
-    JAUS_ID getSourceId(){return _source;}
+    JAUS_ID getSourceId() const {return _source;}
 
     void setDestinationId(JAUS_ID destination){_destination=destination;}
-    JAUS_ID getDestinationId(){return _destination;}
+    JAUS_ID getDestinationId() const {return _destination;}
 
     //
     // Functions for priority handling.  Note that AS5669A
@@ -82,9 +82,9 @@ public:
 	// to map one to the other.
     //
     void setPriority(unsigned char prio){_priority=prio;}
-    unsigned char getPriority(){return _priority;}
+    unsigned char getPriority() const {return _priority;}
 	void setScaledPriority(unsigned char prio){_priority = (3*prio)+3;}
-	unsigned char getScaledPriority()
+	unsigned char getScaledPriority() const
 	{
 		if (_priority == 15) return 3;
 		return ((_priority-3)/3);
@@ -94,33 +94,33 @@ public:
     // Functions for ack/nak
     //
     void setAckNakFlag(char flag){_acknak=flag;}
-    char getAckNakFlag(){return _acknak;}
+    char getAckNakFlag() const {return _acknak;}
 
     //
     // Functions for service connection
     //
     void setServiceConnection(char flag){_service_connection = flag;}
-    char getServiceConnection(){return _service_connection;}
+    char getServiceConnection() const {return _service_connection;}
 
     //
     // Functions for experimental bit
     //
     void setExperimental(char flag){_experimental = flag;}
-    char getExperimental(){return _experimental;}
+    char getExperimental() const {return _experimental;}
 
     //
     // Functions for broadcast flag
     //
     void setBroadcast(char flag){_bcast = flag;}
-    char getBroadcast(){return _bcast;}
+    char getBroadcast() const {return _bcast;}
 
     //
     // Functions for data control (large message handling)
     //
 	typedef enum {None, FirstMsg, MiddleMsg, MiddleResentMsg, LastMsg} DataControlFlag;
     void setDataControlFlag(DataControlFlag flag){_control=flag;}
-    DataControlFlag getDataControlFlag(){return _control;}
-	char getDataControlFlagAsChar(MsgVersion version);
+    DataControlFlag getDataControlFlag() const {return _control;}
+	char getDataControlFlagAsChar(MsgVersion version) const;
 	void setDataControlFlagAsChar( char flag, MsgVersion version );
 
     //
@@ -135,11 +135,12 @@ public:
     void setPayload(unsigned int size, const char* data);
     void getPayload(unsigned int& size, char*& data);
     Archive& getPayload(){return _payload;}
+    const Archive& getPayload() const {return _payload;}
 
     //
     // Returns the packed length of data (without headers)
     //
-    unsigned short getDataLength();
+    unsigned short getDataLength() const;
 
 protected:
 
@@ -157,7 +158,7 @@ protected:
 
 };
 
-inline unsigned short Message::getDataLength()
+inline unsigned short Message::getDataLength() const
 {
     // Return the length of the payload
     return _payload.getArchiveLength();
@@ -176,7 +177,7 @@ inline void Message::getPayload(unsigned int& size, char*& data)
     data = _payload.getArchive();
 }
 
-inline char Message::getDataControlFlagAsChar(MsgVersion version)
+inline char Message::getDataControlFlagAsChar(MsgVersion version) const
 {
 	// Note the change in values for 5669 versus 5669A
 	if (_control == None) return 0;

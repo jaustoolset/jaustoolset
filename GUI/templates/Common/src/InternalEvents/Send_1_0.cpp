@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 namespace JTS
 {
 
-jUnsignedByte Send_1_0::Body::SendRec::getPresenceVector()
+jUnsignedByte Send_1_0::Body::SendRec::getPresenceVector() const
 {
 	return m_PresenceVector;
 }
@@ -56,7 +56,7 @@ bool Send_1_0::Body::SendRec::checkPresenceVector(unsigned int index) const
 	return (pvBitSet[index] == 1);
 }
 
-jUnsignedShortInteger Send_1_0::Body::SendRec::getDestSubsystemID()
+jUnsignedShortInteger Send_1_0::Body::SendRec::getDestSubsystemID() const
 {
 	return m_DestSubsystemID;
 }
@@ -67,7 +67,7 @@ int Send_1_0::Body::SendRec::setDestSubsystemID(jUnsignedShortInteger value)
 	return 0;
 }
 
-jUnsignedByte Send_1_0::Body::SendRec::getDestNodeID()
+jUnsignedByte Send_1_0::Body::SendRec::getDestNodeID() const
 {
 	return m_DestNodeID;
 }
@@ -78,7 +78,7 @@ int Send_1_0::Body::SendRec::setDestNodeID(jUnsignedByte value)
 	return 0;
 }
 
-jUnsignedByte Send_1_0::Body::SendRec::getDestComponentID()
+jUnsignedByte Send_1_0::Body::SendRec::getDestComponentID() const
 {
 	return m_DestComponentID;
 }
@@ -98,7 +98,7 @@ bool Send_1_0::Body::SendRec::isSrcSubsystemIDValid() const
 	return false;
 }
 
-jUnsignedShortInteger Send_1_0::Body::SendRec::getSrcSubsystemID()
+jUnsignedShortInteger Send_1_0::Body::SendRec::getSrcSubsystemID() const
 {
 	return m_SrcSubsystemID;
 }
@@ -119,7 +119,7 @@ bool Send_1_0::Body::SendRec::isSrcNodeIDValid() const
 	return false;
 }
 
-jUnsignedByte Send_1_0::Body::SendRec::getSrcNodeID()
+jUnsignedByte Send_1_0::Body::SendRec::getSrcNodeID() const
 {
 	return m_SrcNodeID;
 }
@@ -131,7 +131,7 @@ int Send_1_0::Body::SendRec::setSrcNodeID(jUnsignedByte value)
 	return 0;
 }
 
-jUnsignedByte Send_1_0::Body::SendRec::getSrcComponentID()
+jUnsignedByte Send_1_0::Body::SendRec::getSrcComponentID() const
 {
 	return m_SrcComponentID;
 }
@@ -151,7 +151,7 @@ bool Send_1_0::Body::SendRec::isPriorityValid() const
 	return false;
 }
 
-jUnsignedByte Send_1_0::Body::SendRec::getPriority()
+jUnsignedByte Send_1_0::Body::SendRec::getPriority() const
 {
 	return m_Priority;
 }
@@ -201,7 +201,7 @@ int Send_1_0::Body::SendRec::MessagePayload::set(const jUnsignedInteger &length,
  * 
  * @return
  */
-const unsigned int Send_1_0::Body::SendRec::MessagePayload::getSize()
+const unsigned int Send_1_0::Body::SendRec::MessagePayload::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -356,6 +356,11 @@ Send_1_0::Body::SendRec::MessagePayload* const Send_1_0::Body::SendRec::getMessa
 	return &m_MessagePayload;
 }
 
+const Send_1_0::Body::SendRec::MessagePayload* const Send_1_0::Body::SendRec::getMessagePayload() const
+{
+	return &m_MessagePayload;
+}
+
 int Send_1_0::Body::SendRec::setMessagePayload(const MessagePayload &value)
 {
 	m_MessagePayload = value;
@@ -370,7 +375,7 @@ int Send_1_0::Body::SendRec::setMessagePayload(const MessagePayload &value)
  * 
  * @return
  */
-const unsigned int Send_1_0::Body::SendRec::getSize()
+const unsigned int Send_1_0::Body::SendRec::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -660,6 +665,11 @@ Send_1_0::Body::SendRec* const Send_1_0::Body::getSendRec()
 	return &m_SendRec;
 }
 
+const Send_1_0::Body::SendRec* const Send_1_0::Body::getSendRec() const
+{
+	return &m_SendRec;
+}
+
 int Send_1_0::Body::setSendRec(const SendRec &value)
 {
 	m_SendRec = value;
@@ -674,7 +684,7 @@ int Send_1_0::Body::setSendRec(const SendRec &value)
  * 
  * @return
  */
-const unsigned int Send_1_0::Body::getSize()
+const unsigned int Send_1_0::Body::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -761,6 +771,11 @@ Send_1_0::Body* const Send_1_0::getBody()
 	return &m_Body;
 }
 
+const Send_1_0::Body* const Send_1_0::getBody() const
+{
+	return &m_Body;
+}
+
 int Send_1_0::setBody(const Body &value)
 {
 	m_Body = value;
@@ -775,7 +790,7 @@ int Send_1_0::setBody(const Body &value)
  * 
  * @return
  */
-const unsigned int Send_1_0::getSize()
+const unsigned int Send_1_0::getSize() const
 {
 	unsigned int size = 0;
 	

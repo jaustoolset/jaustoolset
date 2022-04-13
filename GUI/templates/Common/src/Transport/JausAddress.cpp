@@ -32,7 +32,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "Transport/JausAddress.h"
 
-
 JausAddress::JausAddress()
 {
 	address = malloc(sizeof(jUnsignedInteger));
@@ -65,19 +64,18 @@ JausAddress::JausAddress(jUnsignedInteger value)
 	*((jUnsignedInteger*)address) = tempValue;
 }
 
-
 JausAddress::~JausAddress()
 {
 	if (address != NULL) free(address);
 	size = 0;
 }
 
-jUnsignedInteger JausAddress::get()
+jUnsignedInteger JausAddress::get() const
 {
 	return *((jUnsignedInteger*)address);
 }
 
-jUnsignedShortInteger JausAddress::getSubsystemID()
+jUnsignedShortInteger JausAddress::getSubsystemID() const
 {
 	jUnsignedInteger tempValue = *((jUnsignedInteger*)address);
 	return (jUnsignedShortInteger)(tempValue >> 16);
@@ -92,7 +90,7 @@ int JausAddress::setSubsystemID(jUnsignedShortInteger value)
 	return 0;
 }
 
-jUnsignedByte JausAddress::getNodeID()
+jUnsignedByte JausAddress::getNodeID() const
 {
 	jUnsignedInteger tempValue = *((jUnsignedInteger*)address);
 	
@@ -111,7 +109,7 @@ int JausAddress::setNodeID(jUnsignedByte value)
 	return 0;
 }
 
-jUnsignedByte JausAddress::getComponentID()
+jUnsignedByte JausAddress::getComponentID() const
 {
 	jUnsignedInteger tempValue = *((jUnsignedInteger*)address);
 	return (jUnsignedByte)(tempValue & 0x000000FF);
@@ -126,33 +124,63 @@ int JausAddress::setComponentID(jUnsignedByte value)
 	return 0;
 }
 
-bool JausAddress::isLocalSubsystem(jUnsignedShortInteger sID)
+bool JausAddress::isLocalSubsystem(jUnsignedShortInteger sID) const
 {
 	return (getSubsystemID() == sID);
 }
 
-bool JausAddress::isLocalSubsystem(JausAddress address)
+bool JausAddress::isLocalSubsystem(const JausAddress& address) const
 {
 	return (getSubsystemID() == address.getSubsystemID());
 }
 
-bool JausAddress::isLocalNode(jUnsignedShortInteger sID, jUnsignedByte nID)
+bool JausAddress::isLocalNode(jUnsignedShortInteger sID, jUnsignedByte nID) const
 {
 	return (isLocalSubsystem(sID) && (getNodeID() == nID));
 }
 
-bool JausAddress::isLocalNode(JausAddress address)
+bool JausAddress::isLocalNode(const JausAddress& address) const
 {
 	return (isLocalSubsystem(address) && (getNodeID() == address.getNodeID()));
 }
 
-bool JausAddress::isLocalComponent(jUnsignedShortInteger sID, jUnsignedByte nID, jUnsignedByte cID)
+bool JausAddress::isLocalComponent(jUnsignedShortInteger sID, jUnsignedByte nID, jUnsignedByte cID) const
 {
-	return (isLocalNode(sID, nID) && (getComponentID() == cID)); 
+	return (isLocalNode(sID, nID) && (getComponentID() == cID));
 }
 
-bool JausAddress::isLocalComponent(JausAddress address)
+bool JausAddress::isLocalComponent(const JausAddress& address) const
 {
-	return (isLocalNode(address) && (getComponentID() == address.getComponentID())); 
+	return (isLocalNode(address) && (getComponentID() == address.getComponentID()));
+}
+
+bool JausAddress::operator==(const JausAddress &value) const 
+{
+	return (get() == value.get());
+}
+
+bool JausAddress::operator!=(const JausAddress &value) const 
+{
+	return (get() != value.get());
+}
+
+bool JausAddress::operator<(const JausAddress& rhs) const
+{
+	if (getSubsystemID() < rhs.getSubsystemID())
+	{
+		return true;
+	} else if (getSubsystemID() > rhs.getSubsystemID())
+	{
+		return false;
+	} else if (getNodeID() < rhs.getNodeID())
+	{
+		return true;
+	} else if (getNodeID() > rhs.getNodeID())
+	{
+		return false;
+	} else
+	{
+		return (getComponentID() < rhs.getComponentID());
+	}
 }
 

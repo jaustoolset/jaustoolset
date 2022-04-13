@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 namespace JTS
 {
 
-jUnsignedInteger Receive_1_1::Body::ReceiveRec::SourceID::getComponentID()
+jUnsignedInteger Receive_1_1::Body::ReceiveRec::SourceID::getComponentID() const
 {
 	std::bitset<sizeof(jUnsignedInteger) * 8> bfbs((int) m_SubFields);
 	std::bitset<8> sfbs;
@@ -68,7 +68,7 @@ int Receive_1_1::Body::ReceiveRec::SourceID::setComponentID(jUnsignedInteger val
 	return 1;
 }
 
-jUnsignedInteger Receive_1_1::Body::ReceiveRec::SourceID::getNodeID()
+jUnsignedInteger Receive_1_1::Body::ReceiveRec::SourceID::getNodeID() const
 {
 	std::bitset<sizeof(jUnsignedInteger) * 8> bfbs((int) m_SubFields);
 	std::bitset<8> sfbs;
@@ -101,7 +101,7 @@ int Receive_1_1::Body::ReceiveRec::SourceID::setNodeID(jUnsignedInteger value)
 	return 1;
 }
 
-jUnsignedInteger Receive_1_1::Body::ReceiveRec::SourceID::getSubsystemID()
+jUnsignedInteger Receive_1_1::Body::ReceiveRec::SourceID::getSubsystemID() const
 {
 	std::bitset<sizeof(jUnsignedInteger) * 8> bfbs((int) m_SubFields);
 	std::bitset<16> sfbs;
@@ -142,7 +142,7 @@ int Receive_1_1::Body::ReceiveRec::SourceID::setSubsystemID(jUnsignedInteger val
  * 
  * @return
  */
-const unsigned int Receive_1_1::Body::ReceiveRec::SourceID::getSize()
+const unsigned int Receive_1_1::Body::ReceiveRec::SourceID::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -223,6 +223,11 @@ Receive_1_1::Body::ReceiveRec::SourceID* const Receive_1_1::Body::ReceiveRec::ge
 	return &m_SourceID;
 }
 
+const Receive_1_1::Body::ReceiveRec::SourceID* const Receive_1_1::Body::ReceiveRec::getSourceID() const
+{
+	return &m_SourceID;
+}
+
 int Receive_1_1::Body::ReceiveRec::setSourceID(const SourceID &value)
 {
 	m_SourceID = value;
@@ -263,7 +268,7 @@ int Receive_1_1::Body::ReceiveRec::MessagePayload::set(const jUnsignedInteger &l
  * 
  * @return
  */
-const unsigned int Receive_1_1::Body::ReceiveRec::MessagePayload::getSize()
+const unsigned int Receive_1_1::Body::ReceiveRec::MessagePayload::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -418,6 +423,11 @@ Receive_1_1::Body::ReceiveRec::MessagePayload* const Receive_1_1::Body::ReceiveR
 	return &m_MessagePayload;
 }
 
+const Receive_1_1::Body::ReceiveRec::MessagePayload* const Receive_1_1::Body::ReceiveRec::getMessagePayload() const
+{
+	return &m_MessagePayload;
+}
+
 int Receive_1_1::Body::ReceiveRec::setMessagePayload(const MessagePayload &value)
 {
 	m_MessagePayload = value;
@@ -432,7 +442,7 @@ int Receive_1_1::Body::ReceiveRec::setMessagePayload(const MessagePayload &value
  * 
  * @return
  */
-const unsigned int Receive_1_1::Body::ReceiveRec::getSize()
+const unsigned int Receive_1_1::Body::ReceiveRec::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -536,6 +546,11 @@ Receive_1_1::Body::ReceiveRec* const Receive_1_1::Body::getReceiveRec()
 	return &m_ReceiveRec;
 }
 
+const Receive_1_1::Body::ReceiveRec* const Receive_1_1::Body::getReceiveRec() const
+{
+	return &m_ReceiveRec;
+}
+
 int Receive_1_1::Body::setReceiveRec(const ReceiveRec &value)
 {
 	m_ReceiveRec = value;
@@ -550,7 +565,7 @@ int Receive_1_1::Body::setReceiveRec(const ReceiveRec &value)
  * 
  * @return
  */
-const unsigned int Receive_1_1::Body::getSize()
+const unsigned int Receive_1_1::Body::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -637,6 +652,11 @@ Receive_1_1::Body* const Receive_1_1::getBody()
 	return &m_Body;
 }
 
+const Receive_1_1::Body* const Receive_1_1::getBody() const
+{
+	return &m_Body;
+}
+
 int Receive_1_1::setBody(const Body &value)
 {
 	m_Body = value;
@@ -651,7 +671,7 @@ int Receive_1_1::setBody(const Body &value)
  * 
  * @return
  */
-const unsigned int Receive_1_1::getSize()
+const unsigned int Receive_1_1::getSize() const
 {
 	unsigned int size = 0;
 	

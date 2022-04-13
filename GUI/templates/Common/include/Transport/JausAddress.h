@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "Address.h"
 #include "Transport/OS.h"
+#include <ostream>
 
 class DllExport JausAddress : public Address
 {
@@ -44,20 +45,48 @@ public:
 	JausAddress(jUnsignedInteger value);
 	virtual ~JausAddress();
 	
-	virtual jUnsignedShortInteger getSubsystemID();
+	virtual jUnsignedShortInteger getSubsystemID() const;
 	virtual int setSubsystemID(jUnsignedShortInteger value);
-	virtual jUnsignedByte getNodeID();
+	virtual jUnsignedByte getNodeID() const;
 	virtual int setNodeID(jUnsignedByte value);
-	virtual jUnsignedByte getComponentID();
+	virtual jUnsignedByte getComponentID() const;
 	virtual int setComponentID(jUnsignedByte value);
-	virtual jUnsignedInteger get();
+	virtual jUnsignedInteger get() const;
 
-	virtual bool isLocalSubsystem(jUnsignedShortInteger sID);
-	virtual bool isLocalSubsystem(JausAddress address);
-	virtual bool isLocalNode(jUnsignedShortInteger sID, jUnsignedByte nID);
-	virtual bool isLocalNode(JausAddress address); 
-	virtual bool isLocalComponent(jUnsignedShortInteger sID, jUnsignedByte nID, jUnsignedByte cID);
-	virtual bool isLocalComponent(JausAddress address);
+	virtual bool isLocalSubsystem(jUnsignedShortInteger sID) const;
+	virtual bool isLocalSubsystem(const JausAddress& address) const;
+	virtual bool isLocalNode(jUnsignedShortInteger sID, jUnsignedByte nID) const;
+	virtual bool isLocalNode(const JausAddress& address) const; 
+	virtual bool isLocalComponent(jUnsignedShortInteger sID, jUnsignedByte nID, jUnsignedByte cID) const;
+	virtual bool isLocalComponent(const JausAddress& address) const;
+
+	bool operator==(const JausAddress &value) const;
+	bool operator!=(const JausAddress &value) const;
+  
+	/**
+	 * Less than comparison.
+	 * @param rhs
+	 * @return Compare subsystems first, then nodes, then components
+	 */
+  	bool operator<(const JausAddress& rhs) const;
+  
+	/**
+	 * Greater than comparison.
+	 * @param rhs
+	 * @return Compare subsystems first, then nodes, then components
+	 */
+	inline bool operator>(const JausAddress& rhs) const
+	{
+		return rhs < *this;
+	}
+  
+	friend std::ostream& operator<<(std::ostream& os, const JausAddress& obj)
+	{
+		os << obj.getSubsystemID() << "."
+		   << (uint16_t) obj.getNodeID() << "."
+		   << (uint16_t) obj.getComponentID();
+		return os;
+	}
 };
 
 
