@@ -275,7 +275,7 @@ public class SconstructGenerator
 		buf.append("\tenv.Append( CCFLAGS = ['-D__MAC__'] )").append(System.getProperty("line.separator"));		
 		buf.append("elif os.name == 'posix':").append(System.getProperty("line.separator"));
 		buf.append("\tenv.Append( LINKFLAGS = ['-lpthread', '-lrt'] )").append(System.getProperty("line.separator"));
-		buf.append("\tenv.Append( CPPFLAGS = ['-g', '-Wno-write-strings'])").append(System.getProperty("line.separator"));
+		buf.append("\tenv.Append( CPPFLAGS = ['-g', '-Wno-write-strings', '-std=c++11'])").append(System.getProperty("line.separator"));
         buf.append("\textra_libs = ['pthread', 'rt']").append(System.getProperty("line.separator"));
 		buf.append("Export('env')").append(System.getProperty("line.separator"));
 		buf.append(System.getProperty("line.separator"));			
