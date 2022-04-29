@@ -595,10 +595,6 @@ JrErrorCode JuniorMgr::connect(unsigned int id,  std::string config_file, bool a
         return InvalidID;
     }
 
-    // Spawn the RTE.  Note that hte spawn process will 
-    // ensure that we don't create a duplicate.
-    JrSpawnProcess("NodeManager", config_file);
-	
     // The name of our local socket is the string form of our ID.
     std::stringstream name; name << id;
 
