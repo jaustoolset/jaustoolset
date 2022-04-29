@@ -44,7 +44,7 @@ class Transport
 {
 public:
     Transport(){};
-   ~Transport(){};
+    virtual ~Transport(){};
 
     //
     // Define the error codes
