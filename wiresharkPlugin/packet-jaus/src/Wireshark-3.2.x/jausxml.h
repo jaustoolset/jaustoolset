@@ -63,6 +63,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #define PDT_LONG_FLOAT		9	/*  8/64  */
 #define PDT_BAD				10 /* Not Optional but unknown ERROR */
 #define PDT_OP				11 /* Optional */
+#define PDT_BLOB			12	/* unknown - any JAUS message */
 
 /* Composite Fields */
 #define ARRAY_TYPE					0
@@ -96,6 +97,8 @@ typedef struct record {
 
 typedef struct count_field {
 	char field_type_unsigned;
+	unsigned char min_count_defined;
+	unsigned char max_count_defined;
 	unsigned int min_count; /* ? */
 	unsigned int max_count; /* ? */
 	char interpretation[64]; /* ? */
@@ -127,6 +130,8 @@ typedef struct variant {
 	unsigned char optional;
 	/* vtag_field */
 		char field_type_unsigned;
+		unsigned char min_count_defined;
+		unsigned char max_count_defined;
 		unsigned int min_count; /* ? */
 		unsigned int max_count; /* ? */
 	field_t *field; /* * */
@@ -260,8 +265,11 @@ typedef struct variable_format_field {
 	count_field_t *count_field;
 } variable_format_field_t;
 
+/* unused 12/13/11 */
 typedef struct vtag_field {
 	char field_type_unsigned[24];
+	unsigned char min_count_defined;
+	unsigned char max_count_defined;
 	unsigned int min_count; /* ? */
 	unsigned int max_count; /* ? */
 } vtag_field_t;
@@ -301,6 +309,7 @@ void parse_type_and_units_enum(xmlNode *taue_node, type_and_units_enum_t *taue);
 void parse_format_enum(xmlNode *fe_node, format_enum_t *format_enum);
 
 char get_field_type(char* type);
+char get_field_type_unsigned(char* type);
 static const xmlChar* get_attr_name(xmlAttr *);
 static const xmlChar* get_attr_value(xmlAttr *);
 xmlNode *find_child_node(xmlNode * a_node, char *name);
