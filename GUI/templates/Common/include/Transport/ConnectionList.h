@@ -125,7 +125,7 @@ inline bool ConnectionList<AddressType>::addElement(JAUS_ID id,
    if (connection == NULL) return false;
 
     // Add this connection to our list
-    std::cout
+    JrInfo
       << "Adding address book entry for id " << id.val
       << " for addr " << addr
       << " at position " << _list.size()
