@@ -267,7 +267,7 @@ void parse_jaus_record(xmlNode *record_node, record_t *record)
 			if ((!xmlStrcmp(next_node->name, (const xmlChar *)"presence_vector"))) /* optional */
 				for (cur_node = next_node->properties; cur_node; cur_node = cur_node->next) {
 				    if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"field_type_unsigned"))) {
-					    record->presence_vector_type = get_field_type((char *)get_attr_value(cur_node));
+					    record->presence_vector_type = get_field_type_unsigned((char *)get_attr_value(cur_node));
 			 	    }
 				}
 			else if ((!xmlStrcmp(next_node->name, (const xmlChar *)"array")))
@@ -478,8 +478,8 @@ void parse_variant(xmlNode *v_node, variant_t *variant)
  	    } */
 	}
 
-	variant->min_count = 0;
-	variant->max_count = 0;
+	variant->min_count_defined = variant->max_count_defined = 0;
+	variant->min_count = variant->max_count = 0;
 	variant->field = NULL;
 
 	next_node = find_child_node(v_node, "vtag_field");
@@ -487,16 +487,18 @@ void parse_variant(xmlNode *v_node, variant_t *variant)
 	/* Get the attributes for vtag_field */
 	for (cur_node = next_node->properties; cur_node; cur_node = cur_node->next) {
 	    if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"field_type_unsigned"))) {
-		    variant->field_type_unsigned =  get_field_type((char *)get_attr_value(cur_node));
+		    variant->field_type_unsigned =  get_field_type_unsigned((char *)get_attr_value(cur_node));
  	    }
 		/* optional */
 		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"min_count"))) {
 			variant->min_count = (unsigned int)strtol((char *)get_attr_value(cur_node), NULL, 10);
+			variant->min_count_defined = 1;
  	    }
 		/* optional */
 		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"max_count"))) {
 			variant->max_count = (unsigned int)strtol((char *)get_attr_value(cur_node), NULL, 10);
- 	    }
+			variant->max_count_defined = 1;
+		}
 	}
 
 	for (next_node = v_node->children; next_node; next_node = next_node->next) {
@@ -550,7 +552,7 @@ void parse_sequence(xmlNode *s_node, sequence_t *sequence)
 			if ((!xmlStrcmp(next_node->name, (const xmlChar *)"presence_vector"))) /* optional */
 				for (cur_node = next_node->properties; cur_node; cur_node = cur_node->next) {
 				    if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"field_type_unsigned"))) {
-					    sequence->presence_vector_type = get_field_type((char *)get_attr_value(cur_node));
+					    sequence->presence_vector_type = get_field_type_unsigned((char *)get_attr_value(cur_node));
 			 	    }
 				}
 			else if ((!xmlStrcmp(next_node->name, (const xmlChar *)"record")))
@@ -683,7 +685,7 @@ void parse_bit_field(xmlNode * bf_node, bit_field_t *bit_field)
 		    strncpy(bit_field->name, (char *)get_attr_value(cur_node), 64);
  	    }
 		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"field_type_unsigned"))) {
-			bit_field->field_type_unsigned = get_field_type((char *)get_attr_value(cur_node));
+			bit_field->field_type_unsigned = get_field_type_unsigned((char *)get_attr_value(cur_node));
  	    }
 		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"optional"))) {
 			if ((!xmlStrcmp(get_attr_value(cur_node), (const xmlChar *)"true")))
@@ -991,8 +993,10 @@ void parse_variable_field(xmlNode * vf_node, variable_field_t *variable_field)
 
 	variable_field->taue = NULL;
 
+	next_node = find_child_node(vf_node, "type_and_units_field");
+
 	/* fields */
-	for (next_node = vf_node->children; next_node; next_node = next_node->next) {
+	for (next_node = next_node->children; next_node; next_node = next_node->next) {
         if (next_node->type == XML_ELEMENT_NODE) {
 			if ((!xmlStrcmp(next_node->name, (const xmlChar *)"type_and_units_enum"))) {
 				if (variable_field->taue == NULL) { /* first type_and_units_enum found */
@@ -1157,21 +1161,23 @@ void parse_count_field(xmlNode *cf_node, count_field_t *count_field)
 	if (DEBUG) printf("parse_count_field(): Enter\n");
 
 	strncpy(count_field->interpretation, "none", 64);
-	count_field->min_count = 0;
-	count_field->max_count = 0;
+	count_field->min_count_defined = count_field->max_count_defined = 0;
+	count_field->min_count = count_field->max_count = 0;
 
 	/* Get the attributes for count_field */
 	for (cur_node = cf_node->properties; cur_node; cur_node = cur_node->next) {
 	    if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"field_type_unsigned"))) {
-		    count_field->field_type_unsigned =  get_field_type((char *)get_attr_value(cur_node));
+		    count_field->field_type_unsigned =  get_field_type_unsigned((char *)get_attr_value(cur_node));
  	    }
 		/* optional */
 		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"min_count"))) {
 			count_field->min_count = (unsigned int)strtol((char *)get_attr_value(cur_node), NULL, 10);
+			count_field->min_count_defined = 1;
  	    }
 		/* optional */
 		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"max_count"))) {
 			count_field->max_count = (unsigned int)strtol((char *)get_attr_value(cur_node), NULL, 10);
+			count_field->max_count_defined = 1;
  	    }
 		/* optional */
 		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"interpretation"))) {
@@ -1326,8 +1332,6 @@ void parse_format_enum(xmlNode *fe_node, format_enum_t *format_enum)
 	if (DEBUG) printf("parse_format_enum(): Exit\n");
 }
 
-
-
 char get_field_type(char* type)
 {
 	if ((!strcmp(type, "byte")))
@@ -1350,6 +1354,19 @@ char get_field_type(char* type)
 		return(PDT_FLOAT);
 	else if ((!strcmp(type, "long float")))
 		return(PDT_LONG_FLOAT);
+	return(PDT_BAD);
+}
+
+char get_field_type_unsigned(char* type)
+{
+	if ((!strcmp(type, "unsigned byte")))
+		return(PDT_UBYTE);
+	else if ((!strcmp(type, "unsigned short integer")))
+		return(PDT_USHORT_INT);
+	else if ((!strcmp(type, "unsigned integer")))
+		return(PDT_UINT);
+	else if ((!strcmp(type, "unsigned long integer")))
+		return(PDT_ULONG_INT);
 	return(PDT_BAD);
 }
 
