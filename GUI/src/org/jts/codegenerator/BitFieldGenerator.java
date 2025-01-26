@@ -334,7 +334,7 @@ public class BitFieldGenerator //extends FieldClass
         {
             code.publicMethods.add(CppCode.createMethodDeclaration(bfType, "get", subFieldName, methodParam, false));
 
-            methodCode.add("std::bitset<sizeof(" + bfType + ") * 8> bfbs((int)m_SubFields);");
+            methodCode.add("std::bitset<sizeof(" + bfType + ") * 8> bfbs(m_SubFields);");
             methodCode.add("std::bitset<" + size +"> sfbs;");
             methodCode.add("int i = 0;");
             methodCode.add("");
@@ -343,7 +343,7 @@ public class BitFieldGenerator //extends FieldClass
             methodCode.add("    sfbs[i++] = bfbs[index];");
             methodCode.add("}");
             methodCode.add("");
-            methodCode.add("return (" + bfType + ")(sfbs.to_ulong());");
+            methodCode.add("return (" + bfType + ")(sfbs.to_ullong());");
             code.methods.addAll(CppCode.createMethodDefinition(bfType, fullClassName + "::get", subFieldName, methodParam, methodCode, false));
         }
         else if(codeType == CodeLines.CodeType.JAVA)
@@ -386,8 +386,8 @@ public class BitFieldGenerator //extends FieldClass
         {
             code.publicMethods.add(CppCode.createMethodDeclaration("int", "set", subFieldName, methodParam, false));
 
-            methodCode.add("std::bitset<sizeof(" + bfType + ") * 8> bfbs((int)m_SubFields);");
-            methodCode.add("std::bitset<" + size + "> sfbs((int)value);");
+            methodCode.add("std::bitset<sizeof(" + bfType + ") * 8> bfbs(m_SubFields);");
+            methodCode.add("std::bitset<" + size + "> sfbs(value);");
             methodCode.add("int i = 0;");
             methodCode.add("");
             methodCode.add("for (int index = " + fromIndex + "; index <= " + toIndex + "; index++)");
@@ -395,7 +395,7 @@ public class BitFieldGenerator //extends FieldClass
             methodCode.add("    bfbs[index] = sfbs[i++];");
             methodCode.add("}");
             methodCode.add("");
-            methodCode.add("m_SubFields = (" + bfType + ")bfbs.to_ulong();");
+            methodCode.add("m_SubFields = (" + bfType + ")bfbs.to_ullong();");
             // Create framework for parent reference
             methodCode.add(CppCode.getParentReferenceSetParentPVLine());
             methodCode.add("return 0;");
