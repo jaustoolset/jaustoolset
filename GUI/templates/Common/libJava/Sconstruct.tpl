@@ -24,7 +24,7 @@ if not os.path.exists('lib/framework'):
 # Generate the environment
 ###############################################
 env = Environment(ENV=os.environ, tools = ['jar', 'javah', 'default'])
-env.Append( JAVACLASSPATH = ['./lib/statemap.jar'])
+env.Append( JAVACLASSPATH = ['./lib/*.jar'])
 env.Append( CPPPATH = include)
 env.Append( LIBPATH = libpath)
 env.Append( INSTALL_LIB = '#./lib')
