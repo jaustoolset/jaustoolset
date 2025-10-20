@@ -19,7 +19,7 @@ if not os.path.isfile('lib/Manifest.txt'):
 if not os.path.isfile('lib/statemap.jar'):
 	Execute( Copy( 'lib/statemap.jar', common_dir + '/libJava/statemap.jar' ))
 if not os.path.exists('lib/framework'):
-	Execute( Copy( 'framework', common_dir + '/libJava/framework/%transport_version%/framework' ))
+	Execute( Copy( 'lib/framework', common_dir + '/libJava/framework/%transport_version%/framework' ))
 
 # Generate the environment
 ###############################################
