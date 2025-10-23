@@ -246,7 +246,6 @@ public class PresenceVectorGenerator
         String className = parentClassName;
 
         code.protectedAttributes.add(JavaCode.createVariableDeclaration("protected " + variableType, fieldName, false));
-        code.protectedAttributes.add(JavaCode.createVariableDeclaration("protected " + tempVariableType, fieldName + "Temp", false));
         code.constructorLines.add(variableName + " = new " + variableType + "();");
         JavaCode.generateGetSizeLines(tempVariableType, code.sizeLines, tempVarSigned);
 
