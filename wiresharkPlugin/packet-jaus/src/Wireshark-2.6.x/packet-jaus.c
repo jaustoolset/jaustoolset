@@ -94,8 +94,7 @@ int data_offset;
 /* forward references */
 void proto_register_jaus(void);
 void proto_reg_handoff_jaus(void);
-//static int dissect_jaus(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree);
-static void dissect_jaus(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree);
+static int dissect_jaus(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, void *data);
 int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree);
 int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree);
 int dissect_message_field(tvbuff_t *tvb, proto_tree *tree, field_t *f_ptr, int _op_count, guint64 presence_vector);
@@ -103,6 +102,9 @@ int dissect_message_data(tvbuff_t *tvb, proto_tree *tree, int _offset, message_d
 int get_number_of_bytes(char type);
 int get_data_from_tvb(tvbuff_t *tvb, int offset, char type, int size, guint64 *data);
 double scale_convert(unsigned int scaled_value, int bits, double real_lower, double real_upper, char int_function);
+int get_sdp_id_from_tvb(tvbuff_t *tvb, int offset, char* jaus_id);
+int get_ra3_id_from_tvb(tvbuff_t *tvb, int offset, char* jaus_id);
+char* decode_field_type(char type);
 
 /* Wireshark ID of the JAUS protocol */
 static int proto_jaus = -1;
@@ -253,7 +255,7 @@ void proto_register_jaus(void)
 			NULL, 0x0, "Command", HFILL }
 		},
 		{ &hf_jaus_destination,
-		{ "Destination ID", "jaus.dest", FT_IPv4, BASE_NONE,
+		{ "Destination ID", "jaus.dest", FT_STRING, BASE_NONE,
 			NULL, 0x0, "Destination", HFILL }
 		},
 		{ &hf_jaus_dest_sub,
@@ -273,7 +275,7 @@ void proto_register_jaus(void)
 			NULL, 0x000000FF, "Destination Instance", HFILL }
 		},
 		{ &hf_jaus_source,
-		{ "Source ID", "jaus.source", FT_IPv4, BASE_NONE,
+		{ "Source ID", "jaus.source", FT_STRING, BASE_NONE,
 			NULL, 0x0, "Source", HFILL }
 		},
 		{ &hf_jaus_src_sub,
@@ -436,8 +438,8 @@ void proto_reg_handoff_jaus(void)
 	dissector_add_uint("udp.port", jaus_extra_port, jaus_handle);
 }
 
-static void 
-dissect_jaus(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
+static int
+dissect_jaus(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, void *data)
 {
 
 	guint8 version = 0;
@@ -446,11 +448,11 @@ dissect_jaus(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 	version = tvb_get_guint8( tvb, 0 );
 
 	if (version == 'J') { /* Legacy Header RA3 */
-		dissect_RA3_header(tvb, pinfo, tree);
+		return dissect_RA3_header(tvb, pinfo, tree);
 	} else if (version == 2) { /* new transport spec v2 */
-		dissect_sdp_header(tvb, pinfo, tree);
+		return dissect_sdp_header(tvb, pinfo, tree);
 	} else { /* unsupported */
-		return;
+		return 0;
 	}
 
 }
@@ -592,13 +594,17 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 		if (tree) {
 			/* add destination to header tree */
-			proto_tree_add_item(jaus_header_tree, hf_jaus_destination, tvb, offset, 4, LITTLE_ENDIAN);
+			char dst_addr[14];
+			get_sdp_id_from_tvb(tvb, offset, dst_addr);
+			proto_tree_add_string(jaus_header_tree, hf_jaus_destination, tvb, offset, 4, dst_addr);
 		}
 		offset+=4;
 
 		if (tree) {
 			/* add source to header tree */
-			proto_tree_add_item(jaus_header_tree, hf_jaus_source, tvb, offset, 4, LITTLE_ENDIAN);
+			char src_addr[14];
+			get_sdp_id_from_tvb(tvb, offset, src_addr);
+			proto_tree_add_string(jaus_header_tree, hf_jaus_source, tvb, offset, 4, src_addr);
 		}
 		offset+=4;
 
@@ -665,7 +671,7 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 			}
 		}
 		/* submit the sequenceNumber parameter to Header Sub tree. */
-		proto_tree_add_item(jaus_header_tree, hf_jaus_sequenceNumber, tvb, offset, 2, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_header_tree, hf_jaus_sequenceNumber, tvb, offset, 2, ENC_LITTLE_ENDIAN);
 		offset+=2;
 	}
 
@@ -789,7 +795,9 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 	if (tree) {
 		/* Destination Sub tree of Header. */
-		jaus_sub_item = proto_tree_add_item(jaus_header_tree, hf_jaus_destination, tvb, offset, 4, LITTLE_ENDIAN);
+		char dst_addr[16];
+		get_ra3_id_from_tvb(tvb, offset, dst_addr);
+		jaus_sub_item = proto_tree_add_string(jaus_header_tree, hf_jaus_destination, tvb, offset, 4, dst_addr);
 		jaus_dest_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_destination);
 		/* Dest IP split apart, added to Destnation */
 		proto_tree_add_item(jaus_dest_tree, hf_jaus_dest_sub, tvb, offset, 4, LITTLE_ENDIAN);
@@ -801,7 +809,9 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 	if (tree) {
 		/* Source Sub tree of Header */
-		jaus_sub_item = proto_tree_add_item(jaus_header_tree, hf_jaus_source, tvb, offset, 4, LITTLE_ENDIAN);
+		char src_addr[16];
+		get_ra3_id_from_tvb(tvb, offset, src_addr);
+		jaus_sub_item = proto_tree_add_string(jaus_header_tree, hf_jaus_source, tvb, offset, 4, src_addr);
 		jaus_src_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_source);
 		/* Src IP split apart, added to Source */
 		proto_tree_add_item(jaus_src_tree, hf_jaus_src_sub, tvb, offset, 4, LITTLE_ENDIAN);
@@ -943,7 +953,7 @@ int dissect_fixed_field(tvbuff_t *tvb, proto_tree *tree, fixed_field_t *ff_ptr)
 			/* value_enum: Find matching enum to data(index) pulled from buffer */
 			while (ve_ptr != NULL) {
 				if (data == ve_ptr->enum_index) {
-					proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FFvs] %s: (%s) %s (%d)",
+					proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FFvs] %s: (%s) %s (%ld)",
 						ff_ptr->name, ff_ptr->field_units, ve_ptr->enum_const, data);
 					found = 1; break;
 				}
@@ -955,7 +965,7 @@ int dissect_fixed_field(tvbuff_t *tvb, proto_tree *tree, fixed_field_t *ff_ptr)
 				while (vr_ptr != NULL) {
 					if (vr_ptr->lower_limit <= data && data <= vr_ptr->upper_limit) {
 						if (strcmp(vr_ptr->interpretation,"none")) {
-							proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FFvs] %s: (%s) %s (%d)",
+							proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FFvs] %s: (%s) %s (%ld)",
 								ff_ptr->name, ff_ptr->field_units, vr_ptr->interpretation, data);
 							found = 1; break;
 						}
@@ -965,23 +975,23 @@ int dissect_fixed_field(tvbuff_t *tvb, proto_tree *tree, fixed_field_t *ff_ptr)
 			}
 
 			if (!found) {
-				proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FFvs] %s: (%s) %d (0x%X)",
+				proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FFvs] %s: (%s) %ld (0x%lX)",
 					ff_ptr->name, ff_ptr->field_units, datacopy, data);
 			}
 
 		} else { /* offset_to_lower_limit */
 			/* TODO */
-			proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FFvs] %s: (%s) 0x%X (offset->lower TODO)",
+			proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FFvs] %s: (%s) 0x%lX (offset->lower TODO)",
 				ff_ptr->name, ff_ptr->field_units, data);
 		}
 
 	} else { /* fixed_field without a scale_range for value_set */
 		/* test to see if unsigned or signed to print out different ways */
 		if ( ff_ptr->field_type > PDT_LONG_INT)
-			proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FF] %s: (%s) %u (0x%X)",
+			proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FF] %s: (%s) %lu (0x%lX)",
 				ff_ptr->name, ff_ptr->field_units, datacopy, data);
 		else
-			proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FF] %s: (%s) %d (0x%X)",
+			proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[FF] %s: (%s) %ld (0x%lX)",
 				ff_ptr->name, ff_ptr->field_units, datacopy, data);
 	}
 
@@ -1051,7 +1061,7 @@ int dissect_variable_field(tvbuff_t *tvb, proto_tree *tree, variable_field_t *vf
 				/* value_enum: Find matching enum to data(index) pulled from buffer */
 				while (ve_ptr != NULL) {
 					if (data == ve_ptr->enum_index) {
-						proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFvs] index: %d (%s) %s (%d)",
+						proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFvs] index: %d (%s) %s (%ld)",
 							taue_ptr->index, taue_ptr->field_units, ve_ptr->enum_const, data);
 						found = 1; break;
 					}
@@ -1063,7 +1073,7 @@ int dissect_variable_field(tvbuff_t *tvb, proto_tree *tree, variable_field_t *vf
 					while (vr_ptr != NULL) {
 						if (vr_ptr->lower_limit <= data && data <= vr_ptr->upper_limit) {
 							if (strcmp(vr_ptr->interpretation,"none")) {
-								proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFvs] index: %d (%s) %s (%d)",
+								proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFvs] index: %d (%s) %s (%ld)",
 									taue_ptr->index, taue_ptr->field_units, vr_ptr->interpretation, data);
 								found = 1; break;
 							}
@@ -1073,18 +1083,18 @@ int dissect_variable_field(tvbuff_t *tvb, proto_tree *tree, variable_field_t *vf
 				}
 
 				if (!found)
-					proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFvs] index: %d (%s) %d",
+					proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFvs] index: %d (%s) %ld",
 						taue_ptr->index, taue_ptr->field_units, data);
 
 			} else { /* offset_to_lower_limit */
 				/* TODO */
-				proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFvs] index: %d (%s) 0x%X (offset->lower TODO)",
+				proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFvs] index: %d (%s) 0x%lX (offset->lower TODO)",
 					taue_ptr->index, taue_ptr->field_units, data);
 			}
 
 		} else {
 			/* variable_field without a scale_range for value_set */
-			proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VF] index: %d (%s) 0x%X",
+			proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VF] index: %d (%s) 0x%lX",
 				taue_ptr->index, taue_ptr->field_units, data);
 
 		}
@@ -1118,7 +1128,7 @@ int dissect_bit_field(tvbuff_t *tvb, proto_tree *tree, bit_field_t *bf_ptr)
 	if (error < 0) {print_error(tvb, tree, error); return(error);}
 
 	/* print bit_field value to bit_field tree of the tree*/
-	sub_item = proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[BF] %s (%d) %s [0x%X]",
+	sub_item = proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[BF] %s (%d) %s [0x%lX]",
 		bf_ptr->name, bf_ptr->field_type_unsigned, (bf_ptr->optional) ? "optional" : "req", data);
 	sub_tree = proto_item_add_subtree(sub_item, ett_jaus_data);
 
@@ -1144,7 +1154,7 @@ int dissect_bit_field(tvbuff_t *tvb, proto_tree *tree, bit_field_t *bf_ptr)
 		/* value_enum: Find matching enum to data(index) pulled from buffer */
 		while (ve_ptr != NULL) {
 			if (sub_data == ve_ptr->enum_index) {
-				proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, sub_data, "[BFsf] %s: %s (%d)",
+				proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, sub_data, "[BFsf] %s: %s (%ld)",
 					sf_ptr->name, ve_ptr->enum_const, sub_data);
 				found = 1; break;
 			}
@@ -1156,7 +1166,7 @@ int dissect_bit_field(tvbuff_t *tvb, proto_tree *tree, bit_field_t *bf_ptr)
 			while (vr_ptr != NULL) {
 				if (vr_ptr->lower_limit <= data && data <= vr_ptr->upper_limit) {
 					if (strcmp(vr_ptr->interpretation,"none")) {
-						proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, sub_data, "[BFsf] %s: %s (%d)",
+						proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, sub_data, "[BFsf] %s: %s (%ld)",
 							sf_ptr->name, vr_ptr->interpretation, sub_data);
 						found = 1; break;
 					}
@@ -1166,7 +1176,7 @@ int dissect_bit_field(tvbuff_t *tvb, proto_tree *tree, bit_field_t *bf_ptr)
 		}
 
 		if (!found)
-			proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, sub_data, "[BFsf] %s: %d",
+			proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, sub_data, "[BFsf] %s: %ld",
 				sf_ptr->name, sub_data);
 
 		sf_ptr = sf_ptr->next;
@@ -1223,7 +1233,7 @@ int dissect_variable_length_string(tvbuff_t *tvb, proto_tree *tree, variable_len
 
 	string = tvb_get_ephemeral_string(tvb, offset , (gint)string_length);
 
-	proto_tree_add_text(tree, tvb, offset, ((int)string_length + size), "[VLS] %s(%d): %s",
+	proto_tree_add_text(tree, tvb, offset, ((int)string_length + size), "[VLS] %s(%ld): %s",
 			vls_ptr->name, string_length, string);
 
 	data_offset = (offset + (int)string_length);
@@ -1256,7 +1266,7 @@ int dissect_variable_length_field(tvbuff_t *tvb, proto_tree *tree, variable_leng
 
 	data = ep_tvb_memdup(tvb, offset, (int)field_length);
 
-	proto_tree_add_bytes_format(tree, hf_jaus_uint64, tvb, offset, ((int)field_length + size), data, "[VLF] %s: (%s) 0x%X",
+	proto_tree_add_bytes_format(tree, hf_jaus_uint64, tvb, offset, ((int)field_length + size), data, "[VLF] %s: (%s) 0x%hhn",
 		vlf_ptr->name, vlf_ptr->field_format, data);
 
 	data_offset = (offset + (int)field_length);
@@ -1291,7 +1301,7 @@ int dissect_variable_format_field(tvbuff_t *tvb, proto_tree *tree, variable_form
 	}
 
 	/* print with enum field_format name else error? with just the data from buffer */
-	proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[VFF] %s (%d) %s [index: %d]",
+	proto_tree_add_uint64_format(tree, hf_jaus_uint64, tvb, data_offset, size, data, "[VFF] %s (%d) %s [index: %ld]",
 		vff_ptr->name, cf_ptr->field_type_unsigned, (found_fe)? fe_ptr->field_format : "" , data);
 
 	data_offset += size;
@@ -1442,7 +1452,7 @@ int dissect_message_comp(tvbuff_t *tvb, proto_tree *tree, field_t *f_ptr, int _c
 					if (size < 0) {print_error(tvb, tree, size); return(size);}
 					error = get_data_from_tvb(tvb, data_offset, r_ptr->presence_vector_type, size, &l_presence_vector);
 					if (error < 0) {print_error(tvb, tree, error); return(error);}
-					proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, l_presence_vector, "[PV] (%d) 0x%X",
+					proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, l_presence_vector, "[PV] (%d) 0x%lX",
 						r_ptr->presence_vector_type, l_presence_vector);
 					data_offset += size;
 				}
@@ -1473,7 +1483,7 @@ int dissect_message_comp(tvbuff_t *tvb, proto_tree *tree, field_t *f_ptr, int _c
 				if (size < 0) {print_error(tvb, tree, size); return(size);}
 				error = get_data_from_tvb(tvb, data_offset, cf_ptr->field_type_unsigned, size, &data);
 				if (error < 0) {print_error(tvb, tree, error); return(error);}
-				proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, data, "[CF] (%d) min: %d, max: %d, count: %u",
+				proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, data, "[CF] (%d) min: %d, max: %d, count: %lu",
 					cf_ptr->field_type_unsigned, cf_ptr->min_count, cf_ptr->max_count, data);
 				data_offset += size;
 
@@ -1486,7 +1496,7 @@ int dissect_message_comp(tvbuff_t *tvb, proto_tree *tree, field_t *f_ptr, int _c
 								data--;
 						}
 					} else {
-						proto_tree_add_text(sub_tree, tvb, data_offset, 1, "[ERROR]: count out of range (%d)", data);
+						proto_tree_add_text(sub_tree, tvb, data_offset, 1, "[ERROR]: count out of range (%ld)", data);
 						break;
 					}
 				} else {
@@ -1515,7 +1525,7 @@ int dissect_message_comp(tvbuff_t *tvb, proto_tree *tree, field_t *f_ptr, int _c
 				if (size < 0) {print_error(tvb, tree, size); return(size);}
 				error = get_data_from_tvb(tvb, data_offset, v_ptr->field_type_unsigned, size, &data);
 				if (error < 0) {print_error(tvb, tree, error); return(error);}
-				proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, data, "[VTAG] (%d) min: %d, max: %d, count: %u",
+				proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, data, "[VTAG] (%d) min: %d, max: %d, count: %lu",
 					v_ptr->field_type_unsigned, v_ptr->min_count, v_ptr->max_count, data);
 				data_offset += size;
 
@@ -1547,7 +1557,7 @@ int dissect_message_comp(tvbuff_t *tvb, proto_tree *tree, field_t *f_ptr, int _c
 					if (size < 0) {print_error(tvb, tree, size); return(size);}
 					error = get_data_from_tvb(tvb, data_offset, s_ptr->presence_vector_type, size, &l_presence_vector);
 					if (error < 0) {print_error(tvb, tree, error); return(error);}
-					proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, l_presence_vector, "[PV] (%d) 0x%X",
+					proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, data_offset, size, l_presence_vector, "[PV] (%d) 0x%lX",
 						s_ptr->presence_vector_type, l_presence_vector);
 					data_offset += size;
 				}
@@ -1653,4 +1663,31 @@ double scale_convert(unsigned int scaled_value, int bits, double real_lower, dou
 	else if (int_function == FLOOR)
 		return(floor(real_value));
 	else return(ceil(real_value));
+}
+
+/**
+ * Formats SDP JAUS ID as string for display.
+ *
+ *  Returns output of sprintf.
+ */
+int get_sdp_id_from_tvb(tvbuff_t *tvb, int offset, char* jaus_id)
+{
+	const int comp = tvb_get_guint8(tvb , offset);
+	const int node = tvb_get_guint8(tvb , offset+1);
+	const int subs = tvb_get_letohs(tvb , offset+2);
+	return sprintf(jaus_id, "%d.%d.%d", subs, node, comp);
+}
+
+/**
+ * Formats RA3 JAUS ID as string for display.
+ *
+ *  Returns output of sprintf.
+ */
+int get_ra3_id_from_tvb(tvbuff_t *tvb, int offset, char* jaus_id)
+{
+	const int inst = tvb_get_guint8(tvb , offset);
+	const int comp = tvb_get_guint8(tvb , offset+1);
+	const int node = tvb_get_guint8(tvb , offset+2);
+	const int subs = tvb_get_guint8(tvb , offset+3);
+	return sprintf(jaus_id, "%d.%d.%d.%d", subs, node, comp, inst);
 }
