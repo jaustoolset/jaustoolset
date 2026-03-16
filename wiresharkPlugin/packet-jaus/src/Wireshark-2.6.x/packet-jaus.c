@@ -55,6 +55,7 @@ POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <math.h>
+#include <stdbool.h>
 #include "config.h"
 #include "jausxml.h"
 #include <epan/packet.h>
@@ -1264,13 +1265,51 @@ int dissect_variable_length_field(tvbuff_t *tvb, proto_tree *tree, variable_leng
 
 	offset += size;
 
-	data = ep_tvb_memdup(tvb, offset, (int)field_length);
+	proto_item *vlf_item = proto_tree_add_text(
+		tree, tvb, offset, ((int)field_length), "[VLF] %s: (%s)", vlf_ptr->name, vlf_ptr->field_format);
+	proto_tree *vlf_tree = proto_item_add_subtree(vlf_item, ett_jaus_data);
 
-	proto_tree_add_bytes_format(tree, hf_jaus_uint64, tvb, offset, ((int)field_length + size), data, "[VLF] %s: (%s) 0x%hhn",
-		vlf_ptr->name, vlf_ptr->field_format, data);
+	const char *count_type = decode_field_type(cf_ptr->field_type_unsigned);
 
-	data_offset = (offset + (int)field_length);
-	return(0);
+	proto_tree_add_uint64_format(
+		vlf_tree, hf_jaus_uint64, tvb, data_offset, size, -1, "[CF] (%s) min: %d, max: %d, count: %lu",
+		count_type, cf_ptr->min_count, cf_ptr->max_count, field_length);
+
+	if (strcmp(vlf_ptr->field_format, "JAUS MESSAGE") == 0)
+	{
+		message_def_t *m_ptr_sub;
+		bool found_sub_msg = false;
+		unsigned short sub_command = tvb_get_letohs(tvb, offset);
+
+		m_ptr_sub = message_set;
+		while (m_ptr_sub != NULL)
+		{
+			if (m_ptr_sub->message_id == sub_command)
+			{
+				found_sub_msg = true;
+				break;
+			}
+			m_ptr_sub = m_ptr_sub->next;
+		}
+
+		proto_item *sub_item = proto_tree_add_uint_format(
+			vlf_tree, hf_jaus_commandCode, tvb, offset, 2, sub_command,
+			"Command Code: %s (0x%04X)", (found_sub_msg) ? m_ptr_sub->name : "NotFoundInXML", sub_command);
+		offset += 2;
+		proto_tree *sub_tree = proto_item_add_subtree(sub_item, ett_jaus_data);
+
+		if (found_sub_msg)
+		{
+			data_offset = dissect_message_data(tvb, sub_tree, offset, m_ptr_sub);
+		}
+	}
+	else
+	{
+		data = ep_tvb_memdup(tvb, offset, (int)field_length);
+		proto_tree_add_bytes(vlf_tree, hf_jaus_data, tvb, offset, ((int)field_length), data);
+		data_offset = (offset + (int)field_length);
+	}
+	return (0);
 }
 
 int dissect_variable_format_field(tvbuff_t *tvb, proto_tree *tree, variable_format_field_t *vff_ptr)
@@ -1690,4 +1729,35 @@ int get_ra3_id_from_tvb(tvbuff_t *tvb, int offset, char* jaus_id)
 	const int node = tvb_get_guint8(tvb , offset+2);
 	const int subs = tvb_get_guint8(tvb , offset+3);
 	return sprintf(jaus_id, "%d.%d.%d.%d", subs, node, comp, inst);
+}
+
+char *decode_field_type(char type)
+{
+	static char result[32];
+	switch (type)
+	{
+	case PDT_BYTE:
+		return "byte";
+	case PDT_SHORT_INT:
+		return "short integer";
+	case PDT_INT:
+		return "integer";
+	case PDT_LONG_INT:
+		return "long integer";
+	case PDT_UBYTE:
+		return "unsigned byte";
+	case PDT_USHORT_INT:
+		return "unsigned short integer";
+	case PDT_UINT:
+		return "unsigned integer";
+	case PDT_ULONG_INT:
+		return "unsigned long integer";
+	case PDT_FLOAT:
+		return "float";
+	case PDT_LONG_FLOAT:
+		return "long float";
+	default:
+		sprintf(result, "UNKNOWN(%d)", (int)type);
+		return result;
+	}
 }
