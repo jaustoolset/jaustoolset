@@ -1318,7 +1318,7 @@ void parse_format_enum(xmlNode *fe_node, format_enum_t *format_enum)
 	    if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"index"))) {
 			format_enum->index = (unsigned char)strtol((char *)get_attr_value(cur_node), NULL, 10);
  	    }
-		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"format_field"))) {
+		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"field_format"))) {
 			strncpy(format_enum->field_format, (char *)get_attr_value(cur_node), 15);
  	    }
 	}
