@@ -1011,36 +1011,29 @@ int dissect_variable_field(tvbuff_t *tvb, proto_tree *tree, variable_field_t *vf
 	value_range_t *vr_ptr;
 	value_enum_t *ve_ptr;
 
-	guint64 data;
-	int offset, size, total_size = 0;
+	guint64 data, index;
+	int offset, size;
 	int found = 0;
 	double c_data;
 	int error;
 
 	offset = data_offset;
 
-	/* count the size of all taue fields in the variable_field
-	* to be able to highlight the right number of bytes
-	*/
-	taue_ptr = vf_ptr->taue;
-	while (taue_ptr != NULL) {
-		size = get_number_of_bytes(taue_ptr->field_type);
-		if (size < 0) {print_error(tvb, tree, size); return(size);}
-		total_size += size;
-		taue_ptr = taue_ptr->next;
-	}
-
-	sub_item = proto_tree_add_text(tree, tvb, offset, total_size, "[VF] %s (%s)",
+	sub_item = proto_tree_add_text(tree, tvb, offset, 1, "[VF] %s (%s)",
 		vf_ptr->name, (vf_ptr->optional) ? "optional" : "req");
 	sub_tree = proto_item_add_subtree(sub_item, ett_jaus_data);
 
-	taue_ptr = vf_ptr->taue;
+	// Read the variable field index
+	error = get_data_from_tvb(tvb, offset, PDT_UBYTE, 1, &index);
+	offset += 1;
 
+	// Loop through the type_and_units_enum, looking for a matching index. When found, display it.
+	taue_ptr = vf_ptr->taue;
 	while (taue_ptr != NULL) {
 		/* Get data field size and data from buffer */
 		size = get_number_of_bytes(taue_ptr->field_type);
 		if (size < 0) {print_error(tvb, tree, size); return(size);}
-		error = get_data_from_tvb(tvb, data_offset, taue_ptr->field_type, size, &data);
+		error = get_data_from_tvb(tvb, offset, taue_ptr->field_type, size, &data);
 		if (error < 0) {print_error(tvb, tree, error); return(error);}
 
 		sr_ptr = taue_ptr->scale_range;
@@ -1049,8 +1042,12 @@ int dissect_variable_field(tvbuff_t *tvb, proto_tree *tree, variable_field_t *vf
 		if (sr_ptr != NULL) { /* scale_range */
 			c_data = scale_convert((unsigned int) data, (size * 8), sr_ptr->real_lower_limit, sr_ptr->real_upper_limit, sr_ptr->integer_function);
 
-			proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFsr] index: %d (%s) %f",
-				taue_ptr->index, taue_ptr->field_units, c_data);
+			if (index == taue_ptr->index) {
+				proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFsr] %s (index: %d, %s) %f",
+					taue_ptr->name, taue_ptr->index, taue_ptr->field_units, c_data);
+					offset += size;
+					break;
+			}
 
 		} else if (vs_ptr != NULL) { /* value_set */
 
@@ -1062,8 +1059,8 @@ int dissect_variable_field(tvbuff_t *tvb, proto_tree *tree, variable_field_t *vf
 				/* value_enum: Find matching enum to data(index) pulled from buffer */
 				while (ve_ptr != NULL) {
 					if (data == ve_ptr->enum_index) {
-						proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFvs] index: %d (%s) %s (%ld)",
-							taue_ptr->index, taue_ptr->field_units, ve_ptr->enum_const, data);
+						proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VFvs] %s (index: %d, %s) %s (%ld)",
+							taue_ptr->name, taue_ptr->index, taue_ptr->field_units, ve_ptr->enum_const, data);
 						found = 1; break;
 					}
 					ve_ptr = ve_ptr->next;
@@ -1095,12 +1092,14 @@ int dissect_variable_field(tvbuff_t *tvb, proto_tree *tree, variable_field_t *vf
 
 		} else {
 			/* variable_field without a scale_range for value_set */
-			proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VF] index: %d (%s) 0x%lX",
-				taue_ptr->index, taue_ptr->field_units, data);
-
+			if (index == taue_ptr->index) {
+				proto_tree_add_uint64_format(sub_tree, hf_jaus_uint64, tvb, offset, size, data, "[VF] %s (index: %d, %s) 0x%lX",
+					taue_ptr->name, taue_ptr->index, taue_ptr->field_units, data);
+				offset += size;
+				break;
+			}
 		}
 
-		offset += size;
 		taue_ptr = taue_ptr->next;
 	}
 
