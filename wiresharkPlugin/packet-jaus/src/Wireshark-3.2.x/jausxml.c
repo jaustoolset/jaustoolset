@@ -965,6 +965,7 @@ void parse_variable_field(xmlNode * vf_node, variable_field_t *variable_field)
 {
 	xmlAttr *cur_node = NULL;
 	xmlNode *next_node = NULL;
+	xmlNode *taue_node = NULL;
 
 	type_and_units_enum_t *tmp_ptr;
 
@@ -994,23 +995,30 @@ void parse_variable_field(xmlNode * vf_node, variable_field_t *variable_field)
 	/* fields */
 	for (next_node = vf_node->children; next_node; next_node = next_node->next) {
         if (next_node->type == XML_ELEMENT_NODE) {
-			if ((!xmlStrcmp(next_node->name, (const xmlChar *)"type_and_units_enum"))) {
-				if (variable_field->taue == NULL) { /* first type_and_units_enum found */
+			if ((!xmlStrcmp(next_node->name, (const xmlChar *)"type_and_units_field"))) {
 
-					variable_field->taue = (type_and_units_enum_t *)malloc(sizeof(type_and_units_enum_t));
+				for (taue_node = next_node->children; taue_node; taue_node = taue_node->next) {
+        			if (taue_node->type == XML_ELEMENT_NODE) {
+						if ((!xmlStrcmp(taue_node->name, (const xmlChar *)"type_and_units_enum"))) {
+							if (variable_field->taue == NULL) { /* first type_and_units_enum found */
 
-					variable_field->taue->next = NULL;
-					parse_type_and_units_enum(next_node, variable_field->taue);
+								variable_field->taue = (type_and_units_enum_t *)malloc(sizeof(type_and_units_enum_t));
 
-				} else { /* another type_and_units_enum found */
-					tmp_ptr = variable_field->taue;
+								variable_field->taue->next = NULL;
+								parse_type_and_units_enum(taue_node, variable_field->taue);
 
-					while (tmp_ptr->next != NULL)
-						tmp_ptr = tmp_ptr->next;
+							} else { /* another type_and_units_enum found */
+								tmp_ptr = variable_field->taue;
 
-					tmp_ptr->next = (type_and_units_enum_t *)malloc(sizeof(type_and_units_enum_t));
-					tmp_ptr->next->next = NULL;
-					parse_type_and_units_enum(next_node, tmp_ptr->next);
+								while (tmp_ptr->next != NULL)
+									tmp_ptr = tmp_ptr->next;
+
+								tmp_ptr->next = (type_and_units_enum_t *)malloc(sizeof(type_and_units_enum_t));
+								tmp_ptr->next->next = NULL;
+								parse_type_and_units_enum(taue_node, tmp_ptr->next);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1041,6 +1049,9 @@ void parse_type_and_units_enum(xmlNode *taue_node, type_and_units_enum_t *taue)
  	    }
 		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"field_units"))) {
 			strncpy(taue->field_units, (char *)get_attr_value(cur_node), 32);
+ 	    }
+		else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"name"))) {
+			strncpy(taue->name, (char *)get_attr_value(cur_node), 32);
  	    }
 	}
 

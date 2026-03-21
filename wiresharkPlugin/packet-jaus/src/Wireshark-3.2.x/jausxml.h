@@ -210,6 +210,7 @@ typedef struct type_and_units_enum {
 	unsigned char index;
 	char field_type;
 	char field_units[32];
+	char name[32]; /* ? */
 	value_set_t *value_set; /* ? */
 	scale_range_t *scale_range; /* ? */
 	struct type_and_units_enum *next;
