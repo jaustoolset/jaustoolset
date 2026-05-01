@@ -67,10 +67,6 @@ POSSIBILITY OF SUCH DAMAGE.
    16 Bytes (header) + 8 Bytes(JAUS01.0) */
 #define JAUS_MIN_LEN     24
 
-#ifndef LITTLE_ENDIAN
-#define LITTLE_ENDIAN    TRUE
-#endif
-
 /* Message Properties flags */
 #define JAUS_PRIORITY_FLAG       0x0F
 #define JAUS_ACKNAK_FLAG         0x30
@@ -153,6 +149,14 @@ static const value_string version_flag[] = {
 	{ 0, "Version 2.0" },
 	{ 1, "Version 3.0 or 3.1" },
 	{ 2, "Version 3.2 or 3.3" },
+	{ 0, NULL }
+};
+
+static const value_string data_flag_vals[] = {
+	{ 0, "None" },
+	{ 1, "First Msg" },
+	{ 2, "Middle Msg" },
+	{ 3, "Last Msg" },
 	{ 0, NULL }
 };
 
@@ -351,7 +355,7 @@ void proto_register_jaus(void)
 		},
 		{ &hf_jaus_data_flag2,
 		{ "Data Flag", "jaus.dataflag", FT_UINT8, BASE_DEC,
-			NULL, DATA_FLAG, "Data Flag", HFILL }
+			VALS(data_flag_vals), DATA_FLAG, "Data Flag", HFILL }
 		},
 
 		{ &hf_jaus_uint64,
@@ -405,7 +409,7 @@ void proto_register_jaus(void)
 
 /**
  * This function is called to register a handoff for our protocol
- * Whenever a packet on the udp port is recieved, wireskark will call dissect_jaus()
+ * Whenever a packet on the udp port is received, wireshark will call dissect_jaus()
  *
  * This may be call more then once by wireshark, preferences updates
  */
@@ -517,12 +521,12 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 	if (tree) {
 		/* Header Sub tree */
-		jaus_sub_item = proto_tree_add_text(jaus_tree, tvb, offset, (!compression)? 14: 3, "Message Header");
+		jaus_sub_item = proto_tree_add_text(jaus_tree, tvb, offset, (!compression)? 12: 3, "Message Header");
 		jaus_header_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_header);
 
 		/* add message type and hc to header tree */
-		proto_tree_add_item(jaus_header_tree, hf_jaus_message_type, tvb, offset, 1, LITTLE_ENDIAN);
-		proto_tree_add_item(jaus_header_tree, hf_jaus_hc, tvb, offset, 1, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_header_tree, hf_jaus_message_type, tvb, offset, 1, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_header_tree, hf_jaus_hc, tvb, offset, 1, ENC_LITTLE_ENDIAN);
 	}
 
 	offset+=1;
@@ -557,7 +561,7 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 		if (tree) {
 			/* add data_size to header tree */
-			proto_tree_add_item(jaus_header_tree, hf_jaus_data_size2, tvb, offset, 2, LITTLE_ENDIAN);
+			proto_tree_add_item(jaus_header_tree, hf_jaus_data_size2, tvb, offset, 2, ENC_LITTLE_ENDIAN);
 		}
 		offset+=2;
 	}
@@ -567,14 +571,14 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 		hc_num = tvb_get_guint8(tvb, offset);
 		if (tree) {
 			/* add hc_mun to header tree */
-			proto_tree_add_item(jaus_header_tree, hf_jaus_hc_num, tvb, offset, 1, LITTLE_ENDIAN);
+			proto_tree_add_item(jaus_header_tree, hf_jaus_hc_num, tvb, offset, 1, ENC_LITTLE_ENDIAN);
 		}
 		offset+=1;
 
 		hc_length = tvb_get_guint8(tvb, offset);
 		if (tree) {
 			/* add hc_length to header tree */
-			proto_tree_add_item(jaus_header_tree, hf_jaus_hc_lenght, tvb, offset, 1, LITTLE_ENDIAN);
+			proto_tree_add_item(jaus_header_tree, hf_jaus_hc_lenght, tvb, offset, 1, ENC_LITTLE_ENDIAN);
 		}
 		offset+=1;
 
@@ -583,13 +587,14 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 	if (!compression) {
 
 		properties = tvb_get_guint8(tvb, offset);
+		const guint8 data_flag = ( properties >> 6 ) & 0x3;
 
 		if (tree) {
 			/* add properties to header tree */
-			proto_tree_add_item(jaus_header_tree, hf_jaus_priority2, tvb, offset, 1, LITTLE_ENDIAN);
-			proto_tree_add_item(jaus_header_tree, hf_jaus_acknak2, tvb, offset, 1, LITTLE_ENDIAN);
-			proto_tree_add_item(jaus_header_tree, hf_jaus_bcast, tvb, offset, 1, LITTLE_ENDIAN);
-			proto_tree_add_item(jaus_header_tree, hf_jaus_data_flag2, tvb, offset, 1, LITTLE_ENDIAN);
+			proto_tree_add_item(jaus_header_tree, hf_jaus_priority2, tvb, offset, 1, ENC_LITTLE_ENDIAN);
+			proto_tree_add_item(jaus_header_tree, hf_jaus_bcast, tvb, offset, 1, ENC_LITTLE_ENDIAN);
+			proto_tree_add_item(jaus_header_tree, hf_jaus_acknak2, tvb, offset, 1, ENC_LITTLE_ENDIAN);
+			proto_tree_add_item(jaus_header_tree, hf_jaus_data_flag2, tvb, offset, 1, ENC_LITTLE_ENDIAN);
 		}
 		offset+=1;
 
@@ -617,6 +622,19 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 			if (tree) {
 				jaus_sub_item = proto_tree_add_text(jaus_tree, tvb, offset, bytes, "Payload (%d byte%s)", bytes, plurality(bytes, "", "s"));
 				jaus_payload_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_data);
+			}
+		}
+
+		// Temp solution since the dissector doesn't currently support reassembling JAUS fragments.
+		if (data_flag != 0)
+		{
+			if (tree) {
+				proto_tree_add_item(jaus_payload_tree, hf_jaus_data, tvb, offset, bytes, FALSE);
+				offset += bytes;
+			}
+
+			if (check_col(pinfo->cinfo, COL_INFO)) {
+				col_append_fstr(pinfo->cinfo, COL_INFO, "Fragmented JAUS Protocol (flag=%s)", val_to_str(data_flag, data_flag_vals, "Unknown (0x%02x)"));
 			}
 		}
 
@@ -671,8 +689,7 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 				offset++;
 			}
 		}
-		/* submit the sequenceNumber parameter to Header Sub tree. */
-		proto_tree_add_item(jaus_header_tree, hf_jaus_sequenceNumber, tvb, offset, 2, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_tree, hf_jaus_sequenceNumber, tvb, offset, 2, ENC_LITTLE_ENDIAN);
 		offset+=2;
 	}
 
@@ -771,19 +788,19 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 		jaus_sub_item = proto_tree_add_text(jaus_header_tree, tvb, offset, 2, "Message Properties " );
 		jaus_properties_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_message_properties);
 		/* submit the priority parameter to Message Properties.  */
-		proto_tree_add_item(jaus_properties_tree, hf_jaus_priority, tvb, offset, 1, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_properties_tree, hf_jaus_priority, tvb, offset, 1, ENC_LITTLE_ENDIAN);
 		/* submit the acknak parameter to Message Properties.  */
-		proto_tree_add_item(jaus_properties_tree, hf_jaus_acknak, tvb, offset, 1, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_properties_tree, hf_jaus_acknak, tvb, offset, 1, ENC_LITTLE_ENDIAN);
 		/* submit the service parameter to Message Properties.  */
-		proto_tree_add_item(jaus_properties_tree, hf_jaus_service, tvb, offset, 1, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_properties_tree, hf_jaus_service, tvb, offset, 1, ENC_LITTLE_ENDIAN);
 		/* submit the experimental parameter to Message Properties.  */
-		proto_tree_add_item(jaus_properties_tree, hf_jaus_experimental, tvb, offset, 1, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_properties_tree, hf_jaus_experimental, tvb, offset, 1, ENC_LITTLE_ENDIAN);
 	}
 	offset += 1;
 
 	if (tree) {
 		/* submit the version parameter to Message Properties.  */
-		proto_tree_add_item(jaus_properties_tree, hf_jaus_version, tvb, offset, 1, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_properties_tree, hf_jaus_version, tvb, offset, 1, ENC_LITTLE_ENDIAN);
 	}
 	offset += 1;
 
@@ -801,10 +818,10 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 		jaus_sub_item = proto_tree_add_string(jaus_header_tree, hf_jaus_destination, tvb, offset, 4, dst_addr);
 		jaus_dest_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_destination);
 		/* Dest IP split apart, added to Destnation */
-		proto_tree_add_item(jaus_dest_tree, hf_jaus_dest_sub, tvb, offset, 4, LITTLE_ENDIAN);
-		proto_tree_add_item(jaus_dest_tree, hf_jaus_dest_node, tvb, offset, 4, LITTLE_ENDIAN);
-		proto_tree_add_item(jaus_dest_tree, hf_jaus_dest_comp, tvb, offset, 4, LITTLE_ENDIAN);
-		proto_tree_add_item(jaus_dest_tree, hf_jaus_dest_inst, tvb, offset, 4, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_dest_tree, hf_jaus_dest_sub, tvb, offset, 4, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_dest_tree, hf_jaus_dest_node, tvb, offset, 4, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_dest_tree, hf_jaus_dest_comp, tvb, offset, 4, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_dest_tree, hf_jaus_dest_inst, tvb, offset, 4, ENC_LITTLE_ENDIAN);
 	}
 	offset += 4;
 
@@ -815,10 +832,10 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 		jaus_sub_item = proto_tree_add_string(jaus_header_tree, hf_jaus_source, tvb, offset, 4, src_addr);
 		jaus_src_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_source);
 		/* Src IP split apart, added to Source */
-		proto_tree_add_item(jaus_src_tree, hf_jaus_src_sub, tvb, offset, 4, LITTLE_ENDIAN);
-		proto_tree_add_item(jaus_src_tree, hf_jaus_src_node, tvb, offset, 4, LITTLE_ENDIAN);
-		proto_tree_add_item(jaus_src_tree, hf_jaus_src_comp, tvb, offset, 4, LITTLE_ENDIAN);
-		proto_tree_add_item(jaus_src_tree, hf_jaus_src_inst, tvb, offset, 4, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_src_tree, hf_jaus_src_sub, tvb, offset, 4, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_src_tree, hf_jaus_src_node, tvb, offset, 4, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_src_tree, hf_jaus_src_comp, tvb, offset, 4, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_src_tree, hf_jaus_src_inst, tvb, offset, 4, ENC_LITTLE_ENDIAN);
 	}
 	offset += 4;
 
@@ -826,17 +843,17 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 	if (tree) {
 		/* dataControl Sub tree of Header. */
-		jaus_sub_item = proto_tree_add_item(jaus_header_tree, hf_jaus_dataControl, tvb, offset, 2, LITTLE_ENDIAN);
+		jaus_sub_item = proto_tree_add_item(jaus_header_tree, hf_jaus_dataControl, tvb, offset, 2, ENC_LITTLE_ENDIAN);
 		jaus_dataC_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_dataControl);
 		/* DataC info split apart, added to dataControl */
-		proto_tree_add_item(jaus_dataC_tree, hf_jaus_data_size, tvb, offset, 2, LITTLE_ENDIAN);
-		proto_tree_add_item(jaus_dataC_tree, hf_jaus_data_flag, tvb, offset, 2, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_dataC_tree, hf_jaus_data_size, tvb, offset, 2, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_dataC_tree, hf_jaus_data_flag, tvb, offset, 2, ENC_LITTLE_ENDIAN);
 	}
 	offset+=2;
 
 	if (tree) {
 		/* submit the sequenceNumber parameter to Header Sub tree. */
-		proto_tree_add_item(jaus_header_tree, hf_jaus_sequenceNumber, tvb, offset, 2, LITTLE_ENDIAN);
+		proto_tree_add_item(jaus_header_tree, hf_jaus_sequenceNumber, tvb, offset, 2, ENC_LITTLE_ENDIAN);
 	}
 	offset+=2;
 
