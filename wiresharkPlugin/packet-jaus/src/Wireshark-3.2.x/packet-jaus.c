@@ -1203,7 +1203,7 @@ int dissect_bit_field(tvbuff_t *tvb, proto_tree *tree, bit_field_t *bf_ptr)
 	value_enum_t *ve_ptr;
 
 	guint64 data, sub_data;
-	int size, mask, found = 0;
+	int size, mask;
 	unsigned char count;
 	int error;
 
@@ -1222,7 +1222,7 @@ int dissect_bit_field(tvbuff_t *tvb, proto_tree *tree, bit_field_t *bf_ptr)
 	/* print sub_field values to a sub tree of bit_fields tree */
 	sf_ptr = bf_ptr->sub_field;
 	while (sf_ptr != NULL) {
-
+		int found = 0;
 		count = sf_ptr->to_index - sf_ptr->from_index;
 		mask = 0x01;
 		while (count > 0) {
