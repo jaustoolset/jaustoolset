@@ -55,9 +55,9 @@ POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <math.h>
-//#include "config.h"
 #include "jausxml.h"
 #include <epan/packet.h>
+#include <epan/reassemble.h>
 #include <epan/tvbuff.h>
 
 #define PROTO_TAG_JAUS       "JAUS"
@@ -95,13 +95,15 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree);
 int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree);
 int dissect_message_field(tvbuff_t *tvb, proto_tree *tree, field_t *f_ptr, int _op_count, guint64 presence_vector);
 int dissect_message_data(tvbuff_t *tvb, proto_tree *tree, int _offset, message_def_t *m_ptr);
-void dissect_embedded_message_data(tvbuff_t *tvb, proto_tree *tree, int offset);
+int dissect_packet_data(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, int offset, int reserve_bytes);
+int dissect_embedded_message_data(tvbuff_t *tvb, proto_tree *tree, int offset);
 int get_number_of_bytes(char type);
 int get_data_from_tvb(tvbuff_t *tvb, int offset, char type, int size, guint64 *data);
 double scale_convert(unsigned int scaled_value, int bits, double real_lower, double real_upper, char int_function);
 int get_sdp_id_from_tvb(tvbuff_t *tvb, int offset, char* jaus_id);
 int get_ra3_id_from_tvb(tvbuff_t *tvb, int offset, char* jaus_id);
 char* decode_field_type(char type);
+message_def_t* get_message_def(guint16 command);
 
 /* Wireshark ID of the JAUS protocol */
 static int proto_jaus = -1;
@@ -193,6 +195,18 @@ static gint hf_jaus_priority2 = -1;
 static gint hf_jaus_acknak2 = -1;
 static gint hf_jaus_bcast = -1;
 static gint hf_jaus_data_flag2 = -1;
+// Support for fragmented messages
+static int hf_jaus_fragments = -1;
+static int hf_jaus_fragment = -1;
+static int hf_jaus_fragment_overlap = -1;
+static int hf_jaus_fragment_overlap_conflict = -1;
+static int hf_jaus_fragment_multiple_tails = -1;
+static int hf_jaus_fragment_too_long_fragment = -1;
+static int hf_jaus_fragment_error = -1;
+static int hf_jaus_fragment_count = -1;
+static int hf_jaus_reassembled_in = -1;
+static int hf_jaus_reassembled_length = -1;
+static int hf_jaus_reassembled_data = -1;
 
 /* universal header for all the unknown number of Fields in the Data */
 static gint hf_jaus_uint64 = -1;
@@ -208,6 +222,31 @@ static gint ett_jaus_source = -1;
 static gint ett_jaus_dataControl = -1;
 static gint ett_jaus_data = -1;
 static gint ett_array = -1;
+// Support for fragmented messages
+static gint ett_jaus_fragment = -1;
+static gint ett_jaus_fragments = -1;
+
+static reassembly_table jaus_reassembly_table;
+static const fragment_items jaus_frag_items = {
+	/* Fragment subtrees */
+	&ett_jaus_fragment,
+	&ett_jaus_fragments,
+	/* Fragment fields */
+	&hf_jaus_fragments,
+	&hf_jaus_fragment,
+	&hf_jaus_fragment_overlap,
+	&hf_jaus_fragment_overlap_conflict,
+	&hf_jaus_fragment_multiple_tails,
+	&hf_jaus_fragment_too_long_fragment,
+	&hf_jaus_fragment_error,
+	&hf_jaus_fragment_count,
+	/* Reassembled in field */
+	&hf_jaus_reassembled_in,
+	/* Reassembled length field */
+	&hf_jaus_reassembled_length,
+	&hf_jaus_reassembled_data,
+	/* Tag */
+	"JAUS fragments"};
 
 // Adjust to Wireshark API changes
 #define tvb_length tvb_captured_length
@@ -357,10 +396,55 @@ void proto_register_jaus(void)
 		{ "Data Flag", "jaus.dataflag", FT_UINT8, BASE_DEC,
 			VALS(data_flag_vals), DATA_FLAG, "Data Flag", HFILL }
 		},
-
 		{ &hf_jaus_uint64,
 		{ "jaus data", "jaus.data", FT_UINT64, BASE_HEX,
 			NULL, 0x0, "jaus payload data", HFILL }
+		},
+
+		/* Fragmentation Support */
+		{&hf_jaus_fragments,
+		{"Message fragments", "jaus.fragments", FT_NONE, BASE_NONE,
+			NULL, 0x00, NULL, HFILL }
+		},
+		{&hf_jaus_fragment,
+		{"Message fragment", "jaus.fragment", FT_FRAMENUM, BASE_NONE,
+			NULL, 0x00, NULL, HFILL }
+		},
+		{&hf_jaus_fragment_overlap,
+		{"Message fragment overlap", "jaus.fragment.overlap",  FT_BOOLEAN, 0,
+			NULL, 0x00, NULL, HFILL }
+		},
+		{&hf_jaus_fragment_overlap_conflict,
+		{"Message fragment overlapping with conflicting data", "jaus.fragment.overlap.conflict", FT_BOOLEAN, 0,
+			NULL, 0x00, NULL, HFILL }
+		},
+		{&hf_jaus_fragment_multiple_tails,
+		{"Message has multiple tail fragments", "jaus.fragment.multiple_tails", FT_BOOLEAN, 0,
+			NULL, 0x00, NULL, HFILL }
+		},
+		{&hf_jaus_fragment_too_long_fragment,
+		{"Message fragment too long", "jaus.fragment.too_long_fragment", FT_BOOLEAN, 0,
+			NULL, 0x00, NULL, HFILL }
+		},
+		{&hf_jaus_fragment_error,
+		{"Message defragmentation error", "jaus.fragment.error", FT_FRAMENUM, BASE_NONE,
+			NULL, 0x00, NULL, HFILL }
+		},
+		{&hf_jaus_fragment_count,
+		{"Message fragment count", "jaus.fragment.count", FT_UINT32, BASE_DEC,
+			NULL, 0x00, NULL, HFILL }
+		},
+		{&hf_jaus_reassembled_in,
+		{"Reassembled in", "jaus.reassembled.in", FT_FRAMENUM, BASE_NONE,
+			NULL, 0x00, NULL, HFILL }
+		},
+		{&hf_jaus_reassembled_length,
+		{"Reassembled length", "jaus.reassembled.length", FT_UINT32, BASE_DEC,
+			NULL, 0x00, NULL, HFILL }
+		},
+		{&hf_jaus_reassembled_data,
+		{"Reassembled data", "jaus.reassembled.data", FT_BYTES, BASE_NONE,
+			NULL, 0x00, "reassembled data", HFILL }
 		}
 
 	};
@@ -374,7 +458,9 @@ void proto_register_jaus(void)
 		&ett_jaus_source,
 		&ett_jaus_dataControl,
 		&ett_jaus_data,
-		&ett_array
+		&ett_array,
+		&ett_jaus_fragment,
+		&ett_jaus_fragments
 	};
 
 	module_t *jaus_module = NULL;
@@ -405,6 +491,8 @@ void proto_register_jaus(void)
 	
 	/* called in jausxml.c to parse the xml on start-up of wireshark */
 	start_xml_parse();
+
+	reassembly_table_register(&jaus_reassembly_table, &addresses_ports_reassembly_table_functions);
 }
 
 /**
@@ -481,8 +569,6 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 	proto_tree *jaus_payload_tree = NULL;
 	proto_tree *jaus_command_tree = NULL;
 
-	message_def_t *m_ptr;
-
 	int offset = 1; /* starting offset in buffer */
 
 	guint8 hc = 0;
@@ -493,7 +579,7 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 	guint8 properties = 0;
 	guint16 command = 0;
 
-	int bytes, found_msg = 0;
+	int bytes;
 
 
 	/* Make entries in Protocol column and Info column on summary display */
@@ -625,70 +711,61 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 			}
 		}
 
-		// Temp solution since the dissector doesn't currently support reassembling JAUS fragments.
-		if (data_flag != 0)
+		if (data_flag != 0) // JAUS Fragment
 		{
-			if (tree) {
-				proto_tree_add_item(jaus_payload_tree, hf_jaus_data, tvb, offset, bytes, FALSE);
-				offset += bytes;
+			const uint16_t sequence_id = tvb_get_letohs(tvb, offset + bytes);
+			const gboolean first = data_flag == 1;
+			const gboolean last = data_flag == 3;
+			const guint32 max_frags = 100; // A big number that is used in JuniorMgr.
+
+			fragment_head *frag_msg = fragment_add_seq_single(&jaus_reassembly_table, tvb, offset, pinfo, sequence_id, NULL, bytes, first, last, max_frags);
+
+			tvbuff_t *new_tvb = process_reassembled_data(tvb, offset, pinfo, "Reassembled JAUS", frag_msg, &jaus_frag_items, NULL, jaus_tree);
+
+			if (new_tvb) // Reassembled
+			{
+				proto_item *jaus_reassembled_payload_item = NULL;
+				proto_tree *jaus_reassembled_payload_tree = NULL;
+				gint new_bytes = tvb_length(new_tvb);
+				gint new_offset = 0;
+				if (tree)
+				{
+					jaus_reassembled_payload_item = proto_tree_add_text(jaus_tree, new_tvb, new_offset, new_bytes, "Reassembled Payload (%d byte%s)", new_bytes, plurality(new_bytes, "", "s"));
+					jaus_reassembled_payload_tree = proto_item_add_subtree(jaus_reassembled_payload_item, ett_jaus_data);
+				}
+				// Reassembled message doesn't contain sequence id at end. Don't reserve any bytes at end.
+				new_offset = dissect_packet_data(new_tvb, pinfo, jaus_reassembled_payload_tree, new_offset, 0);
+
+				if (check_col(pinfo->cinfo, COL_INFO))
+				{
+					col_append_fstr(pinfo->cinfo, COL_INFO, "(Reassembled) ");
+				}
 			}
+			else // Not assembled yet
+			{
+				if (tree) {
+					proto_tree_add_item(jaus_payload_tree, hf_jaus_data, tvb, offset, bytes, FALSE);
+					offset += bytes;
+				}
 
-			if (check_col(pinfo->cinfo, COL_INFO)) {
-				col_append_fstr(pinfo->cinfo, COL_INFO, "Fragmented JAUS Protocol (flag=%s)", val_to_str(data_flag, data_flag_vals, "Unknown (0x%02x)"));
-			}
-		}
-
-		while (tvb_length_remaining(tvb, offset) > 2) { /* WHILE not last 2 bytes */
-
-			command = tvb_get_letohs(tvb , offset);
-			found_msg = 0;
-			if (message_set != NULL) {
-				m_ptr = message_set;
-				while (m_ptr != NULL) {
-					if (m_ptr->message_id == command) {
-						found_msg = 1; break;
-					}
-					m_ptr = m_ptr->next;
+				if (check_col(pinfo->cinfo, COL_INFO)) {
+					col_append_fstr(pinfo->cinfo, COL_INFO, "Fragmented JAUS Protocol (flag=%s)", val_to_str(data_flag, data_flag_vals, "Unknown (0x%02x)"));
 				}
 			}
 
-			if (check_col(pinfo->cinfo, COL_INFO)) {
-				col_append_fstr(pinfo->cinfo, COL_INFO, "Cmd(0x%04X) %s, ", command, (found_msg)?m_ptr->name:" --- " );
-			}
-
-			if (tree) {
-				proto_item_append_text(jaus_item, ", Msg: %s, is_Command: %s", (found_msg) ? m_ptr->name : "NotFoundInXML",
-					(found_msg) ? ((m_ptr->is_command) ? "true" : "false") : "NotFoundInXML");
-
-				/* submit the commandCode parameter to the payload sub tree. */
-				jaus_sub_item = proto_tree_add_uint_format(jaus_payload_tree, hf_jaus_commandCode, tvb, offset, 2, command,
-					"Command Code: %s (0x%04X)", (found_msg) ? m_ptr->name : "NotFoundInXML", command);
-				jaus_command_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_data);
-			}
-
-			offset+=2;
-
-			/* If the message is not found in the xml, offset to the next can not to found, just show the data and continue */
-			if (found_msg) {
-				offset = dissect_message_data(tvb, jaus_command_tree, offset, m_ptr);
-				if (offset < 0) {return(data_offset);}
-			} else {/* if no message found then show the data  */
-				proto_item_append_text(jaus_sub_item, ", No message_def found in XML to dissect data");
-				bytes = tvb_length_remaining(tvb, offset) - 2;
-				proto_tree_add_item(jaus_command_tree, hf_jaus_data, tvb, offset, bytes, FALSE);
-				break;
-			}
-
-		} /* END WHILE  check for last 16 bits */
-
+		}
+		else // Not Fragmented
+		{
+			// Reserve 2 bytes for the sequence id.
+			offset = dissect_packet_data(tvb, pinfo, jaus_payload_tree, offset, 2);
+		}
 	}
 
 	if (!compression) {
-		if (!found_msg) {
-			while (tvb_length_remaining(tvb, offset) > 2) {
-				offset++;
-			}
+		while (tvb_length_remaining(tvb, offset) > 2) {
+			offset++;
 		}
+
 		proto_tree_add_item(jaus_tree, hf_jaus_sequenceNumber, tvb, offset, 2, ENC_LITTLE_ENDIAN);
 		offset+=2;
 	}
@@ -722,7 +799,7 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 	guint16 command = 0;
 	guint16 dataC = 0;
 
-	int bytes, found_msg = 0;
+	int bytes;
 
 	/* Check that there's enough data, at least a Jaus header */
 	if (tvb_length(tvb) < JAUS_MIN_LEN)
@@ -755,20 +832,12 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 	command = tvb_get_letohs(tvb , offset+2 );
 
-	if (message_set != NULL) {
-		m_ptr = message_set;
-		while (m_ptr != NULL) {
-			if (m_ptr->message_id == command) {
-				found_msg = 1; break;
-			}
-			m_ptr = m_ptr->next;
-		}
-	}
+	m_ptr = get_message_def(command);
 
 	properties = tvb_get_guint8(tvb, offset);
 
 	if (check_col(pinfo->cinfo, COL_INFO)) {
-		col_add_fstr(pinfo->cinfo, COL_INFO, "Cmd(0x%04X) %s  %s  [priority %d]", command, (found_msg)?m_ptr->name:" --- ",
+		col_add_fstr(pinfo->cinfo, COL_INFO, "Cmd(0x%04X) %s  %s  [priority %d]", command, (m_ptr)?m_ptr->name:" --- ",
 				(((properties&JAUS_ACKNAK_FLAG) >> 4)!= 0)? val_to_str(((properties&JAUS_ACKNAK_FLAG) >> 4), acknak_flag, "Unknown") : "",
 				(properties&JAUS_PRIORITY_FLAG));
 	}
@@ -776,8 +845,8 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 	if (tree) { /* we are being asked for a tree*/
 
 		/* JAUS Main tree */
-		jaus_item = proto_tree_add_protocol_format(tree, proto_jaus, tvb, 0, -1, "JAUS Robots, Msg: %s, is_Command: %s", (found_msg) ? m_ptr->name : "NotFoundInXML",
-			(found_msg) ? ((m_ptr->is_command) ? "true" : "false") : "NotFoundInXML");
+		jaus_item = proto_tree_add_protocol_format(tree, proto_jaus, tvb, 0, -1, "JAUS Robots, Msg: %s, is_Command: %s", (m_ptr) ? m_ptr->name : "NotFoundInXML",
+			(m_ptr) ? ((m_ptr->is_command) ? "true" : "false") : "NotFoundInXML");
 		jaus_tree = proto_item_add_subtree(jaus_item, ett_jaus);
 
 		/* Legacy RA3 Header */
@@ -807,7 +876,7 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 	if (tree) {
 		/* submit the commandCode parameter to Header sub tree. */
 		proto_tree_add_uint_format(jaus_header_tree, hf_jaus_commandCode, tvb, offset, 2, command,
-				"Command Code: %s (0x%04X)", (found_msg) ? m_ptr->name : "NotFoundInXML", command);
+				"Command Code: %s (0x%04X)", (m_ptr) ? m_ptr->name : "NotFoundInXML", command);
 	}
 	offset += 2;
 
@@ -865,7 +934,7 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 			jaus_data_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_data);
 
 			if (bytes == (dataC & 0xfff)) {
-				if (found_msg) {
+				if (m_ptr) {
 					offset = dissect_message_data(tvb, jaus_data_tree, offset, m_ptr);
 					if (offset < 0) {return data_offset;}
 				} else {/* if no message found then show the data  */
@@ -1651,33 +1720,73 @@ int dissect_message_data(tvbuff_t *tvb, proto_tree *tree, int offset, message_de
 	return(data_offset);
 }
 
-void dissect_embedded_message_data(tvbuff_t *tvb, proto_tree *tree, int offset)
+int dissect_packet_data(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, int offset, int reserve_bytes)
 {
-	message_def_t *sub_msg_ptr;
-	bool found_sub_msg = false;
-	unsigned short sub_command = tvb_get_letohs(tvb, offset);
+	proto_item *jaus_sub_item = NULL;
+	proto_tree *jaus_command_tree = NULL;
+	while (tvb_length_remaining(tvb, offset) > reserve_bytes)
+	{ /* WHILE not last reserve_bytes */
 
-	sub_msg_ptr = message_set;
-	while (sub_msg_ptr != NULL)
-	{
-		if (sub_msg_ptr->message_id == sub_command)
+		guint16 command = tvb_get_letohs(tvb, offset);
+		message_def_t* m_ptr = get_message_def(command);
+
+		if (check_col(pinfo->cinfo, COL_INFO))
 		{
-			found_sub_msg = true;
+			col_append_fstr(pinfo->cinfo, COL_INFO, "Cmd(0x%04X) %s, ", command, (m_ptr) ? m_ptr->name : " --- ");
+		}
+
+		if (tree)
+		{
+			proto_item_append_text(tree->parent, ", Msg: %s, is_Command: %s", (m_ptr) ? m_ptr->name : "NotFoundInXML",
+				(m_ptr) ? ((m_ptr->is_command) ? "true" : "false") : "NotFoundInXML");
+			/* submit the commandCode parameter to the payload sub tree. */
+			jaus_sub_item = proto_tree_add_uint_format(tree, hf_jaus_commandCode, tvb, offset, 2, command,
+														"Command Code: %s (0x%04X)", (m_ptr) ? m_ptr->name : "NotFoundInXML", command);
+			jaus_command_tree = proto_item_add_subtree(jaus_sub_item, ett_jaus_data);
+		}
+
+		offset += 2;
+
+		/* If the message is not found in the xml, offset to the next can not to found, just show the data and continue */
+		if (m_ptr)
+		{
+			offset = dissect_message_data(tvb, jaus_command_tree, offset, m_ptr);
+			if (offset < 0)
+			{
+				// Ran out of data to process. Something went wrong.
+				return offset;
+			}
+		}
+		else if (jaus_sub_item)
+		{
+			/* if no message found then show the data  */
+			proto_item_append_text(jaus_sub_item, ", No message_def found in XML to dissect data");
+			gint bytes = tvb_length_remaining(tvb, offset) - reserve_bytes;
+			proto_tree_add_item(jaus_command_tree, hf_jaus_data, tvb, offset, bytes, FALSE);
+			offset+=bytes;
 			break;
 		}
-		sub_msg_ptr = sub_msg_ptr->next;
-	}
+
+	} /* END WHILE */
+	return offset;
+}
+
+int dissect_embedded_message_data(tvbuff_t *tvb, proto_tree *tree, int offset)
+{
+	guint16 command = tvb_get_letohs(tvb, offset);
+	message_def_t *message_def = get_message_def(command);
 
 	proto_item *sub_item = proto_tree_add_uint_format(
-		tree, hf_jaus_commandCode, tvb, offset, 2, sub_command,
-		"Command Code: %s (0x%04X)", (found_sub_msg) ? sub_msg_ptr->name : "NotFoundInXML", sub_command);
+		tree, hf_jaus_commandCode, tvb, offset, 2, command,
+		"Command Code: %s (0x%04X)", (message_def) ? message_def->name : "NotFoundInXML", command);
 	offset += 2;
 	proto_tree *sub_tree = proto_item_add_subtree(sub_item, ett_jaus_data);
 
-	if (found_sub_msg)
+	if (message_def)
 	{
-		data_offset = dissect_message_data(tvb, sub_tree, offset, sub_msg_ptr);
+		offset = dissect_message_data(tvb, sub_tree, offset, message_def);
 	}
+	return offset;
 }
 
 /**
@@ -1801,4 +1910,18 @@ char *decode_field_type(char type)
 		sprintf(result, "UNKNOWN(%d)", (int)type);
 		return result;
 	}
+}
+
+message_def_t *get_message_def(guint16 command)
+{
+	message_def_t *message_ptr = message_set;
+	while (message_ptr != NULL)
+	{
+		if (message_ptr->message_id == command)
+		{
+			break;
+		}
+		message_ptr = message_ptr->next;
+	}
+	return message_ptr;
 }
