@@ -545,7 +545,7 @@ dissect_jaus(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, void *data)
 	guint8 version = 0;
 
 	/* get the first byte to check for the version of jaus message */
-	version = tvb_get_guint8( tvb, 0 );
+	version = tvb_get_uint8( tvb, 0 );
 
 	if (version == 'J') { /* Legacy Header RA3 */
 		return dissect_RA3_header(tvb, pinfo, tree);
@@ -606,7 +606,7 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 	}
 
-	hc = tvb_get_guint8( tvb, offset );
+	hc = tvb_get_uint8( tvb, offset );
 
 	if ((hc & HC_FLAG) != 0) {
 		compression = 1;
@@ -661,14 +661,14 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 	if (compression) {
 
-		hc_num = tvb_get_guint8(tvb, offset);
+		hc_num = tvb_get_uint8(tvb, offset);
 		if (tree) {
 			/* add hc_mun to header tree */
 			proto_tree_add_item(jaus_header_tree, hf_jaus_hc_num, tvb, offset, 1, ENC_LITTLE_ENDIAN);
 		}
 		offset+=1;
 
-		hc_length = tvb_get_guint8(tvb, offset);
+		hc_length = tvb_get_uint8(tvb, offset);
 		if (tree) {
 			/* add hc_length to header tree */
 			proto_tree_add_item(jaus_header_tree, hf_jaus_hc_lenght, tvb, offset, 1, ENC_LITTLE_ENDIAN);
@@ -679,7 +679,7 @@ int dissect_sdp_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 	if (!compression) {
 
-		properties = tvb_get_guint8(tvb, offset);
+		properties = tvb_get_uint8(tvb, offset);
 		const guint8 data_flag = ( properties >> 6 ) & 0x3;
 
 		if (tree) {
@@ -841,7 +841,7 @@ int dissect_RA3_header(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree)
 
 	m_ptr = get_message_def(command);
 
-	properties = tvb_get_guint8(tvb, offset);
+	properties = tvb_get_uint8(tvb, offset);
 
 	if (check_col(pinfo->cinfo, COL_INFO)) {
 		col_add_fstr(pinfo->cinfo, COL_INFO, "Cmd(0x%04X) %s  %s  [priority %d]", command, (m_ptr)?m_ptr->name:" --- ",
@@ -1394,7 +1394,7 @@ int dissect_variable_format_field(tvbuff_t *tvb, proto_tree *tree, variable_form
 	fe_ptr = vff_ptr->format_enum;
 	cf_ptr = vff_ptr->count_field;
 
-	const guint8 field_enum = tvb_get_guint8(tvb, offset);
+	const guint8 field_enum = tvb_get_uint8(tvb, offset);
 	offset += 1;
 
 	/* Find matching format_enum to data(index) pulled from buffer */
@@ -1831,7 +1831,7 @@ int get_data_from_tvb(tvbuff_t *tvb, int offset, char type, int size, guint64 *d
 	}
 
 	if (type == PDT_BYTE || type == PDT_UBYTE)
-		*data = (guint64)tvb_get_guint8(tvb, offset);
+		*data = (guint64)tvb_get_uint8(tvb, offset);
 	else if (type == PDT_SHORT_INT || type == PDT_USHORT_INT)
 		*data = (guint64)tvb_get_letohs(tvb, offset);/* Little-Endian-to-host-order accessors */
 	else if (type == PDT_INT || type == PDT_UINT || type == PDT_FLOAT)
@@ -1868,8 +1868,8 @@ double scale_convert(unsigned int scaled_value, int bits, double real_lower, dou
  */
 int get_sdp_id_from_tvb(tvbuff_t *tvb, int offset, char* jaus_id)
 {
-	const int comp = tvb_get_guint8(tvb , offset);
-	const int node = tvb_get_guint8(tvb , offset+1);
+	const int comp = tvb_get_uint8(tvb , offset);
+	const int node = tvb_get_uint8(tvb , offset+1);
 	const int subs = tvb_get_letohs(tvb , offset+2);
 	return sprintf(jaus_id, "%d.%d.%d", subs, node, comp);
 }
@@ -1881,10 +1881,10 @@ int get_sdp_id_from_tvb(tvbuff_t *tvb, int offset, char* jaus_id)
  */
 int get_ra3_id_from_tvb(tvbuff_t *tvb, int offset, char* jaus_id)
 {
-	const int inst = tvb_get_guint8(tvb , offset);
-	const int comp = tvb_get_guint8(tvb , offset+1);
-	const int node = tvb_get_guint8(tvb , offset+2);
-	const int subs = tvb_get_guint8(tvb , offset+3);
+	const int inst = tvb_get_uint8(tvb , offset);
+	const int comp = tvb_get_uint8(tvb , offset+1);
+	const int node = tvb_get_uint8(tvb , offset+2);
+	const int subs = tvb_get_uint8(tvb , offset+3);
 	return sprintf(jaus_id, "%d.%d.%d.%d", subs, node, comp, inst);
 }
 
