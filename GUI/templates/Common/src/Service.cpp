@@ -36,9 +36,11 @@ namespace JTS
 {
 
 //Service::Service(Router *msgRouter)
-Service::Service()
+Service::Service(const std::string& urn, const jUnsignedByte& majorVersion, const jUnsignedByte& minorVersion) 
+  : m_URN(urn)
+  , m_majorVersion(majorVersion)
+  , m_minorVersion(minorVersion)
 {
-	m_URN = "Unknown";
 }
 
 
@@ -49,6 +51,16 @@ Service::~Service()
 const std::string Service::getURN() const
 {
 	return m_URN;
+}
+
+const jUnsignedByte Service::getMajorVersion() const
+{
+	return m_majorVersion;
+}
+
+const jUnsignedByte Service::getMinorVersion() const
+{
+	return m_minorVersion;
 }
 
 const std::set<jUnsignedShortInteger> &Service::getInputMessageList() const

@@ -91,7 +91,7 @@ public:
         setData( temp.getArchive(), temp.getArchiveLength() );
     }
 
-    template<typename T> T swapBytes(T value)
+    template<typename T> T swapBytes(T value) const
     {
         if ((sizeof(T)!=2) && (sizeof(T)!=4)) return value;
         char temp[sizeof(T)];
@@ -182,7 +182,7 @@ public:
     void append(const char* buffer, unsigned int length);
 
     // We can't use a template to access a string directly
-    void getValueAt(int index, std::string& value)
+    void getValueAt(int index, std::string& value) const
     {
         int size = *((int*)(data+index));
         value.assign( data+index+sizeof(int), size);
@@ -190,7 +190,7 @@ public:
 
     // templated function to access an individual piece of the archive
     // based on some index from the front.
-    template<class T> void getValueAt(int index, T& value)
+    template<class T> void getValueAt(int index, T& value) const
     {
         memcpy(&value,(data+index),sizeof(value));
         bool isBigHost = (htons(256) == 256);
@@ -223,7 +223,7 @@ public:
 
     // Clear the archive completely
     void clear() {data_length = 0;}
-    bool empty() {return (data_length==0);}
+    bool empty() const {return (data_length==0);}
 
     // Set the packing mode (little versus big endian)
     enum PackMode { LittleEndian, BigEndian };
@@ -231,11 +231,12 @@ public:
     enum PackMode getPackMode() { return pack_mode; }
 
     // Access the raw data for message passing
-    unsigned int getArchiveLength() { return data_length; }
+    unsigned int getArchiveLength() const { return data_length; }
     char*          getArchive()       { return data; }
+    const char*          getArchive()  const  { return data; }
 
     // Debugging
-    void printArchive(int size);
+    void printArchive(int size) const;
 
 protected:
 
@@ -249,7 +250,7 @@ protected:
 
 };
 
-inline void Archive::printArchive(int size)
+inline void Archive::printArchive(int size) const
 {
     // get the stream from the logger
     std::ostream& out = Logger::get()->getStream(Logger::full);

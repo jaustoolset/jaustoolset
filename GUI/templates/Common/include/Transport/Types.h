@@ -115,7 +115,7 @@ class JAUS_ID
         if (val != in.val) return true;
         return false;
     }
-    bool containsWildcards()
+    bool containsWildcards() const
     {
         // More allowance for AEODRS weirdness...
         if ((getByte(val, 2) == 0xFF) && (getByte(val, 3) == 0xFF)) return true;

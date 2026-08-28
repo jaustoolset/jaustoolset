@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 namespace JTS
 {
 
-jUnsignedByte Send_1_1::Body::SendRec::getPresenceVector()
+jUnsignedByte Send_1_1::Body::SendRec::getPresenceVector() const
 {
 	return m_PresenceVector;
 }
@@ -56,7 +56,7 @@ bool Send_1_1::Body::SendRec::checkPresenceVector(unsigned int index) const
 	return (pvBitSet[index] == 1);
 }
 
-jUnsignedByte Send_1_1::Body::SendRec::getReliableDelivery()
+jUnsignedByte Send_1_1::Body::SendRec::getReliableDelivery() const
 {
 	return m_ReliableDelivery;
 }
@@ -71,7 +71,7 @@ int Send_1_1::Body::SendRec::setReliableDelivery(jUnsignedByte value)
 	return 1;
 }
 
-jUnsignedInteger Send_1_1::Body::SendRec::DestinationID::getComponentID()
+jUnsignedInteger Send_1_1::Body::SendRec::DestinationID::getComponentID() const
 {
 	std::bitset<(int)(sizeof(jUnsignedInteger) * 8)> bfbs((int)m_SubFields);
 	std::bitset<(int)8> sfbs;
@@ -104,7 +104,7 @@ int Send_1_1::Body::SendRec::DestinationID::setComponentID(jUnsignedInteger valu
 	return 1;
 }
 
-jUnsignedInteger Send_1_1::Body::SendRec::DestinationID::getNodeID()
+jUnsignedInteger Send_1_1::Body::SendRec::DestinationID::getNodeID() const
 {
 	std::bitset<(int)(sizeof(jUnsignedInteger) * 8)> bfbs((int) m_SubFields);
 	std::bitset<(int)8> sfbs;
@@ -137,7 +137,7 @@ int Send_1_1::Body::SendRec::DestinationID::setNodeID(jUnsignedInteger value)
 	return 1;
 }
 
-jUnsignedInteger Send_1_1::Body::SendRec::DestinationID::getSubsystemID()
+jUnsignedInteger Send_1_1::Body::SendRec::DestinationID::getSubsystemID() const
 {
 	std::bitset<(int)(sizeof(jUnsignedInteger) * 8)> bfbs((int) m_SubFields);
 	std::bitset<(int)16> sfbs;
@@ -178,7 +178,7 @@ int Send_1_1::Body::SendRec::DestinationID::setSubsystemID(jUnsignedInteger valu
  * 
  * @return
  */
-const unsigned int Send_1_1::Body::SendRec::DestinationID::getSize()
+const unsigned int Send_1_1::Body::SendRec::DestinationID::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -259,13 +259,18 @@ Send_1_1::Body::SendRec::DestinationID* const Send_1_1::Body::SendRec::getDestin
 	return &m_DestinationID;
 }
 
+const Send_1_1::Body::SendRec::DestinationID* const Send_1_1::Body::SendRec::getDestinationID() const
+{
+	return &m_DestinationID;
+}
+
 int Send_1_1::Body::SendRec::setDestinationID(const DestinationID &value)
 {
 	m_DestinationID = value;
 	return 0;
 }
 
-jUnsignedInteger Send_1_1::Body::SendRec::SourceID::getComponentID()
+jUnsignedInteger Send_1_1::Body::SendRec::SourceID::getComponentID() const
 {
 	std::bitset<(int)(sizeof(jUnsignedInteger) * 8)> bfbs((int) m_SubFields);
 	std::bitset<(int)8> sfbs;
@@ -298,7 +303,7 @@ int Send_1_1::Body::SendRec::SourceID::setComponentID(jUnsignedInteger value)
 	return 1;
 }
 
-jUnsignedInteger Send_1_1::Body::SendRec::SourceID::getNodeID()
+jUnsignedInteger Send_1_1::Body::SendRec::SourceID::getNodeID() const
 {
 	std::bitset<(int)(sizeof(jUnsignedInteger) * 8)> bfbs((int) m_SubFields);
 	std::bitset<(int)8> sfbs;
@@ -331,7 +336,7 @@ int Send_1_1::Body::SendRec::SourceID::setNodeID(jUnsignedInteger value)
 	return 1;
 }
 
-jUnsignedInteger Send_1_1::Body::SendRec::SourceID::getSubsystemID()
+jUnsignedInteger Send_1_1::Body::SendRec::SourceID::getSubsystemID() const
 {
 	std::bitset<(int)(sizeof(jUnsignedInteger) * 8)> bfbs((int) m_SubFields);
 	std::bitset<(int)16> sfbs;
@@ -372,7 +377,7 @@ int Send_1_1::Body::SendRec::SourceID::setSubsystemID(jUnsignedInteger value)
  * 
  * @return
  */
-const unsigned int Send_1_1::Body::SendRec::SourceID::getSize()
+const unsigned int Send_1_1::Body::SendRec::SourceID::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -462,6 +467,11 @@ Send_1_1::Body::SendRec::SourceID* const Send_1_1::Body::SendRec::getSourceID()
 	return &m_SourceID;
 }
 
+const Send_1_1::Body::SendRec::SourceID* const Send_1_1::Body::SendRec::getSourceID() const
+{
+	return &m_SourceID;
+}
+
 int Send_1_1::Body::SendRec::setSourceID(const SourceID &value)
 {
 	m_SourceID = value;
@@ -478,7 +488,7 @@ bool Send_1_1::Body::SendRec::isPriorityValid() const
 	return false;
 }
 
-jUnsignedByte Send_1_1::Body::SendRec::getPriority()
+jUnsignedByte Send_1_1::Body::SendRec::getPriority() const
 {
 	return m_Priority;
 }
@@ -528,7 +538,7 @@ int Send_1_1::Body::SendRec::MessagePayload::set(const jUnsignedInteger &length,
  * 
  * @return
  */
-const unsigned int Send_1_1::Body::SendRec::MessagePayload::getSize()
+const unsigned int Send_1_1::Body::SendRec::MessagePayload::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -683,6 +693,11 @@ Send_1_1::Body::SendRec::MessagePayload* const Send_1_1::Body::SendRec::getMessa
 	return &m_MessagePayload;
 }
 
+const Send_1_1::Body::SendRec::MessagePayload* const Send_1_1::Body::SendRec::getMessagePayload() const
+{
+	return &m_MessagePayload;
+}
+
 int Send_1_1::Body::SendRec::setMessagePayload(const MessagePayload &value)
 {
 	m_MessagePayload = value;
@@ -697,7 +712,7 @@ int Send_1_1::Body::SendRec::setMessagePayload(const MessagePayload &value)
  * 
  * @return
  */
-const unsigned int Send_1_1::Body::SendRec::getSize()
+const unsigned int Send_1_1::Body::SendRec::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -901,6 +916,11 @@ Send_1_1::Body::SendRec* const Send_1_1::Body::getSendRec()
 	return &m_SendRec;
 }
 
+const Send_1_1::Body::SendRec* const Send_1_1::Body::getSendRec() const
+{
+	return &m_SendRec;
+}
+
 int Send_1_1::Body::setSendRec(const SendRec &value)
 {
 	m_SendRec = value;
@@ -915,7 +935,7 @@ int Send_1_1::Body::setSendRec(const SendRec &value)
  * 
  * @return
  */
-const unsigned int Send_1_1::Body::getSize()
+const unsigned int Send_1_1::Body::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -1002,6 +1022,11 @@ Send_1_1::Body* const Send_1_1::getBody()
 	return &m_Body;
 }
 
+const Send_1_1::Body* const Send_1_1::getBody() const
+{
+	return &m_Body;
+}
+
 int Send_1_1::setBody(const Body &value)
 {
 	m_Body = value;
@@ -1016,7 +1041,7 @@ int Send_1_1::setBody(const Body &value)
  * 
  * @return
  */
-const unsigned int Send_1_1::getSize()
+const unsigned int Send_1_1::getSize() const
 {
 	unsigned int size = 0;
 	

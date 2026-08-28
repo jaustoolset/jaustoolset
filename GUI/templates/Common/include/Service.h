@@ -54,14 +54,30 @@ namespace JTS
 class DllExport Service : public EventReceiver
 {
 public:
-	Service();
-  	virtual ~Service();
+	Service(const std::string& urn = "Unknown", const jUnsignedByte& majorVersion = 0, const jUnsignedByte& minorVersion = 0);
+	virtual ~Service();
 
 	virtual bool processTransitions(JTS::InternalEvent* ie) = 0;
 	virtual bool defaultTransitions(JTS::InternalEvent* ie) = 0;
 
+	/**
+	 * 
+	 * @return Get the Service URI
+	 */
 	const std::string getURN() const;
-	
+  
+	/**
+	 * 
+	 * @return Major version number for the service
+	 */
+	const jUnsignedByte getMajorVersion() const;
+  
+	/**
+	 * 
+	 * @return Minor version number for the service
+	 */
+	const jUnsignedByte getMinorVersion() const;
+  
 	const std::set<jUnsignedShortInteger> &getInputMessageList() const;
 	const std::set<jUnsignedShortInteger> &getOutputMessageList() const;
 
@@ -72,6 +88,8 @@ protected:
 	std::set<jUnsignedShortInteger> m_OutputMessageList;
 	
 	std::string m_URN;
+	const jUnsignedByte m_majorVersion;
+	const jUnsignedByte m_minorVersion;
 	DeVivo::Junior::JrMutex mutex;
 };
 

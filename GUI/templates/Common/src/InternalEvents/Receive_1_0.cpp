@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 namespace JTS
 {
 
-jUnsignedShortInteger Receive_1_0::Body::ReceiveRec::getSrcSubsystemID()
+jUnsignedShortInteger Receive_1_0::Body::ReceiveRec::getSrcSubsystemID() const
 {
 	return m_SrcSubsystemID;
 }
@@ -46,7 +46,7 @@ int Receive_1_0::Body::ReceiveRec::setSrcSubsystemID(jUnsignedShortInteger value
 	return 0;
 }
 
-jUnsignedByte Receive_1_0::Body::ReceiveRec::getSrcNodeID()
+jUnsignedByte Receive_1_0::Body::ReceiveRec::getSrcNodeID() const
 {
 	return m_SrcNodeID;
 }
@@ -57,7 +57,7 @@ int Receive_1_0::Body::ReceiveRec::setSrcNodeID(jUnsignedByte value)
 	return 0;
 }
 
-jUnsignedByte Receive_1_0::Body::ReceiveRec::getSrcComponentID()
+jUnsignedByte Receive_1_0::Body::ReceiveRec::getSrcComponentID() const
 {
 	return m_SrcComponentID;
 }
@@ -102,7 +102,7 @@ int Receive_1_0::Body::ReceiveRec::MessagePayload::set(const jUnsignedInteger &l
  * 
  * @return
  */
-const unsigned int Receive_1_0::Body::ReceiveRec::MessagePayload::getSize()
+const unsigned int Receive_1_0::Body::ReceiveRec::MessagePayload::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -257,6 +257,11 @@ Receive_1_0::Body::ReceiveRec::MessagePayload* const Receive_1_0::Body::ReceiveR
 	return &m_MessagePayload;
 }
 
+const Receive_1_0::Body::ReceiveRec::MessagePayload* const Receive_1_0::Body::ReceiveRec::getMessagePayload() const
+{
+	return &m_MessagePayload;
+}
+
 int Receive_1_0::Body::ReceiveRec::setMessagePayload(const MessagePayload &value)
 {
 	m_MessagePayload = value;
@@ -271,7 +276,7 @@ int Receive_1_0::Body::ReceiveRec::setMessagePayload(const MessagePayload &value
  * 
  * @return
  */
-const unsigned int Receive_1_0::Body::ReceiveRec::getSize()
+const unsigned int Receive_1_0::Body::ReceiveRec::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -427,6 +432,11 @@ Receive_1_0::Body::ReceiveRec* const Receive_1_0::Body::getReceiveRec()
 	return &m_ReceiveRec;
 }
 
+const Receive_1_0::Body::ReceiveRec* const Receive_1_0::Body::getReceiveRec() const
+{
+	return &m_ReceiveRec;
+}
+
 int Receive_1_0::Body::setReceiveRec(const ReceiveRec &value)
 {
 	m_ReceiveRec = value;
@@ -441,7 +451,7 @@ int Receive_1_0::Body::setReceiveRec(const ReceiveRec &value)
  * 
  * @return
  */
-const unsigned int Receive_1_0::Body::getSize()
+const unsigned int Receive_1_0::Body::getSize() const
 {
 	unsigned int size = 0;
 	
@@ -528,6 +538,11 @@ Receive_1_0::Body* const Receive_1_0::getBody()
 	return &m_Body;
 }
 
+const Receive_1_0::Body* const Receive_1_0::getBody() const
+{
+	return &m_Body;
+}
+
 int Receive_1_0::setBody(const Body &value)
 {
 	m_Body = value;
@@ -542,7 +557,7 @@ int Receive_1_0::setBody(const Body &value)
  * 
  * @return
  */
-const unsigned int Receive_1_0::getSize()
+const unsigned int Receive_1_0::getSize() const
 {
 	unsigned int size = 0;
 	

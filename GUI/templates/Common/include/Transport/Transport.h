@@ -61,16 +61,16 @@ public:
     virtual TransportError initialize(ConfigData& config) = 0;
 
     // Debugging
-    std::string enumToString( TransportError code );
+    std::string enumToString( TransportError code ) const;
     
-    std::string getName(){ return my_name;}
+    std::string getName() const { return my_name;}
     
 protected:
     std::string     my_name;
     
 };
 
-inline std::string Transport::enumToString( TransportError code )
+inline std::string Transport::enumToString( TransportError code ) const
 {
     switch (code)
     {

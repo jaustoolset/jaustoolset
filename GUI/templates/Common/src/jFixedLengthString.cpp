@@ -82,7 +82,7 @@ void jFixedLengthString::setSize(unsigned int size)
 	this->data.resize(this->size);
 }
 
-unsigned int jFixedLengthString::length()
+unsigned int jFixedLengthString::length() const
 {
 	return this->size;
 }

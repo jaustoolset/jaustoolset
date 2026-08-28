@@ -55,7 +55,7 @@ public:
 				const jUnsignedInteger getLength() const;
 				const unsigned char *getData() const;
 				int set(const jUnsignedInteger &length, const unsigned char *data);
-				const unsigned int getSize();
+				const unsigned int getSize() const;
 				virtual void encode(unsigned char *bytes);
 				virtual void decode(const unsigned char *bytes);
 				MessagePayload &operator=(const MessagePayload &value);
@@ -70,15 +70,16 @@ public:
 				unsigned char *m_Data;
 			};
 		
-			jUnsignedShortInteger getSrcSubsystemID();
+			jUnsignedShortInteger getSrcSubsystemID() const;
 			int setSrcSubsystemID(jUnsignedShortInteger value);
-			jUnsignedByte getSrcNodeID();
+			jUnsignedByte getSrcNodeID() const;
 			int setSrcNodeID(jUnsignedByte value);
-			jUnsignedByte getSrcComponentID();
+			jUnsignedByte getSrcComponentID() const;
 			int setSrcComponentID(jUnsignedByte value);
 			MessagePayload* const getMessagePayload();
+			const MessagePayload* const getMessagePayload() const;
 			int setMessagePayload(const MessagePayload &value);
-			const unsigned int getSize();
+			const unsigned int getSize() const;
 			virtual void encode(unsigned char *bytes);
 			virtual void decode(const unsigned char *bytes);
 			ReceiveRec &operator=(const ReceiveRec &value);
@@ -96,8 +97,9 @@ public:
 		};
 	
 		ReceiveRec* const getReceiveRec();
+		const ReceiveRec* const getReceiveRec() const;
 		int setReceiveRec(const ReceiveRec &value);
-		const unsigned int getSize();
+		const unsigned int getSize() const;
 		virtual void encode(unsigned char *bytes);
 		virtual void decode(const unsigned char *bytes);
 		Body &operator=(const Body &value);
@@ -112,8 +114,9 @@ public:
 	};
 
 	Body* const getBody();
+	const Body* const getBody() const;
 	int setBody(const Body &value);
-	const unsigned int getSize();
+	const unsigned int getSize() const;
 	virtual void encode(unsigned char *bytes);
 	virtual void decode(const unsigned char *bytes);
 	Receive_1_0 &operator=(const Receive_1_0 &value);

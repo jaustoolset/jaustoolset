@@ -41,10 +41,10 @@ namespace JTS
 class Message
 {
 public:
-    virtual ~Message(){};
-	virtual unsigned int getID()=0;
-	virtual bool isCommand() { return m_IsCommand; };
-	virtual const unsigned int getSize()=0;
+	virtual ~Message(){};
+	virtual unsigned int getID() const=0;
+	virtual bool isCommand() const { return m_IsCommand; };
+	virtual const unsigned int getSize() const=0;
 	virtual void encode(unsigned char *bytes)=0;
 	virtual void decode(const unsigned char *bytes)=0;
 	
