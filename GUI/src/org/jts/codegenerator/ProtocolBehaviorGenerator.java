@@ -596,6 +596,24 @@ public class ProtocolBehaviorGenerator {
         replaceTable.put("%statemachine_name%", smName);
         replaceTable.put("%transport_class_aliases%", smAliases.toString());
         replaceTable.put("%statemachine_name_allcaps%", smName.toUpperCase());
+        
+        replaceTable.put("%service_id%", sd.getId());
+        replaceTable.put("%service_version%", sd.getVersion());
+        int majorVersion = 0;
+        int minorVersion = 0;
+
+        try {
+            String[] version = sd.getVersion().split("\\.");
+            if (version.length > 0) {
+                majorVersion = Integer.parseInt(version[0]);
+            }
+            if (version.length > 1) {
+                minorVersion = Integer.parseInt(version[1]);
+            }
+        } catch (Exception e) {
+        }
+        replaceTable.put("%service_major_version%", Integer.toString(majorVersion));
+        replaceTable.put("%service_minor_version%", Integer.toString(minorVersion));
 
         //---------------------------
         // Generate references to all parent FSMs

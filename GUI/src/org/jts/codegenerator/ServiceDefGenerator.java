@@ -89,6 +89,25 @@ public class ServiceDefGenerator
 		replaceTable.put("%service_namespace%", namespace);
 		replaceTable.put("%service_name%", serviceName);	
 		replaceTable.put("%service_name_allcaps%", serviceName.toUpperCase());
+                replaceTable.put("%service_id%", sDef.getId());
+                replaceTable.put("%service_version%", sDef.getVersion());
+                
+                int majorVersion = 0;
+                int minorVersion = 0;
+
+                try {
+                    String[] version = sDef.getVersion().split("\\.");
+                    if (version.length > 0) {
+                        majorVersion = Integer.parseInt(version[0]);
+                    }
+                    if (version.length > 1) {
+                        minorVersion = Integer.parseInt(version[1]);
+                    }
+                } catch (Exception e) {
+                }
+                replaceTable.put("%service_major_version%", Integer.toString(majorVersion));
+                replaceTable.put("%service_minor_version%", Integer.toString(minorVersion));
+                
 	}
 
 	/*
